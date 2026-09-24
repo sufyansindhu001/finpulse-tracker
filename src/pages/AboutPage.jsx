@@ -9,7 +9,6 @@ import {
   ChevronRight,
   CheckCircle2
 } from 'lucide-react';
-import AdBanner from '../components/AdBanner';
 
 export default function AboutPage() {
   const { siteSettings } = useApp();
@@ -55,12 +54,6 @@ export default function AboutPage() {
           <p>
             Founded by veteran fintech software engineers and economic researchers, {siteSettings?.websiteName || 'FinPulse'} was created to eliminate opacity in global money transfers and decentralized asset valuation. Whether you are an expatriate sending remittances to family across USD/PKR, EUR/INR, or AED/SAR, or a digital asset trader monitoring Bitcoin liquidity, our mission is to deliver zero-latency calculation transparency.
           </p>
-
-
-          {/* AdSense In-Content Banner */}
-          <div className="my-8">
-            <AdBanner slotType="in-content-banner" />
-          </div>
 
           {/* Feature Grid */}
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4">Our Data Architecture & Reliability</h2>

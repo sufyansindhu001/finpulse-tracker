@@ -10,8 +10,6 @@ import {
   ChevronRight 
 } from 'lucide-react';
 
-import AdBanner from '../components/AdBanner';
-
 export default function ContactPage() {
   const { siteSettings } = useApp();
   const [submitted, setSubmitted] = useState(false);
@@ -201,8 +199,6 @@ export default function ContactPage() {
 
             </div>
           </div>
-
-          <AdBanner slotType="sidebar-rectangle" />
 
         </div>
 

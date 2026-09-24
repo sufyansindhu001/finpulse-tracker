@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { AlertTriangle, ChevronRight } from 'lucide-react';
 
-import AdBanner from '../components/AdBanner';
-
 export default function DisclaimerPage() {
   const { siteSettings } = useApp();
 
@@ -55,11 +53,6 @@ export default function DisclaimerPage() {
             <p>
               FinPulse is an educational and analytical financial software portal. FinPulse is NOT a broker-dealer, registered investment advisor (RIA), money services business (MSB), financial institution, or custodian under applicable international financial regulations.
             </p>
-          </div>
-
-          {/* AdSense In-Content Banner */}
-          <div className="my-8">
-            <AdBanner slotType="in-content-banner" />
           </div>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-100 dark:border-slate-800 pb-2">

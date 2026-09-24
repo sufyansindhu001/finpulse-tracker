@@ -13,7 +13,6 @@ import {
   ChevronRight, 
   BookOpen 
 } from 'lucide-react';
-import AdBanner from './AdBanner';
 
 export default function ArticleView() {
   const { id } = useParams();
@@ -147,11 +146,6 @@ export default function ArticleView() {
         {/* Executive Summary Callout */}
         <div className="p-5 rounded-xl bg-blue-50/70 dark:bg-slate-950/70 border-l-4 border-blue-600 dark:border-blue-500 mb-8 text-slate-700 dark:text-slate-300 text-sm sm:text-base italic leading-relaxed">
           <strong className="text-slate-900 dark:text-white font-semibold">Executive Takeaway:</strong> "{article.summary}"
-        </div>
-
-        {/* AdSense In-Article Ad Container */}
-        <div className="my-8">
-          <AdBanner slotType="in-content-banner" />
         </div>
 
         {/* Full Article Content with Proper Headings & Formatting */}

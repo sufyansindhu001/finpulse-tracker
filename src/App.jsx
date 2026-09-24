@@ -5,7 +5,6 @@ import { fetchLiveCryptoMarkets } from './services/cryptoService';
 
 import Header from './components/Header';
 import CryptoTickerBar from './components/CryptoTickerBar';
-import AdBanner from './components/AdBanner';
 import CurrencyConverter from './components/CurrencyConverter';
 import CryptoTracker from './components/CryptoTracker';
 import QuickConversionMatrix from './components/QuickConversionMatrix';
@@ -187,10 +186,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
       />
 
-      {/* 3. Top Header 728x90 AdSense Leaderboard */}
-      <AdBanner slotType="header-leaderboard" />
-
-      {/* 4. Main Page Content Container with React Router Standalone Routes */}
+      {/* Main Page Content Container with React Router Standalone Routes */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
         
         <Routes>
@@ -211,10 +207,8 @@ export default function App() {
                   />
                 </div>
 
-                {/* Sidebar with 300x250 Ad & Live Crypto Highlights */}
+                {/* Sidebar with Live Crypto Highlights */}
                 <div className="lg:col-span-4 space-y-6">
-                  <AdBanner slotType="sidebar-rectangle" />
-
                   <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 backdrop-blur-sm shadow-sm transition-colors duration-200">
                     <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -292,8 +286,6 @@ export default function App() {
 
               </div>
 
-              <AdBanner slotType="in-content-banner" />
-
               <QuickConversionMatrix
                 rates={rates}
                 onSelectPair={handleSelectPair}
@@ -316,7 +308,6 @@ export default function App() {
                 error={forexError}
                 onRetry={() => loadLiveData(true)}
               />
-              <AdBanner slotType="in-content-banner" />
               <QuickConversionMatrix
                 rates={rates}
                 onSelectPair={handleSelectPair}
@@ -334,7 +325,6 @@ export default function App() {
                 onRetry={() => loadLiveData(true)}
                 onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
               />
-              <AdBanner slotType="in-content-banner" />
               <BlogSection />
             </div>
           } />
@@ -346,7 +336,6 @@ export default function App() {
                 rates={rates}
                 onSelectPair={handleSelectPair}
               />
-              <AdBanner slotType="in-content-banner" />
             </div>
           } />
 
@@ -354,7 +343,6 @@ export default function App() {
           <Route path="/blog" element={
             <div className="space-y-6 animate-in fade-in duration-300">
               <BlogSection />
-              <AdBanner slotType="in-content-banner" />
             </div>
           } />
 

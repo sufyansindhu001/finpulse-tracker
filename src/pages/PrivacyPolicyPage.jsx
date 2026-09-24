@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { ShieldCheck, ChevronRight, Lock, Eye, CheckCircle2, AlertCircle } from 'lucide-react';
-import AdBanner from '../components/AdBanner';
 
 export default function PrivacyPolicyPage() {
   const { siteSettings } = useApp();
@@ -49,12 +48,6 @@ export default function PrivacyPolicyPage() {
           <p>
             At {siteSettings?.websiteName || 'FinPulse'}, accessible via our official domain, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of personal and anonymous telemetry collected and recorded by {siteSettings?.websiteName || 'FinPulse'} and how we utilize it.
           </p>
-
-
-          {/* AdSense In-Content Banner */}
-          <div className="my-8">
-            <AdBanner slotType="in-content-banner" />
-          </div>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-100 dark:border-slate-800 pb-2">
             1. Google DoubleClick DART Cookies & Third-Party Advertising
