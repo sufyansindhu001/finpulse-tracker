@@ -18,7 +18,7 @@ import AdBanner from './AdBanner';
 export default function ArticleView() {
   const { id } = useParams();
   const { articles = [] } = useApp();
-
+  const safeArticles = Array.isArray(articles) ? articles : [];
 
   // Scroll to top on navigation to this article
   useEffect(() => {
@@ -26,9 +26,9 @@ export default function ArticleView() {
   }, [id]);
 
   // Find article by id or slug
-  const article = articles.find(p => p.id === id || p.slug === id) || articles[0];
+  const article = safeArticles.find(p => p && (p.id === id || p.slug === id)) || safeArticles[0] || null;
 
-  const relatedArticles = articles.filter(p => p.id !== article?.id).slice(0, 3);
+  const relatedArticles = safeArticles.filter(p => p && p.id !== article?.id).slice(0, 3);
 
 
   const handleShare = () => {

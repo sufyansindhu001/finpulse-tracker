@@ -10,21 +10,26 @@ export default function BlogSection() {
 
   const categories = ['All', 'Market Updates', 'Forex News', 'Crypto Guides', 'Macro Analysis'];
 
+  const safeArticles = Array.isArray(articles) ? articles : [];
+
   const filteredPosts = useMemo(() => {
-    return articles.filter(post => {
-      const matchCat = selectedCategory === 'All' || post.category === selectedCategory;
-      const tagsList = Array.isArray(post.tags) 
+    return safeArticles.filter(post => {
+      if (!post) return false;
+      const matchCat = selectedCategory === 'All' || (post?.category || '') === selectedCategory;
+      const tagsList = Array.isArray(post?.tags) 
         ? post.tags 
-        : (typeof post.tags === 'string' ? post.tags.split(',') : []);
+        : (typeof post?.tags === 'string' ? post.tags.split(',') : []);
+      const title = post?.title || '';
+      const summary = post?.summary || '';
       const matchSearch = 
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tagsList.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+        title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tagsList.some(t => (t || '').toLowerCase().includes(searchQuery.toLowerCase()));
       return matchCat && matchSearch;
     });
-  }, [articles, selectedCategory, searchQuery]);
+  }, [safeArticles, selectedCategory, searchQuery]);
 
-  const featuredPost = articles[0];
+  const featuredPost = safeArticles[0] || null;
 
 
   return (
