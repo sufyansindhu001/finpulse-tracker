@@ -98,8 +98,8 @@ export function AppProvider({ children }) {
 
   // 3. Configurable Admin Credentials with LocalStorage persistence
   const DEFAULT_ADMIN_CREDENTIALS = {
-    email: 'admin@finpulse.com',
-    password: 'YourSecretPassword2026'
+    email: 'Sufyansindhu001@gmail.com',
+    password: 'Sindhu@101'
   };
 
   const [adminCredentials, setAdminCredentials] = useState(() => {
@@ -107,7 +107,12 @@ export function AppProvider({ children }) {
       const saved = localStorage.getItem('finpulse_admin_credentials');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.email && parsed.password) return parsed;
+        if (parsed.email && parsed.password && parsed.email.toLowerCase() !== 'admin@finpulse.com') {
+          return {
+            email: parsed.email.trim(),
+            password: parsed.password
+          };
+        }
       }
     } catch (e) {
       console.warn('Error reading admin credentials from localStorage:', e);
@@ -117,7 +122,7 @@ export function AppProvider({ children }) {
 
   const updateAdminCredentials = (newEmail, newPassword) => {
     const updated = {
-      email: (newEmail || '').trim().toLowerCase(),
+      email: (newEmail || '').trim(),
       password: newPassword
     };
     setAdminCredentials(updated);
@@ -139,12 +144,14 @@ export function AppProvider({ children }) {
   });
 
   const loginAdmin = (inputEmail, inputPassword) => {
-    const cleanEmail = (inputEmail || '').trim().toLowerCase();
+    const cleanInputEmail = (inputEmail || '').trim().toLowerCase();
+    const cleanSavedEmail = (adminCredentials?.email || DEFAULT_ADMIN_CREDENTIALS.email || '').trim().toLowerCase();
     const cleanPass = inputPassword || '';
+    const savedPass = adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password;
 
     if (
-      cleanEmail === adminCredentials.email.toLowerCase() &&
-      cleanPass === adminCredentials.password
+      cleanInputEmail === cleanSavedEmail &&
+      (cleanPass === savedPass || cleanPass.trim() === savedPass)
     ) {
       setIsAdminAuth(true);
       try {
@@ -155,7 +162,7 @@ export function AppProvider({ children }) {
       return { success: true };
     }
 
-    if (cleanEmail !== adminCredentials.email.toLowerCase()) {
+    if (cleanInputEmail !== cleanSavedEmail) {
       return { 
         success: false, 
         message: 'Invalid Admin Email address.' 

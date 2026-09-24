@@ -66,7 +66,7 @@ export default function AdminPage() {
 
   // --- Change Admin Credentials Form State ---
   const [credForm, setCredForm] = useState(() => ({
-    email: adminCredentials?.email || 'admin@finpulse.com',
+    email: adminCredentials?.email || 'Sufyansindhu001@gmail.com',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
@@ -252,7 +252,7 @@ export default function AdminPage() {
                   required
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="e.g. admin@finpulse.com"
+                  placeholder="e.g. Sufyansindhu001@gmail.com"
                   className="w-full pl-10 pr-3.5 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
                 <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -297,12 +297,12 @@ export default function AdminPage() {
             <button
               type="button"
               onClick={() => {
-                setEmailInput(adminCredentials?.email || 'admin@finpulse.com');
-                setPasswordInput(adminCredentials?.password || 'YourSecretPassword2026');
+                setEmailInput(adminCredentials?.email || 'Sufyansindhu001@gmail.com');
+                setPasswordInput(adminCredentials?.password || 'Sindhu@101');
               }}
               className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
             >
-              Fill Active Credentials ({adminCredentials?.email || 'admin@finpulse.com'})
+              Fill Active Credentials ({adminCredentials?.email || 'Sufyansindhu001@gmail.com'})
             </button>
             <p className="text-[11px] text-slate-400 dark:text-slate-500">
               Session auto-locks on tab close or navigating away.
@@ -571,7 +571,7 @@ export default function AdminPage() {
                       required
                       value={credForm.email}
                       onChange={(e) => setCredForm({ ...credForm, email: e.target.value })}
-                      placeholder="e.g. admin@finpulse.com"
+                      placeholder="e.g. Sufyansindhu001@gmail.com"
                       className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                     <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
