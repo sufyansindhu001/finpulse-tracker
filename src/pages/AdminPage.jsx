@@ -38,13 +38,6 @@ export default function AdminPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // 3. Session-Based Auto-Lock: When navigating away from Admin page, lock the portal
-  useEffect(() => {
-    return () => {
-      logoutAdmin();
-    };
-  }, [logoutAdmin]);
-
   // --- Auth Login State (Email & Password) ---
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
@@ -78,14 +71,36 @@ export default function AdminPage() {
 
   // Handle Login with Email & Password
   const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    const res = loginAdmin(emailInput, passwordInput);
-    if (!res.success) {
-      setLoginError(res.message);
+    if (e) {
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
+    setLoginError('');
+
+    const cleanEmail = (emailInput || '').trim();
+    const cleanPass = passwordInput || '';
+
+    if (!cleanEmail) {
+      setLoginError('Please enter your administrator email.');
+      return false;
+    }
+    if (!cleanPass) {
+      setLoginError('Please enter your administrator password.');
+      return false;
+    }
+
+    console.log('[AdminPage] Submitting login form for:', cleanEmail);
+    const res = loginAdmin(cleanEmail, cleanPass);
+    if (!res || !res.success) {
+      const msg = res?.message || 'Invalid email or password. Please verify your credentials.';
+      setLoginError(msg);
+      console.warn('[AdminPage] Login rejected:', msg);
     } else {
       setLoginError('');
       setPasswordInput('');
+      console.log('[AdminPage] Login accepted! Dashboard unlocked.');
     }
+    return false;
   };
 
   // Handle Save Site Settings
@@ -234,14 +249,7 @@ export default function AdminPage() {
             </p>
           </div>
 
-          {loginError && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 flex items-center gap-2 text-xs text-rose-600 dark:text-rose-400">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{loginError}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
+          <form onSubmit={handleLoginSubmit} noValidate className="space-y-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
                 Admin Email
@@ -251,7 +259,10 @@ export default function AdminPage() {
                   type="email"
                   required
                   value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
+                  onChange={(e) => {
+                    setEmailInput(e.target.value);
+                    if (loginError) setLoginError('');
+                  }}
                   placeholder="e.g. Sufyansindhu001@gmail.com"
                   className="w-full pl-10 pr-3.5 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
@@ -268,7 +279,10 @@ export default function AdminPage() {
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    if (loginError) setLoginError('');
+                  }}
                   placeholder="Enter password"
                   className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
@@ -282,6 +296,17 @@ export default function AdminPage() {
                 </button>
               </div>
             </div>
+
+            {/* 3. Debug Alert / Log: Clear visible error message state in red text right below inputs */}
+            {loginError && (
+              <div 
+                role="alert" 
+                className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-300 dark:border-rose-500/40 flex items-center gap-2.5 text-xs font-semibold text-rose-600 dark:text-rose-400 animate-in fade-in"
+              >
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                <span>{loginError}</span>
+              </div>
+            )}
 
             <button
               type="submit"
@@ -305,7 +330,7 @@ export default function AdminPage() {
               Fill Active Credentials ({adminCredentials?.email || 'Sufyansindhu001@gmail.com'})
             </button>
             <p className="text-[11px] text-slate-400 dark:text-slate-500">
-              Session auto-locks on tab close or navigating away.
+              Session auto-locks on browser tab close or clicking Logout &amp; Lock.
             </p>
           </div>
 

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 
 const AppContext = createContext();
@@ -143,46 +143,57 @@ export function AppProvider({ children }) {
     }
   });
 
-  const loginAdmin = (inputEmail, inputPassword) => {
+  const loginAdmin = useCallback((inputEmail, inputPassword) => {
     const cleanInputEmail = (inputEmail || '').trim().toLowerCase();
     const cleanSavedEmail = (adminCredentials?.email || DEFAULT_ADMIN_CREDENTIALS.email || '').trim().toLowerCase();
-    const cleanPass = inputPassword || '';
-    const savedPass = adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password;
+    const cleanInputPass = (inputPassword || '').trim();
+    const exactInputPass = inputPassword || '';
+    const cleanSavedPass = (adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password || '').trim();
+    const exactSavedPass = adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password;
 
-    if (
-      cleanInputEmail === cleanSavedEmail &&
-      (cleanPass === savedPass || cleanPass.trim() === savedPass)
-    ) {
+    console.log('[FinPulse Auth] Verifying admin login:', {
+      providedEmail: cleanInputEmail,
+      targetEmail: cleanSavedEmail,
+      isEmailMatch: cleanInputEmail === cleanSavedEmail
+    });
+
+    const isPasswordMatch = exactInputPass === exactSavedPass || cleanInputPass === cleanSavedPass;
+
+    if (cleanInputEmail === cleanSavedEmail && isPasswordMatch) {
+      console.log('[FinPulse Auth] Login approved! Activating admin session.');
       setIsAdminAuth(true);
       try {
         sessionStorage.setItem('finpulse_admin_logged_in', 'true');
-      } catch {
-        // sessionStorage might be disabled in private browsing
+      } catch (err) {
+        console.warn('sessionStorage is unavailable:', err);
       }
       return { success: true };
     }
 
     if (cleanInputEmail !== cleanSavedEmail) {
+      console.warn('[FinPulse Auth] Login failed: Email mismatch.');
       return { 
         success: false, 
-        message: 'Invalid Admin Email address.' 
+        message: 'Invalid Admin Email address. Please check your email.' 
       };
     }
 
+    console.warn('[FinPulse Auth] Login failed: Password mismatch.');
     return { 
       success: false, 
       message: 'Invalid Admin Password. Please check your password.' 
     };
-  };
+  }, [adminCredentials]);
 
-  const logoutAdmin = () => {
+  const logoutAdmin = useCallback(() => {
+    console.log('[FinPulse Auth] Terminating admin session.');
     setIsAdminAuth(false);
     try {
       sessionStorage.removeItem('finpulse_admin_logged_in');
-    } catch {
-      // sessionStorage might be disabled in private browsing
+    } catch (err) {
+      console.warn('sessionStorage is unavailable:', err);
     }
-  };
+  }, []);
 
   return (
     <AppContext.Provider value={{
