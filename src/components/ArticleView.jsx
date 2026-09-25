@@ -138,7 +138,9 @@ export default function ArticleView() {
               src={article.image} 
               alt={article.title} 
               className="w-full h-full object-cover"
-              loading="eager"
+              loading="lazy"
+              width="896"
+              height="384"
             />
           </div>
         )}
@@ -202,7 +204,7 @@ export default function ArticleView() {
 
       {/* Related Analysis Section with Router Links */}
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white">Related Financial Articles</h3>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Related Financial Articles</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {relatedArticles.map((rel) => (
             <Link
@@ -214,9 +216,9 @@ export default function ArticleView() {
                 <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider block mb-1 font-mono">
                   {rel.category}
                 </span>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-2">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-2">
                   {rel.title}
-                </h4>
+                </h3>
               </div>
               <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
                 <span>{rel.readTime}</span>

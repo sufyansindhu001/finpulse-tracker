@@ -13,10 +13,10 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
       <div className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-6 sm:p-9 backdrop-blur-2xl shadow-2xl transition-colors duration-200">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-100 dark:border-white/[0.06] gap-3">
           <div>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Popular Forex Corridors & Matrix
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
               Live calculated exchange rates and benchmark conversion values across major international currency corridors.
             </p>
           </div>
@@ -76,9 +76,9 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
 
         {/* Multi-Amount Conversion Reference Table */}
         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-white/[0.06]">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3.5">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3.5">
             USD Conversion Matrix
-          </h4>
+          </h3>
           <div className="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-white/[0.06]">
             <table className="w-full text-xs text-left">
               <thead className="bg-slate-50/80 dark:bg-white/[0.02]">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { fetchLiveExchangeRates, DEFAULT_RATES } from './services/forexService';
 import { fetchLiveCryptoMarkets } from './services/cryptoService';
@@ -8,24 +8,25 @@ import CryptoTickerBar from './components/CryptoTickerBar';
 import HeroSection from './components/HeroSection';
 import MarketDashboard from './components/MarketDashboard';
 import MarketIntelligence from './components/MarketIntelligence';
-import ForexTerminal from './components/ForexTerminal';
-import CryptoHub from './components/CryptoHub';
-import ToolsSuite from './components/ToolsSuite';
 import ResearchSection from './components/ResearchSection';
 import WhyFinPulse from './components/WhyFinPulse';
 import SearchModal from './components/SearchModal';
-
-import QuickConversionMatrix from './components/QuickConversionMatrix';
-import ArticleView from './components/ArticleView';
 import CryptoConverterModal from './components/CryptoConverterModal';
 import Footer from './components/Footer';
 
+// Asynchronous lazy-loaded routes for minimal initial bundle size and near-instant TBT
+const ForexTerminal = lazy(() => import('./components/ForexTerminal'));
+const QuickConversionMatrix = lazy(() => import('./components/QuickConversionMatrix'));
+const CryptoHub = lazy(() => import('./components/CryptoHub'));
+const ToolsSuite = lazy(() => import('./components/ToolsSuite'));
+const ArticleView = lazy(() => import('./components/ArticleView'));
+
 // Standalone dedicated pages for full Google AdSense & SEO compliance
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import DisclaimerPage from './pages/DisclaimerPage';
-import AdminPage from './pages/AdminPage';
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 import { CheckCircle } from 'lucide-react';
 
@@ -217,8 +218,13 @@ export default function App() {
 
       {/* Main Page Content Container with React Router Standalone Routes */}
       <main className="flex-1 w-full mx-auto relative z-10">
-        
-        <Routes>
+        <Suspense fallback={
+          <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 animate-pulse">
+            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">Loading terminal module...</span>
+          </div>
+        }>
+          <Routes>
           {/* ROUTE 1: BESPOKE INSTITUTIONAL HOMEPAGE */}
           <Route path="/" element={
             <div className="space-y-0 animate-in fade-in duration-300">
@@ -391,6 +397,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>
+        </Suspense>
 
       </main>
 

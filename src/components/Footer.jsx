@@ -23,6 +23,9 @@ export default function Footer({ onSelectPair }) {
                   src={siteSettings.logoUrl} 
                   alt={siteSettings.websiteName || 'FinPulse'} 
                   className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-white/10" 
+                  width="32"
+                  height="32"
+                  loading="lazy"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-400 p-[1px]">
@@ -52,9 +55,9 @@ export default function Footer({ onSelectPair }) {
 
           {/* Quick Currency Pairs */}
           <div>
-            <h4 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
+            <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
               Popular Pairs
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link 
@@ -109,9 +112,9 @@ export default function Footer({ onSelectPair }) {
 
           {/* Market Sectors */}
           <div>
-            <h4 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
+            <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
               Market Sectors
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs">
               <li>
                 <Link 
@@ -167,9 +170,9 @@ export default function Footer({ onSelectPair }) {
           {/* AdSense Mandatory Compliance & Trust Standalone URLs */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
+              <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
                 Trust & Legal
-              </h4>
+              </h3>
               <button
                 onClick={() => setLegalModalTab('privacy')}
                 className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline font-mono cursor-pointer"

@@ -8,7 +8,7 @@ export const BLOG_POSTS = [
     date: 'Sep 22, 2026',
     readTime: '6 min read',
     summary: 'How diverging interest rate policies between the Federal Reserve, ECB, and Asian central banks are shaping currency corridors this quarter.',
-    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&fm=webp&q=75',
     tags: ['Forex', 'Federal Reserve', 'Central Banks', 'Currency Trading'],
     content: `
       ### The New Macro Landscape
@@ -34,7 +34,7 @@ export const BLOG_POSTS = [
     date: 'Sep 21, 2026',
     readTime: '8 min read',
     summary: 'A deep dive into on-chain liquidity, Bitcoin ETF net inflows, and how high-throughput networks like Solana are capturing institutional capital.',
-    image: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=800&fm=webp&q=75',
     tags: ['Bitcoin', 'Ethereum', 'Solana', 'Crypto Analysis'],
     content: `
       ### Understanding the Post-Halving Era
@@ -60,7 +60,7 @@ export const BLOG_POSTS = [
     date: 'Sep 18, 2026',
     readTime: '5 min read',
     summary: 'An exploration of why the UAE Dirham and Saudi Riyal maintain fixed USD exchange rates, and what it means for Gulf expat remittances.',
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&fm=webp&q=75',
     tags: ['AED', 'SAR', 'Middle East', 'Remittances', 'Pegged Currencies'],
     content: `
       ### The Mechanics of Fixed Exchange Rates
@@ -85,7 +85,7 @@ export const BLOG_POSTS = [
     date: 'Sep 15, 2026',
     readTime: '7 min read',
     summary: 'Essential cybersecurity best practices to safeguard private keys, avoid phishing smart contracts, and manage crypto reserves safely.',
-    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&fm=webp&q=75',
     tags: ['Security', 'Hardware Wallets', 'DeFi Safety', 'Best Practices'],
     content: `
       ### The Golden Rule of Blockchain: Not Your Keys, Not Your Coins
@@ -113,7 +113,7 @@ export const BLOG_POSTS = [
     date: 'Sep 10, 2026',
     readTime: '5 min read',
     summary: 'Traditional wire transfers vs peer-to-peer digital rails: How modern fintechs are reshaping migrant worker money transfers to South Asia and Africa.',
-    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&fm=webp&q=75',
     tags: ['Remittance', 'Fintech', 'Forex Fees', 'Global Economy'],
     content: `
       ### The High Cost of Moving Money

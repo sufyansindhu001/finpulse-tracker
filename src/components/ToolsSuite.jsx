@@ -114,9 +114,9 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               <Calculator className="w-3.5 h-3.5" />
               <span>Institutional Calculation Suite</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Financial Tools & Risk Suite
-            </h2>
+            </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
               Precision calculators for spot foreign exchange, digital assets valuation, and position size risk management.
             </p>

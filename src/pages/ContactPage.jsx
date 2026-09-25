@@ -70,7 +70,7 @@ export default function ContactPage() {
           {submitted ? (
             <div className="py-12 px-6 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 text-center space-y-3 animate-in zoom-in-95 duration-200">
               <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto" />
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Thank You! Your Message Has Been Sent.</h3>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Thank You! Your Message Has Been Sent.</h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
                 A member of our editorial or technical team has received your ticket and will respond via email shortly.
               </p>
@@ -161,9 +161,9 @@ export default function ContactPage() {
         <div className="lg:col-span-4 space-y-6">
           
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider pb-2 border-b border-slate-100 dark:border-slate-800">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider pb-2 border-b border-slate-100 dark:border-slate-800">
               Direct Contact Details
-            </h3>
+            </h2>
 
             <div className="space-y-3 text-xs">
               <div className="flex items-start gap-3">

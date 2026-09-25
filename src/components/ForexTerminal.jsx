@@ -87,9 +87,9 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
               <Globe className="w-3.5 h-3.5" />
               <span>Interbank Forex Terminal</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Dedicated Forex Terminal & Parity Simulator
-            </h2>
+            </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
               Live interbank mid-market exchange rates, bilateral corridor liquidity, and instant parity simulation.
             </p>
@@ -143,9 +143,9 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
           <div className="flex items-center justify-between pb-5 border-b border-slate-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-2">
               <Sliders className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                 Live Parity Simulator & Currency Calculator
-              </h3>
+              </h2>
             </div>
             <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono hidden sm:inline">
               1 {baseCurrency} = {directRate < 0.001 ? directRate.toFixed(6) : directRate.toFixed(4)} {targetCurrency}
@@ -284,9 +284,9 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
           {/* Parity Simulator Matrix Across Key Global Corridors */}
           <div className="mt-8 pt-6 border-t border-slate-100 dark:border-white/[0.06]">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 font-mono">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 font-mono">
                 Instant Parity Simulation: {numericAmount.toLocaleString()} {baseCurrency} Across World Corridors
-              </h4>
+              </h3>
               <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 Pure Interbank Baseline

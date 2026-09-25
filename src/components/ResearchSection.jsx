@@ -54,9 +54,15 @@ export default function ResearchSection({ limit, showViewAll = false }) {
               <BookOpen className="w-3.5 h-3.5" />
               <span>Editorial Market Intelligence</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              Financial Research & Intelligence Desk
-            </h2>
+            {limit ? (
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Financial Research & Intelligence Desk
+              </h2>
+            ) : (
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Financial Research & Intelligence Desk
+              </h1>
+            )}
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
               Macroeconomic policy breakdowns, liquidity corridor dynamics, and deep-dive digital asset research.
             </p>
@@ -111,6 +117,8 @@ export default function ResearchSection({ limit, showViewAll = false }) {
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
+                        width="400"
+                        height="176"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-600 font-mono text-xs">
@@ -238,7 +246,14 @@ export default function ResearchSection({ limit, showViewAll = false }) {
               {/* Drawer Image */}
               {activeDrawerArticle.image && (
                 <div className="w-full h-56 rounded-2xl overflow-hidden mb-6 border border-slate-200 dark:border-white/[0.08]">
-                  <img src={activeDrawerArticle.image} alt={activeDrawerArticle.title} className="w-full h-full object-cover" />
+                  <img 
+                    src={activeDrawerArticle.image} 
+                    alt={activeDrawerArticle.title} 
+                    className="w-full h-full object-cover" 
+                    loading="lazy"
+                    width="600"
+                    height="224"
+                  />
                 </div>
               )}
 

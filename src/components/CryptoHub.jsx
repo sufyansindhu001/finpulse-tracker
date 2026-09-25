@@ -118,9 +118,9 @@ export default function CryptoHub({
               <Coins className="w-3.5 h-3.5" />
               <span>Digital Asset Intelligence</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Cryptocurrency Intelligence Hub
-            </h2>
+            </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
               Live CoinGecko market aggregation, multi-token capital tracking, dominance metrics, and liquidity spreads.
             </p>
@@ -211,9 +211,9 @@ export default function CryptoHub({
           {/* Controls: Search & Filter Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                 Digital Assets Market Matrix
-              </h3>
+              </h2>
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -329,7 +329,7 @@ export default function CryptoHub({
                         <td className="py-3.5 px-3.5">
                           <div className="flex items-center gap-2.5">
                             {coin.image ? (
-                              <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full object-cover shrink-0" loading="lazy" />
+                              <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full object-cover shrink-0" loading="lazy" width="24" height="24" />
                             ) : (
                               <div className="w-6 h-6 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center font-bold text-[10px] text-blue-600 dark:text-blue-400">
                                 {coin.symbol.slice(0, 3)}

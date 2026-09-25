@@ -78,6 +78,8 @@ export default function Header({
                 src={siteSettings.logoUrl} 
                 alt={siteSettings.websiteName || 'FinPulse'} 
                 className="w-9 h-9 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-sm"
+                width="36"
+                height="36"
               />
             ) : (
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
