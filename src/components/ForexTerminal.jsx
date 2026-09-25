@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
 import { 
@@ -8,16 +9,24 @@ import {
   TrendingUp, 
   Globe, 
   Sliders, 
-  CheckCircle,
+  CheckCircle, 
   RefreshCw,
   Sparkles
 } from 'lucide-react';
 
 export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdated, onRefresh }) {
+  const [searchParams] = useSearchParams();
   const [amount, setAmount] = useState('100');
-  const [baseCurrency, setBaseCurrency] = useState('USD');
-  const [targetCurrency, setTargetCurrency] = useState('PKR');
+  const [baseCurrency, setBaseCurrency] = useState(() => searchParams.get('from')?.toUpperCase() || 'USD');
+  const [targetCurrency, setTargetCurrency] = useState(() => searchParams.get('to')?.toUpperCase() || 'PKR');
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const f = searchParams.get('from');
+    const t = searchParams.get('to');
+    if (f) setBaseCurrency(f.toUpperCase());
+    if (t) setTargetCurrency(t.toUpperCase());
+  }, [searchParams]);
 
   const activeRates = useMemo(() => {
     return (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;

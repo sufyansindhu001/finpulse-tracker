@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Routes, Route, useNavigate, Navigate, Link } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { fetchLiveExchangeRates, DEFAULT_RATES } from './services/forexService';
 import { fetchLiveCryptoMarkets } from './services/cryptoService';
 
@@ -15,10 +15,7 @@ import ResearchSection from './components/ResearchSection';
 import WhyFinPulse from './components/WhyFinPulse';
 import SearchModal from './components/SearchModal';
 
-import CurrencyConverter from './components/CurrencyConverter';
-import CryptoTracker from './components/CryptoTracker';
 import QuickConversionMatrix from './components/QuickConversionMatrix';
-import BlogSection from './components/BlogSection';
 import ArticleView from './components/ArticleView';
 import CryptoConverterModal from './components/CryptoConverterModal';
 import Footer from './components/Footer';
@@ -34,6 +31,12 @@ import { CheckCircle } from 'lucide-react';
 
 export default function App() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Scroll to top on every page navigation
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname]);
 
   // Theme state: initialized from localStorage (defaults to 'dark')
   const [theme, setTheme] = useState(() => {
@@ -172,7 +175,7 @@ export default function App() {
 
   // Quick pair select handler
   const handleSelectPair = (base, target) => {
-    navigate('/');
+    navigate(`/forex?from=${base}&to=${target}`);
     setTimeout(() => {
       const el = document.getElementById('forex-terminal');
       if (el) el.scrollIntoView({ behavior: 'smooth' });

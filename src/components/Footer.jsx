@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { ShieldCheck, Mail, AlertTriangle, FileText, Globe } from 'lucide-react';
+import LegalModal from './LegalModal';
 
 export default function Footer({ onSelectPair }) {
   const { siteSettings } = useApp();
+  const [legalModalTab, setLegalModalTab] = useState(null);
 
   return (
     <footer className="w-full bg-slate-100/90 dark:bg-[#07090E] border-t border-slate-200 dark:border-white/[0.08] pt-14 pb-10 mt-20 text-slate-600 dark:text-slate-400 text-xs transition-colors duration-200">
@@ -25,7 +27,7 @@ export default function Footer({ onSelectPair }) {
               ) : (
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-400 p-[1px]">
                   <div className="w-full h-full bg-slate-900 rounded-[7px] flex items-center justify-center font-black text-xs text-white uppercase">
-                    {siteSettings?.logoText || 'FX'}
+                    {siteSettings?.logoText || 'FP'}
                   </div>
                 </div>
               )}
@@ -55,52 +57,52 @@ export default function Footer({ onSelectPair }) {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <button 
-                  onClick={() => onSelectPair && onSelectPair('USD', 'PKR')}
-                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
+                <Link 
+                  to="/forex?from=USD&to=PKR"
+                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
                 >
                   USD to PKR (Pakistan)
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => onSelectPair && onSelectPair('EUR', 'USD')}
-                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
+                <Link 
+                  to="/forex?from=EUR&to=USD"
+                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
                 >
                   EUR to USD (Eurozone)
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => onSelectPair && onSelectPair('GBP', 'USD')}
-                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
+                <Link 
+                  to="/forex?from=GBP&to=USD"
+                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
                 >
                   GBP to USD (British Pound)
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => onSelectPair && onSelectPair('USD', 'AED')}
-                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
+                <Link 
+                  to="/forex?from=USD&to=AED"
+                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
                 >
                   USD to AED (UAE Dirham)
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => onSelectPair && onSelectPair('USD', 'SAR')}
-                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
+                <Link 
+                  to="/forex?from=USD&to=SAR"
+                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
                 >
                   USD to SAR (Saudi Riyal)
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => onSelectPair && onSelectPair('USD', 'INR')}
-                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
+                <Link 
+                  to="/forex?from=USD&to=INR"
+                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
                 >
                   USD to INR (Indian Rupee)
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -112,32 +114,50 @@ export default function Footer({ onSelectPair }) {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link to="/crypto" className="hover:text-blue-500 transition-colors">
+                <Link 
+                  to="/crypto?coin=bitcoin" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block"
+                >
                   Bitcoin (BTC) Live Data
                 </Link>
               </li>
               <li>
-                <Link to="/crypto" className="hover:text-blue-500 transition-colors">
+                <Link 
+                  to="/crypto?coin=ethereum" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block"
+                >
                   Ethereum (ETH) Ecosystem
                 </Link>
               </li>
               <li>
-                <Link to="/crypto" className="hover:text-blue-500 transition-colors">
+                <Link 
+                  to="/crypto?coin=solana" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block"
+                >
                   Solana (SOL) High-Throughput
                 </Link>
               </li>
               <li>
-                <Link to="/forex" className="hover:text-blue-500 transition-colors">
+                <Link 
+                  to="/forex" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block"
+                >
                   Central Bank Forex Feeds
                 </Link>
               </li>
               <li>
-                <Link to="/forex" className="hover:text-blue-500 transition-colors">
+                <Link 
+                  to="/forex" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block"
+                >
                   Emerging Market FX Corridors
                 </Link>
               </li>
               <li>
-                <Link to="/research" className="hover:text-blue-500 transition-colors">
+                <Link 
+                  to="/research" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block"
+                >
                   Financial Analysis & Guides
                 </Link>
               </li>
@@ -146,45 +166,82 @@ export default function Footer({ onSelectPair }) {
 
           {/* AdSense Mandatory Compliance & Trust Standalone URLs */}
           <div>
-            <h4 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
-              Trust & Legal
-            </h4>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
+                Trust & Legal
+              </h4>
+              <button
+                onClick={() => setLegalModalTab('privacy')}
+                className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline font-mono cursor-pointer"
+                title="Quick Legal Summary Modal"
+              >
+                Quick Modal
+              </button>
+            </div>
             <ul className="space-y-2 text-xs">
-              <li>
+              <li className="flex items-center justify-between group">
                 <Link
                   to="/about"
-                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium"
+                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium cursor-pointer"
                 >
                   <FileText className="w-3.5 h-3.5" />
                   <span>About Us</span>
                 </Link>
+                <button
+                  onClick={() => setLegalModalTab('about')}
+                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-mono"
+                  title="Preview About modal"
+                >
+                  modal
+                </button>
               </li>
-              <li>
+              <li className="flex items-center justify-between group">
                 <Link
                   to="/contact"
-                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium"
+                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Contact Us</span>
                 </Link>
+                <button
+                  onClick={() => setLegalModalTab('contact')}
+                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-mono"
+                  title="Preview Contact modal"
+                >
+                  modal
+                </button>
               </li>
-              <li>
+              <li className="flex items-center justify-between group">
                 <Link
                   to="/privacy-policy"
-                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium"
+                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium cursor-pointer"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Privacy Policy & Cookies</span>
                 </Link>
+                <button
+                  onClick={() => setLegalModalTab('privacy')}
+                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-mono"
+                  title="Preview Privacy modal"
+                >
+                  modal
+                </button>
               </li>
-              <li>
+              <li className="flex items-center justify-between group">
                 <Link
                   to="/disclaimer"
-                  className="hover:text-amber-500 flex items-center gap-1.5 transition-colors text-amber-600 dark:text-amber-400 font-medium"
+                  className="hover:text-amber-500 flex items-center gap-1.5 transition-colors text-amber-600 dark:text-amber-400 font-medium cursor-pointer"
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
                   <span>Financial Disclaimer</span>
                 </Link>
+                <button
+                  onClick={() => setLegalModalTab('disclaimer')}
+                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-amber-500 transition-opacity cursor-pointer font-mono"
+                  title="Preview Disclaimer modal"
+                >
+                  modal
+                </button>
               </li>
             </ul>
           </div>
@@ -204,15 +261,23 @@ export default function Footer({ onSelectPair }) {
             © {new Date().getFullYear()} {siteSettings?.websiteName || 'FinPulse'} Media & Data. All rights reserved. Google AdSense & GDPR Compliant.
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/privacy-policy" className="hover:text-slate-800 dark:hover:text-white transition-colors">Privacy & Cookies</Link>
+            <Link to="/privacy-policy" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Privacy & Cookies</Link>
             <span>•</span>
-            <Link to="/disclaimer" className="hover:text-slate-800 dark:hover:text-white transition-colors">Disclaimer</Link>
+            <Link to="/disclaimer" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Disclaimer</Link>
             <span>•</span>
-            <Link to="/contact" className="hover:text-slate-800 dark:hover:text-white transition-colors">Advertise & Contact</Link>
+            <Link to="/contact" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Advertise & Contact</Link>
           </div>
         </div>
 
       </div>
+
+      {/* Quick Legal Compliance Modal Overlay */}
+      <LegalModal
+        isOpen={!!legalModalTab}
+        onClose={() => setLegalModalTab(null)}
+        activeTab={legalModalTab || 'privacy'}
+        siteName={siteSettings?.websiteName || 'FinPulse'}
+      />
     </footer>
   );
 }

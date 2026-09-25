@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Search, 
   TrendingUp, 
@@ -9,7 +10,8 @@ import {
   ArrowUpDown, 
   Coins, 
   Loader2,
-  PieChart
+  PieChart,
+  X
 } from 'lucide-react';
 
 export default function CryptoHub({ 
@@ -19,10 +21,20 @@ export default function CryptoHub({
   onRetry, 
   onOpenCryptoConverter 
 }) {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('coin') || '');
   const [filterType, setFilterType] = useState('all'); // 'all', 'gainers', 'losers'
   const [sortKey, setSortKey] = useState('market_cap_rank');
   const [sortAsc, setSortAsc] = useState(true);
+
+  useEffect(() => {
+    const c = searchParams.get('coin');
+    if (c) {
+      setSearchTerm(c);
+      const el = document.getElementById('crypto-table');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [searchParams]);
 
   // Top summary stats calculated strictly from the live API response
   const stats = useMemo(() => {
@@ -50,9 +62,12 @@ export default function CryptoHub({
     if (!cryptoList) return [];
     return cryptoList
       .filter(coin => {
+        const query = searchTerm.toLowerCase().trim();
         const matchesSearch = 
-          coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          coin.symbol.toLowerCase().includes(searchTerm.toLowerCase());
+          !query ||
+          coin.name.toLowerCase().includes(query) ||
+          coin.symbol.toLowerCase().includes(query) ||
+          (coin.id && coin.id.toLowerCase().includes(query));
         
         if (!matchesSearch) return false;
 
@@ -191,7 +206,7 @@ export default function CryptoHub({
         </div>
 
         {/* Table Container */}
-        <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-5 sm:p-7 shadow-xs dark:shadow-2xl">
+        <div id="crypto-table" className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-5 sm:p-7 shadow-xs dark:shadow-2xl">
           
           {/* Controls: Search & Filter Tabs */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-white/[0.06]">
@@ -210,8 +225,19 @@ export default function CryptoHub({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search token or symbol..."
-                  className="pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 w-full sm:w-56 font-mono"
+                  className="pl-9 pr-8 py-1.5 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 w-full sm:w-56 font-mono"
                 />
+                {searchTerm && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSearchParams({});
+                    }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
 
               {/* Filter Tabs */}
