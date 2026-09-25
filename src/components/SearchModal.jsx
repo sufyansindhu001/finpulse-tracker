@@ -103,7 +103,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                         className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.04] cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-2">
-                          {coin.image && <img src={coin.image} alt={coin.name} className="w-4 h-4 rounded-full" />}
+                          {coin.image && <img src={coin.image} alt={coin.name} className="w-4 h-4 rounded-full" width="16" height="16" loading="lazy" />}
                           <span className="text-slate-900 dark:text-white font-bold">{coin.name}</span>
                           <span className="text-slate-500 uppercase">({coin.symbol})</span>
                         </div>

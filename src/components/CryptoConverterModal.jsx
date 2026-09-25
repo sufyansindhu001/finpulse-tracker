@@ -40,7 +40,7 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
         {/* Modal Header */}
         <div className="flex items-center gap-3.5 mb-6">
           {coin.image ? (
-            <img src={coin.image} alt={coin.name} className="w-11 h-11 rounded-full ring-1 ring-slate-200 dark:ring-white/10" />
+            <img src={coin.image} alt={coin.name} className="w-11 h-11 rounded-full ring-1 ring-slate-200 dark:ring-white/10" width="44" height="44" loading="lazy" />
           ) : (
             <div className="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 font-bold uppercase">
               {coin.symbol.slice(0, 3)}

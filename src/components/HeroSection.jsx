@@ -210,7 +210,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-slate-500 dark:text-slate-400 text-[11px] font-mono tracking-wider uppercase">Live Terminal Feed</span>
+            <span className="text-slate-600 dark:text-slate-400 text-[11px] font-mono tracking-wider uppercase">Live Terminal Feed</span>
             <span className="text-slate-300 dark:text-white/[0.2]">•</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold tabular-nums">160+ Currencies & Crypto</span>
           </div>
@@ -257,20 +257,20 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
             onMouseLeave={handleMouseLeave}
           >
             {/* Visualizer Header Bar */}
-            <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 dark:border-white/[0.05] text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 dark:border-white/[0.05] text-xs text-slate-600 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <div className="flex gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
                 </div>
-                <span className="font-mono text-[11px] text-slate-500 ml-2">FINPULSE_MARKET_DEPTH_FLOW</span>
+                <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 ml-2">FINPULSE_MARKET_DEPTH_FLOW</span>
               </div>
               <div className="flex items-center gap-4 font-mono text-[11px]">
                 <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Order Flow: Balanced
                 </span>
-                <span className="text-slate-400 dark:text-slate-500 hidden sm:inline">Latency &lt; 40ms</span>
+                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">Latency &lt; 40ms</span>
               </div>
             </div>
 
@@ -285,19 +285,19 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
             {/* Metric Footer Ribbon */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-white/[0.05] text-[11px] font-mono">
               <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-500 uppercase">Live Fiat Pairs</div>
+                <div className="text-slate-600 dark:text-slate-400 uppercase">Live Fiat Pairs</div>
                 <div className="text-slate-800 dark:text-slate-200 font-bold tabular-nums">160+ Currencies</div>
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-500 uppercase">CoinGecko Feed</div>
+                <div className="text-slate-600 dark:text-slate-400 uppercase">CoinGecko Feed</div>
                 <div className="text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">20 Top Cryptos</div>
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-500 uppercase">Benchmark USD/PKR</div>
+                <div className="text-slate-600 dark:text-slate-400 uppercase">Benchmark USD/PKR</div>
                 <div className="text-blue-600 dark:text-blue-400 font-bold tabular-nums">278.09 Baseline</div>
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-500 uppercase">Markup Spread</div>
+                <div className="text-slate-600 dark:text-slate-400 uppercase">Markup Spread</div>
                 <div className="text-slate-900 dark:text-white font-bold tabular-nums">0.00% Zero Fee</div>
               </div>
             </div>

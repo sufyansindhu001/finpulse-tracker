@@ -202,7 +202,7 @@ export default function AdminPage() {
       addArticle({
         title: safeTitle,
         category: articleForm?.category || 'Market Updates',
-        image: articleForm?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80',
+        image: articleForm?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
         author: articleForm?.author || 'FinPulse Research Lead',
         summary: articleForm?.summary || '',
         content: articleForm?.content || '',
@@ -820,7 +820,7 @@ export default function AdminPage() {
                   </div>
                   {articleForm?.image && (
                     <div className="mt-3 w-32 h-20 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
-                      <img src={articleForm.image} alt="Preview" className="w-full h-full object-cover" />
+                      <img src={articleForm.image} alt="Preview" className="w-full h-full object-cover" width="128" height="80" loading="lazy" />
                     </div>
                   )}
                 </div>
@@ -915,9 +915,12 @@ export default function AdminPage() {
                           <td className="py-3 px-3">
                             <div className="flex items-center gap-3">
                               <img
-                                src={art?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=100&q=80'}
+                                src={art?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=100&fm=webp&q=75'}
                                 alt={art?.title || 'Article thumbnail'}
                                 className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+                                width="40"
+                                height="40"
+                                loading="lazy"
                               />
                               <div>
                                 <Link

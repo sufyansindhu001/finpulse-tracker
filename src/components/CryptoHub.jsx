@@ -126,7 +126,7 @@ export default function CryptoHub({
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>CoinGecko Public API Live</span>
           </div>
@@ -136,40 +136,40 @@ export default function CryptoHub({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mb-8">
           
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 shadow-xs">
-            <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
+            <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
               <span>Market Cap (Top 20)</span>
               <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums">
               {isLoading && !cryptoList.length ? 'Loading...' : formatCompact(stats.totalCap)}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Live market aggregation</div>
+            <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-1">Live market aggregation</div>
           </div>
 
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 shadow-xs">
-            <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
+            <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
               <span>24h Trading Volume</span>
               <BarChart3 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums">
               {isLoading && !cryptoList.length ? 'Loading...' : formatCompact(stats.totalVol)}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Aggregated global turnover</div>
+            <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-1">Aggregated global turnover</div>
           </div>
 
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 shadow-xs">
-            <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
+            <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
               <span>Bitcoin Dominance</span>
               <span className="text-amber-500 font-bold font-mono">₿</span>
             </div>
             <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums">
               {stats.btcDominance}%
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Tier-1 asset weight</div>
+            <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-1">Tier-1 asset weight</div>
           </div>
 
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 shadow-xs">
-            <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
+            <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
               <span>Top 24h Gainer</span>
               <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
@@ -183,12 +183,12 @@ export default function CryptoHub({
                 </>
               ) : 'Loading...'}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1 truncate">Leading altcoin gains</div>
+            <div className="text-[10px] text-slate-600 dark:text-slate-400 font-mono mt-1 truncate">Leading altcoin gains</div>
           </div>
 
           {/* Sentiment Breakdown */}
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 shadow-xs">
-            <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
+            <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase font-mono mb-1.5 flex items-center justify-between">
               <span>Sentiment Breakdown</span>
               <PieChart className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             </div>
@@ -275,7 +275,7 @@ export default function CryptoHub({
             <div className="overflow-x-auto mt-4 rounded-xl border border-slate-200 dark:border-white/[0.05]">
               <table className="w-full text-left border-collapse">
                 <thead className="bg-slate-50 dark:bg-[#07090E]">
-                  <tr className="border-b border-slate-200 dark:border-white/[0.06] text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                  <tr className="border-b border-slate-200 dark:border-white/[0.06] text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
                     <th onClick={() => handleSort('market_cap_rank')} className="py-3 px-3.5 cursor-pointer hover:text-slate-900 dark:hover:text-white">
                       <div className="flex items-center gap-1">
                         <span>#</span>
@@ -323,7 +323,7 @@ export default function CryptoHub({
 
                     return (
                       <tr key={coin.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
-                        <td className="py-3.5 px-3.5 font-mono text-slate-500 tabular-nums">
+                        <td className="py-3.5 px-3.5 font-mono text-slate-600 dark:text-slate-400 tabular-nums">
                           {coin.market_cap_rank || '-'}
                         </td>
                         <td className="py-3.5 px-3.5">
@@ -339,7 +339,7 @@ export default function CryptoHub({
                               <div className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                 {coin.name}
                               </div>
-                              <div className="text-[10px] font-mono text-slate-500 uppercase">
+                              <div className="text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase">
                                 {coin.symbol}
                               </div>
                             </div>
@@ -362,7 +362,7 @@ export default function CryptoHub({
                         </td>
                         <td className="py-3.5 px-3.5 hidden md:table-cell">
                           <div className="w-28 mx-auto">
-                            <div className="flex justify-between text-[9px] font-mono tabular-nums text-slate-500 mb-1">
+                            <div className="flex justify-between text-[9px] font-mono tabular-nums text-slate-600 dark:text-slate-400 mb-1">
                               <span>${low < 1 ? low.toFixed(2) : Math.round(low).toLocaleString()}</span>
                               <span>${high < 1 ? high.toFixed(2) : Math.round(high).toLocaleString()}</span>
                             </div>

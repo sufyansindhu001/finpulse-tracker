@@ -116,6 +116,8 @@ export default function BlogSection() {
                 alt={featuredPost.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
+                width="480"
+                height="240"
               />
             </div>
           </div>
@@ -138,6 +140,8 @@ export default function BlogSection() {
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
+                  width="400"
+                  height="176"
                 />
                 <span className="absolute top-3 left-3 text-[10px] font-bold bg-white/90 dark:bg-[#0B0F19]/90 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm">
                   {post.category}

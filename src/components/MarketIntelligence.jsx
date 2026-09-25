@@ -31,7 +31,7 @@ export default function MarketIntelligence() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Analytics Engine Active</span>
           </div>
@@ -44,7 +44,7 @@ export default function MarketIntelligence() {
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-5 shadow-xs dark:shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/[0.06]">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono">
                   Market Volatility Index
                 </span>
                 <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
@@ -77,7 +77,7 @@ export default function MarketIntelligence() {
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] leading-relaxed">
               Currency cross-rate implied volatility remains anchored; foreign exchange corridor spreads are tight.
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function MarketIntelligence() {
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-5 shadow-xs dark:shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/[0.06]">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono">
                   24h Aggregate Volume
                 </span>
                 <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -105,7 +105,7 @@ export default function MarketIntelligence() {
 
               {/* Volume Distribution */}
               <div className="mt-4 space-y-1.5 text-xs font-mono">
-                <div className="flex justify-between text-slate-500 dark:text-slate-400 text-[11px]">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400 text-[11px]">
                   <span>Forex Spot Volume:</span>
                   <span className="text-slate-800 dark:text-slate-200 font-bold tabular-nums">$118.2B (63%)</span>
                 </div>
@@ -113,7 +113,7 @@ export default function MarketIntelligence() {
                   <div className="bg-blue-500 h-full rounded-full" style={{ width: '63%' }} />
                 </div>
 
-                <div className="flex justify-between text-slate-500 dark:text-slate-400 text-[11px] pt-1">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400 text-[11px] pt-1">
                   <span>Crypto Turnover:</span>
                   <span className="text-slate-800 dark:text-slate-200 font-bold tabular-nums">$68.2B (37%)</span>
                 </div>
@@ -123,7 +123,7 @@ export default function MarketIntelligence() {
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] leading-relaxed">
               Turnover spiked across USD, AED, SAR, and PKR remittance channels during early Asian & London trading hours.
             </p>
           </div>
@@ -132,7 +132,7 @@ export default function MarketIntelligence() {
           <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-5 shadow-xs dark:shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/[0.06]">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono">
                   Market Sentiment Gauge
                 </span>
                 <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
@@ -152,17 +152,17 @@ export default function MarketIntelligence() {
               {/* Gauge breakdown */}
               <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] font-mono">
                 <div className="p-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                  <div className="text-slate-500">Forex Liquidity</div>
+                  <div className="text-slate-600 dark:text-slate-400">Forex Liquidity</div>
                   <div className="text-emerald-600 dark:text-emerald-400 font-bold">Deep (98.4%)</div>
                 </div>
                 <div className="p-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                  <div className="text-slate-500">Retail Sentiment</div>
+                  <div className="text-slate-600 dark:text-slate-400">Retail Sentiment</div>
                   <div className="text-blue-600 dark:text-blue-400 font-bold">Accumulation</div>
                 </div>
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] leading-relaxed">
               Institutional investors demonstrate sustained risk appetite with capital rotating toward emerging market currencies.
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function MarketIntelligence() {
                 <span className="px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[11px] font-mono font-bold uppercase">
                   Institutional Desk Memo
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">
+                <span className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1 font-mono">
                   <Clock className="w-3.5 h-3.5" /> Updated 15 mins ago
                 </span>
               </div>
@@ -193,11 +193,11 @@ export default function MarketIntelligence() {
 
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
               <div className="px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.06] text-xs font-mono">
-                <div className="text-slate-500">Central Bank Benchmark</div>
+                <div className="text-slate-600 dark:text-slate-400">Central Bank Benchmark</div>
                 <div className="text-slate-800 dark:text-slate-200 font-bold tabular-nums">Fed Funds: 5.25% - 5.50%</div>
               </div>
               <div className="px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.06] text-xs font-mono">
-                <div className="text-slate-500">Interbank Spread Standard</div>
+                <div className="text-slate-600 dark:text-slate-400">Interbank Spread Standard</div>
                 <div className="text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">&lt; 0.05% Target</div>
               </div>
             </div>

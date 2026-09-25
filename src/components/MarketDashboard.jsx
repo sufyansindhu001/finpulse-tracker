@@ -240,7 +240,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                       <span className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {asset.symbol}
                       </span>
-                      <span className="text-[10px] font-mono text-slate-500 uppercase">
+                      <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase">
                         {asset.category}
                       </span>
                     </div>
@@ -258,7 +258,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                   </div>
 
                   {/* Asset Full Name */}
-                  <div className="text-xs text-slate-500 dark:text-slate-400 truncate mb-3">
+                  <div className="text-xs text-slate-600 dark:text-slate-400 truncate mb-3">
                     {asset.name}
                   </div>
 
@@ -292,8 +292,8 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
 
                 {/* 24h Range Bar & Action Footer */}
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-[11px] font-mono">
-                  <div className="text-slate-500 dark:text-slate-400">
-                    <span className="text-slate-400 dark:text-slate-500">24h: </span>
+                  <div className="text-slate-600 dark:text-slate-400">
+                    <span className="text-slate-500 dark:text-slate-400">24h: </span>
                     <span className="text-slate-700 dark:text-slate-300 tabular-nums">
                       ${typeof asset.low === 'number' ? (asset.low < 1 ? asset.low.toFixed(4) : Math.round(asset.low).toLocaleString()) : asset.low}
                     </span>

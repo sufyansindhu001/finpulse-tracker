@@ -67,7 +67,7 @@ export function AppProvider({ children }) {
       date: newArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       readTime: newArticle.readTime || `${Math.max(2, Math.ceil((newArticle.content?.split(' ').length || 100) / 180))} min read`,
       author: newArticle.author || 'FinPulse Research Team',
-      image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&fm=webp&q=75',
+      image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
       tags: Array.isArray(newArticle.tags) ? newArticle.tags : (newArticle.tags ? newArticle.tags.split(',').map(t => t.trim()) : ['Market'])
     };
     const updated = [articleWithId, ...articles];
