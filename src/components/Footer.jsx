@@ -258,7 +258,7 @@ export default function Footer({ onSelectPair }) {
         {/* Bottom Bar with Standalone Router Links */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div>
-            © {new Date().getFullYear()} {siteSettings?.websiteName || 'FinPulse'} Media & Data. All rights reserved. Google AdSense & GDPR Compliant.
+            © {new Date().getFullYear()} {siteSettings?.websiteName || 'FinPulse'} Media & Data. All rights reserved. GDPR & Privacy Compliant.
           </div>
           <div className="flex items-center gap-4">
             <Link to="/privacy-policy" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Privacy & Cookies</Link>

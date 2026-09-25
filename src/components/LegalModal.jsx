@@ -41,7 +41,7 @@ export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', sit
                 Institutional Compliance & Trust Center
               </h3>
               <p className="text-[11px] text-slate-500 font-mono">
-                {siteName} • Google AdSense, GDPR & CCPA Compliant
+                {siteName} • GDPR, CCPA & Privacy Compliant
               </p>
             </div>
           </div>

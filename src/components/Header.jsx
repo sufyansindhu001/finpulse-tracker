@@ -32,39 +32,21 @@ export default function Header({
   const location = useLocation();
   const { siteSettings } = useApp();
 
-  // Dynamic ticking live clock in both Local time and UTC time (HH:mm:ss)
-  const [timeState, setTimeState] = useState(() => {
+  // Clean ticking live UTC clock (HH:mm:ss)
+  const [currentTime, setCurrentTime] = useState(() => {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    return {
-      local: `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`,
-      utc: `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())} UTC`
-    };
+    return `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
   });
 
   useEffect(() => {
     const pad = (n) => String(n).padStart(2, '0');
     const timer = setInterval(() => {
       const now = new Date();
-      setTimeState({
-        local: `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`,
-        utc: `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())} UTC`
-      });
+      setCurrentTime(`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`);
     }, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const formatUpdatedTime = (raw) => {
-    if (!raw) return 'Live Feed Active';
-    try {
-      const d = new Date(raw);
-      if (!isNaN(d.getTime())) {
-        const pad = (n) => String(n).padStart(2, '0');
-        return `Updated: ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-      }
-    } catch (e) {}
-    return raw.toLowerCase().startsWith('updated') ? raw : `Updated: ${raw}`;
-  };
 
   const currentPath = location.pathname;
 
@@ -159,20 +141,12 @@ export default function Header({
               </kbd>
             </button>
 
-            {/* Live Ticking Dynamic Clock (Dual Local + UTC) */}
-            <div className="hidden xl:flex flex-col items-end text-right">
-              <div className="flex items-center gap-1.5">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-white bg-slate-100 dark:bg-[#0C1017] px-2 py-0.5 rounded-lg border border-slate-200 dark:border-white/[0.08] tabular-nums shadow-xs">
-                  {timeState.local} <span className="text-slate-500 text-[10px]">({timeState.utc})</span>
-                </span>
-              </div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-tight mt-0.5">
-                {formatUpdatedTime(lastUpdated)}
-              </span>
+            {/* Clean Live Ticking Clock & Feed Indicator */}
+            <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#0C1017] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] tabular-nums shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-slate-800 dark:text-slate-200 font-semibold">{currentTime} UTC</span>
+              <span className="text-slate-400 dark:text-slate-600">|</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-medium">Live Feed</span>
             </div>
 
             {/* Dark / Light Mode Toggle Button */}
@@ -235,8 +209,11 @@ export default function Header({
           })}
 
           <div className="pt-3 mt-3 border-t border-slate-200 dark:border-white/[0.06] flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 px-2">
-            <span>Clock: {timeState.local}</span>
-            <span className="text-emerald-500 font-semibold">● Live Interbank</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-slate-800 dark:text-slate-200 font-semibold">{currentTime} UTC</span>
+            </div>
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium">Live Feed</span>
           </div>
         </div>
       )}
