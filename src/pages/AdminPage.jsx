@@ -63,7 +63,7 @@ export default function AdminPage() {
 
   // --- Change Admin Credentials Form State ---
   const [credForm, setCredForm] = useState(() => ({
-    email: adminCredentials?.email || 'Sufyansindhu001@gmail.com',
+    email: adminCredentials?.email || '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
@@ -273,7 +273,7 @@ export default function AdminPage() {
                     setEmailInput(e.target.value);
                     if (loginError) setLoginError('');
                   }}
-                  placeholder="e.g. Sufyansindhu001@gmail.com"
+                  placeholder="admin@example.com"
                   className="w-full pl-10 pr-3.5 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                 />
                 <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -327,18 +327,8 @@ export default function AdminPage() {
             </button>
           </form>
 
-          {/* Quick Demo Credentials Helper */}
-          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 text-center space-y-1.5">
-            <button
-              type="button"
-              onClick={() => {
-                setEmailInput(adminCredentials?.email || 'Sufyansindhu001@gmail.com');
-                setPasswordInput(adminCredentials?.password || 'Sindhu@101');
-              }}
-              className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
-            >
-              Fill Active Credentials ({adminCredentials?.email || 'Sufyansindhu001@gmail.com'})
-            </button>
+          {/* Secure Session Notice */}
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 text-center">
             <p className="text-[11px] text-slate-400 dark:text-slate-500">
               Session auto-locks on browser tab close or clicking Logout &amp; Lock.
             </p>
@@ -607,7 +597,7 @@ export default function AdminPage() {
                       required
                       value={credForm.email}
                       onChange={(e) => setCredForm({ ...credForm, email: e.target.value })}
-                      placeholder="e.g. Sufyansindhu001@gmail.com"
+                      placeholder="admin@example.com"
                       className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                     <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />

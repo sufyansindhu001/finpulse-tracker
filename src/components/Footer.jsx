@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Lock } from 'lucide-react';
+import { ShieldCheck, Mail, AlertTriangle, FileText, Globe } from 'lucide-react';
 
 export default function Footer({ onSelectPair }) {
   const { siteSettings } = useApp();
@@ -186,15 +186,6 @@ export default function Footer({ onSelectPair }) {
                   <span>Financial Disclaimer</span>
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/admin"
-                  className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors text-slate-500 dark:text-slate-400 font-medium"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Admin Portal</span>
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -218,11 +209,6 @@ export default function Footer({ onSelectPair }) {
             <Link to="/disclaimer" className="hover:text-slate-800 dark:hover:text-slate-300">Disclaimer</Link>
             <span>•</span>
             <Link to="/contact" className="hover:text-slate-800 dark:hover:text-slate-300">Advertise & Contact</Link>
-            <span>•</span>
-            <Link to="/admin" className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1">
-              <Lock className="w-3 h-3" />
-              <span>Admin</span>
-            </Link>
           </div>
         </div>
 

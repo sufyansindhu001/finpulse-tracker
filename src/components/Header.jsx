@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { 
@@ -10,8 +10,7 @@ import {
   X, 
   Layers,
   Sun,
-  Moon,
-  Lock
+  Moon
 } from 'lucide-react';
 
 
@@ -27,6 +26,39 @@ export default function Header({
   const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
+
+  // Dynamic ticking live clock in local time (HH:mm:ss)
+  const [liveTime, setLiveTime] = useState(() => {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      setLiveTime(`${h}:${m}:${s}`);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatUpdatedTime = (raw) => {
+    if (!raw) return 'Live API Connected';
+    try {
+      const d = new Date(raw);
+      if (!isNaN(d.getTime())) {
+        const h = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        return `Updated: ${h}:${m}`;
+      }
+    } catch (e) {}
+    return raw.toLowerCase().startsWith('updated') ? raw : `Updated: ${raw}`;
+  };
 
   const currentPath = location.pathname;
 
@@ -103,19 +135,24 @@ export default function Header({
           {/* Right Status, Theme Toggle & Refresh Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Live Indicator Badge */}
+            {/* Live Indicator Badge & Dynamic Local Clock */}
             <div className="hidden lg:flex flex-col items-end text-right">
-              <div className="flex items-center gap-1.5">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 tracking-wide">
-                  FEED ACTIVE
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 tracking-wide">
+                    FEED ACTIVE
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 tabular-nums">
+                  {liveTime}
                 </span>
               </div>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                {lastUpdated ? `${lastUpdated}` : 'Live API Connected'}
+                {formatUpdatedTime(lastUpdated)}
               </span>
             </div>
 
@@ -143,20 +180,6 @@ export default function Header({
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`} />
               <span className="hidden sm:inline">Refresh</span>
             </button>
-
-            {/* Admin Portal Button */}
-            <Link
-              to="/admin"
-              title="Admin Portal (Password: admin123)"
-              className={`p-2 rounded-xl border active:scale-95 transition-all shadow-sm ${
-                currentPath === '/admin'
-                  ? 'bg-blue-600 text-white border-blue-500'
-                  : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700'
-              }`}
-              aria-label="Admin Portal"
-            >
-              <Lock className="w-4 h-4" />
-            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -195,25 +218,9 @@ export default function Header({
             );
           })}
           
-          {/* Admin Link in Mobile */}
-          <button
-            onClick={() => {
-              navigate('/admin');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-              currentPath === '/admin'
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <Lock className="w-4 h-4" />
-            <span>Admin Portal</span>
-          </button>
-
           <div className="pt-2 mt-2 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between px-2">
             <span>Rates: {forexSource || 'Live API'}</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">● 100% Live</span>
+            <span className="font-mono text-emerald-600 dark:text-emerald-400">● {liveTime} Live</span>
           </div>
         </div>
       )}
