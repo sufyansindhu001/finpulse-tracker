@@ -70,7 +70,7 @@ export default function Header({
   ];
 
   return (
-    <header className="w-full bg-white/95 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 backdrop-blur-md sticky top-[33px] z-30 transition-colors duration-200">
+    <header className="w-full bg-white/80 dark:bg-[#090D16]/85 border-b border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl sticky top-[33px] z-30 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -83,27 +83,27 @@ export default function Header({
               <img 
                 src={siteSettings.logoUrl} 
                 alt={siteSettings.websiteName || 'FinPulse'} 
-                className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shadow-md"
+                className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-md"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-lg shadow-blue-500/10">
-                <div className="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center group-hover:bg-slate-800 transition-colors">
-                  <span className="text-lg font-black bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent uppercase">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+                <div className="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center group-hover:bg-slate-800/90 transition-colors">
+                  <span className="text-sm font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase">
                     {siteSettings?.logoText || 'FX'}
                   </span>
                 </div>
               </div>
             )}
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white font-sans">
                   {siteSettings?.websiteName || 'FinPulse'}
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded border border-blue-200 dark:border-blue-500/20 font-semibold">
-                  LIVE
+                <span className="text-[10px] font-mono uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-500/20 font-semibold tracking-wider">
+                  INSTITUTIONAL
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block tracking-tight">
                 {siteSettings?.tagline || 'Real-Time Forex & Crypto Terminal'}
               </p>
             </div>
@@ -111,7 +111,7 @@ export default function Header({
 
 
           {/* Desktop Navigation with dynamic Router paths */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-950/60 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
+          <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 dark:bg-white/[0.03] p-1.5 rounded-full border border-slate-200/80 dark:border-white/[0.06] backdrop-blur-md">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.match(currentPath);
@@ -119,10 +119,10 @@ export default function Header({
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800/60'
+                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-medium'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/[0.04]'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -138,20 +138,20 @@ export default function Header({
             {/* Live Indicator Badge & Dynamic Local Clock */}
             <div className="hidden lg:flex flex-col items-end text-right">
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 tracking-wide">
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
                     FEED ACTIVE
                   </span>
                 </div>
-                <span className="text-[11px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20 tabular-nums">
+                <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200 dark:border-white/[0.08] tabular-nums shadow-sm">
                   {liveTime}
                 </span>
               </div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-tight mt-0.5">
                 {formatUpdatedTime(lastUpdated)}
               </span>
             </div>
@@ -160,7 +160,7 @@ export default function Header({
             <button
               onClick={onToggleTheme}
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 border border-slate-200 dark:border-slate-700 active:scale-95 transition-all cursor-pointer shadow-sm"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-white/[0.04] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-amber-400 border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all cursor-pointer shadow-sm"
               aria-label="Toggle Dark/Light Mode"
             >
               {theme === 'dark' ? (
@@ -175,7 +175,7 @@ export default function Header({
               onClick={onRefresh}
               disabled={isRefreshing}
               title="Force Refresh Latest Exchange Rates & Crypto Prices"
-              className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 dark:bg-white/[0.04] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-sm"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`} />
               <span className="hidden sm:inline">Refresh</span>
@@ -184,7 +184,7 @@ export default function Header({
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 cursor-pointer"
+              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/[0.08] border border-slate-200 dark:border-white/[0.08] cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -195,7 +195,7 @@ export default function Header({
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 pt-2 pb-4 space-y-1 shadow-lg">
+        <div className="md:hidden bg-white/95 dark:bg-[#090D16]/95 border-b border-slate-200 dark:border-white/[0.08] px-4 pt-2 pb-4 space-y-1 shadow-xl backdrop-blur-xl">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.match(currentPath);
@@ -206,10 +206,10 @@ export default function Header({
                   navigate(item.path);
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-blue-600 text-white font-semibold'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function Header({
             );
           })}
           
-          <div className="pt-2 mt-2 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between px-2">
+          <div className="pt-2 mt-2 border-t border-slate-200 dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between px-2">
             <span>Rates: {forexSource || 'Live API'}</span>
             <span className="font-mono text-emerald-600 dark:text-emerald-400">● {liveTime} Live</span>
           </div>

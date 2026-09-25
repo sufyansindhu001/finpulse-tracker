@@ -7,11 +7,11 @@ export default function Footer({ onSelectPair }) {
   const { siteSettings } = useApp();
 
   return (
-    <footer className="w-full bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800/80 pt-12 pb-8 mt-16 text-slate-600 dark:text-slate-400 text-xs transition-colors duration-200">
+    <footer className="w-full bg-slate-100/90 dark:bg-[#070A12] border-t border-slate-200 dark:border-white/[0.08] pt-14 pb-10 mt-20 text-slate-600 dark:text-slate-400 text-xs transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-slate-200 dark:border-slate-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-slate-200 dark:border-white/[0.06]">
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
@@ -20,7 +20,7 @@ export default function Footer({ onSelectPair }) {
                 <img 
                   src={siteSettings.logoUrl} 
                   alt={siteSettings.websiteName || 'FinPulse'} 
-                  className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-slate-700" 
+                  className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-white/10" 
                 />
               ) : (
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-400 p-[1px]">
@@ -37,14 +37,14 @@ export default function Footer({ onSelectPair }) {
             <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed max-w-sm">
               Providing independent real-time foreign currency exchange rates, high-frequency cryptocurrency market data, and institutional macroeconomic analysis for global consumers and cross-border enterprises.
             </p>
-            <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-[11px]">
-              <span className="flex items-center gap-1">
-                <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> 160+ Currencies Live
+            <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-[11px] font-mono">
+              <span className="flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-blue-500" /> 160+ Currencies Live
               </span>
               <span>•</span>
               <span>20+ Top Cryptos</span>
               <span>•</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">99.98% Feed Uptime</span>
+              <span className="text-emerald-500 font-semibold">99.98% Feed Uptime</span>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <button 
                   onClick={() => onSelectPair && onSelectPair('USD', 'PKR')}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
                 >
                   USD to PKR (Pakistan)
                 </button>
@@ -65,7 +65,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <button 
                   onClick={() => onSelectPair && onSelectPair('EUR', 'USD')}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
                 >
                   EUR to USD (Eurozone)
                 </button>
@@ -73,7 +73,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <button 
                   onClick={() => onSelectPair && onSelectPair('GBP', 'USD')}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
                 >
                   GBP to USD (British Pound)
                 </button>
@@ -81,7 +81,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <button 
                   onClick={() => onSelectPair && onSelectPair('USD', 'AED')}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
                 >
                   USD to AED (UAE Dirham)
                 </button>
@@ -89,7 +89,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <button 
                   onClick={() => onSelectPair && onSelectPair('USD', 'SAR')}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
                 >
                   USD to SAR (Saudi Riyal)
                 </button>
@@ -97,7 +97,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <button 
                   onClick={() => onSelectPair && onSelectPair('USD', 'INR')}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-blue-500 transition-colors cursor-pointer text-left"
                 >
                   USD to INR (Indian Rupee)
                 </button>
@@ -112,32 +112,32 @@ export default function Footer({ onSelectPair }) {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link to="/crypto" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+                <Link to="/crypto" className="hover:text-blue-500 transition-colors">
                   Bitcoin (BTC) Live Data
                 </Link>
               </li>
               <li>
-                <Link to="/crypto" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+                <Link to="/crypto" className="hover:text-blue-500 transition-colors">
                   Ethereum (ETH) Ecosystem
                 </Link>
               </li>
               <li>
-                <Link to="/crypto" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+                <Link to="/crypto" className="hover:text-blue-500 transition-colors">
                   Solana (SOL) High-Throughput
                 </Link>
               </li>
               <li>
-                <Link to="/matrix" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+                <Link to="/matrix" className="hover:text-blue-500 transition-colors">
                   Central Bank Forex Feeds
                 </Link>
               </li>
               <li>
-                <Link to="/matrix" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+                <Link to="/matrix" className="hover:text-blue-500 transition-colors">
                   Emerging Market FX Corridors
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-slate-900 dark:hover:text-slate-200 transition-colors">
+                <Link to="/blog" className="hover:text-blue-500 transition-colors">
                   Financial Analysis & Guides
                 </Link>
               </li>
@@ -153,7 +153,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <Link
                   to="/about"
-                  className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors font-medium"
+                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium"
                 >
                   <FileText className="w-3.5 h-3.5" />
                   <span>About Us</span>
@@ -162,7 +162,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <Link
                   to="/contact"
-                  className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors font-medium"
+                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Contact Us</span>
@@ -171,7 +171,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <Link
                   to="/privacy-policy"
-                  className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1.5 transition-colors font-medium"
+                  className="hover:text-blue-500 flex items-center gap-1.5 transition-colors font-medium"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Privacy Policy & Cookies</span>
@@ -180,7 +180,7 @@ export default function Footer({ onSelectPair }) {
               <li>
                 <Link
                   to="/disclaimer"
-                  className="hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-1.5 transition-colors text-amber-600 dark:text-amber-400 font-medium"
+                  className="hover:text-amber-500 flex items-center gap-1.5 transition-colors text-amber-600 dark:text-amber-400 font-medium"
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
                   <span>Financial Disclaimer</span>
@@ -192,7 +192,7 @@ export default function Footer({ onSelectPair }) {
         </div>
 
         {/* Financial & AdSense Compliance Banner */}
-        <div className="py-6 border-b border-slate-200 dark:border-slate-800/80 text-[11px] leading-relaxed text-slate-500">
+        <div className="py-6 border-b border-slate-200 dark:border-white/[0.06] text-[11px] leading-relaxed text-slate-500">
           <p>
             <strong className="text-slate-700 dark:text-slate-300">Financial Disclosure:</strong> Foreign exchange rates and cryptocurrency quotes are supplied for informational purposes only and are not intended for trading purposes or financial advice. {siteSettings?.websiteName || 'FinPulse'} does not verify any data and disclaims any obligation to do so. Market quotes may be delayed.
           </p>
@@ -204,14 +204,13 @@ export default function Footer({ onSelectPair }) {
             © {new Date().getFullYear()} {siteSettings?.websiteName || 'FinPulse'} Media & Data. All rights reserved. Google AdSense & GDPR Compliant.
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/privacy-policy" className="hover:text-slate-800 dark:hover:text-slate-300">Privacy & Cookies</Link>
+            <Link to="/privacy-policy" className="hover:text-slate-800 dark:hover:text-white transition-colors">Privacy & Cookies</Link>
             <span>•</span>
-            <Link to="/disclaimer" className="hover:text-slate-800 dark:hover:text-slate-300">Disclaimer</Link>
+            <Link to="/disclaimer" className="hover:text-slate-800 dark:hover:text-white transition-colors">Disclaimer</Link>
             <span>•</span>
-            <Link to="/contact" className="hover:text-slate-800 dark:hover:text-slate-300">Advertise & Contact</Link>
+            <Link to="/contact" className="hover:text-slate-800 dark:hover:text-white transition-colors">Advertise & Contact</Link>
           </div>
         </div>
-
 
       </div>
     </footer>

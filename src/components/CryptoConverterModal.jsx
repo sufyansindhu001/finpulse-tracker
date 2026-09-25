@@ -23,37 +23,37 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 dark:bg-[#070A12]/80 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-md p-6 shadow-2xl relative"
+        className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-white/[0.08] rounded-3xl w-full max-w-md p-6 sm:p-7 shadow-2xl relative backdrop-blur-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-1.5 rounded-full text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3.5 mb-6">
           {coin.image ? (
-            <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full" />
+            <img src={coin.image} alt={coin.name} className="w-11 h-11 rounded-full ring-1 ring-slate-200 dark:ring-white/10" />
           ) : (
-            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold uppercase">
+            <div className="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 font-bold uppercase">
               {coin.symbol.slice(0, 3)}
             </div>
           )}
           <div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
               <span>{coin.name} to Fiat</span>
-              <span className="text-xs uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded font-mono font-semibold">
+              <span className="text-[11px] uppercase bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-full font-mono font-semibold border border-slate-200 dark:border-white/[0.06]">
                 {coin.symbol}
               </span>
             </h3>
-            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-bold mt-0.5">
               Live Price: ${coin.current_price < 1 ? coin.current_price.toFixed(4) : coin.current_price.toLocaleString()} USD
             </p>
           </div>
@@ -62,7 +62,7 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
         {/* Calculation Inputs */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-400 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
               Crypto Amount ({coin.symbol.toUpperCase()})
             </label>
             <input
@@ -71,22 +71,22 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
               step="any"
               value={cryptoAmount}
               onChange={(e) => setCryptoAmount(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-blue-500 text-base"
+              className="w-full px-4 py-2.5 bg-slate-100/90 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] rounded-xl text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-lg tabular-nums"
               placeholder="1.0"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-slate-700 dark:text-slate-400 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
               Target Fiat Currency
             </label>
             <select
               value={fiatCurrency}
               onChange={(e) => setFiatCurrency(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold text-sm focus:outline-none focus:border-blue-500 cursor-pointer"
+              className="w-full px-4 py-2.5 bg-slate-100/90 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] rounded-xl text-slate-900 dark:text-white font-semibold text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
             >
               {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                <option key={c.code} value={c.code} className="bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-white">
                   {c.flag} {c.code} - {c.name}
                 </option>
               ))}
@@ -100,10 +100,10 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
               <button
                 key={p}
                 onClick={() => setCryptoAmount(p.toString())}
-                className={`text-[11px] px-2 py-0.5 rounded border font-mono font-semibold transition-colors cursor-pointer ${
+                className={`text-[11px] px-2.5 py-0.5 rounded-full border font-mono font-semibold transition-all cursor-pointer ${
                   numAmount === p 
-                    ? 'bg-blue-50 dark:bg-blue-600/30 border-blue-500 text-blue-600 dark:text-blue-300' 
-                    : 'bg-slate-100 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/25' 
+                    : 'bg-slate-100 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.06] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {p}
@@ -112,14 +112,14 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
           </div>
 
           {/* Calculated Output Card */}
-          <div className="mt-5 p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
-            <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-bold">
+          <div className="mt-5 p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0B0F19] to-[#070A12] border border-slate-800 dark:border-white/[0.08] text-center text-white shadow-xl">
+            <span className="text-[11px] text-slate-400 uppercase tracking-widest block mb-1 font-bold">
               Live Converted Total
             </span>
-            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
+            <div className="text-3xl sm:text-4xl font-black text-emerald-400 font-mono tabular-nums tracking-tight">
               {fiatObj.symbol} {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-mono tabular-nums">
+            <div className="text-xs text-slate-400 mt-1.5 font-mono tabular-nums">
               {numAmount} {coin.symbol.toUpperCase()} = {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiatCurrency}
             </div>
           </div>
@@ -129,7 +129,7 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-colors cursor-pointer shadow-lg shadow-blue-600/20"
+            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold transition-all cursor-pointer shadow-lg shadow-blue-600/25 active:scale-98"
           >
             Done
           </button>

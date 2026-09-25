@@ -159,11 +159,14 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-200 selection:bg-blue-500 selection:text-white`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#090D16] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-500 selection:text-white relative`}>
+      
+      {/* Fintech Atmospheric Radial Mesh Glow */}
+      <div className="fintech-mesh-glow" aria-hidden="true" />
       
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-blue-400">
+        <div className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-blue-400/40 backdrop-blur-md">
           <CheckCircle className="w-4 h-4 text-white" />
           <span>{toast}</span>
         </div>
@@ -187,7 +190,7 @@ export default function App() {
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         
         <Routes>
           {/* ROUTE 1: CURRENCY CONVERTER (HOME) */}
@@ -209,22 +212,24 @@ export default function App() {
 
                 {/* Sidebar with Live Crypto Highlights */}
                 <div className="lg:col-span-4 space-y-6">
-                  <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 backdrop-blur-sm shadow-sm transition-colors duration-200">
-                    <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
-                        <Zap className="w-3.5 h-3.5 text-amber-500" />
+                  <div className="bg-white/80 dark:bg-[#0B0F19]/80 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-5 backdrop-blur-xl shadow-xl transition-all duration-200">
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-white/[0.06]">
+                      <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                        <span className="p-1 rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20">
+                          <Zap className="w-3.5 h-3.5" />
+                        </span>
                         <span>Live Crypto Movers</span>
                       </span>
                       <button
                         onClick={() => navigate('/crypto')}
-                        className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                        className="text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-500 font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                       >
                         <span>View All</span>
                         <ArrowRight className="w-3 h-3" />
                       </button>
                     </div>
 
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                       {cryptoList.length > 0 ? (
                         cryptoList.slice(0, 4).map((coin) => {
                           const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
@@ -232,23 +237,23 @@ export default function App() {
                             <div
                               key={coin.id}
                               onClick={() => setSelectedCryptoForConvert(coin)}
-                              className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+                              className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 dark:bg-[#070A12]/60 border border-slate-200/80 dark:border-white/[0.05] hover:border-blue-500/40 hover:bg-white dark:hover:bg-[#0E1424] transition-all cursor-pointer group"
                             >
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2.5">
                                 {coin.image ? (
-                                  <img src={coin.image} alt={coin.name} className="w-5 h-5 rounded-full" />
+                                  <img src={coin.image} alt={coin.name} className="w-5 h-5 rounded-full object-cover" />
                                 ) : (
                                   <span className="text-xs font-bold text-slate-800 dark:text-white uppercase">{coin.symbol}</span>
                                 )}
-                                <span className="text-xs font-bold text-slate-800 dark:text-white uppercase">{coin.symbol}</span>
+                                <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-tight group-hover:text-blue-500 transition-colors">{coin.symbol}</span>
                               </div>
                               <div className="text-right">
-                                <div className="text-xs font-mono font-bold text-slate-900 dark:text-white">
+                                <div className="text-xs font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                                   ${coin.current_price < 1 
                                     ? coin.current_price.toFixed(4) 
                                     : coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </div>
-                                <div className={`text-[10px] font-mono font-bold ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                                <div className={`text-[10px] font-mono tabular-nums font-semibold ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                                   {isPositive ? '+' : ''}{coin.price_change_percentage_24h?.toFixed(2)}%
                                 </div>
                               </div>
@@ -267,17 +272,19 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-4.5 text-xs text-slate-600 dark:text-slate-400 space-y-2 shadow-sm">
-                    <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 font-bold">
-                      <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                  <div className="bg-white/80 dark:bg-[#0B0F19]/80 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-5 text-xs text-slate-600 dark:text-slate-400 space-y-2.5 backdrop-blur-xl shadow-lg">
+                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold">
+                      <span className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                      </span>
                       <span>Real-Time Market APIs</span>
                     </div>
                     <p className="text-[11px] leading-relaxed">
-                      All currency rates are sourced directly from <code className="text-blue-600 dark:text-blue-400 bg-slate-100 dark:bg-slate-950 px-1 py-0.5 rounded font-mono">open.er-api.com</code> and crypto quotes from <code className="text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-slate-950 px-1 py-0.5 rounded font-mono">api.coingecko.com</code>.
+                      All currency rates are sourced directly from <code className="text-blue-600 dark:text-blue-400 bg-slate-100 dark:bg-[#070A12] px-1 py-0.5 rounded border border-slate-200 dark:border-white/[0.06] font-mono">open.er-api.com</code> and crypto quotes from <code className="text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#070A12] px-1 py-0.5 rounded border border-slate-200 dark:border-white/[0.06] font-mono">api.coingecko.com</code>.
                     </p>
                     <Link
                       to="/disclaimer"
-                      className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline pt-1 block cursor-pointer font-semibold"
+                      className="text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-500 pt-1 block cursor-pointer font-semibold transition-colors"
                     >
                       Read Financial Disclaimer →
                     </Link>
