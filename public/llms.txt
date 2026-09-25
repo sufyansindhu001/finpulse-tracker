@@ -1,0 +1,10 @@
+# FinPulse Media & Data
+
+> Real-time global currency exchange rates, high-frequency cryptocurrency market tracking, and macroeconomic intelligence.
+
+## Core Market Pages
+- [Global Currency Converter](https://finpulse-tracker-lovat.vercel.app/): Real-time fiat exchange rates and calculation terminal.
+- [Forex Corridor Terminal](https://finpulse-tracker-lovat.vercel.app/forex): Live central bank rates, USD/PKR, EUR/USD, and parity simulation.
+- [Cryptocurrency Tracker](https://finpulse-tracker-lovat.vercel.app/crypto): High-frequency crypto pricing, market cap rankings, and dominance metrics.
+- [Financial Research](https://finpulse-tracker-lovat.vercel.app/research): Institutional market analysis, macroeconomic insights, and educational guides.
+- [Financial Calculators](https://finpulse-tracker-lovat.vercel.app/tools): Position size, pip risk, and currency conversion tools.

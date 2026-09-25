@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ai-catalog.schema.json",
+  "name": "FinPulse Media & Data",
+  "description": "Real-time foreign exchange and cryptocurrency market data feed.",
+  "url": "https://finpulse-tracker-lovat.vercel.app",
+  "endpoints": [
+    {
+      "name": "Currency Exchange Rates",
+      "path": "/",
+      "description": "Calculates real-time fiat conversion pairs."
+    },
+    {
+      "name": "Crypto Asset Screener",
+      "path": "/crypto",
+      "description": "Tracks prices, volume, and percentage trends for major digital assets."
+    }
+  ]
+}
