@@ -26,13 +26,14 @@
   }
 
   body {
-    background-color: #07090e;
-    color: #f1f5f9;
-  }
-
-  :root:not(.dark) body {
     background-color: #f8fafc;
     color: #0f172a;
+  }
+
+  html.dark body,
+  .dark body {
+    background-color: #07090e;
+    color: #f1f5f9;
   }
 
   /* Headings, buttons, form controls and tables default to Inter */

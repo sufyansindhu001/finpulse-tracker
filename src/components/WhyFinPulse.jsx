@@ -40,19 +40,19 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
   ];
 
   return (
-    <section className="py-16 border-b border-white/[0.06]">
+    <section className="py-16 border-b border-slate-200 dark:border-white/[0.06]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold mb-3 border border-blue-500/20 font-mono uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-3 border border-blue-500/20 font-mono uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Architectural Standards</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Why Professionals Choose FinPulse
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 mt-2 font-normal leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 font-normal leading-relaxed">
             Engineered from the ground up for speed, analytical rigor, and unwavering reliability across global financial markets.
           </p>
         </div>
@@ -64,21 +64,21 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
             return (
               <div
                 key={idx}
-                className="bg-[#0C1017] border border-white/[0.08] hover:border-white/[0.18] rounded-3xl p-6 transition-all duration-200 shadow-xl flex flex-col justify-between group"
+                className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.18] rounded-3xl p-6 transition-all duration-200 shadow-sm dark:shadow-xl flex flex-col justify-between group"
               >
                 <div>
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border mb-5 ${pillar.color}`}>
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors tracking-tight">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
                     {pillar.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-normal">
                     {pillar.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/[0.04] flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/[0.04] flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Enterprise Standard</span>
                 </div>
@@ -88,15 +88,15 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
         </div>
 
         {/* Closing Headline & CTA Banner */}
-        <div className="rounded-3xl bg-gradient-to-br from-[#0C1017] via-[#0F141F] to-[#07090E] border border-white/[0.08] p-8 sm:p-14 shadow-2xl relative overflow-hidden text-center">
+        <div className="rounded-3xl bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-[#0C1017] dark:via-[#0F141F] dark:to-[#07090E] border border-slate-200 dark:border-white/[0.08] p-8 sm:p-14 shadow-md dark:shadow-2xl relative overflow-hidden text-center">
           <div className="absolute top-0 right-0 -mt-16 -mr-16 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
               Your Markets. Your Data. Your Decisions.
             </h2>
-            <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto font-normal leading-relaxed">
               Join over 50,000 analysts, cross-border traders, and enterprises relying on FinPulse for uncompromising global market intelligence.
             </p>
 
@@ -111,9 +111,9 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
 
               <button
                 onClick={onLaunchConverter}
-                className="px-6 py-3.5 rounded-xl bg-[#07090E] hover:bg-[#111622] text-slate-200 hover:text-white font-semibold text-sm transition-all border border-white/[0.08] flex items-center gap-2 cursor-pointer active:scale-95"
+                className="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 dark:bg-[#07090E] dark:hover:bg-[#111622] text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white font-semibold text-sm transition-all border border-slate-300 dark:border-white/[0.08] flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
               >
-                <Globe className="w-4 h-4 text-slate-400" />
+                <Globe className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                 <span>Launch Parity Calculator</span>
               </button>
             </div>

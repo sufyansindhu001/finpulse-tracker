@@ -54,11 +54,11 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-xl bg-[#0C1017] border border-white/[0.1] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="w-full max-w-xl bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.1] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-white/[0.08] gap-3">
+        <div className="flex items-center px-4 py-3.5 border-b border-slate-200 dark:border-white/[0.08] gap-3">
           <Search className="w-5 h-5 text-slate-400 shrink-0" />
           <input
             type="text"
@@ -66,11 +66,11 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search currencies, crypto tokens, or research reports..."
-            className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none font-mono"
+            className="w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none font-mono"
           />
           <button 
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-white/[0.08] text-slate-400 hover:text-white"
+            className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.08] text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -81,7 +81,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
           {!query.trim() ? (
             <div className="py-6 text-center text-slate-500">
               <span className="block mb-1">Quick Search for Market Instruments</span>
-              <span className="text-[11px] text-slate-600">Type "USD", "Bitcoin", "PKR", "Gold", or "Rate"</span>
+              <span className="text-[11px] text-slate-400 dark:text-slate-600">Type "USD", "Bitcoin", "PKR", "Gold", or "Rate"</span>
             </div>
           ) : (
             <>
@@ -89,7 +89,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {results.cryptos.length > 0 && (
                 <div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <Coins className="w-3 h-3 text-indigo-400" />
+                    <Coins className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                     <span>Cryptocurrencies</span>
                   </div>
                   <div className="space-y-1">
@@ -100,14 +100,14 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                           navigate('/crypto');
                           onClose();
                         }}
-                        className="flex items-center justify-between p-2 rounded-xl hover:bg-white/[0.04] cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.04] cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           {coin.image && <img src={coin.image} alt={coin.name} className="w-4 h-4 rounded-full" />}
-                          <span className="text-white font-bold">{coin.name}</span>
+                          <span className="text-slate-900 dark:text-white font-bold">{coin.name}</span>
                           <span className="text-slate-500 uppercase">({coin.symbol})</span>
                         </div>
-                        <span className="text-slate-300 font-bold tabular-nums">
+                        <span className="text-slate-700 dark:text-slate-300 font-bold tabular-nums">
                           ${coin.current_price?.toLocaleString()}
                         </span>
                       </div>
@@ -120,7 +120,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {results.currencies.length > 0 && (
                 <div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <Globe className="w-3 h-3 text-blue-400" />
+                    <Globe className="w-3 h-3 text-blue-500 dark:text-blue-400" />
                     <span>World Currencies</span>
                   </div>
                   <div className="space-y-1">
@@ -128,17 +128,17 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                       <div
                         key={curr.code}
                         onClick={() => {
-                          navigate('/matrix');
+                          navigate('/forex');
                           onClose();
                         }}
-                        className="flex items-center justify-between p-2 rounded-xl hover:bg-white/[0.04] cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.04] cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <span>{curr.flag}</span>
-                          <span className="text-white font-bold">{curr.name}</span>
+                          <span className="text-slate-900 dark:text-white font-bold">{curr.name}</span>
                           <span className="text-slate-500">({curr.code})</span>
                         </div>
-                        <span className="text-blue-400 font-bold">{curr.symbol}</span>
+                        <span className="text-blue-600 dark:text-blue-400 font-bold">{curr.symbol}</span>
                       </div>
                     ))}
                   </div>
@@ -149,7 +149,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {results.articles.length > 0 && (
                 <div>
                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <BookOpen className="w-3 h-3 text-purple-400" />
+                    <BookOpen className="w-3 h-3 text-purple-500 dark:text-purple-400" />
                     <span>Research Articles</span>
                   </div>
                   <div className="space-y-1">
@@ -160,10 +160,10 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                           navigate(`/blog/${art.id}`);
                           onClose();
                         }}
-                        className="flex items-center justify-between p-2 rounded-xl hover:bg-white/[0.04] cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.04] cursor-pointer transition-colors"
                       >
-                        <span className="text-slate-200 truncate max-w-sm">{art.title}</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+                        <span className="text-slate-800 dark:text-slate-200 truncate max-w-sm">{art.title}</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                       </div>
                     ))}
                   </div>
@@ -180,7 +180,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
         </div>
 
         {/* Footer info */}
-        <div className="px-4 py-2.5 bg-[#07090E] border-t border-white/[0.06] text-[10px] text-slate-500 flex justify-between font-mono">
+        <div className="px-4 py-2.5 bg-slate-50 dark:bg-[#07090E] border-t border-slate-200 dark:border-white/[0.06] text-[10px] text-slate-500 flex justify-between font-mono">
           <span>Press ESC to close</span>
           <span>FinPulse Real-Time Engine</span>
         </div>

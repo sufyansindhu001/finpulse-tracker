@@ -127,17 +127,17 @@ export default function Footer({ onSelectPair }) {
                 </Link>
               </li>
               <li>
-                <Link to="/matrix" className="hover:text-blue-500 transition-colors">
+                <Link to="/forex" className="hover:text-blue-500 transition-colors">
                   Central Bank Forex Feeds
                 </Link>
               </li>
               <li>
-                <Link to="/matrix" className="hover:text-blue-500 transition-colors">
+                <Link to="/forex" className="hover:text-blue-500 transition-colors">
                   Emerging Market FX Corridors
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-blue-500 transition-colors">
+                <Link to="/research" className="hover:text-blue-500 transition-colors">
                   Financial Analysis & Guides
                 </Link>
               </li>

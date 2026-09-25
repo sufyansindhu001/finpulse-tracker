@@ -181,7 +181,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#07090E] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-600 selection:text-white relative`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#07090E] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-600 selection:text-white relative`}>
       
       {/* Subtle Fintech Atmospheric Radial Mesh Glow */}
       <div className="fintech-mesh-glow" aria-hidden="true" />
@@ -220,19 +220,16 @@ export default function App() {
           <Route path="/" element={
             <div className="space-y-0 animate-in fade-in duration-300">
               
-              {/* Hero Section with Interactive Wave/Depth Canvas Visualizer */}
+              {/* Hero Section */}
               <HeroSection 
                 onExploreMarkets={() => {
                   const el = document.getElementById('markets');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                onViewData={() => {
-                  const el = document.getElementById('markets');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onViewData={() => navigate('/forex')}
               />
 
-              {/* Multi-Asset Live Market Dashboard */}
+              {/* Summary Overview Matrix */}
               <MarketDashboard 
                 rates={rates}
                 cryptoList={cryptoList}
@@ -240,51 +237,40 @@ export default function App() {
                 onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
               />
 
-              {/* Market Intelligence & Analytical Desk Memo */}
+              {/* Market Highlights & Analytical Desk Memo */}
               <MarketIntelligence />
 
-              {/* Dedicated Forex Terminal & Parity Simulator */}
+              {/* Latest Research snippet (3 posts) */}
+              <ResearchSection limit={3} showViewAll={true} />
+
+              {/* 4 Architectural Pillars & Call to Action */}
+              <WhyFinPulse 
+                onExploreMarkets={() => {
+                  const el = document.getElementById('markets');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onLaunchConverter={() => navigate('/forex')}
+              />
+
+            </div>
+          } />
+
+          {/* ROUTE 2: DEDICATED FOREX TERMINAL & QUICK CONVERSION MATRIX */}
+          <Route path="/forex" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
               <ForexTerminal 
                 rates={rates}
                 source={forexMeta.source}
                 lastUpdated={forexMeta.lastUpdated}
                 onRefresh={() => loadLiveData(true)}
               />
-
-              {/* Cryptocurrency Intelligence Hub */}
-              <CryptoHub 
-                cryptoList={cryptoList}
-                isLoading={isCryptoLoading}
-                error={cryptoError}
-                onRetry={() => loadLiveData(true)}
-                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
-              />
-
-              {/* Financial Tools & Pip Risk Suite */}
-              <ToolsSuite 
+              <QuickConversionMatrix
                 rates={rates}
-                cryptoList={cryptoList}
+                onSelectPair={handleSelectPair}
               />
-
-              {/* Research & Editorial Grid */}
-              <ResearchSection />
-
-              {/* 4 Architectural Pillars & Closing CTA */}
-              <WhyFinPulse 
-                onExploreMarkets={() => {
-                  const el = document.getElementById('markets');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                onLaunchConverter={() => {
-                  const el = document.getElementById('forex-terminal');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-              />
-
             </div>
           } />
-
-          {/* ROUTE 2: CONVERTER DEDICATED ALIAS */}
+          {/* Forex Aliases */}
           <Route path="/converter" element={
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
               <ForexTerminal 
@@ -299,22 +285,6 @@ export default function App() {
               />
             </div>
           } />
-
-          {/* ROUTE 3: LIVE CRYPTO TRACKER PAGE */}
-          <Route path="/crypto" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <CryptoHub 
-                cryptoList={cryptoList}
-                isLoading={isCryptoLoading}
-                error={cryptoError}
-                onRetry={() => loadLiveData(true)}
-                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
-              />
-              <ResearchSection />
-            </div>
-          } />
-
-          {/* ROUTE 4: FOREX MATRIX PAGE */}
           <Route path="/matrix" element={
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
               <ForexTerminal 
@@ -330,17 +300,51 @@ export default function App() {
             </div>
           } />
 
-          {/* ROUTE 5: BLOG / RESEARCH OVERVIEW PAGE */}
+          {/* ROUTE 3: DEDICATED LIVE CRYPTO TRACKER PAGE */}
+          <Route path="/crypto" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <CryptoHub 
+                cryptoList={cryptoList}
+                isLoading={isCryptoLoading}
+                error={cryptoError}
+                onRetry={() => loadLiveData(true)}
+                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
+              />
+            </div>
+          } />
+
+          {/* ROUTE 4: DEDICATED RESEARCH HUB */}
+          <Route path="/research" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <ResearchSection />
+            </div>
+          } />
+          {/* Research Alias */}
           <Route path="/blog" element={
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
               <ResearchSection />
             </div>
           } />
 
-          {/* ROUTE 6: DEDICATED ARTICLE DETAIL PAGE (/blog/:id) */}
+          {/* ROUTE 5: DEDICATED ARTICLE DETAIL PAGE */}
           <Route path="/blog/:id" element={
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
               <ArticleView />
+            </div>
+          } />
+          <Route path="/research/:id" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <ArticleView />
+            </div>
+          } />
+
+          {/* ROUTE 6: DEDICATED FINANCIAL TOOLS / CALCULATORS PAGE */}
+          <Route path="/tools" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <ToolsSuite 
+                rates={rates}
+                cryptoList={cryptoList}
+              />
             </div>
           } />
 
