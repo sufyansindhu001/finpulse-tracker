@@ -30,13 +30,13 @@ export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
                 <img src={coin.image} alt={coin.name} className="w-4 h-4 rounded-full" />
               )}
               <span className="font-semibold text-slate-200 uppercase">{coin.symbol}</span>
-              <span className="text-slate-300 font-mono">
+              <span className="text-slate-300 font-mono tabular-nums">
                 ${coin.current_price < 1 
                   ? coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
                   : coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
               <span
-                className={`inline-flex items-center gap-0.5 text-[11px] font-medium font-mono ${
+                className={`inline-flex items-center gap-0.5 text-[11px] font-medium font-mono tabular-nums ${
                   isPositive ? 'text-emerald-400' : 'text-rose-400'
                 }`}
               >

@@ -87,7 +87,7 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                   <th className="py-2.5 px-3 text-right">$1,000 USD</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/40 font-mono">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/40 font-mono tabular-nums">
                 {['PKR', 'INR', 'AED', 'SAR', 'EUR', 'GBP', 'CAD', 'JPY'].map((code) => {
                   const curr = getCurrencyInfo(code);
                   const rate = getExchangeRate('USD', code, activeRates);

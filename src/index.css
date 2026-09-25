@@ -1,18 +1,36 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 @variant dark (&:where(.dark, .dark *));
 
 @layer base {
   * {
     box-sizing: border-box;
   }
-  body {
+  html, body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
+
+  /* Headings, buttons, form controls and tables default to Inter */
+  h1, h2, h3, h4, h5, h6, input, select, textarea, button, table {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Tabular Numbers for financial data, exchange rates, matrices, and live tickers */
+.tabular-nums,
+table td,
+input[type="number"],
+.currency-rate,
+.crypto-price {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Custom scrollbar */

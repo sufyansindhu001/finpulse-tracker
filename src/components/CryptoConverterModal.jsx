@@ -116,10 +116,10 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
             <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-bold">
               Live Converted Total
             </span>
-            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
+            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
               {fiatObj.symbol} {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-mono">
+            <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-mono tabular-nums">
               {numAmount} {coin.symbol.toUpperCase()} = {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiatCurrency}
             </div>
           </div>

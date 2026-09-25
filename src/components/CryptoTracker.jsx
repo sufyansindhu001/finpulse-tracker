@@ -331,7 +331,7 @@ export default function CryptoTracker({
                       className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group"
                     >
                       {/* Rank */}
-                      <td className="py-3.5 px-3 text-xs font-mono text-slate-500 dark:text-slate-400">
+                      <td className="py-3.5 px-3 text-xs font-mono tabular-nums text-slate-500 dark:text-slate-400">
                         {coin.market_cap_rank || '-'}
                       </td>
 
@@ -362,14 +362,14 @@ export default function CryptoTracker({
                       </td>
 
                       {/* Price */}
-                      <td className="py-3.5 px-3 text-right font-mono font-bold text-slate-900 dark:text-white">
+                      <td className="py-3.5 px-3 text-right font-mono tabular-nums font-bold text-slate-900 dark:text-white">
                         ${coin.current_price < 1 
                           ? coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 }) 
                           : coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
 
                       {/* 24h Change */}
-                      <td className="py-3.5 px-3 text-right font-mono font-semibold">
+                      <td className="py-3.5 px-3 text-right font-mono tabular-nums font-semibold">
                         <span
                           className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-xs font-bold ${
                             isPositive 
@@ -388,7 +388,7 @@ export default function CryptoTracker({
                       {/* 24h Range Bar */}
                       <td className="py-3.5 px-3 hidden md:table-cell">
                         <div className="w-32 mx-auto">
-                          <div className="flex justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-1">
+                          <div className="flex justify-between text-[10px] font-mono tabular-nums text-slate-500 dark:text-slate-400 mb-1">
                             <span>${low < 1 ? low.toFixed(2) : low.toLocaleString()}</span>
                             <span>${high < 1 ? high.toFixed(2) : high.toLocaleString()}</span>
                           </div>
@@ -402,12 +402,12 @@ export default function CryptoTracker({
                       </td>
 
                       {/* 24h Volume */}
-                      <td className="py-3.5 px-3 text-right font-mono text-slate-700 dark:text-slate-300 hidden lg:table-cell text-xs">
+                      <td className="py-3.5 px-3 text-right font-mono tabular-nums text-slate-700 dark:text-slate-300 hidden lg:table-cell text-xs">
                         {formatCompact(coin.total_volume)}
                       </td>
 
                       {/* Market Cap */}
-                      <td className="py-3.5 px-3 text-right font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <td className="py-3.5 px-3 text-right font-mono tabular-nums font-bold text-slate-800 dark:text-slate-200 text-xs">
                         {formatCompact(coin.market_cap)}
                       </td>
 

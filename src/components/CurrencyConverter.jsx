@@ -143,7 +143,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-9 pr-4 py-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white font-mono text-lg font-bold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
+                className="w-full pl-9 pr-4 py-3.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-xl text-slate-900 dark:text-white font-mono tabular-nums text-lg font-bold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
               />
             </div>
           </div>
@@ -234,14 +234,14 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                 Converted Total ({targetCurrency})
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
                   {targetObj.symbol} {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                 </span>
                 <span className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">
                   {targetCurrency}
                 </span>
               </div>
-              <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-mono">
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-mono tabular-nums">
                 {numericAmount.toLocaleString()} {baseCurrency} = {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {targetCurrency}
               </div>
             </div>
