@@ -5,6 +5,16 @@ import { fetchLiveCryptoMarkets } from './services/cryptoService';
 
 import Header from './components/Header';
 import CryptoTickerBar from './components/CryptoTickerBar';
+import HeroSection from './components/HeroSection';
+import MarketDashboard from './components/MarketDashboard';
+import MarketIntelligence from './components/MarketIntelligence';
+import ForexTerminal from './components/ForexTerminal';
+import CryptoHub from './components/CryptoHub';
+import ToolsSuite from './components/ToolsSuite';
+import ResearchSection from './components/ResearchSection';
+import WhyFinPulse from './components/WhyFinPulse';
+import SearchModal from './components/SearchModal';
+
 import CurrencyConverter from './components/CurrencyConverter';
 import CryptoTracker from './components/CryptoTracker';
 import QuickConversionMatrix from './components/QuickConversionMatrix';
@@ -20,13 +30,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import DisclaimerPage from './pages/DisclaimerPage';
 import AdminPage from './pages/AdminPage';
 
-
-import { 
-  ArrowRight, 
-  ShieldCheck, 
-  Zap, 
-  CheckCircle
-} from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
 export default function App() {
   const navigate = useNavigate();
@@ -82,8 +86,11 @@ export default function App() {
     source: 'CoinGecko Live API'
   });
 
-  // Quick crypto conversion modal state (retained exclusively for instant math calculation)
+  // Quick crypto conversion modal state
   const [selectedCryptoForConvert, setSelectedCryptoForConvert] = useState(null);
+
+  // Search modal state
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   // Toast feedback state
   const [toast, setToast] = useState(null);
@@ -92,6 +99,18 @@ export default function App() {
     setToast(message);
     setTimeout(() => setToast(null), 3500);
   };
+
+  // Keyboard shortcut for search (Ctrl+K or Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchModalOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Live Data Fetcher: Calls Open Exchange Rates and CoinGecko concurrently
   const loadLiveData = useCallback(async (isManual = false) => {
@@ -136,7 +155,7 @@ export default function App() {
     setIsRefreshing(false);
 
     if (isManual) {
-      showToast('Live market rates successfully updated from APIs!');
+      showToast('Live market data synced from Open Exchange & CoinGecko!');
     }
   }, []);
 
@@ -146,7 +165,7 @@ export default function App() {
 
     const interval = setInterval(() => {
       loadLiveData(false);
-    }, 45000); // 45 seconds auto-refresh interval
+    }, 45000);
 
     return () => clearInterval(interval);
   }, [loadLiveData]);
@@ -154,14 +173,17 @@ export default function App() {
   // Quick pair select handler
   const handleSelectPair = (base, target) => {
     navigate('/');
-    window.scrollTo({ top: 120, behavior: 'smooth' });
+    setTimeout(() => {
+      const el = document.getElementById('forex-terminal');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
     showToast(`Loaded ${base} / ${target}`);
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#090D16] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-500 selection:text-white relative`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#07090E] text-slate-100' : 'bg-[#F8FAFC] text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-600 selection:text-white relative`}>
       
-      {/* Fintech Atmospheric Radial Mesh Glow */}
+      {/* Subtle Fintech Atmospheric Radial Mesh Glow */}
       <div className="fintech-mesh-glow" aria-hidden="true" />
       
       {/* Toast Notification */}
@@ -178,7 +200,7 @@ export default function App() {
         onSelectCoin={(coin) => setSelectedCryptoForConvert(coin)} 
       />
 
-      {/* 2. Main Header / Navigation with Dark/Light Toggle */}
+      {/* 2. Main Header / Navigation with Dual Ticking Clock */}
       <Header
         isRefreshing={isRefreshing}
         onRefresh={() => loadLiveData(true)}
@@ -187,158 +209,90 @@ export default function App() {
         lastUpdated={forexMeta.lastUpdated || cryptoMeta.lastUpdated}
         theme={theme}
         onToggleTheme={toggleTheme}
+        onOpenSearch={() => setSearchModalOpen(true)}
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+      <main className="flex-1 w-full mx-auto relative z-10">
         
         <Routes>
-          {/* ROUTE 1: CURRENCY CONVERTER (HOME) */}
+          {/* ROUTE 1: BESPOKE INSTITUTIONAL HOMEPAGE */}
           <Route path="/" element={
-            <div className="space-y-8 animate-in fade-in duration-300">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* Main Converter Column */}
-                <div className="lg:col-span-8">
-                  <CurrencyConverter
-                    rates={rates}
-                    lastUpdated={forexMeta.lastUpdated}
-                    source={forexMeta.source}
-                    isLoading={isForexLoading}
-                    error={forexError}
-                    onRetry={() => loadLiveData(true)}
-                  />
-                </div>
-
-                {/* Sidebar with Live Crypto Highlights */}
-                <div className="lg:col-span-4 space-y-6">
-                  <div className="bg-white/80 dark:bg-[#0B0F19]/80 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-5 backdrop-blur-xl shadow-xl transition-all duration-200">
-                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-white/[0.06]">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-                        <span className="p-1 rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20">
-                          <Zap className="w-3.5 h-3.5" />
-                        </span>
-                        <span>Live Crypto Movers</span>
-                      </span>
-                      <button
-                        onClick={() => navigate('/crypto')}
-                        className="text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-500 font-semibold flex items-center gap-1 cursor-pointer transition-colors"
-                      >
-                        <span>View All</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-2">
-                      {cryptoList.length > 0 ? (
-                        cryptoList.slice(0, 4).map((coin) => {
-                          const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
-                          return (
-                            <div
-                              key={coin.id}
-                              onClick={() => setSelectedCryptoForConvert(coin)}
-                              className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 dark:bg-[#070A12]/60 border border-slate-200/80 dark:border-white/[0.05] hover:border-blue-500/40 hover:bg-white dark:hover:bg-[#0E1424] transition-all cursor-pointer group"
-                            >
-                              <div className="flex items-center gap-2.5">
-                                {coin.image ? (
-                                  <img src={coin.image} alt={coin.name} className="w-5 h-5 rounded-full object-cover" />
-                                ) : (
-                                  <span className="text-xs font-bold text-slate-800 dark:text-white uppercase">{coin.symbol}</span>
-                                )}
-                                <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-tight group-hover:text-blue-500 transition-colors">{coin.symbol}</span>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-xs font-mono tabular-nums font-bold text-slate-900 dark:text-white">
-                                  ${coin.current_price < 1 
-                                    ? coin.current_price.toFixed(4) 
-                                    : coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </div>
-                                <div className={`text-[10px] font-mono tabular-nums font-semibold ${isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                                  {isPositive ? '+' : ''}{coin.price_change_percentage_24h?.toFixed(2)}%
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : isCryptoLoading ? (
-                        <div className="py-6 text-center text-xs text-slate-500 font-mono">
-                          Loading live coin prices...
-                        </div>
-                      ) : (
-                        <div className="py-4 text-center text-xs text-slate-500">
-                          {cryptoError || 'No crypto data available.'}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="bg-white/80 dark:bg-[#0B0F19]/80 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-5 text-xs text-slate-600 dark:text-slate-400 space-y-2.5 backdrop-blur-xl shadow-lg">
-                    <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold">
-                      <span className="p-1 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20">
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                      </span>
-                      <span>Real-Time Market APIs</span>
-                    </div>
-                    <p className="text-[11px] leading-relaxed">
-                      All currency rates are sourced directly from <code className="text-blue-600 dark:text-blue-400 bg-slate-100 dark:bg-[#070A12] px-1 py-0.5 rounded border border-slate-200 dark:border-white/[0.06] font-mono">open.er-api.com</code> and crypto quotes from <code className="text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#070A12] px-1 py-0.5 rounded border border-slate-200 dark:border-white/[0.06] font-mono">api.coingecko.com</code>.
-                    </p>
-                    <Link
-                      to="/disclaimer"
-                      className="text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-500 pt-1 block cursor-pointer font-semibold transition-colors"
-                    >
-                      Read Financial Disclaimer →
-                    </Link>
-                  </div>
-                </div>
-
-              </div>
-
-              <QuickConversionMatrix
-                rates={rates}
-                onSelectPair={handleSelectPair}
+            <div className="space-y-0 animate-in fade-in duration-300">
+              
+              {/* Hero Section with Interactive Wave/Depth Canvas Visualizer */}
+              <HeroSection 
+                onExploreMarkets={() => {
+                  const el = document.getElementById('markets');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onViewData={() => {
+                  const el = document.getElementById('markets');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
               />
 
-              <div className="pt-6">
-                <BlogSection />
-              </div>
-            </div>
-          } />
-
-          {/* ROUTE 2: CONVERTER ALIAS */}
-          <Route path="/converter" element={
-            <div className="space-y-8 animate-in fade-in duration-300">
-              <CurrencyConverter
+              {/* Multi-Asset Live Market Dashboard */}
+              <MarketDashboard 
                 rates={rates}
-                lastUpdated={forexMeta.lastUpdated}
+                cryptoList={cryptoList}
+                onSelectAsset={handleSelectPair}
+                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
+              />
+
+              {/* Market Intelligence & Analytical Desk Memo */}
+              <MarketIntelligence />
+
+              {/* Dedicated Forex Terminal & Parity Simulator */}
+              <ForexTerminal 
+                rates={rates}
                 source={forexMeta.source}
-                isLoading={isForexLoading}
-                error={forexError}
-                onRetry={() => loadLiveData(true)}
+                lastUpdated={forexMeta.lastUpdated}
+                onRefresh={() => loadLiveData(true)}
               />
-              <QuickConversionMatrix
-                rates={rates}
-                onSelectPair={handleSelectPair}
-              />
-            </div>
-          } />
 
-          {/* ROUTE 3: LIVE CRYPTO TRACKER */}
-          <Route path="/crypto" element={
-            <div className="space-y-6 animate-in fade-in duration-300">
-              <CryptoTracker
+              {/* Cryptocurrency Intelligence Hub */}
+              <CryptoHub 
                 cryptoList={cryptoList}
                 isLoading={isCryptoLoading}
                 error={cryptoError}
                 onRetry={() => loadLiveData(true)}
                 onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
               />
-              <BlogSection />
+
+              {/* Financial Tools & Pip Risk Suite */}
+              <ToolsSuite 
+                rates={rates}
+                cryptoList={cryptoList}
+              />
+
+              {/* Research & Editorial Grid */}
+              <ResearchSection />
+
+              {/* 4 Architectural Pillars & Closing CTA */}
+              <WhyFinPulse 
+                onExploreMarkets={() => {
+                  const el = document.getElementById('markets');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onLaunchConverter={() => {
+                  const el = document.getElementById('forex-terminal');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+
             </div>
           } />
 
-          {/* ROUTE 4: FOREX MATRIX */}
-          <Route path="/matrix" element={
-            <div className="space-y-6 animate-in fade-in duration-300">
+          {/* ROUTE 2: CONVERTER DEDICATED ALIAS */}
+          <Route path="/converter" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <ForexTerminal 
+                rates={rates}
+                source={forexMeta.source}
+                lastUpdated={forexMeta.lastUpdated}
+                onRefresh={() => loadLiveData(true)}
+              />
               <QuickConversionMatrix
                 rates={rates}
                 onSelectPair={handleSelectPair}
@@ -346,35 +300,85 @@ export default function App() {
             </div>
           } />
 
-          {/* ROUTE 5: BLOG OVERVIEW */}
-          <Route path="/blog" element={
-            <div className="space-y-6 animate-in fade-in duration-300">
-              <BlogSection />
+          {/* ROUTE 3: LIVE CRYPTO TRACKER PAGE */}
+          <Route path="/crypto" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <CryptoHub 
+                cryptoList={cryptoList}
+                isLoading={isCryptoLoading}
+                error={cryptoError}
+                onRetry={() => loadLiveData(true)}
+                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
+              />
+              <ResearchSection />
             </div>
           } />
 
-          {/* ROUTE 6: DEDICATED DYNAMIC ARTICLE PAGE (/blog/:id) */}
+          {/* ROUTE 4: FOREX MATRIX PAGE */}
+          <Route path="/matrix" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <ForexTerminal 
+                rates={rates}
+                source={forexMeta.source}
+                lastUpdated={forexMeta.lastUpdated}
+                onRefresh={() => loadLiveData(true)}
+              />
+              <QuickConversionMatrix
+                rates={rates}
+                onSelectPair={handleSelectPair}
+              />
+            </div>
+          } />
+
+          {/* ROUTE 5: BLOG / RESEARCH OVERVIEW PAGE */}
+          <Route path="/blog" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <ResearchSection />
+            </div>
+          } />
+
+          {/* ROUTE 6: DEDICATED ARTICLE DETAIL PAGE (/blog/:id) */}
           <Route path="/blog/:id" element={
-            <div className="animate-in fade-in duration-300">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
               <ArticleView />
             </div>
           } />
 
-          {/* ROUTE 7: DEDICATED STANDALONE ABOUT US PAGE (/about) */}
-          <Route path="/about" element={<AboutPage />} />
+          {/* ROUTE 7: DEDICATED ABOUT US PAGE (/about) */}
+          <Route path="/about" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <AboutPage />
+            </div>
+          } />
 
-          {/* ROUTE 8: DEDICATED STANDALONE CONTACT US PAGE (/contact) */}
-          <Route path="/contact" element={<ContactPage />} />
+          {/* ROUTE 8: DEDICATED CONTACT US PAGE (/contact) */}
+          <Route path="/contact" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <ContactPage />
+            </div>
+          } />
 
-          {/* ROUTE 9: DEDICATED STANDALONE PRIVACY POLICY PAGE (/privacy-policy) */}
-          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          {/* ROUTE 9: DEDICATED PRIVACY POLICY PAGE (/privacy-policy) */}
+          <Route path="/privacy-policy" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <PrivacyPolicyPage />
+            </div>
+          } />
           <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
 
-          {/* ROUTE 10: DEDICATED STANDALONE DISCLAIMER PAGE (/disclaimer) */}
-          <Route path="/disclaimer" element={<DisclaimerPage />} />
+          {/* ROUTE 10: DEDICATED DISCLAIMER PAGE (/disclaimer) */}
+          <Route path="/disclaimer" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <DisclaimerPage />
+            </div>
+          } />
 
-          {/* ROUTE 11: PASSWORD-PROTECTED ADMIN PORTAL (/admin) */}
-          <Route path="/admin" element={<AdminPage />} />
+          {/* ROUTE 11: STEALTH PASSWORD-PROTECTED ADMIN PORTAL (/admin) */}
+          <Route path="/admin" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <AdminPage />
+            </div>
+          } />
 
           {/* Fallback to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -392,7 +396,14 @@ export default function App() {
         />
       )}
 
-      {/* Footer with Standalone Router Links */}
+      {/* Quick Command Palette Search Modal */}
+      <SearchModal 
+        isOpen={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+        cryptoList={cryptoList}
+      />
+
+      {/* Footer with Standalone Router Links & Risk Disclaimers */}
       <Footer onSelectPair={handleSelectPair} />
 
     </div>

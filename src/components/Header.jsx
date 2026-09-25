@@ -10,9 +10,13 @@ import {
   X, 
   Layers,
   Sun,
-  Moon
+  Moon,
+  Search,
+  Calculator,
+  Compass,
+  Zap,
+  Globe
 } from 'lucide-react';
-
 
 export default function Header({ 
   isRefreshing, 
@@ -20,41 +24,43 @@ export default function Header({
   forexSource, 
   lastUpdated,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  onOpenSearch
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
 
-  // Dynamic ticking live clock in local time (HH:mm:ss)
-  const [liveTime, setLiveTime] = useState(() => {
+  // Dynamic ticking live clock in both Local time and UTC time (HH:mm:ss)
+  const [timeState, setTimeState] = useState(() => {
     const now = new Date();
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    return `${h}:${m}:${s}`;
+    const pad = (n) => String(n).padStart(2, '0');
+    return {
+      local: `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`,
+      utc: `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())} UTC`
+    };
   });
 
   useEffect(() => {
+    const pad = (n) => String(n).padStart(2, '0');
     const timer = setInterval(() => {
       const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      setLiveTime(`${h}:${m}:${s}`);
+      setTimeState({
+        local: `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`,
+        utc: `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())} UTC`
+      });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
 
   const formatUpdatedTime = (raw) => {
-    if (!raw) return 'Live API Connected';
+    if (!raw) return 'Live Feed Active';
     try {
       const d = new Date(raw);
       if (!isNaN(d.getTime())) {
-        const h = String(d.getHours()).padStart(2, '0');
-        const m = String(d.getMinutes()).padStart(2, '0');
-        return `Updated: ${h}:${m}`;
+        const pad = (n) => String(n).padStart(2, '0');
+        return `Updated: ${pad(d.getHours())}:${pad(d.getMinutes())}`;
       }
     } catch (e) {}
     return raw.toLowerCase().startsWith('updated') ? raw : `Updated: ${raw}`;
@@ -62,19 +68,38 @@ export default function Header({
 
   const currentPath = location.pathname;
 
+  const handleNavClick = (item) => {
+    if (item.anchor) {
+      if (currentPath !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const el = document.getElementById(item.anchor);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      } else {
+        const el = document.getElementById(item.anchor);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate(item.path);
+    }
+    setMobileMenuOpen(false);
+  };
+
   const navItems = [
-    { path: '/', label: 'Currency Converter', icon: ArrowLeftRight, match: (p) => p === '/' || p === '/converter' },
-    { path: '/crypto', label: 'Crypto Tracker', icon: Coins, match: (p) => p === '/crypto' },
-    { path: '/matrix', label: 'Forex Matrix', icon: Layers, match: (p) => p === '/matrix' },
-    { path: '/blog', label: 'Market & Blog', icon: BookOpen, match: (p) => p.startsWith('/blog') },
+    { label: 'Markets', path: '/', anchor: 'markets', icon: Compass, match: (p) => p === '/' && !location.hash },
+    { label: 'Crypto', path: '/crypto', anchor: 'crypto-hub', icon: Coins, match: (p) => p === '/crypto' },
+    { label: 'Forex', path: '/matrix', anchor: 'forex-terminal', icon: Globe, match: (p) => p === '/matrix' },
+    { label: 'Research', path: '/blog', anchor: 'research', icon: BookOpen, match: (p) => p.startsWith('/blog') },
+    { label: 'Tools', path: '/', anchor: 'tools', icon: Calculator, match: () => false },
   ];
 
   return (
-    <header className="w-full bg-white/80 dark:bg-[#090D16]/85 border-b border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl sticky top-[33px] z-30 transition-colors duration-200">
+    <header className="w-full bg-[#07090E]/90 border-b border-white/[0.08] backdrop-blur-xl sticky top-[31px] z-30 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo & Brand with Router Link to Home */}
+          {/* Logo & Brand Identity (FinPulse Strictly Preserved) */}
           <Link 
             to="/"
             className="flex items-center gap-3 cursor-pointer select-none group"
@@ -83,46 +108,46 @@ export default function Header({
               <img 
                 src={siteSettings.logoUrl} 
                 alt={siteSettings.websiteName || 'FinPulse'} 
-                className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-md"
+                className="w-9 h-9 rounded-xl object-cover border border-white/10 shadow-md"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
-                <div className="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center group-hover:bg-slate-800/90 transition-colors">
-                  <span className="text-sm font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase">
-                    {siteSettings?.logoText || 'FX'}
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+                <div className="w-full h-full bg-[#0C1017] rounded-[11px] flex items-center justify-center group-hover:bg-[#111622] transition-colors">
+                  <span className="text-xs font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase font-mono">
+                    FP
                   </span>
                 </div>
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-white font-sans">
+                <span className="text-lg font-black tracking-tight text-white font-sans">
                   {siteSettings?.websiteName || 'FinPulse'}
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-500/20 font-semibold tracking-wider">
-                  INSTITUTIONAL
+                <span className="text-[10px] font-mono uppercase bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider">
+                  TERMINAL
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block tracking-tight">
-                {siteSettings?.tagline || 'Real-Time Forex & Crypto Terminal'}
+              <p className="text-[11px] text-slate-400 font-medium hidden sm:block tracking-tight">
+                {siteSettings?.tagline || 'Institutional Market Data & Intelligence'}
               </p>
             </div>
           </Link>
 
 
-          {/* Desktop Navigation with dynamic Router paths */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 dark:bg-white/[0.03] p-1.5 rounded-full border border-slate-200/80 dark:border-white/[0.06] backdrop-blur-md">
+          {/* Desktop Navigation Links (Markets, Crypto, Forex, Research, Tools) */}
+          <nav className="hidden md:flex items-center gap-1 bg-[#0C1017] p-1.5 rounded-full border border-white/[0.06] backdrop-blur-md">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.match(currentPath);
               return (
                 <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                  key={item.label}
+                  onClick={() => handleNavClick(item)}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-medium'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/[0.04]'
+                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-bold'
+                      : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -132,35 +157,43 @@ export default function Header({
             })}
           </nav>
 
-          {/* Right Status, Theme Toggle & Refresh Controls */}
+          {/* Right Status, Search, Clock, Theme Toggle & Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Live Indicator Badge & Dynamic Local Clock */}
-            <div className="hidden lg:flex flex-col items-end text-right">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
-                    FEED ACTIVE
-                  </span>
-                </div>
-                <span className="text-[11px] font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-white/[0.04] px-2 py-0.5 rounded-md border border-slate-200 dark:border-white/[0.08] tabular-nums shadow-sm">
-                  {liveTime}
+            {/* Quick Search Button */}
+            <button
+              onClick={onOpenSearch}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0C1017] hover:bg-[#111622] text-slate-400 hover:text-white border border-white/[0.08] text-xs font-mono transition-all cursor-pointer active:scale-95"
+              title="Search currencies, crypto, and research (Ctrl+K)"
+            >
+              <Search className="w-3.5 h-3.5 text-slate-400" />
+              <span className="hidden lg:inline text-slate-400">Search</span>
+              <kbd className="hidden lg:inline text-[9px] bg-[#07090E] px-1.5 py-0.5 rounded border border-white/[0.08] text-slate-500 font-mono">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Live Ticking Dynamic Clock (Dual Local + UTC) */}
+            <div className="hidden xl:flex flex-col items-end text-right">
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-[11px] font-mono font-bold text-white bg-[#0C1017] px-2 py-0.5 rounded-lg border border-white/[0.08] tabular-nums shadow-sm">
+                  {timeState.local} <span className="text-slate-500 text-[10px]">({timeState.utc})</span>
                 </span>
               </div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono tracking-tight mt-0.5">
+              <span className="text-[10px] text-slate-400 font-mono tracking-tight mt-0.5">
                 {formatUpdatedTime(lastUpdated)}
               </span>
             </div>
 
-            {/* Dark / Light Theme Toggle Button */}
+            {/* Dark / Light Mode Toggle Button */}
             <button
               onClick={onToggleTheme}
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-white/[0.04] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-amber-400 border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all cursor-pointer shadow-sm"
+              className="p-2 rounded-xl bg-[#0C1017] hover:bg-[#111622] text-amber-400 border border-white/[0.08] active:scale-95 transition-all cursor-pointer shadow-sm"
               aria-label="Toggle Dark/Light Mode"
             >
               {theme === 'dark' ? (
@@ -175,16 +208,16 @@ export default function Header({
               onClick={onRefresh}
               disabled={isRefreshing}
               title="Force Refresh Latest Exchange Rates & Crypto Prices"
-              className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 dark:bg-white/[0.04] hover:bg-slate-200 dark:hover:bg-white/[0.08] text-slate-700 dark:text-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 text-xs font-semibold bg-[#0C1017] hover:bg-[#111622] text-slate-200 px-3.5 py-2 rounded-xl border border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-sm"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`} />
-              <span className="hidden sm:inline">Refresh</span>
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-400' : 'text-slate-400'}`} />
+              <span className="hidden sm:inline font-mono">Sync</span>
             </button>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/[0.08] border border-slate-200 dark:border-white/[0.08] cursor-pointer"
+              className="md:hidden p-2 rounded-xl bg-[#0C1017] text-slate-300 hover:bg-[#111622] border border-white/[0.08] cursor-pointer"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -195,21 +228,18 @@ export default function Header({
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-[#090D16]/95 border-b border-slate-200 dark:border-white/[0.08] px-4 pt-2 pb-4 space-y-1 shadow-xl backdrop-blur-xl">
+        <div className="md:hidden bg-[#07090E]/95 border-b border-white/[0.08] px-4 pt-3 pb-5 space-y-1 shadow-2xl backdrop-blur-2xl">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.match(currentPath);
             return (
               <button
-                key={item.path}
-                onClick={() => {
-                  navigate(item.path);
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                key={item.label}
+                onClick={() => handleNavClick(item)}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-blue-600 text-white font-semibold'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
+                    ? 'bg-blue-600 text-white font-bold'
+                    : 'text-slate-300 hover:bg-white/[0.04]'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -217,10 +247,10 @@ export default function Header({
               </button>
             );
           })}
-          
-          <div className="pt-2 mt-2 border-t border-slate-200 dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between px-2">
-            <span>Rates: {forexSource || 'Live API'}</span>
-            <span className="font-mono text-emerald-600 dark:text-emerald-400">● {liveTime} Live</span>
+
+          <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-slate-400 px-2">
+            <span>Clock: {timeState.local}</span>
+            <span className="text-emerald-400">● Live Interbank</span>
           </div>
         </div>
       )}

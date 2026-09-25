@@ -7,7 +7,7 @@ export default function Footer({ onSelectPair }) {
   const { siteSettings } = useApp();
 
   return (
-    <footer className="w-full bg-slate-100/90 dark:bg-[#070A12] border-t border-slate-200 dark:border-white/[0.08] pt-14 pb-10 mt-20 text-slate-600 dark:text-slate-400 text-xs transition-colors duration-200">
+    <footer className="w-full bg-slate-100/90 dark:bg-[#07090E] border-t border-slate-200 dark:border-white/[0.08] pt-14 pb-10 mt-20 text-slate-600 dark:text-slate-400 text-xs transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}

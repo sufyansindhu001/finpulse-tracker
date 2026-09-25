@@ -2,9 +2,10 @@
 
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --color-fintech-dark: #090d16;
-  --color-fintech-surface: #0e1422;
-  --color-fintech-card: #0b0f19;
+  --color-fintech-dark: #07090e;
+  --color-fintech-surface: #0c1017;
+  --color-fintech-card: #0f141f;
+  --color-fintech-border: rgba(255, 255, 255, 0.08);
 }
 
 @variant dark (&:where(.dark, .dark *));
@@ -25,7 +26,7 @@
   }
 
   body {
-    background-color: #090d16;
+    background-color: #07090e;
     color: #f1f5f9;
   }
 
