@@ -185,7 +185,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#07090E] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-600 selection:text-white relative`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#07090E] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-600 selection:text-white relative w-full max-w-full overflow-x-hidden`}>
       
       {/* Subtle Fintech Atmospheric Radial Mesh Glow */}
       <div className="fintech-mesh-glow" aria-hidden="true" />
@@ -217,7 +217,7 @@ export default function App() {
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}
-      <main className="flex-1 w-full mx-auto relative z-10">
+      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden">
         <Suspense fallback={
           <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 animate-pulse">
             <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>

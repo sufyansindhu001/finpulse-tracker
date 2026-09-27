@@ -64,42 +64,43 @@ export default function Header({
   ];
 
   return (
-    <header className="w-full bg-white/95 dark:bg-[#07090E]/95 border-b border-slate-200 dark:border-white/[0.08] backdrop-blur-xl sticky top-[31px] z-30 transition-colors duration-200 shadow-xs dark:shadow-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="w-full max-w-full overflow-hidden bg-white/95 dark:bg-[#07090E]/95 border-b border-slate-200 dark:border-white/[0.08] backdrop-blur-xl sticky top-[31px] z-30 transition-colors duration-200 shadow-xs dark:shadow-none">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 w-full max-w-full">
           
           {/* Logo & Brand Identity (FinPulse Strictly Preserved) */}
           <Link 
             to="/"
-            className="flex items-center gap-3 cursor-pointer select-none group"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group shrink-0 min-w-0"
           >
             {siteSettings?.logoUrl ? (
               <img 
                 src={siteSettings.logoUrl} 
                 alt={siteSettings.websiteName || 'FinPulse'} 
-                className="w-9 h-9 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-sm"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-sm shrink-0"
                 width="36"
                 height="36"
               />
             ) : (
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow shrink-0">
                 <div className="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center group-hover:bg-slate-800 transition-colors">
-                  <span className="text-xs font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase font-mono">
+                  <span className="text-[11px] sm:text-xs font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase font-mono">
                     FP
                   </span>
                 </div>
               </div>
             )}
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans">
+                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans truncate">
                   {siteSettings?.websiteName || 'FinPulse'}
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider">
+                {/* TERMINAL Pill Badge: Hidden on mobile (<640px sm:hidden), kept inside hamburger drawer */}
+                <span className="hidden sm:inline-flex text-[10px] font-mono uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider shrink-0">
                   TERMINAL
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block tracking-tight">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block tracking-tight truncate">
                 {siteSettings?.tagline || 'Institutional Market Data & Intelligence'}
               </p>
             </div>
@@ -128,22 +129,24 @@ export default function Header({
           </nav>
 
           {/* Right Status, Search, Clock, Theme Toggle & Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Visible top row on mobile strictly fits: [Search Icon, Theme Toggle, Hamburger Menu Button] */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             
             {/* Quick Search Button */}
             <button
               onClick={onOpenSearch}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/[0.08] text-xs font-mono transition-all cursor-pointer active:scale-95 shadow-xs"
+              className="flex items-center justify-center p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/[0.08] text-xs font-mono transition-all cursor-pointer active:scale-95 shadow-xs"
               title="Search currencies, crypto, and research (Ctrl+K)"
+              aria-label="Search"
             >
-              <Search className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+              <Search className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               <span className="hidden lg:inline text-slate-600 dark:text-slate-400">Search</span>
               <kbd className="hidden lg:inline text-[9px] bg-white dark:bg-[#07090E] px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/[0.08] text-slate-500 font-mono">
                 ⌘K
               </kbd>
             </button>
 
-            {/* Clean Live Ticking Clock & Feed Indicator */}
+            {/* Clean Live Ticking Clock & Feed Indicator (Desktop only) */}
             <div className="hidden lg:flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#0C1017] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] tabular-nums shadow-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="text-slate-800 dark:text-slate-200 font-semibold">{currentTime} UTC</span>
@@ -165,21 +168,21 @@ export default function Header({
               )}
             </button>
 
-            {/* Refresh Rates Button */}
+            {/* Refresh Rates Button: Hidden on mobile (<640px sm:hidden), kept in hamburger drawer */}
             <button
               onClick={onRefresh}
               disabled={isRefreshing}
               title="Force Refresh Latest Exchange Rates & Crypto Prices"
-              className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-xs"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-xs"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-500' : 'text-slate-500 dark:text-slate-400'}`} />
-              <span className="hidden sm:inline font-mono">Sync</span>
+              <span className="font-mono">Sync</span>
             </button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button: Pinned inside viewport with right padding pr-3 or pr-4 */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-[#0C1017] dark:text-slate-300 dark:hover:bg-[#111622] border border-slate-200 dark:border-white/[0.08] cursor-pointer"
+              className="md:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-[#0C1017] dark:text-slate-300 dark:hover:bg-[#111622] border border-slate-200 dark:border-white/[0.08] cursor-pointer shrink-0"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -190,7 +193,29 @@ export default function Header({
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-[#07090E]/95 border-b border-slate-200 dark:border-white/[0.08] px-4 pt-3 pb-5 space-y-1 shadow-2xl backdrop-blur-2xl">
+        <div className="md:hidden bg-white/95 dark:bg-[#07090E]/95 border-b border-slate-200 dark:border-white/[0.08] px-4 pt-3 pb-5 space-y-2 shadow-2xl backdrop-blur-2xl">
+          
+          {/* Mobile Drawer Top Utility Bar with TERMINAL Pill & Refresh Sync Button */}
+          <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-200 dark:border-white/[0.06] px-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-sans">System Status</span>
+              <span className="text-[10px] font-mono uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider">
+                TERMINAL
+              </span>
+            </div>
+            
+            <button
+              onClick={() => {
+                onRefresh();
+              }}
+              disabled={isRefreshing}
+              className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-xs"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-500' : 'text-slate-500 dark:text-slate-400'}`} />
+              <span className="font-mono text-xs">Sync Rates</span>
+            </button>
+          </div>
+
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.match(currentPath);

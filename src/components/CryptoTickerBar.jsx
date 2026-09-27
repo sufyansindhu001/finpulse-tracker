@@ -15,7 +15,7 @@ export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
   const tickerItems = [...cryptoList, ...cryptoList];
 
   return (
-    <div className="w-full bg-[#070A12]/95 border-b border-white/[0.06] text-xs py-1.5 overflow-hidden select-none backdrop-blur-xl sticky top-0 z-40">
+    <div className="w-full max-w-full bg-[#070A12]/95 border-b border-white/[0.06] text-xs py-1.5 overflow-hidden select-none backdrop-blur-xl sticky top-0 z-40">
       <div className="animate-marquee flex items-center gap-7 whitespace-nowrap">
         {tickerItems.map((coin, index) => {
           const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
