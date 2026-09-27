@@ -14,6 +14,30 @@ export default function CurrencyFlag({
   const [hasError, setHasError] = useState(false);
   const flagUrl = getCurrencyFlagUrl(code);
 
+  const codeUpper = (code || '').toUpperCase();
+
+  if (codeUpper === 'XAU') {
+    return (
+      <span 
+        className={`${className} rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 text-slate-950 text-[9px] font-black flex items-center justify-center shrink-0 border border-amber-300 shadow-xs select-none`}
+        title="Gold Spot (XAU)"
+      >
+        AU
+      </span>
+    );
+  }
+
+  if (codeUpper === 'XAG') {
+    return (
+      <span 
+        className={`${className} rounded-full bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 text-slate-950 text-[9px] font-black flex items-center justify-center shrink-0 border border-slate-300 shadow-xs select-none`}
+        title="Silver Spot (XAG)"
+      >
+        AG
+      </span>
+    );
+  }
+
   if (!flagUrl || hasError) {
     return (
       <span 

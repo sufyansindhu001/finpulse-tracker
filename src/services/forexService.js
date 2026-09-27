@@ -29,7 +29,9 @@ export const DEFAULT_RATES = {
   BHD: 0.377,
   NGN: 1650.0,
   KRW: 1390.0,
-  VND: 25400.0
+  VND: 25400.0,
+  XAU: 1 / 4321.20, // 1 Troy Oz Gold in USD ($4,321.20)
+  XAG: 1 / 64.80   // 1 Troy Oz Silver in USD ($64.80)
 };
 
 const OPEN_EXCHANGE_URL = 'https://open.er-api.com/v6/latest/USD';
@@ -37,32 +39,36 @@ const OPEN_EXCHANGE_URL = 'https://open.er-api.com/v6/latest/USD';
 /**
  * Robust live exchange rates fetcher:
  * 1. Uses https://open.er-api.com/v6/latest/USD directly with standard fetch()
- * 2. Proper async/await and try/catch error handling
+ * 2. Fetches live precious metals (XAU / XAG)
  * 3. Gracefully merges data.rates with reliable DEFAULT_RATES (PKR = 278.09)
- *    so the calculator and Forex Corridors NEVER crash to Rs 0.00 or break
  */
 export async function fetchLiveExchangeRates() {
   try {
-    const res = await fetch(OPEN_EXCHANGE_URL);
-    if (!res.ok) {
-      throw new Error(`Exchange rate API responded with status ${res.status}`);
+    const [forexRes, metalsRes] = await Promise.allSettled([
+      fetch(OPEN_EXCHANGE_URL).then(r => r.ok ? r.json() : null),
+      fetch('/api/metals').then(r => r.ok ? r.json() : null)
+    ]);
+
+    const data = forexRes.status === 'fulfilled' && forexRes.value ? forexRes.value : null;
+    const metals = metalsRes.status === 'fulfilled' && metalsRes.value ? metalsRes.value : null;
+
+    const mergedRates = {
+      ...DEFAULT_RATES,
+      ...(data?.rates || {})
+    };
+
+    if (metals?.rates) {
+      if (metals.rates.XAU) mergedRates.XAU = metals.rates.XAU;
+      if (metals.rates.XAG) mergedRates.XAG = metals.rates.XAG;
     }
 
-    const data = await res.json();
-    if (data && data.rates && typeof data.rates === 'object') {
-      return {
-        success: true,
-        rates: {
-          ...DEFAULT_RATES,
-          ...data.rates // Overwrite with live open.er-api rates
-        },
-        base: data.base_code || 'USD',
-        lastUpdated: data.time_last_update_utc || new Date().toUTCString(),
-        source: 'Interbank FX Feeds (Live)'
-      };
-    } else {
-      throw new Error('data.rates not found in response');
-    }
+    return {
+      success: true,
+      rates: mergedRates,
+      base: data?.base_code || 'USD',
+      lastUpdated: data?.time_last_update_utc || new Date().toUTCString(),
+      source: 'Interbank FX & Bullion Feeds (Live)'
+    };
   } catch (err) {
     console.warn('Live forex fetch warning (using default rates baseline):', err.message);
     return {

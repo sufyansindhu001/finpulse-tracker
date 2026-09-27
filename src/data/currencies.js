@@ -34,6 +34,8 @@ export const CURRENCIES = [
   { code: 'KRW', name: 'South Korean Won', symbol: '₩', popular: true },
   { code: 'VND', name: 'Vietnamese Dong', symbol: '₫', popular: true },
   { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$', popular: true },
+  { code: 'XAU', name: 'Gold Spot (Troy Ounce)', symbol: 'oz Au', popular: true },
+  { code: 'XAG', name: 'Silver Spot (Troy Ounce)', symbol: 'oz Ag', popular: true },
 
   // G20, European, Asian, American & African Sovereign Currencies
   { code: 'AFN', name: 'Afghan Afghani', symbol: '؋', popular: false },
