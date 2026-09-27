@@ -260,7 +260,7 @@ export default function Footer({ onSelectPair }) {
         {/* Bottom Bar with Standalone Router Links */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600 dark:text-slate-400 font-medium">
           <div>
-            © {new Date().getFullYear()} {siteSettings?.websiteName || 'FinPulse'} Media & Data. All rights reserved. GDPR & Privacy Compliant.
+            © {new Date().getFullYear()} {siteSettings?.websiteName || 'FGC Spot'} Media & Data. All rights reserved. GDPR & Privacy Compliant.
           </div>
           <div className="flex items-center gap-4">
             <Link to="/privacy-policy" className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">Privacy & Cookies</Link>
@@ -278,7 +278,7 @@ export default function Footer({ onSelectPair }) {
         isOpen={!!legalModalTab}
         onClose={() => setLegalModalTab(null)}
         activeTab={legalModalTab || 'privacy'}
-        siteName={siteSettings?.websiteName || 'FinPulse'}
+        siteName={siteSettings?.websiteName || 'FGC Spot'}
       />
     </footer>
   );
