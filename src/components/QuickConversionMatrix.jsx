@@ -10,7 +10,7 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
 
   return (
     <div className="w-full">
-      <div className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl p-6 sm:p-9 backdrop-blur-2xl shadow-2xl transition-colors duration-200">
+      <div className="bg-white dark:bg-[#0B0F19]/90 border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 sm:p-9 backdrop-blur-2xl shadow-sm dark:shadow-2xl transition-colors duration-200">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-100 dark:border-white/[0.06] gap-3">
           <div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">

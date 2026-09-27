@@ -17,7 +17,7 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
       icon: Zap,
       color: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
       title: 'Sub-Second API Ingestion',
-      description: 'Continuous real-time polling from top international currency banks and CoinGecko liquidity engines, ensuring you always trade on freshly verified quotes.'
+      description: 'Continuous real-time polling from tier-1 international currency banks and multi-exchange liquidity engines, ensuring you always trade on freshly verified quotes.'
     },
     {
       icon: ShieldCheck,

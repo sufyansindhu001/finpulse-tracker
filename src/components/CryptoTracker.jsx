@@ -111,7 +111,7 @@ export default function CryptoTracker({
             )}
           </div>
           <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-mono">
-            Live CoinGecko aggregation
+            Multi-Exchange aggregation
           </div>
         </div>
 
@@ -192,7 +192,7 @@ export default function CryptoTracker({
               </h3>
               <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                CoinGecko Live API
+                Multi-Exchange Feeds
               </span>
             </div>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Real-time USD prices, 24h percentage changes, and market caps for top digital assets.</p>
@@ -263,7 +263,7 @@ export default function CryptoTracker({
         {isLoading && !cryptoList.length && (
           <div className="py-20 text-center">
             <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-3" />
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">Fetching latest prices from CoinGecko public API...</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">Fetching latest prices from multi-exchange market feeds...</p>
           </div>
         )}
 

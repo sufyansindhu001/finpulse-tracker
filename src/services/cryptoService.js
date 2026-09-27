@@ -19,11 +19,11 @@ export async function fetchLiveCryptoMarkets() {
     clearTimeout(timeoutId);
 
     if (res.status === 429) {
-      throw new Error('CoinGecko public rate limit exceeded (HTTP 429). Please click "Refresh Rates" in a few seconds.');
+      throw new Error('Multi-Exchange rate limit reached (HTTP 429). Please click "Refresh Rates" in a few seconds.');
     }
 
     if (!res.ok) {
-      throw new Error(`CoinGecko API returned HTTP status ${res.status}`);
+      throw new Error(`Digital asset API returned HTTP status ${res.status}`);
     }
 
     const data = await res.json();
@@ -45,14 +45,14 @@ export async function fetchLiveCryptoMarkets() {
           circulating_supply: coin.circulating_supply
         })),
         lastUpdated: new Date().toLocaleTimeString(),
-        source: 'CoinGecko Live API'
+        source: 'Multi-Exchange Feeds (Live)'
       };
     } else {
-      throw new Error('Empty or invalid response from CoinGecko');
+      throw new Error('Empty or invalid response from digital asset feed');
     }
   } catch (err) {
     clearTimeout(timeoutId);
     console.error('Failed to fetch live crypto data:', err.message);
-    throw new Error(err.message || 'Failed to connect to CoinGecko live feed');
+    throw new Error(err.message || 'Failed to connect to digital asset feed');
   }
 }

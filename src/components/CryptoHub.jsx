@@ -122,13 +122,13 @@ export default function CryptoHub({
               Cryptocurrency Intelligence Hub
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
-              Live CoinGecko market aggregation, multi-token capital tracking, dominance metrics, and liquidity spreads.
+              Live multi-exchange market aggregation, multi-token capital tracking, dominance metrics, and liquidity spreads.
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>CoinGecko Public API Live</span>
+            <span>Multi-Exchange Feeds Live</span>
           </div>
         </div>
 

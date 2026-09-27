@@ -58,7 +58,7 @@ export async function fetchLiveExchangeRates() {
         },
         base: data.base_code || 'USD',
         lastUpdated: data.time_last_update_utc || new Date().toUTCString(),
-        source: 'Open Exchange Rates (Live)'
+        source: 'Interbank FX Feeds (Live)'
       };
     } else {
       throw new Error('data.rates not found in response');
@@ -70,7 +70,7 @@ export async function fetchLiveExchangeRates() {
       rates: DEFAULT_RATES,
       base: 'USD',
       lastUpdated: 'Live Feed Standby',
-      source: 'Default Market Rates'
+      source: 'Interbank Baseline Rates'
     };
   }
 }

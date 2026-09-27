@@ -213,7 +213,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
             </span>
           </h1>
 
-          <p className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
             Real-time market data, financial insights, research and powerful tools designed to help you understand global markets.
           </p>
 
@@ -303,8 +303,8 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
                 <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-bold tabular-nums mt-0.5 truncate">160+ Currencies</div>
               </div>
               <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">CoinGecko Feed</div>
-                <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-bold tabular-nums mt-0.5 truncate">20 Top Cryptos</div>
+                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Digital Asset Feed</div>
+                <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-bold tabular-nums mt-0.5 truncate">20 Tier-1 Assets</div>
               </div>
               <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
                 <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Benchmark USD/PKR</div>

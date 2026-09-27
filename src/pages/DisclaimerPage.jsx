@@ -66,7 +66,7 @@ export default function DisclaimerPage() {
             2. Indicative Foreign Exchange Rates vs Retail Banking Spreads
           </h2>
           <p>
-            The currency exchange rates displayed across the FinPulse Live Currency Calculator, Popular Forex Corridors, and USD Benchmark Matrix represent indicative <strong>mid-market interbank quotes</strong> derived from global central bank repositories and the Open Exchange Rates API.
+            The currency exchange rates displayed across the FinPulse Live Currency Calculator, Popular Forex Corridors, and USD Benchmark Matrix represent indicative <strong>mid-market interbank quotes</strong> derived from global central bank repositories and institutional interbank FX networks.
           </p>
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
             <p>
@@ -90,7 +90,7 @@ export default function DisclaimerPage() {
             4. Third-Party Data Accuracy & Disclaimers
           </h2>
           <p>
-            FinPulse aggregates market data from third-party public APIs including Open Exchange Rates (<code className="text-blue-600 dark:text-blue-400 font-mono">open.er-api.com</code>) and CoinGecko. While we endeavor to ensure feed integrity, FinPulse makes no warranties, express or implied, regarding the accuracy, completeness, or timeliness of any market quote.
+            FinPulse aggregates market data from institutional data networks including Interbank Forex feeds and global multi-exchange cryptocurrency feeds. While we endeavor to ensure feed integrity, FinPulse makes no warranties, express or implied, regarding the accuracy, completeness, or timeliness of any market quote.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4 border-b border-slate-100 dark:border-slate-800 pb-2">

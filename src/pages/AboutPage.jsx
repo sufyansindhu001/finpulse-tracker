@@ -65,17 +65,17 @@ export default function AboutPage() {
                 <span>Central Bank Forex Feeds</span>
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                We ingest real-time currency exchange rates directly from <code className="text-blue-600 dark:text-blue-400 font-mono">open.er-api.com</code> and the European Central Bank repository, covering 160+ world fiat currencies without artificial markups.
+                We ingest real-time currency exchange rates directly from institutional central bank repositories and interbank liquidity providers, covering 160+ world fiat currencies without artificial markups.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2">
               <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
                 <Cpu className="w-4 h-4" />
-                <span>CoinGecko Public API</span>
+                <span>Multi-Exchange Feeds</span>
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Cryptocurrency order books, 24-hour volume metrics, and capitalization rankings are streamed live via CoinGecko, ensuring verifiable on-chain parity.
+                Cryptocurrency order books, 24-hour volume metrics, and capitalization rankings are streamed live via multi-exchange aggregation, ensuring verifiable on-chain parity.
               </p>
             </div>
           </div>

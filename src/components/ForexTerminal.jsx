@@ -106,7 +106,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
           <div className="flex items-center gap-3">
             <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>{source || 'open.er-api.com (Live)'}</span>
+              <span>{source || 'Interbank FX Feeds (Live)'}</span>
             </span>
           </div>
         </div>

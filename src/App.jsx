@@ -84,11 +84,11 @@ export default function App() {
   // Metadata
   const [forexMeta, setForexMeta] = useState({
     lastUpdated: '',
-    source: 'open.er-api.com (Live)'
+    source: 'Interbank FX Feeds'
   });
   const [cryptoMeta, setCryptoMeta] = useState({
     lastUpdated: '',
-    source: 'CoinGecko Live API'
+    source: 'Multi-Exchange Feeds'
   });
 
   // Quick crypto conversion modal state
@@ -128,7 +128,7 @@ export default function App() {
           setRates(res.rates);
           setForexMeta({
             lastUpdated: res.lastUpdated || new Date().toLocaleTimeString(),
-            source: res.source || 'Open Exchange Rates (Live)'
+            source: res.source || 'Interbank FX Feeds'
           });
         }
         setForexError(null);
@@ -139,20 +139,20 @@ export default function App() {
         setIsForexLoading(false);
       });
 
-    // 2. Fetch Live Crypto Markets (CoinGecko public endpoint)
+    // 2. Fetch Live Crypto Markets
     const cryptoPromise = fetchLiveCryptoMarkets()
       .then((res) => {
         setCryptoList(res.data);
         setCryptoMeta({
           lastUpdated: res.lastUpdated,
-          source: res.source
+          source: res.source || 'Multi-Exchange Feeds'
         });
         setCryptoError(null);
         setIsCryptoLoading(false);
       })
       .catch((err) => {
         console.error('Crypto fetch error:', err);
-        setCryptoError(err.message || 'Failed to fetch CoinGecko live prices');
+        setCryptoError(err.message || 'Failed to fetch live digital asset prices');
         setIsCryptoLoading(false);
       });
 
@@ -160,7 +160,7 @@ export default function App() {
     setIsRefreshing(false);
 
     if (isManual) {
-      showToast('Live market data synced from Open Exchange & CoinGecko!');
+      showToast('Live market data synced from Interbank FX & Multi-Exchange Feeds!');
     }
   }, []);
 

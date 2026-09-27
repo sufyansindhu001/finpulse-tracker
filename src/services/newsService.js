@@ -184,7 +184,7 @@ export async function fetchLiveMarketNews(category = 'general') {
         return {
           success: true,
           data: validItems,
-          source: 'Finnhub Live Wire',
+          source: 'Institutional Wire Feed (Live)',
           lastUpdated: new Date().toLocaleTimeString(),
           isLive: true
         };

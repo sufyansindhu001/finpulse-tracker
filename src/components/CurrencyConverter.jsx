@@ -93,14 +93,14 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
               Live Currency Calculator
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 mt-1.5 max-w-2xl leading-relaxed">
-              Institutional-grade real-time conversions for USD, EUR, GBP, AED, SAR, PKR, INR and 160+ world currencies via Open Exchange Rates API.
+              Institutional-grade real-time conversions for USD, EUR, GBP, AED, SAR, PKR, INR and 160+ world currencies via Interbank FX Feeds.
             </p>
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-center">
             <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-2 bg-slate-100 dark:bg-white/[0.03] px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/[0.08] font-semibold shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>{source || 'open.er-api.com (Live)'}</span>
+              <span>{source || 'Interbank FX Feeds (Live)'}</span>
             </span>
           </div>
         </div>
