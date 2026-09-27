@@ -1,14 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
+import { recordConversion } from '../utils/telemetry';
 import { 
   ArrowLeftRight, 
   Copy, 
   Check, 
   TrendingUp, 
-  Sparkles,
-  Loader2,
-  RefreshCw
+  Sparkles, 
+  Loader2, 
+  RefreshCw 
 } from 'lucide-react';
 
 export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, source, isLoading, error, onRetry }) {
@@ -16,6 +17,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
   const [baseCurrency, setBaseCurrency] = useState('USD');
   const [targetCurrency, setTargetCurrency] = useState('PKR');
   const [copied, setCopied] = useState(false);
+  const firstRender = useRef(true);
 
   // Quick amount buttons
   const amountPresets = [10, 50, 100, 250, 500, 1000, 5000];
@@ -35,6 +37,23 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
   const convertedValue = useMemo(() => {
     return convertCurrency(numericAmount, baseCurrency, targetCurrency, activeRates);
   }, [numericAmount, baseCurrency, targetCurrency, activeRates]);
+
+  // Debounced telemetry logging for user conversion actions
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    if (numericAmount <= 0) return;
+    const timer = setTimeout(() => {
+      try {
+        recordConversion(baseCurrency, targetCurrency, numericAmount, convertedValue);
+      } catch (e) {
+        console.warn('Telemetry conversion log error:', e);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [numericAmount, baseCurrency, targetCurrency, convertedValue]);
 
   const directRate = useMemo(() => {
     return getExchangeRate(baseCurrency, targetCurrency, activeRates);

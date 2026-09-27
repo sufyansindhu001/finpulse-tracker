@@ -14,18 +14,27 @@ import {
   BookOpen 
 } from 'lucide-react';
 
+import { recordResearchRead } from '../utils/telemetry';
+
 export default function ArticleView() {
   const { id } = useParams();
   const { articles = [] } = useApp();
   const safeArticles = Array.isArray(articles) ? articles : [];
 
-  // Scroll to top on navigation to this article
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
-
   // Find article by id or slug
   const article = safeArticles.find(p => p && (p.id === id || p.slug === id)) || safeArticles[0] || null;
+
+  // Scroll to top on navigation to this article & record telemetry read
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (article?.title) {
+      try {
+        recordResearchRead(article.title);
+      } catch (e) {
+        console.warn('Telemetry research read error:', e);
+      }
+    }
+  }, [id, article?.title]);
 
   const relatedArticles = safeArticles.filter(p => p && p.id !== article?.id).slice(0, 3);
 

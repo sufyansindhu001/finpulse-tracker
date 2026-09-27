@@ -30,14 +30,20 @@ const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 import { CheckCircle } from 'lucide-react';
+import { recordPageView } from './utils/telemetry';
 
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Scroll to top on every page navigation
+  // Scroll to top and record telemetry page view on every navigation
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      recordPageView(location.pathname);
+    } catch (e) {
+      console.warn('Telemetry error:', e);
+    }
   }, [location.pathname]);
 
   // Theme state: initialized from localStorage (defaults to 'dark')

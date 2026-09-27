@@ -10,6 +10,8 @@ import {
   ChevronRight 
 } from 'lucide-react';
 
+import { recordInquiry } from '../utils/telemetry';
+
 export default function ContactPage() {
   const { siteSettings } = useApp();
   const [submitted, setSubmitted] = useState(false);
@@ -27,6 +29,16 @@ export default function ContactPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    try {
+      recordInquiry({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      });
+    } catch (err) {
+      console.warn('Error recording inquiry telemetry:', err);
+    }
     setSubmitted(true);
     // Reset form after short delay
     setTimeout(() => {

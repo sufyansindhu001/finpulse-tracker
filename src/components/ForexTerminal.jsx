@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
+import { recordConversion } from '../utils/telemetry';
 import { 
   ArrowLeftRight, 
   Copy, 
@@ -20,6 +21,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
   const [baseCurrency, setBaseCurrency] = useState(() => searchParams.get('from')?.toUpperCase() || 'USD');
   const [targetCurrency, setTargetCurrency] = useState(() => searchParams.get('to')?.toUpperCase() || 'PKR');
   const [copied, setCopied] = useState(false);
+  const firstRender = useRef(true);
 
   useEffect(() => {
     const f = searchParams.get('from');
@@ -50,6 +52,23 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
   const convertedValue = useMemo(() => {
     return convertCurrency(numericAmount, baseCurrency, targetCurrency, activeRates);
   }, [numericAmount, baseCurrency, targetCurrency, activeRates]);
+
+  // Debounced conversion telemetry logging
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    if (numericAmount <= 0) return;
+    const timer = setTimeout(() => {
+      try {
+        recordConversion(baseCurrency, targetCurrency, numericAmount, convertedValue);
+      } catch (e) {
+        console.warn('Telemetry conversion log error:', e);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [numericAmount, baseCurrency, targetCurrency, convertedValue]);
 
   const directRate = useMemo(() => {
     return getExchangeRate(baseCurrency, targetCurrency, activeRates);
