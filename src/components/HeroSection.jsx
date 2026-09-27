@@ -12,30 +12,39 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
     let step = 0;
+    let width = 0;
+    let height = 0;
 
     const resize = () => {
+      if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      width = rect.width;
+      height = rect.height;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     resize();
+    const resizeObserver = new ResizeObserver(() => resize());
+    resizeObserver.observe(canvas);
     window.addEventListener('resize', resize);
 
     const render = () => {
       step += 0.015;
-      const rect = canvas.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height;
+      if (width === 0 || height === 0) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
 
       ctx.clearRect(0, 0, width, height);
 
       // Draw subtle grid lines
       const isDark = document.documentElement.classList.contains('dark');
-      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(15, 23, 42, 0.05)';
+      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(15, 23, 42, 0.04)';
       ctx.lineWidth = 1;
-      const gridSpacing = 40;
+      const gridSpacing = 36;
       for (let x = 0; x < width; x += gridSpacing) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -49,31 +58,31 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
         ctx.stroke();
       }
 
-      // Financial waves (Bid Depth wave in cyan/blue, Ask Depth wave in emerald)
+      // Financial waves (Bid Depth in blue, Ask Depth in emerald, Secondary in indigo)
       const waves = [
         {
-          color: 'rgba(59, 130, 246, 0.35)', // Blue
-          fillGradient: ['rgba(59, 130, 246, 0.15)', 'rgba(59, 130, 246, 0.0)'],
-          amplitude: 38,
-          frequency: 0.007,
+          color: 'rgba(59, 130, 246, 0.4)', // Blue
+          fillGradient: ['rgba(59, 130, 246, 0.12)', 'rgba(59, 130, 246, 0.0)'],
+          amplitude: 24,
+          frequency: 0.008,
           speed: step,
-          yOffset: height * 0.55
+          yOffset: height * 0.52
         },
         {
-          color: 'rgba(16, 185, 129, 0.4)', // Emerald
-          fillGradient: ['rgba(16, 185, 129, 0.12)', 'rgba(16, 185, 129, 0.0)'],
-          amplitude: 28,
-          frequency: 0.011,
-          speed: step * 1.3 + 1,
-          yOffset: height * 0.62
+          color: 'rgba(16, 185, 129, 0.45)', // Emerald
+          fillGradient: ['rgba(16, 185, 129, 0.1)', 'rgba(16, 185, 129, 0.0)'],
+          amplitude: 18,
+          frequency: 0.012,
+          speed: step * 1.2 + 1,
+          yOffset: height * 0.58
         },
         {
-          color: 'rgba(129, 140, 248, 0.25)', // Indigo
-          fillGradient: ['rgba(129, 140, 248, 0.08)', 'rgba(129, 140, 248, 0.0)'],
-          amplitude: 20,
-          frequency: 0.014,
+          color: 'rgba(129, 140, 248, 0.28)', // Indigo
+          fillGradient: ['rgba(129, 140, 248, 0.06)', 'rgba(129, 140, 248, 0.0)'],
+          amplitude: 14,
+          frequency: 0.015,
           speed: step * 0.8 + 2,
-          yOffset: height * 0.68
+          yOffset: height * 0.64
         }
       ];
 
@@ -82,31 +91,26 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
         ctx.moveTo(0, height);
 
         for (let x = 0; x <= width; x += 4) {
-          // Dynamic mouse elevation effect
           let mouseInfluence = 0;
           if (mousePos.active) {
             const dist = Math.abs(x - mousePos.x);
-            if (dist < 150) {
-              mouseInfluence = Math.cos((dist / 150) * (Math.PI / 2)) * -25;
+            if (dist < 120) {
+              mouseInfluence = Math.cos((dist / 120) * (Math.PI / 2)) * -20;
             }
           }
 
           const y = wave.yOffset + 
             Math.sin(x * wave.frequency + wave.speed) * wave.amplitude +
-            Math.cos(x * 0.003 + wave.speed * 0.6) * 12 +
+            Math.cos(x * 0.003 + wave.speed * 0.6) * 8 +
             mouseInfluence;
 
-          if (x === 0) {
-            ctx.lineTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
+          if (x === 0) ctx.lineTo(x, y);
+          else ctx.lineTo(x, y);
         }
 
         ctx.lineTo(width, height);
         ctx.closePath();
 
-        // Fill wave gradient
         const grad = ctx.createLinearGradient(0, wave.yOffset - wave.amplitude, 0, height);
         grad.addColorStop(0, wave.fillGradient[0]);
         grad.addColorStop(1, wave.fillGradient[1]);
@@ -119,13 +123,13 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
           let mouseInfluence = 0;
           if (mousePos.active) {
             const dist = Math.abs(x - mousePos.x);
-            if (dist < 150) {
-              mouseInfluence = Math.cos((dist / 150) * (Math.PI / 2)) * -25;
+            if (dist < 120) {
+              mouseInfluence = Math.cos((dist / 120) * (Math.PI / 2)) * -20;
             }
           }
           const y = wave.yOffset + 
             Math.sin(x * wave.frequency + wave.speed) * wave.amplitude +
-            Math.cos(x * 0.003 + wave.speed * 0.6) * 12 +
+            Math.cos(x * 0.003 + wave.speed * 0.6) * 8 +
             mouseInfluence;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
@@ -135,40 +139,23 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
         ctx.stroke();
       });
 
-      // Floating market liquidity price points
-      const points = [
-        { x: width * 0.22, yRatio: 0.52, label: 'BTC/USD +2.4%', color: '#10B981' },
-        { x: width * 0.55, yRatio: 0.44, label: 'USD/PKR 278.09', color: '#3B82F6' },
-        { x: width * 0.82, yRatio: 0.58, label: 'EUR/USD 1.084', color: '#818CF8' }
+      // Subtle luminous nodes riding the waves
+      const nodes = [
+        { xRatio: 0.22, yRatio: 0.52, color: '#10B981' },
+        { xRatio: 0.52, yRatio: 0.44, color: '#3B82F6' },
+        { xRatio: 0.82, yRatio: 0.58, color: '#818CF8' }
       ];
 
-      points.forEach((pt) => {
-        const py = height * pt.yRatio + Math.sin(step * 1.5 + pt.x) * 6;
-        
-        // Dot
+      nodes.forEach((node) => {
+        const nx = width * node.xRatio;
+        const ny = height * node.yRatio + Math.sin(step * 1.5 + nx) * 5;
         ctx.beginPath();
-        ctx.arc(pt.x, py, 4, 0, Math.PI * 2);
-        ctx.fillStyle = pt.color;
-        ctx.shadowColor = pt.color;
-        ctx.shadowBlur = 10;
+        ctx.arc(nx, ny, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.shadowColor = node.color;
+        ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
-
-        // Label pill
-        ctx.fillStyle = isDark ? 'rgba(7, 9, 14, 0.85)' : 'rgba(255, 255, 255, 0.95)';
-        ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(203, 213, 225, 0.9)';
-        ctx.lineWidth = 1;
-        const textWidth = 85;
-        ctx.beginPath();
-        ctx.roundRect(pt.x - textWidth / 2, py - 26, textWidth, 18, 9);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = isDark ? '#f1f5f9' : '#0f172a';
-        ctx.font = '10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(pt.label, pt.x, py - 17);
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -178,6 +165,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      resizeObserver.disconnect();
       window.removeEventListener('resize', resize);
     };
   }, [mousePos]);
@@ -256,49 +244,75 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Visualizer Header Bar */}
-            <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 dark:border-white/[0.05] text-xs text-slate-600 dark:text-slate-400">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+            {/* Visualizer Header Bar: Dedicated Two-Column Row */}
+            <div className="flex items-center justify-between gap-2 px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-white/[0.05] text-xs">
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <div className="flex gap-1 sm:gap-1.5 shrink-0">
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500/80 inline-block" />
                 </div>
-                <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 ml-2">FINPULSE_MARKET_DEPTH_FLOW</span>
-              </div>
-              <div className="flex items-center gap-4 font-mono text-[11px]">
-                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Order Flow: Balanced
+                <span className="font-mono text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 truncate ml-1 sm:ml-1.5">
+                  FINPULSE_MARKET_DEPTH_FLOW
                 </span>
-                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">Latency &lt; 40ms</span>
+              </div>
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0 font-mono">
+                <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-1 font-semibold text-[10px] sm:text-xs shrink-0 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                  Order Flow: Balanced
+                </span>
+                <span className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs hidden md:inline shrink-0">
+                  Latency &lt; 40ms
+                </span>
               </div>
             </div>
 
-            {/* Dynamic HTML5 Wave Canvas */}
-            <div className="relative w-full h-48 sm:h-64">
+            {/* Dynamic HTML5 Wave Canvas Container: w-full h-44 sm:h-52 */}
+            <div className="relative w-full h-44 sm:h-52 overflow-hidden rounded-xl bg-slate-50/50 dark:bg-black/20">
               <canvas
                 ref={canvasRef}
                 className="w-full h-full block cursor-crosshair"
               />
+
+              {/* Responsive Market Price Tags (clean flex spacing, no hardcoded left percentages) */}
+              <div className="absolute inset-x-0 bottom-2.5 sm:bottom-3 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-2 pointer-events-none z-10">
+                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-[10px] sm:text-xs font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                  <span className="text-slate-900 dark:text-white font-bold">BTC/USD</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">+2.4%</span>
+                </div>
+
+                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-[10px] sm:text-xs font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                  <span className="text-slate-900 dark:text-white font-bold">USD/PKR</span>
+                  <span className="text-blue-600 dark:text-blue-400 font-semibold tabular-nums">278.09</span>
+                </div>
+
+                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-[10px] sm:text-xs font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                  <span className="text-slate-900 dark:text-white font-bold">EUR/USD</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-semibold tabular-nums">1.084</span>
+                </div>
+              </div>
             </div>
 
-            {/* Metric Footer Ribbon */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-white/[0.05] text-[11px] font-mono">
-              <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-600 dark:text-slate-400 uppercase">Live Fiat Pairs</div>
-                <div className="text-slate-800 dark:text-slate-200 font-bold tabular-nums">160+ Currencies</div>
+            {/* Metric Footer Ribbon: 2x2 grid on mobile, 4 columns on sm+ */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-white/[0.05] text-xs font-mono">
+              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
+                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Live Fiat Pairs</div>
+                <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-bold tabular-nums mt-0.5 truncate">160+ Currencies</div>
               </div>
-              <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-600 dark:text-slate-400 uppercase">CoinGecko Feed</div>
-                <div className="text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">20 Top Cryptos</div>
+              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
+                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">CoinGecko Feed</div>
+                <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-bold tabular-nums mt-0.5 truncate">20 Top Cryptos</div>
               </div>
-              <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-600 dark:text-slate-400 uppercase">Benchmark USD/PKR</div>
-                <div className="text-blue-600 dark:text-blue-400 font-bold tabular-nums">278.09 Baseline</div>
+              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
+                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Benchmark USD/PKR</div>
+                <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-bold tabular-nums mt-0.5 truncate">278.09 Baseline</div>
               </div>
-              <div className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04]">
-                <div className="text-slate-600 dark:text-slate-400 uppercase">Markup Spread</div>
-                <div className="text-slate-900 dark:text-white font-bold tabular-nums">0.00% Zero Fee</div>
+              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
+                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Markup Spread</div>
+                <div className="text-xs sm:text-sm text-slate-900 dark:text-white font-bold tabular-nums mt-0.5 truncate">0.00% Zero Fee</div>
               </div>
             </div>
           </div>
