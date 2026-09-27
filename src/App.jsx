@@ -232,11 +232,8 @@ export default function App() {
               
               {/* Hero Section */}
               <HeroSection 
-                onExploreMarkets={() => {
-                  const el = document.getElementById('markets');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                onViewData={() => navigate('/forex')}
+                onExploreMarkets={() => navigate('/forex')}
+                onViewData={() => navigate('/crypto')}
               />
 
               {/* Summary Overview Matrix (Live Market Dashboard) */}

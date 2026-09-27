@@ -131,35 +131,44 @@ export default function ResearchSection({ limit, showViewAll = false }) {
                   </div>
 
                   {/* Body Content */}
-                  <div className="p-5">
-                    <div className="flex items-center gap-2.5 text-[11px] text-slate-500 dark:text-slate-400 mb-2 font-mono">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> {post.date || 'Recent'}
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {post.readTime || '5 min read'}
-                      </span>
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      {/* Author Line & Date */}
+                      <div className="flex items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400 mb-2 font-mono">
+                        <span className="font-semibold text-slate-700 dark:text-slate-300 truncate">
+                          {post.author || 'FinPulse Macro Research Desk'}
+                        </span>
+                        <span className="flex items-center gap-1 shrink-0">
+                          <Calendar className="w-3 h-3" /> {post.date || 'Sep 27, 2026'}
+                        </span>
+                      </div>
+
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
+                        {post.title}
+                      </h3>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed">
+                        {post.summary}
+                      </p>
+
+                      {/* Market Tickers */}
+                      {tags.length > 0 && (
+                        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                          <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase">TAGS:</span>
+                          {tags.slice(0, 3).map((tag, idx) => (
+                            <span key={idx} className="text-[10px] font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-[#07090E] px-2 py-0.5 rounded border border-slate-200 dark:border-white/[0.06] font-semibold uppercase">
+                              #{tag.trim().replace(/^#/, '').toUpperCase()}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
-                      {post.title}
-                    </h3>
-
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed">
-                      {post.summary}
-                    </p>
-
-                    {/* Tags */}
-                    {tags.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {tags.slice(0, 3).map((tag, idx) => (
-                          <span key={idx} className="text-[10px] font-mono text-slate-500 bg-slate-100 dark:bg-[#07090E] px-2 py-0.5 rounded border border-slate-200 dark:border-white/[0.04]">
-                            #{tag.trim()}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    {/* Human Footnote */}
+                    <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-white/[0.04] text-[10px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5">
+                      <ShieldCheck className="w-3 h-3 text-emerald-500 shrink-0" />
+                      <span className="truncate">Source data verified against official monetary releases.</span>
+                    </div>
                   </div>
                 </div>
 

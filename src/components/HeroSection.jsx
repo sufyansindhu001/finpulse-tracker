@@ -207,14 +207,14 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
         {/* Hero Title & Subtitle */}
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12]">
-            Understand Markets.{' '}
+            Global Currency Terminals &amp;{' '}
             <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 dark:from-blue-400 dark:via-indigo-300 dark:to-emerald-400 bg-clip-text text-transparent">
-              Make Smarter Decisions.
+              Digital Asset Analytics
             </span>
           </h1>
 
           <p className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-            Real-time market data, financial insights, research and powerful tools designed to help you understand global markets.
+            Independent interbank exchange rates, historical corridor analytics, and high-frequency digital market feeds.
           </p>
 
           {/* Action CTAs */}
@@ -223,7 +223,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
               onClick={onExploreMarkets}
               className="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-sm transition-all shadow-md shadow-blue-600/25 flex items-center gap-2 cursor-pointer group"
             >
-              <span>Explore Markets</span>
+              <span>Open Forex Terminal</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
 
@@ -232,7 +232,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
               className="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 dark:bg-[#0C1017] dark:hover:bg-[#111622] dark:text-slate-200 dark:hover:text-white font-semibold text-sm transition-all border border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15] flex items-center gap-2 cursor-pointer active:scale-95 shadow-xs"
             >
               <BarChart2 className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-              <span>View Market Data</span>
+              <span>Browse Digital Assets</span>
             </button>
           </div>
         </div>

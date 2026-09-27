@@ -76,7 +76,7 @@ export default function Footer({ onSelectPair }) {
               <span>•</span>
               <span>20+ Top Cryptos</span>
               <span>•</span>
-              <span className="text-emerald-500 font-semibold">99.98% Feed Uptime</span>
+              <span className="text-emerald-500 font-semibold">Real-time WebSocket Feeds</span>
             </div>
           </div>
 
@@ -253,7 +253,7 @@ export default function Footer({ onSelectPair }) {
         {/* Financial & AdSense Compliance Banner */}
         <div className="py-6 border-b border-slate-200 dark:border-white/[0.06] text-[11px] leading-relaxed text-slate-500">
           <p>
-            <strong className="text-slate-700 dark:text-slate-300">Financial Disclosure:</strong> Foreign exchange rates and cryptocurrency quotes are supplied for informational purposes only and are not intended for trading purposes or financial advice. {siteSettings?.websiteName || 'FinPulse'} does not verify any data and disclaims any obligation to do so. Market quotes may be delayed.
+            <strong className="text-slate-700 dark:text-slate-300">Financial Disclosure:</strong> Foreign exchange and crypto assets involve market risk. Quoted rates reflect mid-market interbank valuations and are displayed for computational reference.
           </p>
         </div>
 

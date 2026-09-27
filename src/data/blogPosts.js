@@ -4,12 +4,12 @@ export const BLOG_POSTS = [
     title: 'Navigating Forex Volatility: Strategies for Central Bank Rate Shifts',
     slug: 'navigating-forex-volatility-strategies',
     category: 'Forex News',
-    author: 'Elena Vance, Senior Macro Strategist',
-    date: 'Sep 22, 2026',
+    author: 'FinPulse Macro Research Desk',
+    date: 'Sep 27, 2026',
     readTime: '6 min read',
     summary: 'How diverging interest rate policies between the Federal Reserve, ECB, and Asian central banks are shaping currency corridors this quarter.',
     image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
-    tags: ['Forex', 'Federal Reserve', 'Central Banks', 'Currency Trading'],
+    tags: ['MACRO', 'CENTRALBANKS', 'LIQUIDITY', 'CORRIDORS'],
     content: `
       ### The New Macro Landscape
       Foreign exchange markets are experiencing heightened sensitivity to interest rate decisions and geopolitical realignment. With inflation targets stabilizing globally, central banks are no longer moving in synchronized unison. The divergence between the US Federal Reserve, the European Central Bank (ECB), and emerging market institutions has opened distinct opportunities and risks for international traders and cross-border businesses.
@@ -30,12 +30,12 @@ export const BLOG_POSTS = [
     title: 'Bitcoin Market Cycles & Layer-1 Dominance: 2026 Crypto Analysis',
     slug: 'crypto-market-cycles-bitcoin-dominance',
     category: 'Crypto Guides',
-    author: 'Marcus Sterling, Blockchain Research Lead',
-    date: 'Sep 21, 2026',
+    author: 'FinPulse Macro Research Desk',
+    date: 'Sep 26, 2026',
     readTime: '8 min read',
     summary: 'A deep dive into on-chain liquidity, Bitcoin ETF net inflows, and how high-throughput networks like Solana are capturing institutional capital.',
     image: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=600&fm=webp&q=75',
-    tags: ['Bitcoin', 'Ethereum', 'Solana', 'Crypto Analysis'],
+    tags: ['BITCOIN', 'ETFS', 'ONCHAIN', 'LIQUIDITY'],
     content: `
       ### Understanding the Post-Halving Era
       Historically, cryptocurrency market cycles correlate with Bitcoin supply issuance halvings, global M2 money supply expansions, and liquidity cycles. In 2026, spot exchange-traded funds (ETFs) and corporate treasury adoptions have permanently altered the structural market depth.
@@ -56,12 +56,12 @@ export const BLOG_POSTS = [
     title: 'Why Currency Pegs Matter: Analyzing the Stability of AED and SAR',
     slug: 'why-currency-pegs-matter-aed-sar',
     category: 'Market Updates',
-    author: 'Tariq Al-Mansoor, Gulf Economics Fellow',
-    date: 'Sep 18, 2026',
+    author: 'FinPulse Macro Research Desk',
+    date: 'Sep 25, 2026',
     readTime: '5 min read',
     summary: 'An exploration of why the UAE Dirham and Saudi Riyal maintain fixed USD exchange rates, and what it means for Gulf expat remittances.',
     image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&fm=webp&q=75',
-    tags: ['AED', 'SAR', 'Middle East', 'Remittances', 'Pegged Currencies'],
+    tags: ['PEGGEDFX', 'GULFCOUNCIL', 'REMITTANCE', 'PARITY'],
     content: `
       ### The Mechanics of Fixed Exchange Rates
       For decades, the United Arab Emirates (AED at ~3.6725) and Saudi Arabia (SAR at ~3.75) have maintained rigorous pegs to the United States Dollar. Backed by sovereign hydrocarbon reserves and deep foreign currency deposits, these pegs eliminate bilateral currency risk for international oil contracts and global commercial transactions.
@@ -81,12 +81,12 @@ export const BLOG_POSTS = [
     title: 'Self-Custody vs Hot Wallets: Protecting Your Crypto Assets in 2026',
     slug: 'crypto-security-wallet-best-practices',
     category: 'Crypto Guides',
-    author: 'Sarah Chen, Cybersecurity Engineer',
-    date: 'Sep 15, 2026',
+    author: 'FinPulse Macro Research Desk',
+    date: 'Sep 24, 2026',
     readTime: '7 min read',
     summary: 'Essential cybersecurity best practices to safeguard private keys, avoid phishing smart contracts, and manage crypto reserves safely.',
     image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&fm=webp&q=75',
-    tags: ['Security', 'Hardware Wallets', 'DeFi Safety', 'Best Practices'],
+    tags: ['CUSTODY', 'DEFISAFETY', 'SECURITY', 'KEYMANAGEMENT'],
     content: `
       ### The Golden Rule of Blockchain: Not Your Keys, Not Your Coins
       The rapid evolution of decentralized finance (DeFi) has provided unprecedented financial autonomy, but it demands strict individual responsibility. Loss of seed phrases, compromised browser extensions, and rogue signature approvals account for the vast majority of lost digital funds.
@@ -109,12 +109,12 @@ export const BLOG_POSTS = [
     title: 'The Digital Remittance Shift: How Tech is Lowering Forex Transfer Fees',
     slug: 'digital-remittance-revolution',
     category: 'Forex News',
-    author: 'Hamza Khan, Fintech Columnist',
-    date: 'Sep 10, 2026',
+    author: 'FinPulse Macro Research Desk',
+    date: 'Sep 22, 2026',
     readTime: '5 min read',
     summary: 'Traditional wire transfers vs peer-to-peer digital rails: How modern fintechs are reshaping migrant worker money transfers to South Asia and Africa.',
     image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&fm=webp&q=75',
-    tags: ['Remittance', 'Fintech', 'Forex Fees', 'Global Economy'],
+    tags: ['REMITTANCES', 'FINTECH', 'CROSSBORDER', 'RAILS'],
     content: `
       ### The High Cost of Moving Money
       Historically, global remittances carried an exorbitant average fee of 6.25%, with wire transfer fees and hidden exchange rate markups eating into the hard-earned funds of families worldwide. 
