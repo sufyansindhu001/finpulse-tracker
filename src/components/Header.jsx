@@ -68,7 +68,7 @@ export default function Header({
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 w-full max-w-full">
           
-          {/* Logo & Brand Identity (FinPulse Strictly Preserved) */}
+          {/* Logo & Brand Identity (FGC Spot) */}
           <Link 
             to="/"
             className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group shrink-0 min-w-0"
@@ -85,7 +85,7 @@ export default function Header({
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow shrink-0">
                 <div className="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center group-hover:bg-slate-800 transition-colors">
                   <span className="text-[11px] sm:text-xs font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase font-mono">
-                    FP
+                    FGC
                   </span>
                 </div>
               </div>
