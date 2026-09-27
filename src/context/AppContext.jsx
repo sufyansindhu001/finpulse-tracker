@@ -15,7 +15,7 @@ export function AppProvider({ children }) {
   // 1. Site Settings with LocalStorage persistence
   const [siteSettings, setSiteSettings] = useState(() => {
     try {
-      const saved = localStorage.getItem('fgc_spot_site_settings') || localStorage.getItem('finpulse_site_settings');
+      const saved = localStorage.getItem('fgc_spot_site_settings');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.warn('Error reading site settings from localStorage:', e);
@@ -36,7 +36,7 @@ export function AppProvider({ children }) {
   // 2. Blog Posts with LocalStorage persistence
   const [articles, setArticles] = useState(() => {
     try {
-      const saved = localStorage.getItem('fgc_spot_blog_posts') || localStorage.getItem('finpulse_blog_posts');
+      const saved = localStorage.getItem('fgc_spot_blog_posts');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -103,10 +103,10 @@ export function AppProvider({ children }) {
 
   const [adminCredentials, setAdminCredentials] = useState(() => {
     try {
-      const saved = localStorage.getItem('fgc_spot_admin_credentials') || localStorage.getItem('finpulse_admin_credentials');
+      const saved = localStorage.getItem('fgc_spot_admin_credentials');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.email && parsed.password && parsed.email.toLowerCase() !== 'admin@fgcspot.com' && parsed.email.toLowerCase() !== 'admin@finpulse.com') {
+        if (parsed.email && parsed.password && parsed.email.toLowerCase() !== 'admin@fgcspot.com') {
           return {
             email: parsed.email.trim(),
             password: parsed.password
@@ -136,7 +136,7 @@ export function AppProvider({ children }) {
   // 4. Session-Based Admin Authentication (Auto-Locks when session ends or tab closes)
   const [isAdminAuth, setIsAdminAuth] = useState(() => {
     try {
-      return sessionStorage.getItem('fgc_spot_admin_logged_in') === 'true' || sessionStorage.getItem('finpulse_admin_logged_in') === 'true';
+      return sessionStorage.getItem('fgc_spot_admin_logged_in') === 'true';
     } catch {
       return false;
     }
@@ -189,7 +189,6 @@ export function AppProvider({ children }) {
     setIsAdminAuth(false);
     try {
       sessionStorage.removeItem('fgc_spot_admin_logged_in');
-      sessionStorage.removeItem('finpulse_admin_logged_in');
     } catch (err) {
       console.warn('sessionStorage is unavailable:', err);
     }

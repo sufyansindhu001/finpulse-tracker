@@ -51,7 +51,7 @@ export default function App() {
   // Theme state: initialized from localStorage (defaults to 'dark')
   const [theme, setTheme] = useState(() => {
     try {
-      const saved = localStorage.getItem('fgc_spot_theme') || localStorage.getItem('finpulse_theme');
+      const saved = localStorage.getItem('fgc_spot_theme');
       if (saved === 'light' || saved === 'dark') return saved;
       return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     } catch {
