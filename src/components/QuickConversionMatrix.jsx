@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { POPULAR_PAIRS, getCurrencyInfo } from '../data/currencies';
 import { getExchangeRate, convertCurrency, DEFAULT_RATES } from '../services/forexService';
 import { ArrowUpRight } from 'lucide-react';
+import CurrencyFlag from './CurrencyFlag';
 
 export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectPair }) {
   const activeRates = useMemo(() => {
@@ -41,10 +42,10 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                 className="bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] rounded-2xl p-4.5 hover:border-blue-500/50 hover:bg-slate-100/60 dark:hover:bg-white/[0.05] transition-all cursor-pointer group shadow-sm hover:shadow-lg"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5 text-base">
-                    <span>{base.flag}</span>
-                    <span className="text-slate-400 dark:text-slate-600 text-xs">/</span>
-                    <span>{target.flag}</span>
+                  <div className="flex items-center gap-1.5">
+                    <CurrencyFlag code={pair.base} className="w-5 h-5" />
+                    <span className="text-slate-400 dark:text-slate-600 text-xs font-bold">/</span>
+                    <CurrencyFlag code={pair.target} className="w-5 h-5" />
                   </div>
                   <div className="p-1.5 rounded-lg bg-slate-200/60 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 group-hover:text-blue-500 group-hover:bg-blue-500/10 transition-colors">
                     <ArrowUpRight className="w-4 h-4" />
@@ -92,13 +93,13 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04] tabular-nums font-medium">
-                {['PKR', 'INR', 'AED', 'SAR', 'EUR', 'GBP', 'CAD', 'JPY'].map((code) => {
+                {['PKR', 'INR', 'AED', 'SAR', 'EUR', 'GBP', 'CAD', 'JPY', 'AUD', 'CHF', 'CNY', 'KWD', 'QAR', 'TRY', 'SGD', 'MYR'].map((code) => {
                   const curr = getCurrencyInfo(code);
                   const rate = getExchangeRate('USD', code, activeRates);
                   return (
                     <tr key={code} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3 px-4 font-sans font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                        <span className="text-base">{curr.flag}</span>
+                      <td className="py-3 px-4 font-sans font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2.5">
+                        <CurrencyFlag code={code} className="w-5 h-5" />
                         <span>{curr.name}</span>
                         <span className="text-slate-500 dark:text-slate-400 uppercase text-xs">({code})</span>
                       </td>

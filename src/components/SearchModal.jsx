@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, X, ArrowRight, Coins, Globe, BookOpen, Layers } from 'lucide-react';
 import { CURRENCIES } from '../data/currencies';
 import { useApp } from '../context/AppContext';
+import CurrencyFlag from './CurrencyFlag';
 
 export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
   const [query, setQuery] = useState('');
@@ -134,7 +135,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                         className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.04] cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-2">
-                          <span>{curr.flag}</span>
+                          <CurrencyFlag code={curr.code} className="w-5 h-5" />
                           <span className="text-slate-900 dark:text-white font-bold">{curr.name}</span>
                           <span className="text-slate-500">({curr.code})</span>
                         </div>

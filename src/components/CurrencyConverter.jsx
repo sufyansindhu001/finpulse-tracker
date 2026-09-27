@@ -11,6 +11,7 @@ import {
   Loader2, 
   RefreshCw 
 } from 'lucide-react';
+import CurrencyFlag from './CurrencyFlag';
 
 export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, source, isLoading, error, onRetry }) {
   const [amount, setAmount] = useState('100');
@@ -169,9 +170,12 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
 
           {/* Base Currency Dropdown Box */}
           <div className="lg:col-span-3 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] rounded-2xl p-4 transition-all focus-within:border-blue-500/50 focus-within:ring-2 focus-within:ring-blue-500/20">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-              From Currency
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                From Currency
+              </label>
+              <CurrencyFlag code={baseCurrency} className="w-5 h-5" />
+            </div>
             <div className="relative">
               <select
                 value={baseCurrency}
@@ -180,7 +184,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
               >
                 {CURRENCIES.map((c) => (
                   <option key={c.code} value={c.code} className="bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-white">
-                    {c.flag} {c.code} - {c.name} ({c.symbol})
+                    {c.code} - {c.name} ({c.symbol})
                   </option>
                 ))}
               </select>
@@ -204,9 +208,12 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
 
           {/* Target Currency Dropdown Box */}
           <div className="lg:col-span-3 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] rounded-2xl p-4 transition-all focus-within:border-emerald-500/50 focus-within:ring-2 focus-within:ring-emerald-500/20">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-              To Currency
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                To Currency
+              </label>
+              <CurrencyFlag code={targetCurrency} className="w-5 h-5" />
+            </div>
             <div className="relative">
               <select
                 value={targetCurrency}
@@ -215,7 +222,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
               >
                 {CURRENCIES.map((c) => (
                   <option key={c.code} value={c.code} className="bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-white">
-                    {c.flag} {c.code} - {c.name} ({c.symbol})
+                    {c.code} - {c.name} ({c.symbol})
                   </option>
                 ))}
               </select>
@@ -252,6 +259,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-5 relative z-10">
             <div>
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-2">
+                <CurrencyFlag code={targetCurrency} className="w-4 h-4" />
                 <span>Converted Output Total</span>
                 <span className="text-emerald-400 font-semibold">({targetCurrency})</span>
               </div>
@@ -320,7 +328,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg">{dest.flag}</span>
+                    <CurrencyFlag code={dest.code} className="w-5 h-5" />
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{dest.code}</span>
                   </div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency } from '../services/forexService';
 import { X } from 'lucide-react';
+import CurrencyFlag from './CurrencyFlag';
 
 export default function CryptoConverterModal({ coin, rates, onClose }) {
   const [cryptoAmount, setCryptoAmount] = useState('1');
@@ -77,9 +78,12 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-              Target Fiat Currency
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                Target Fiat Currency
+              </label>
+              <CurrencyFlag code={fiatCurrency} className="w-5 h-5" />
+            </div>
             <select
               value={fiatCurrency}
               onChange={(e) => setFiatCurrency(e.target.value)}
@@ -87,7 +91,7 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
             >
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code} className="bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-white">
-                  {c.flag} {c.code} - {c.name}
+                  {c.code} - {c.name}
                 </option>
               ))}
             </select>

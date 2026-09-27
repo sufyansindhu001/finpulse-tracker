@@ -15,6 +15,7 @@ import {
   Layers, 
   ArrowRight 
 } from 'lucide-react';
+import CurrencyFlag from './CurrencyFlag';
 
 export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
   const [activeTool, setActiveTool] = useState('forex'); // 'forex', 'crypto', 'risk'
@@ -200,9 +201,12 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  From Currency
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    From Currency
+                  </label>
+                  <CurrencyFlag code={forexBase} className="w-5 h-5" />
+                </div>
                 <select
                   value={forexBase}
                   onChange={(e) => setForexBase(e.target.value)}
@@ -210,7 +214,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 >
                   {CURRENCIES.map(c => (
                     <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.flag} {c.code} - {c.name}
+                      {c.code} - {c.name}
                     </option>
                   ))}
                 </select>
@@ -230,9 +234,12 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  To Currency
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    To Currency
+                  </label>
+                  <CurrencyFlag code={forexTarget} className="w-5 h-5" />
+                </div>
                 <select
                   value={forexTarget}
                   onChange={(e) => setForexTarget(e.target.value)}
@@ -240,7 +247,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 >
                   {CURRENCIES.map(c => (
                     <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.flag} {c.code} - {c.name}
+                      {c.code} - {c.name}
                     </option>
                   ))}
                 </select>
@@ -251,8 +258,9 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             {/* Result Display */}
             <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
               <div>
-                <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Exchange Value Output
+                <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <CurrencyFlag code={forexTarget} className="w-4 h-4" />
+                  <span>Exchange Value Output</span>
                 </div>
                 <div className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tabular-nums">
                   {getCurrencyInfo(forexTarget).symbol} {forexConverted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} <span className="text-emerald-600 dark:text-emerald-400 text-xl font-bold">{forexTarget}</span>
@@ -316,9 +324,12 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Destination Fiat
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    Destination Fiat
+                  </label>
+                  <CurrencyFlag code={cryptoFiat} className="w-5 h-5" />
+                </div>
                 <select
                   value={cryptoFiat}
                   onChange={(e) => setCryptoFiat(e.target.value)}
@@ -326,7 +337,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 >
                   {CURRENCIES.map(c => (
                     <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.flag} {c.code} - {c.name}
+                      {c.code} - {c.name}
                     </option>
                   ))}
                 </select>
@@ -337,8 +348,9 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             {/* Crypto Result Display */}
             <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
               <div>
-                <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Liquid Fiat Valuation
+                <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <CurrencyFlag code={cryptoFiat} className="w-4 h-4" />
+                  <span>Liquid Fiat Valuation</span>
                 </div>
                 <div className="text-3xl sm:text-5xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {fiatObj.symbol} {cryptoConvertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-slate-900 dark:text-white text-xl font-bold">{cryptoFiat}</span>

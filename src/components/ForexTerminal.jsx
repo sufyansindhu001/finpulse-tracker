@@ -14,6 +14,7 @@ import {
   RefreshCw,
   Sparkles
 } from 'lucide-react';
+import CurrencyFlag from './CurrencyFlag';
 
 export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdated, onRefresh }) {
   const [searchParams] = useSearchParams();
@@ -150,7 +151,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-lg">{c.flag}</span>
+                  <CurrencyFlag code={c.target} className="w-5 h-5" />
                   <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{c.label}</span>
                 </div>
                 <div className="text-base font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
@@ -205,9 +206,12 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
 
             {/* Base Currency Dropdown */}
             <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                From Currency
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                  From Currency
+                </label>
+                <CurrencyFlag code={baseCurrency} className="w-5 h-5" />
+              </div>
               <div className="relative">
                 <select
                   value={baseCurrency}
@@ -216,7 +220,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                 >
                   {CURRENCIES.map((c) => (
                     <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.flag} {c.code} - {c.name} ({c.symbol})
+                      {c.code} - {c.name} ({c.symbol})
                     </option>
                   ))}
                 </select>
@@ -239,9 +243,12 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
 
             {/* Target Currency Dropdown */}
             <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                To Currency
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                  To Currency
+                </label>
+                <CurrencyFlag code={targetCurrency} className="w-5 h-5" />
+              </div>
               <div className="relative">
                 <select
                   value={targetCurrency}
@@ -250,7 +257,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                 >
                   {CURRENCIES.map((c) => (
                     <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.flag} {c.code} - {c.name} ({c.symbol})
+                      {c.code} - {c.name} ({c.symbol})
                     </option>
                   ))}
                 </select>
@@ -283,8 +290,9 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
           {/* Converted Total Output Banner */}
           <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
             <div>
-              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
-                Simulated Output Total ({targetCurrency})
+              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <CurrencyFlag code={targetCurrency} className="w-4 h-4" />
+                <span>Simulated Output Total ({targetCurrency})</span>
               </div>
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
@@ -338,7 +346,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-lg">{curr.flag}</span>
+                      <CurrencyFlag code={code} className="w-5 h-5" />
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{code}</span>
                     </div>
                     <div className="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">
