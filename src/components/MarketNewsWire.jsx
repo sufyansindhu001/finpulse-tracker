@@ -8,18 +8,27 @@ import {
   ShieldCheck, 
   Newspaper 
 } from 'lucide-react';
-import { fetchLiveMarketNews, formatTimeAgo } from '../services/newsService';
+import { fetchLiveMarketNews, getLiveTimeAgo } from '../services/newsService';
 
 export default function MarketNewsWire({ limit = 6 }) {
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeCategory, setActiveCategory] = useState('general');
+  const [, setTick] = useState(0);
   const [meta, setMeta] = useState({
     source: 'Institutional Wire Stream',
     lastUpdated: '',
     isLive: false
   });
+
+  // Dynamic interval to re-evaluate getLiveTimeAgo() every 60 seconds without hard reloading
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTick(t => t + 1);
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   const loadNews = useCallback(async (category = activeCategory, isManual = false) => {
     if (isManual) {
@@ -182,7 +191,7 @@ export default function MarketNewsWire({ limit = 6 }) {
                       </span>
                       <span className="text-xs text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1 shrink-0">
                         <Clock className="w-3 h-3" />
-                        {formatTimeAgo(item.datetime)}
+                        {getLiveTimeAgo(item.datetime || item.pubDate)}
                       </span>
                     </div>
                     <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
