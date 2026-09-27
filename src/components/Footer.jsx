@@ -1,12 +1,39 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { ShieldCheck, Mail, AlertTriangle, FileText, Globe } from 'lucide-react';
 import LegalModal from './LegalModal';
 
 export default function Footer({ onSelectPair }) {
+  const navigate = useNavigate();
   const { siteSettings } = useApp();
   const [legalModalTab, setLegalModalTab] = useState(null);
+
+  const popularPairs = [
+    { from: 'USD', to: 'PKR', label: 'USD to PKR (Pakistan)' },
+    { from: 'EUR', to: 'USD', label: 'EUR to USD (Eurozone)' },
+    { from: 'GBP', to: 'USD', label: 'GBP to USD (British Pound)' },
+    { from: 'USD', to: 'AED', label: 'USD to AED (UAE Dirham)' },
+    { from: 'USD', to: 'SAR', label: 'USD to SAR (Saudi Riyal)' },
+    { from: 'USD', to: 'INR', label: 'USD to INR (Indian Rupee)' },
+  ];
+
+  const handlePairClick = (e, from, to) => {
+    if (onSelectPair) {
+      e.preventDefault();
+      onSelectPair(from, to);
+    } else {
+      navigate(`/forex?from=${from}&to=${to}`);
+      setTimeout(() => {
+        const el = document.getElementById('forex-terminal') || document.getElementById('forex-calculator');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
 
   return (
     <footer className="w-full max-w-full overflow-hidden bg-slate-100/90 dark:bg-[#07090E] border-t border-slate-200 dark:border-white/[0.08] pt-14 pb-10 mt-20 text-slate-600 dark:text-slate-400 text-xs transition-colors duration-200">
@@ -58,55 +85,18 @@ export default function Footer({ onSelectPair }) {
             <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
               Popular Pairs
             </h3>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link 
-                  to="/forex?from=USD&to=PKR"
-                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
-                >
-                  USD to PKR (Pakistan)
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/forex?from=EUR&to=USD"
-                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
-                >
-                  EUR to USD (Eurozone)
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/forex?from=GBP&to=USD"
-                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
-                >
-                  GBP to USD (British Pound)
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/forex?from=USD&to=AED"
-                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
-                >
-                  USD to AED (UAE Dirham)
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/forex?from=USD&to=SAR"
-                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
-                >
-                  USD to SAR (Saudi Riyal)
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/forex?from=USD&to=INR"
-                  className="hover:text-blue-500 cursor-pointer transition-colors block text-left"
-                >
-                  USD to INR (Indian Rupee)
-                </Link>
-              </li>
+            <ul className="space-y-1.5 text-xs">
+              {popularPairs.map((pair) => (
+                <li key={`${pair.from}-${pair.to}`}>
+                  <Link 
+                    to={`/forex?from=${pair.from}&to=${pair.to}`}
+                    onClick={(e) => handlePairClick(e, pair.from, pair.to)}
+                    className="hover:text-blue-500 active:text-blue-600 transition-colors cursor-pointer block py-0.5 text-left"
+                  >
+                    {pair.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

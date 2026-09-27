@@ -24,8 +24,16 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
   useEffect(() => {
     const f = searchParams.get('from');
     const t = searchParams.get('to');
-    if (f) setBaseCurrency(f.toUpperCase());
-    if (t) setTargetCurrency(t.toUpperCase());
+    if (f) setBaseCurrency(f.toUpperCase().trim());
+    if (t) setTargetCurrency(t.toUpperCase().trim());
+    if (f || t) {
+      setTimeout(() => {
+        const el = document.getElementById('forex-terminal') || document.getElementById('forex-calculator');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
   }, [searchParams]);
 
   const activeRates = useMemo(() => {
@@ -138,7 +146,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
         </div>
 
         {/* Live Parity Simulator & Currency Converter Terminal */}
-        <div className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-xs dark:shadow-2xl relative overflow-hidden">
+        <div id="forex-calculator" className="bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] rounded-3xl p-6 sm:p-8 shadow-xs dark:shadow-2xl relative overflow-hidden">
           
           <div className="flex items-center justify-between pb-5 border-b border-slate-100 dark:border-white/[0.06]">
             <div className="flex items-center gap-2">
