@@ -48,7 +48,7 @@ export default function Footer({ onSelectPair }) {
               {siteSettings?.logoUrl ? (
                 <img 
                   src={siteSettings.logoUrl} 
-                  alt={siteSettings.websiteName || 'FinPulse'} 
+                  alt={siteSettings.websiteName || 'FGC Spot'} 
                   className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-white/10" 
                   width="32"
                   height="32"
@@ -57,12 +57,12 @@ export default function Footer({ onSelectPair }) {
               ) : (
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-400 p-[1px]">
                   <div className="w-full h-full bg-slate-900 rounded-[7px] flex items-center justify-center font-black text-xs text-white uppercase">
-                    {siteSettings?.logoText || 'FP'}
+                    {siteSettings?.logoText || 'FGC'}
                   </div>
                 </div>
               )}
               <span className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                {siteSettings?.websiteName || 'FinPulse'} Media & Data
+                {siteSettings?.websiteName || 'FGC Spot'} Media & Data
               </span>
             </Link>
 
