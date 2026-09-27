@@ -41,7 +41,8 @@ import {
   getInquiries,
   updateInquiryStatus,
   deleteInquiry,
-  getCorridorDistribution
+  getCorridorDistribution,
+  fetchServerTelemetry
 } from '../utils/telemetry';
 
 export default function AdminPage() {
@@ -87,17 +88,50 @@ export default function AdminPage() {
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [isRefreshingTelemetry, setIsRefreshingTelemetry] = useState(false);
 
-  // Refresh Telemetry Data
-  const refreshTelemetry = () => {
+  // Synchronize state with latest telemetry (from server or cache)
+  const applyLatestTelemetry = () => {
+    setKpis(getLiveKPIs());
+    setEvents(getRecentEvents(50));
+    setCorridors(getCorridorDistribution());
+    setInquiries(getInquiries());
+    setAuditReports(getDailyAuditReports(auditRange));
+  };
+
+  // Real-time server polling every 10 seconds for cross-device visitor sync
+  useEffect(() => {
+    if (!isAdminAuth) return;
+
+    let isMounted = true;
+    const pollServer = async () => {
+      try {
+        const serverData = await fetchServerTelemetry();
+        if (isMounted && serverData) {
+          applyLatestTelemetry();
+        }
+      } catch {}
+    };
+
+    // Run immediate sync on auth unlock
+    pollServer();
+
+    // Poll every 10 seconds
+    const interval = setInterval(pollServer, 10000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [isAdminAuth, auditRange]);
+
+  // Manual Refresh Telemetry Handler
+  const refreshTelemetry = async () => {
     setIsRefreshingTelemetry(true);
+    try {
+      await fetchServerTelemetry();
+    } catch {}
+    applyLatestTelemetry();
     setTimeout(() => {
-      setKpis(getLiveKPIs());
-      setEvents(getRecentEvents(50));
-      setCorridors(getCorridorDistribution());
-      setAuditReports(getDailyAuditReports(auditRange));
-      setInquiries(getInquiries());
       setIsRefreshingTelemetry(false);
-    }, 300);
+    }, 400);
   };
 
   // Sync audit reports when range toggles
