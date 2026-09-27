@@ -76,7 +76,7 @@ export default function Header({
             {siteSettings?.logoUrl ? (
               <img 
                 src={siteSettings.logoUrl} 
-                alt={siteSettings.websiteName || 'FGC Spot'} 
+                alt="FGC Spot"
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-sm shrink-0"
                 width="36"
                 height="36"
@@ -93,7 +93,7 @@ export default function Header({
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans truncate">
-                  {siteSettings?.websiteName || 'FGC Spot'}
+                  FGC Spot
                 </span>
                 {/* TERMINAL Pill Badge: Hidden on mobile (<640px sm:hidden), kept inside hamburger drawer */}
                 <span className="hidden sm:inline-flex text-xs uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider shrink-0">
