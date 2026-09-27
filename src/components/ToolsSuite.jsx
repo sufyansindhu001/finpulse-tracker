@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
+import { recordConversion } from '../utils/telemetry';
 import { 
   Calculator, 
   ArrowLeftRight, 
@@ -9,10 +10,10 @@ import {
   Copy, 
   Check, 
   TrendingUp, 
-  DollarSign,
-  Percent,
-  Layers,
-  ArrowRight
+  DollarSign, 
+  Percent, 
+  Layers, 
+  ArrowRight 
 } from 'lucide-react';
 
 export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
@@ -22,6 +23,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
   const [forexAmount, setForexAmount] = useState('500');
   const [forexBase, setForexBase] = useState('USD');
   const [forexTarget, setForexTarget] = useState('PKR');
+  const firstRender = useRef(true);
 
   // Tool 2: Crypto Converter State
   const [cryptoToken, setCryptoToken] = useState('btc');
@@ -45,6 +47,23 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
   const forexConverted = useMemo(() => {
     return convertCurrency(numForexAmount, forexBase, forexTarget, activeRates);
   }, [numForexAmount, forexBase, forexTarget, activeRates]);
+
+  // Debounced conversion telemetry logging
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    if (numForexAmount <= 0) return;
+    const timer = setTimeout(() => {
+      try {
+        recordConversion(forexBase, forexTarget, numForexAmount, forexConverted);
+      } catch (e) {
+        console.warn('Telemetry conversion log error:', e);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [numForexAmount, forexBase, forexTarget, forexConverted]);
 
   const forexDirectRate = useMemo(() => {
     return getExchangeRate(forexBase, forexTarget, activeRates);

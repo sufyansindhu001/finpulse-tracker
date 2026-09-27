@@ -31,6 +31,8 @@ const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 import { CheckCircle } from 'lucide-react';
 import { recordPageView } from './utils/telemetry';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 export default function App() {
   const navigate = useNavigate();
@@ -443,6 +445,10 @@ export default function App() {
 
       {/* Footer with Standalone Router Links & Risk Disclaimers */}
       <Footer onSelectPair={handleSelectPair} />
+
+      {/* Official Vercel Real-Traffic Analytics & Web Vitals Speed Insights */}
+      <Analytics />
+      <SpeedInsights />
 
     </div>
   );

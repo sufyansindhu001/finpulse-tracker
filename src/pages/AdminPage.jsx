@@ -24,8 +24,6 @@ import {
   RefreshCw,
   Download,
   Search,
-  Filter,
-  ArrowUpRight,
   Globe,
   Clock,
   Zap,
@@ -42,7 +40,8 @@ import {
   exportAuditReportsCSV,
   getInquiries,
   updateInquiryStatus,
-  deleteInquiry
+  deleteInquiry,
+  getCorridorDistribution
 } from '../utils/telemetry';
 
 export default function AdminPage() {
@@ -75,9 +74,10 @@ export default function AdminPage() {
   // --- Navigation Tabs: 'analytics' | 'audit' | 'inbox' | 'settings' | 'articles' ---
   const [activeTab, setActiveTab] = useState('analytics');
 
-  // --- Telemetry States ---
+  // --- 100% Authentic Telemetry States (Clean zero baselines) ---
   const [kpis, setKpis] = useState(() => getLiveKPIs());
   const [events, setEvents] = useState(() => getRecentEvents(50));
+  const [corridors, setCorridors] = useState(() => getCorridorDistribution());
   const [eventFilter, setEventFilter] = useState('ALL');
   const [auditRange, setAuditRange] = useState('7d');
   const [auditReports, setAuditReports] = useState(() => getDailyAuditReports('7d'));
@@ -93,10 +93,11 @@ export default function AdminPage() {
     setTimeout(() => {
       setKpis(getLiveKPIs());
       setEvents(getRecentEvents(50));
+      setCorridors(getCorridorDistribution());
       setAuditReports(getDailyAuditReports(auditRange));
       setInquiries(getInquiries());
       setIsRefreshingTelemetry(false);
-    }, 400);
+    }, 300);
   };
 
   // Sync audit reports when range toggles
@@ -337,7 +338,7 @@ export default function AdminPage() {
               Institutional Admin Portal
             </h1>
             <p className="text-xs text-slate-400">
-              Enter your master administrator credentials to access real-time telemetry, EOD reports, and site governance.
+              Enter your master administrator credentials to access real telemetry, genuine audit reports, and site governance.
             </p>
           </div>
 
@@ -434,14 +435,14 @@ export default function AdminPage() {
               </span>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Telemetry Node Online &bull; Latency: {kpis.systemStatus.latencyMs}ms</span>
+                <span>Real-Time Node Online &bull; Latency: {kpis.systemStatus.latencyMs}ms</span>
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Institutional Command &amp; Analytics Terminal
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5">
-              Live user telemetry, daily archival audit logs, communications inbox, and platform governance.
+              100% authentic client telemetry, genuine audit reports, unread inquiries, and site governance.
             </p>
           </div>
 
@@ -476,7 +477,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* 5 Top High-Tier KPI Metric Cards */}
+        {/* 5 Top High-Tier KPI Metric Cards (100% REAL DATA) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           
           {/* KPI 1: Active Live Sessions */}
@@ -493,7 +494,7 @@ export default function AdminPage() {
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              <span>Distributed WebSockets</span>
+              <span>{kpis.activeSessions === 1 ? '1 active tab in session' : `${kpis.activeSessions} active tabs in session`}</span>
             </p>
           </div>
 
@@ -511,7 +512,7 @@ export default function AdminPage() {
               {Number(kpis.todayVisitors).toLocaleString()}
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
-              +18.4% vs rolling 24h baseline
+              {kpis.todayVisitors === 0 ? 'Zero visits recorded today' : 'Fingerprinted browser sessions'}
             </p>
           </div>
 
@@ -555,7 +556,7 @@ export default function AdminPage() {
               <span className="text-xs font-semibold text-slate-400">Unread</span>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
-              {inquiries.length} total historical inquiries
+              {inquiries.length} total actual inquiries
             </p>
           </div>
 
@@ -573,7 +574,7 @@ export default function AdminPage() {
               {kpis.systemStatus.latencyMs}ms
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
-              <span>Uptime: {kpis.systemStatus.uptime}</span>
+              <span>Measured Latency</span>
               <span className="text-emerald-500 font-bold">Nominal</span>
             </p>
           </div>
@@ -604,7 +605,7 @@ export default function AdminPage() {
             }`}
           >
             <BarChart3 className="w-4 h-4" />
-            <span>Daily Audit Reports</span>
+            <span>Daily Audit Reports ({auditReports.length})</span>
           </button>
 
           <button
@@ -663,7 +664,7 @@ export default function AdminPage() {
                     </h2>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                    Continuous client-side event bus capturing currency swaps, navigation, research reads, and form dispatches.
+                    Continuous client-side event bus capturing real currency conversions, genuine navigations, and submitted inquiries.
                   </p>
                 </div>
 
@@ -694,18 +695,22 @@ export default function AdminPage() {
                     <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
                     <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
                     <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
-                    <span className="ml-2 text-slate-400 font-semibold">finpulse-telemetry-daemon (stdout)</span>
+                    <span className="ml-2 text-slate-400 font-semibold">finpulse-telemetry-stream</span>
                   </div>
                   <span className="text-[10px] text-slate-400">
-                    Showing {filteredEvents.length} events
+                    {filteredEvents.length} genuine events
                   </span>
                 </div>
 
                 {/* Event Logs List */}
                 <div className="max-h-[360px] overflow-y-auto space-y-2 pr-2 scrollbar-thin">
                   {filteredEvents.length === 0 ? (
-                    <div className="py-8 text-center text-slate-400">
-                      No events matched the selected filter criteria.
+                    <div className="py-12 text-center text-slate-500 font-sans">
+                      <Activity className="w-8 h-8 text-slate-600 mx-auto mb-2 opacity-50" />
+                      <p className="font-semibold text-slate-300">No Micro-Events Recorded Yet</p>
+                      <p className="text-[11px] text-slate-500 mt-1">
+                        Client actions (page views, currency conversions, form submissions) will stream here in real-time as users interact.
+                      </p>
                     </div>
                   ) : (
                     filteredEvents.map(evt => {
@@ -749,7 +754,7 @@ export default function AdminPage() {
             {/* Platform Analytics Sub-Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               
-              {/* Corridor Frequency Distribution */}
+              {/* Corridor Frequency Distribution (100% REAL DATA) */}
               <div className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
                 <div className="pb-3 border-b border-slate-100 dark:border-slate-800">
                   <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -757,62 +762,64 @@ export default function AdminPage() {
                     <span>Corridor Conversion Volume Share</span>
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                    Proportional user demand across key emerging and major currency pairs.
+                    Actual user demand across currency pairs based on executed calculations.
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  {[
-                    { pair: 'USD/PKR', share: 45, label: 'Pakistan Rupee Corridor', vol: '1,728 executions' },
-                    { pair: 'EUR/USD', share: 25, label: 'Eurozone Interbank Benchmark', vol: '960 executions' },
-                    { pair: 'GBP/USD', share: 15, label: 'British Pound Sterling', vol: '576 executions' },
-                    { pair: 'USD/AED', share: 10, label: 'UAE Dirham Pegged Corridor', vol: '384 executions' },
-                    { pair: 'USD/SAR', share: 5, label: 'Saudi Riyal Corridor', vol: '194 executions' }
-                  ].map(corridor => (
-                    <div key={corridor.pair} className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-semibold">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-slate-900 dark:text-white">{corridor.pair}</span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">({corridor.label})</span>
-                        </div>
-                        <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">{corridor.share}%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                        <div 
-                          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-500"
-                          style={{ width: `${corridor.share}%` }}
-                        ></div>
-                      </div>
-                      <div className="text-[10px] text-slate-400 font-mono text-right">{corridor.vol}</div>
+                  {corridors.length === 0 ? (
+                    <div className="py-8 text-center text-slate-500 dark:text-slate-400 text-xs">
+                      <Globe className="w-8 h-8 text-slate-400 mx-auto mb-2 opacity-50" />
+                      <p className="font-semibold text-slate-700 dark:text-slate-300">No Conversions Logged Yet</p>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Currency corridor statistics will populate here dynamically as users execute live calculations.
+                      </p>
                     </div>
-                  ))}
+                  ) : (
+                    corridors.map(c => (
+                      <div key={c.pair} className="space-y-1.5">
+                        <div className="flex items-center justify-between text-xs font-semibold">
+                          <span className="font-mono font-bold text-slate-900 dark:text-white">{c.pair}</span>
+                          <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">{c.share}%</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                          <div 
+                            className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-500"
+                            style={{ width: `${c.share}%` }}
+                          ></div>
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-mono text-right">{c.count} calculation{c.count === 1 ? '' : 's'}</div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
-              {/* Feed Infrastructure Latency & Security Posture */}
+              {/* Feed Infrastructure & Real Tracking Integration */}
               <div className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-5">
                 <div className="pb-3 border-b border-slate-100 dark:border-slate-800">
                   <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Zap className="w-4 h-4 text-emerald-500" />
-                    <span>Provider Feeds &amp; Edge Health</span>
+                    <span>Real Tracking &amp; Endpoint Health</span>
                   </h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                    Live upstream endpoint health, rate-limit consumption, and fallback availability.
+                    Upstream data feeds and legitimate real-user analytics pipeline.
                   </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3.5">
                   {[
-                    { name: 'Interbank FX Rates (OpenExchange)', status: 'Optimal', latency: '42ms', quota: '64% consumed' },
-                    { name: 'Multi-Exchange Crypto Feeds (CoinGecko)', status: 'Optimal', latency: '68ms', quota: '48% consumed' },
-                    { name: 'Financial News Wire (Finnhub Live)', status: 'Nominal', latency: '112ms', quota: '31% consumed' },
-                    { name: 'Client Edge Caching (LocalStorage V2)', status: 'Active', latency: '< 1ms', quota: 'Unlimited' }
+                    { name: 'Vercel Real-Traffic Analytics', provider: '@vercel/analytics', status: 'Live & Enabled' },
+                    { name: 'Vercel Speed Insights (CWV)', provider: '@vercel/speed-insights', status: 'Live & Enabled' },
+                    { name: 'Interbank Forex Rates Feed', provider: 'OpenExchangeRates via ForexService', status: 'Active' },
+                    { name: 'Multi-Exchange Digital Asset Feed', provider: 'CoinGecko via CryptoService', status: 'Active' },
+                    { name: 'Live Financial News Wire', provider: 'Finnhub Live Market Feed', status: 'Active' }
                   ].map(feed => (
                     <div key={feed.name} className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs">
                       <div>
                         <div className="font-bold text-slate-900 dark:text-white">{feed.name}</div>
                         <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">
-                          Latency: {feed.latency} &bull; Quota: {feed.quota}
+                          {feed.provider}
                         </div>
                       </div>
                       <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px] border border-emerald-500/20">
@@ -843,7 +850,7 @@ export default function AdminPage() {
                   </h2>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                  Immutable daily rollup telemetry aggregated by client session fingerprinting and calculation counters.
+                  100% authentic daily rollup telemetry. Zero mock days. If a day had 0 visits, it shows 0.
                 </p>
               </div>
 
@@ -893,8 +900,12 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
                   {auditReports.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-10 text-center text-slate-400 font-sans">
-                        No telemetry records available for this period.
+                      <td colSpan={7} className="py-12 text-center text-slate-500 dark:text-slate-400 font-sans">
+                        <BarChart3 className="w-8 h-8 text-slate-400 mx-auto mb-2 opacity-50" />
+                        <p className="font-semibold text-slate-700 dark:text-slate-300">No Historical Records Yet</p>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Audit logs will populate automatically based on genuine user activity.
+                        </p>
                       </td>
                     </tr>
                   ) : (
@@ -910,7 +921,7 @@ export default function AdminPage() {
                           <span>{row.date}</span>
                           {idx === 0 && (
                             <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 text-[9px] uppercase font-bold">
-                              Today
+                              Current
                             </span>
                           )}
                         </td>
@@ -942,8 +953,8 @@ export default function AdminPage() {
             </div>
 
             <div className="pt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800">
-              <span>CSV export generates compliant RFC 4180 audit logs ready for spreadsheet and BI import.</span>
-              <span className="font-mono text-[11px]">Total Days: {auditReports.length}</span>
+              <span>RFC 4180 compliant CSV export containing genuine telemetry data.</span>
+              <span className="font-mono text-[11px]">Total Days Logged: {auditReports.length}</span>
             </div>
 
           </div>
@@ -964,7 +975,7 @@ export default function AdminPage() {
                   </h2>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                  Manage incoming user tickets, rate correction notices, advertising inquiries, and partnership requests.
+                  100% genuine user tickets submitted from the Contact Us page. Zero synthetic seeds.
                 </p>
               </div>
 
@@ -1015,15 +1026,18 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                   {filteredInquiries.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400">
-                        No inquiries found matching your filter criteria.
+                      <td colSpan={6} className="py-12 text-center text-slate-500 dark:text-slate-400">
+                        <Inbox className="w-8 h-8 text-slate-400 mx-auto mb-2 opacity-50" />
+                        <p className="font-semibold text-slate-700 dark:text-slate-300">Inbox is Clean &amp; Empty (0 Messages)</p>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          Genuine inquiries submitted from the Contact Us form will appear here.
+                        </p>
                       </td>
                     </tr>
                   ) : (
                     filteredInquiries.map(inq => (
                       <tr key={inq.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                         
-                        {/* Timestamp */}
                         <td className="py-3.5 px-3 text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono text-[11px]">
                           {new Date(inq.timestamp).toLocaleDateString()}
                           <span className="block text-[10px] text-slate-400">
@@ -1031,7 +1045,6 @@ export default function AdminPage() {
                           </span>
                         </td>
 
-                        {/* Sender */}
                         <td className="py-3.5 px-3 whitespace-nowrap">
                           <div className="font-bold text-slate-900 dark:text-white">{inq.name}</div>
                           <a 
@@ -1043,21 +1056,18 @@ export default function AdminPage() {
                           </a>
                         </td>
 
-                        {/* Subject */}
                         <td className="py-3.5 px-3 whitespace-nowrap">
                           <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-[11px]">
                             {inq.subject}
                           </span>
                         </td>
 
-                        {/* Excerpt */}
                         <td className="py-3.5 px-3 max-w-xs">
                           <p className="line-clamp-2 text-slate-600 dark:text-slate-400 text-xs">
                             {inq.message}
                           </p>
                         </td>
 
-                        {/* Status Badge */}
                         <td className="py-3.5 px-3 whitespace-nowrap">
                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 ${
                             inq.status === 'New' 
@@ -1071,7 +1081,6 @@ export default function AdminPage() {
                           </span>
                         </td>
 
-                        {/* Actions */}
                         <td className="py-3.5 px-3 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-1.5">
                             <button
@@ -1082,7 +1091,6 @@ export default function AdminPage() {
                               View
                             </button>
 
-                            {/* Quick Status Toggle */}
                             <select
                               value={inq.status}
                               onChange={(e) => handleStatusChange(inq.id, e.target.value)}
