@@ -13,11 +13,11 @@ import WhyFinPulse from './components/WhyFinPulse';
 import SearchModal from './components/SearchModal';
 import CryptoConverterModal from './components/CryptoConverterModal';
 import MarketNewsWire from './components/MarketNewsWire';
+import QuickConversionMatrix from './components/QuickConversionMatrix';
 import Footer from './components/Footer';
 
 // Asynchronous lazy-loaded routes for minimal initial bundle size and near-instant TBT
 const ForexTerminal = lazy(() => import('./components/ForexTerminal'));
-const QuickConversionMatrix = lazy(() => import('./components/QuickConversionMatrix'));
 const CryptoHub = lazy(() => import('./components/CryptoHub'));
 const ToolsSuite = lazy(() => import('./components/ToolsSuite'));
 const ArticleView = lazy(() => import('./components/ArticleView'));
@@ -239,7 +239,7 @@ export default function App() {
                 onViewData={() => navigate('/forex')}
               />
 
-              {/* Summary Overview Matrix */}
+              {/* Summary Overview Matrix (Live Market Dashboard) */}
               <MarketDashboard 
                 rates={rates}
                 cryptoList={cryptoList}
@@ -247,11 +247,21 @@ export default function App() {
                 onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
               />
 
+              {/* Automated Real-Time Financial News Wire (Finnhub API) */}
+              <MarketNewsWire limit={6} />
+
+              {/* Popular Forex Corridors & Matrix Section */}
+              <section id="forex-corridors" className="py-12 border-b border-slate-200/80 dark:border-white/[0.06] w-full max-w-full overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <QuickConversionMatrix
+                    rates={rates}
+                    onSelectPair={handleSelectPair}
+                  />
+                </div>
+              </section>
+
               {/* Market Highlights & Analytical Desk Memo */}
               <MarketIntelligence />
-
-              {/* Automated Real-Time Financial News Wire (Finnhub API) */}
-              <MarketNewsWire />
 
               {/* Latest Research snippet (3 posts) */}
               <ResearchSection limit={3} showViewAll={true} />
