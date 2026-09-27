@@ -12,6 +12,7 @@ import ResearchSection from './components/ResearchSection';
 import WhyFinPulse from './components/WhyFinPulse';
 import SearchModal from './components/SearchModal';
 import CryptoConverterModal from './components/CryptoConverterModal';
+import MarketNewsWire from './components/MarketNewsWire';
 import Footer from './components/Footer';
 
 // Asynchronous lazy-loaded routes for minimal initial bundle size and near-instant TBT
@@ -249,6 +250,9 @@ export default function App() {
               {/* Market Highlights & Analytical Desk Memo */}
               <MarketIntelligence />
 
+              {/* Automated Real-Time Financial News Wire (Finnhub API) */}
+              <MarketNewsWire />
+
               {/* Latest Research snippet (3 posts) */}
               <ResearchSection limit={3} showViewAll={true} />
 
@@ -354,6 +358,13 @@ export default function App() {
                 rates={rates}
                 cryptoList={cryptoList}
               />
+            </div>
+          } />
+
+          {/* ROUTE 7: DEDICATED REAL-TIME FINANCIAL NEWS WIRE (/news) */}
+          <Route path="/news" element={
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
+              <MarketNewsWire />
             </div>
           } />
 

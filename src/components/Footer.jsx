@@ -154,6 +154,15 @@ export default function Footer({ onSelectPair }) {
                   Financial Analysis & Guides
                 </Link>
               </li>
+              <li>
+                <Link 
+                  to="/news" 
+                  className="hover:text-blue-500 cursor-pointer transition-colors block flex items-center justify-between"
+                >
+                  <span>Live Financial News Wire</span>
+                  <span className="text-[9px] font-mono uppercase bg-emerald-500/10 text-emerald-500 px-1.5 py-0.2 rounded font-bold">Live</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
