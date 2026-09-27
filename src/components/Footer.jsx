@@ -66,10 +66,10 @@ export default function Footer({ onSelectPair }) {
               </span>
             </Link>
 
-            <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed max-w-sm">
+            <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed max-w-sm font-medium">
               Providing independent real-time foreign currency exchange rates, high-frequency cryptocurrency market data, and institutional macroeconomic analysis for global consumers and cross-border enterprises.
             </p>
-            <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 text-[11px] font-mono">
+            <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400 text-xs font-medium">
               <span className="flex items-center gap-1.5">
                 <Globe className="w-3.5 h-3.5 text-blue-500" /> 160+ Currencies Live
               </span>
@@ -82,7 +82,7 @@ export default function Footer({ onSelectPair }) {
 
           {/* Quick Currency Pairs */}
           <div>
-            <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
+            <h3 className="text-slate-900 dark:text-white font-semibold text-xs uppercase tracking-wider mb-3">
               Popular Pairs
             </h3>
             <ul className="space-y-1.5 text-xs">
@@ -91,7 +91,7 @@ export default function Footer({ onSelectPair }) {
                   <Link 
                     to={`/forex?from=${pair.from}&to=${pair.to}`}
                     onClick={(e) => handlePairClick(e, pair.from, pair.to)}
-                    className="hover:text-blue-500 active:text-blue-600 transition-colors cursor-pointer block py-0.5 text-left"
+                    className="hover:text-blue-500 active:text-blue-600 transition-colors cursor-pointer block py-0.5 text-left font-medium"
                   >
                     {pair.label}
                   </Link>
@@ -102,10 +102,10 @@ export default function Footer({ onSelectPair }) {
 
           {/* Market Sectors */}
           <div>
-            <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider mb-3">
+            <h3 className="text-slate-900 dark:text-white font-semibold text-xs uppercase tracking-wider mb-3">
               Market Sectors
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2 text-xs font-medium">
               <li>
                 <Link 
                   to="/crypto?coin=bitcoin" 
@@ -160,7 +160,7 @@ export default function Footer({ onSelectPair }) {
                   className="hover:text-blue-500 cursor-pointer transition-colors block flex items-center justify-between"
                 >
                   <span>Live Financial News Wire</span>
-                  <span className="text-[9px] font-mono uppercase bg-emerald-500/10 text-emerald-500 px-1.5 py-0.2 rounded font-bold">Live</span>
+                  <span className="text-xs uppercase bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded font-bold">Live</span>
                 </Link>
               </li>
             </ul>
@@ -169,12 +169,12 @@ export default function Footer({ onSelectPair }) {
           {/* AdSense Mandatory Compliance & Trust Standalone URLs */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
+              <h3 className="text-slate-900 dark:text-white font-semibold text-xs uppercase tracking-wider">
                 Trust & Legal
               </h3>
               <button
                 onClick={() => setLegalModalTab('privacy')}
-                className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline font-mono cursor-pointer"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
                 title="Quick Legal Summary Modal"
               >
                 Quick Modal
@@ -191,7 +191,7 @@ export default function Footer({ onSelectPair }) {
                 </Link>
                 <button
                   onClick={() => setLegalModalTab('about')}
-                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-mono"
+                  className="text-xs opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-medium"
                   title="Preview About modal"
                 >
                   modal
@@ -207,7 +207,7 @@ export default function Footer({ onSelectPair }) {
                 </Link>
                 <button
                   onClick={() => setLegalModalTab('contact')}
-                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-mono"
+                  className="text-xs opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-medium"
                   title="Preview Contact modal"
                 >
                   modal
@@ -223,7 +223,7 @@ export default function Footer({ onSelectPair }) {
                 </Link>
                 <button
                   onClick={() => setLegalModalTab('privacy')}
-                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-mono"
+                  className="text-xs opacity-0 group-hover:opacity-100 text-slate-400 hover:text-blue-500 transition-opacity cursor-pointer font-medium"
                   title="Preview Privacy modal"
                 >
                   modal
@@ -239,7 +239,7 @@ export default function Footer({ onSelectPair }) {
                 </Link>
                 <button
                   onClick={() => setLegalModalTab('disclaimer')}
-                  className="text-[10px] opacity-0 group-hover:opacity-100 text-slate-400 hover:text-amber-500 transition-opacity cursor-pointer font-mono"
+                  className="text-xs opacity-0 group-hover:opacity-100 text-slate-400 hover:text-amber-500 transition-opacity cursor-pointer font-medium"
                   title="Preview Disclaimer modal"
                 >
                   modal
@@ -251,23 +251,23 @@ export default function Footer({ onSelectPair }) {
         </div>
 
         {/* Financial & AdSense Compliance Banner */}
-        <div className="py-6 border-b border-slate-200 dark:border-white/[0.06] text-[11px] leading-relaxed text-slate-500">
+        <div className="py-6 border-b border-slate-200 dark:border-white/[0.06] text-xs leading-relaxed text-slate-600 dark:text-slate-400 font-medium">
           <p>
-            <strong className="text-slate-700 dark:text-slate-300">Financial Disclosure:</strong> Foreign exchange and crypto assets involve market risk. Quoted rates reflect mid-market interbank valuations and are displayed for computational reference.
+            <strong className="text-slate-800 dark:text-slate-200 font-bold">Financial Disclosure:</strong> Foreign exchange and crypto assets involve market risk. Quoted rates reflect mid-market interbank valuations and are displayed for computational reference.
           </p>
         </div>
 
         {/* Bottom Bar with Standalone Router Links */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600 dark:text-slate-400 font-medium">
           <div>
             © {new Date().getFullYear()} {siteSettings?.websiteName || 'FinPulse'} Media & Data. All rights reserved. GDPR & Privacy Compliant.
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/privacy-policy" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Privacy & Cookies</Link>
+            <Link to="/privacy-policy" className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">Privacy & Cookies</Link>
             <span>•</span>
-            <Link to="/disclaimer" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Disclaimer</Link>
+            <Link to="/disclaimer" className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">Disclaimer</Link>
             <span>•</span>
-            <Link to="/contact" className="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">Advertise & Contact</Link>
+            <Link to="/contact" className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer">Advertise & Contact</Link>
           </div>
         </div>
 

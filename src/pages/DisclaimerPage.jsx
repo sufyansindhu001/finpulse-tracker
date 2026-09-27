@@ -35,7 +35,7 @@ export default function DisclaimerPage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Financial & Investment Disclaimer
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
               Please read this disclaimer carefully before using {siteSettings?.websiteName || 'FinPulse'} data tools and calculators.
             </p>
           </div>

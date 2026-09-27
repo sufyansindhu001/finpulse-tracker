@@ -44,14 +44,14 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-3 border border-blue-500/20 font-mono uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-3 border border-blue-500/20 uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Technical Capabilities</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Institutional Platform Architecture
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 font-normal leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 font-medium leading-relaxed">
             Engineered from first principles for computational rigor, transparent pricing, and verifiable cross-market feeds.
           </p>
         </div>
@@ -72,12 +72,12 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
                     {pillar.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-medium">
                     {pillar.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/[0.04] flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/[0.04] flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Technical Specification</span>
                 </div>
@@ -95,7 +95,7 @@ export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
             <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
               Institutional Precision for Global Markets
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto font-medium leading-relaxed">
               Open financial infrastructure engineered for cross-border traders, corporate treasury analysts, and global researchers.
             </p>
 

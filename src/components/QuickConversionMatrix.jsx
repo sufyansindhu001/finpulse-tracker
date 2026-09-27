@@ -16,11 +16,11 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
             <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Popular Forex Corridors & Matrix
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">
               Live calculated exchange rates and benchmark conversion values across major international currency corridors.
             </p>
           </div>
-          <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full self-start sm:self-center flex items-center gap-2 font-semibold shadow-sm">
+          <span className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full self-start sm:self-center flex items-center gap-2 font-semibold shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Live Interbank Feed</span>
           </span>
@@ -51,11 +51,11 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                   </div>
                 </div>
 
-                <div className="text-xs font-bold text-slate-700 dark:text-slate-300 tracking-wide uppercase">
+                <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 tracking-wider uppercase">
                   {pair.label}
                 </div>
 
-                <div className="text-2xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums tracking-tight">
+                <div className="text-2xl font-black text-slate-900 dark:text-white mt-1 tabular-nums tracking-tight">
                   {rate < 0.001 
                     ? rate.toFixed(6) 
                     : rate < 1 
@@ -63,7 +63,7 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                       : rate.toFixed(2)}
                 </div>
 
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/[0.06] flex justify-between tabular-nums">
+                <div className="text-xs text-slate-600 dark:text-slate-400 mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/[0.06] flex justify-between tabular-nums font-medium">
                   <span>100 {pair.base} =</span>
                   <span className="text-slate-800 dark:text-slate-200 font-bold">
                     {val100.toLocaleString(undefined, { maximumFractionDigits: 2 })} {pair.target}
@@ -76,13 +76,13 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
 
         {/* Multi-Amount Conversion Reference Table */}
         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-white/[0.06]">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3.5">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3.5">
             USD Conversion Matrix
           </h3>
           <div className="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-white/[0.06]">
             <table className="w-full text-xs text-left">
               <thead className="bg-slate-50/80 dark:bg-white/[0.02]">
-                <tr className="border-b border-slate-200/80 dark:border-white/[0.06] text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px] font-bold">
+                <tr className="border-b border-slate-200/80 dark:border-white/[0.06] text-slate-600 dark:text-slate-400 uppercase tracking-wider text-xs font-semibold">
                   <th className="py-3 px-4">Currency</th>
                   <th className="py-3 px-4 text-right">Unit Rate ($1 USD)</th>
                   <th className="py-3 px-4 text-right">$50 USD</th>
@@ -91,7 +91,7 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                   <th className="py-3 px-4 text-right">$1,000 USD</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04] font-mono tabular-nums">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04] tabular-nums font-medium">
                 {['PKR', 'INR', 'AED', 'SAR', 'EUR', 'GBP', 'CAD', 'JPY'].map((code) => {
                   const curr = getCurrencyInfo(code);
                   const rate = getExchangeRate('USD', code, activeRates);
@@ -100,7 +100,7 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                       <td className="py-3 px-4 font-sans font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                         <span className="text-base">{curr.flag}</span>
                         <span>{curr.name}</span>
-                        <span className="text-slate-400 uppercase text-[10px] font-mono">({code})</span>
+                        <span className="text-slate-500 dark:text-slate-400 uppercase text-xs">({code})</span>
                       </td>
                       <td className="py-3 px-4 text-right text-emerald-600 dark:text-emerald-400 font-bold">
                         {rate < 0.001 ? rate.toFixed(6) : rate.toFixed(2)}

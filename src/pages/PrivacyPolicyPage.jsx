@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Privacy Policy & Cookie Disclosure
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
               Effective Date: September 24, 2026 • Compliant with GDPR, CCPA & Google Publisher Guidelines
             </p>
           </div>

@@ -193,14 +193,14 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
         
         {/* Top Institutional Badge */}
         <div className="flex items-center justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] text-xs font-medium text-slate-700 dark:text-slate-300 shadow-xs backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs backdrop-blur-md">
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-slate-600 dark:text-slate-400 text-[11px] font-mono tracking-wider uppercase">Live Terminal Feed</span>
+            <span className="text-slate-600 dark:text-slate-400 text-xs font-semibold tracking-wider uppercase">Live Terminal Feed</span>
             <span className="text-slate-300 dark:text-white/[0.2]">•</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold tabular-nums">160+ Currencies & Crypto</span>
+            <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold tabular-nums">160+ Currencies &amp; Crypto</span>
           </div>
         </div>
 
@@ -213,7 +213,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
             </span>
           </h1>
 
-          <p className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
+          <p className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
             Independent interbank exchange rates, historical corridor analytics, and high-frequency digital market feeds.
           </p>
 
@@ -252,16 +252,16 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
                   <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500/80 inline-block" />
                   <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500/80 inline-block" />
                 </div>
-                <span className="font-mono text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 truncate ml-1 sm:ml-1.5">
+                <span className="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400 truncate ml-1 sm:ml-1.5">
                   FINPULSE_MARKET_DEPTH_FLOW
                 </span>
               </div>
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0 font-mono">
-                <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-1 font-semibold text-[10px] sm:text-xs shrink-0 whitespace-nowrap">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-1 font-semibold text-xs shrink-0 whitespace-nowrap">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                   Order Flow: Balanced
                 </span>
-                <span className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs hidden md:inline shrink-0">
+                <span className="text-slate-500 dark:text-slate-400 text-xs hidden md:inline shrink-0 font-medium">
                   Latency &lt; 40ms
                 </span>
               </div>
@@ -276,19 +276,19 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
 
               {/* Responsive Market Price Tags (clean flex spacing, no hardcoded left percentages) */}
               <div className="absolute inset-x-0 bottom-2.5 sm:bottom-3 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-2 pointer-events-none z-10">
-                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-[10px] sm:text-xs font-mono">
+                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-xs font-medium">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                   <span className="text-slate-900 dark:text-white font-bold">BTC/USD</span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">+2.4%</span>
                 </div>
 
-                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-[10px] sm:text-xs font-mono">
+                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-xs font-medium">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
                   <span className="text-slate-900 dark:text-white font-bold">USD/PKR</span>
                   <span className="text-blue-600 dark:text-blue-400 font-semibold tabular-nums">278.09</span>
                 </div>
 
-                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-[10px] sm:text-xs font-mono">
+                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-xs font-medium">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
                   <span className="text-slate-900 dark:text-white font-bold">EUR/USD</span>
                   <span className="text-indigo-600 dark:text-indigo-400 font-semibold tabular-nums">1.084</span>
@@ -297,21 +297,21 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
             </div>
 
             {/* Metric Footer Ribbon: 2x2 grid on mobile, 4 columns on sm+ */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-white/[0.05] text-xs font-mono">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-white/[0.05] text-xs font-sans">
               <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Live Fiat Pairs</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Live Fiat Pairs</div>
                 <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-bold tabular-nums mt-0.5 truncate">160+ Currencies</div>
               </div>
               <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Digital Asset Feed</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Digital Asset Feed</div>
                 <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-bold tabular-nums mt-0.5 truncate">20 Tier-1 Assets</div>
               </div>
               <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Benchmark USD/PKR</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Benchmark USD/PKR</div>
                 <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-bold tabular-nums mt-0.5 truncate">278.09 Baseline</div>
               </div>
               <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 uppercase font-semibold truncate">Markup Spread</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Markup Spread</div>
                 <div className="text-xs sm:text-sm text-slate-900 dark:text-white font-bold tabular-nums mt-0.5 truncate">0.00% Zero Fee</div>
               </div>
             </div>

@@ -91,20 +91,20 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 font-mono uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 uppercase tracking-wider">
               <Globe className="w-3.5 h-3.5" />
               <span>Interbank Forex Terminal</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Dedicated Forex Terminal & Parity Simulator
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl font-medium">
               Live interbank mid-market exchange rates, bilateral corridor liquidity, and instant parity simulation.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs">
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span>{source || 'Interbank FX Feeds (Live)'}</span>
             </span>
@@ -132,12 +132,12 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-lg">{c.flag}</span>
-                  <span className="text-[11px] font-mono font-bold text-slate-700 dark:text-slate-300">{c.label}</span>
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{c.label}</span>
                 </div>
-                <div className="text-base font-black text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
+                <div className="text-base font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
                   {rate < 0.001 ? rate.toFixed(6) : rate < 1 ? rate.toFixed(4) : rate.toFixed(2)}
                 </div>
-                <div className="text-[10px] text-slate-600 dark:text-slate-400 truncate mt-0.5 font-sans">
+                <div className="text-xs text-slate-600 dark:text-slate-400 truncate mt-0.5 font-normal">
                   {c.name}
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                 Live Parity Simulator & Currency Calculator
               </h2>
             </div>
-            <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono hidden sm:inline">
+            <span className="text-xs text-slate-600 dark:text-slate-400 tabular-nums hidden sm:inline font-medium">
               1 {baseCurrency} = {directRate < 0.001 ? directRate.toFixed(6) : directRate.toFixed(4)} {targetCurrency}
             </span>
           </div>
@@ -165,11 +165,11 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
             
             {/* Amount Input */}
             <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
                 Simulation Amount
               </label>
               <div className="relative flex items-center">
-                <span className="text-xl font-bold text-slate-400 dark:text-slate-500 mr-2 select-none font-mono">
+                <span className="text-xl font-bold text-slate-400 dark:text-slate-500 mr-2 select-none">
                   {baseObj.symbol || '$'}
                 </span>
                 <input
@@ -179,14 +179,14 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-transparent border-0 p-0 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white font-mono tabular-nums tracking-tight focus:outline-none focus:ring-0"
+                  className="w-full bg-transparent border-0 p-0 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight focus:outline-none focus:ring-0"
                 />
               </div>
             </div>
 
             {/* Base Currency Dropdown */}
             <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
                 From Currency
               </label>
               <div className="relative">
@@ -220,7 +220,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
 
             {/* Target Currency Dropdown */}
             <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
                 To Currency
               </label>
               <div className="relative">
@@ -245,12 +245,12 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
 
           {/* Quick Presets */}
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold font-mono mr-1">Presets:</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold mr-1">Presets:</span>
             {[10, 50, 100, 250, 500, 1000, 5000].map((preset) => (
               <button
                 key={preset}
                 onClick={() => setAmount(preset.toString())}
-                className={`text-xs px-3 py-1 rounded-full border font-mono tabular-nums transition-all cursor-pointer ${
+                className={`text-xs px-3 py-1 rounded-full border tabular-nums font-semibold transition-all cursor-pointer ${
                   numericAmount === preset
                     ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs shadow-blue-500/25'
                     : 'bg-slate-100 dark:bg-[#07090E] border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20'
@@ -264,18 +264,18 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
           {/* Converted Total Output Banner */}
           <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
             <div>
-              <div className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1 font-mono">
+              <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                 Simulated Output Total ({targetCurrency})
               </div>
               <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
                   {targetObj.symbol} {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
                 </span>
-                <span className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                <span className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">
                   {targetCurrency}
                 </span>
               </div>
-              <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 font-mono tabular-nums">
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 tabular-nums font-medium">
                 {numericAmount.toLocaleString()} {baseCurrency} = {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {targetCurrency}
               </div>
             </div>
@@ -292,10 +292,10 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
           {/* Parity Simulator Matrix Across Key Global Corridors */}
           <div className="mt-8 pt-6 border-t border-slate-100 dark:border-white/[0.06]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 font-mono">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 Instant Parity Simulation: {numericAmount.toLocaleString()} {baseCurrency} Across World Corridors
               </h3>
-              <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-semibold">
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-semibold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 Pure Interbank Baseline
               </span>
@@ -320,12 +320,12 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-lg">{curr.flag}</span>
-                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono">{code}</span>
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{code}</span>
                     </div>
-                    <div className="text-sm font-bold text-slate-900 dark:text-white font-mono truncate tabular-nums">
+                    <div className="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">
                       {curr.symbol} {converted.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-1 truncate tabular-nums">
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 truncate tabular-nums font-medium">
                       1 {baseCurrency} = {rate < 0.01 ? rate.toFixed(4) : rate.toFixed(2)}
                     </div>
                   </div>

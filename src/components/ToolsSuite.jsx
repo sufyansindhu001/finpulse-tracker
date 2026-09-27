@@ -110,14 +110,14 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 font-mono uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 uppercase tracking-wider">
               <Calculator className="w-3.5 h-3.5" />
               <span>Institutional Calculation Suite</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Financial Tools & Risk Suite
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl font-medium">
               Precision calculators for spot foreign exchange, digital assets valuation, and position size risk management.
             </p>
           </div>
@@ -166,7 +166,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               
               <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Amount to Exchange
                 </label>
                 <input
@@ -175,13 +175,13 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                   step="any"
                   value={forexAmount}
                   onChange={(e) => setForexAmount(e.target.value)}
-                  className="w-full bg-transparent text-3xl font-black text-slate-900 dark:text-white font-mono tabular-nums focus:outline-none"
+                  className="w-full bg-transparent text-3xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                   placeholder="100.00"
                 />
               </div>
 
               <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   From Currency
                 </label>
                 <select
@@ -211,7 +211,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   To Currency
                 </label>
                 <select
@@ -232,13 +232,13 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             {/* Result Display */}
             <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
               <div>
-                <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Exchange Value Output
                 </div>
-                <div className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white font-mono tabular-nums">
+                <div className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tabular-nums">
                   {getCurrencyInfo(forexTarget).symbol} {forexConverted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} <span className="text-emerald-600 dark:text-emerald-400 text-xl font-bold">{forexTarget}</span>
                 </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1 tabular-nums">
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 tabular-nums">
                   1 {forexBase} = {forexDirectRate < 0.001 ? forexDirectRate.toFixed(6) : forexDirectRate.toFixed(4)} {forexTarget}
                 </div>
               </div>
@@ -260,7 +260,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               
               <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Crypto Quantity
                 </label>
                 <input
@@ -269,13 +269,13 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                   step="any"
                   value={cryptoQty}
                   onChange={(e) => setCryptoQty(e.target.value)}
-                  className="w-full bg-transparent text-3xl font-black text-slate-900 dark:text-white font-mono tabular-nums focus:outline-none"
+                  className="w-full bg-transparent text-3xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                   placeholder="1.0"
                 />
               </div>
 
               <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Select Digital Asset
                 </label>
                 <select
@@ -297,7 +297,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Destination Fiat
                 </label>
                 <select
@@ -318,13 +318,13 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             {/* Crypto Result Display */}
             <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
               <div>
-                <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Liquid Fiat Valuation
                 </div>
-                <div className="text-3xl sm:text-5xl font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
+                <div className="text-3xl sm:text-5xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {fiatObj.symbol} {cryptoConvertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-slate-900 dark:text-white text-xl font-bold">{cryptoFiat}</span>
                 </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1 tabular-nums">
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 tabular-nums">
                   {numCryptoQty} {selectedCoin.symbol?.toUpperCase()} = ${cryptoTotalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                 </div>
               </div>
@@ -346,23 +346,23 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               
               <div className="bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Account Balance (USD)
                 </label>
                 <div className="flex items-center">
-                  <span className="text-xl font-bold text-slate-400 dark:text-slate-500 mr-1.5 font-mono">$</span>
+                  <span className="text-xl font-bold text-slate-400 dark:text-slate-500 mr-1.5">$</span>
                   <input
                     type="number"
                     value={accountBalance}
                     onChange={(e) => setAccountBalance(e.target.value)}
-                    className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums focus:outline-none"
+                    className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                     placeholder="10000"
                   />
                 </div>
               </div>
 
               <div className="bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Risk Tolerance (%)
                 </label>
                 <div className="flex items-center">
@@ -371,28 +371,28 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                     step="0.1"
                     value={riskPercent}
                     onChange={(e) => setRiskPercent(e.target.value)}
-                    className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums focus:outline-none"
+                    className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                     placeholder="1.0"
                   />
-                  <span className="text-xl font-bold text-slate-400 dark:text-slate-500 ml-1.5 font-mono">%</span>
+                  <span className="text-xl font-bold text-slate-400 dark:text-slate-500 ml-1.5">%</span>
                 </div>
               </div>
 
               <div className="bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Stop Loss (Pips)
                 </label>
                 <input
                   type="number"
                   value={stopLossPips}
                   onChange={(e) => setStopLossPips(e.target.value)}
-                  className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums focus:outline-none"
+                  className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                   placeholder="25"
                 />
               </div>
 
               <div className="bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase font-mono mb-1">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Trading Asset
                 </label>
                 <select
@@ -415,31 +415,31 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
               
               <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
-                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase">Capital at Risk</div>
-                <div className="text-3xl font-black text-rose-600 dark:text-rose-400 font-mono tabular-nums mt-1">
+                <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Capital at Risk</div>
+                <div className="text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums mt-1">
                   ${riskCalculations.moneyAtRisk.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-1">
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
                   Exact max drawdown for this trade
                 </div>
               </div>
 
               <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
-                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase">Recommended Position Size</div>
-                <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono tabular-nums mt-1">
+                <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Recommended Position Size</div>
+                <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums mt-1">
                   {riskCalculations.lotSize} <span className="text-base text-slate-700 dark:text-slate-300 font-normal">Lots</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-1">
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
                   {riskCalculations.totalUnits} units of {tradingPair.split('/')[0]}
                 </div>
               </div>
 
               <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
-                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase">Calculated Pip Value</div>
-                <div className="text-3xl font-black text-blue-600 dark:text-blue-400 font-mono tabular-nums mt-1">
+                <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Calculated Pip Value</div>
+                <div className="text-3xl font-black text-blue-600 dark:text-blue-400 tabular-nums mt-1">
                   ${riskCalculations.pipValueForPosition} <span className="text-base text-slate-700 dark:text-slate-300 font-normal">/ pip</span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-1">
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
                   Loss per adverse pip movement
                 </div>
               </div>

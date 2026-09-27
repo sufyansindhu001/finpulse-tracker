@@ -99,7 +99,7 @@ export default function MarketNewsWire({ limit = 6 }) {
         {/* Section Header: Live Market Wire with pulsing live beacon */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2.5 border border-emerald-500/20 font-mono uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold mb-2.5 border border-emerald-500/20 uppercase tracking-wider">
               <Radio className="w-3.5 h-3.5 animate-pulse" />
               <span>Real-Time Dispatches</span>
             </div>
@@ -108,20 +108,20 @@ export default function MarketNewsWire({ limit = 6 }) {
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 Live Market Wire
               </h2>
-              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-mono font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>• Real-Time Macro &amp; Crypto Intelligence</span>
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-2xl font-medium leading-relaxed">
               Automated high-frequency intelligence, macroeconomic indicators, and central bank developments curated directly from global financial wires.
             </p>
           </div>
 
           {/* Wire Controls & Source Status */}
           <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
-            <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs">
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 bg-slate-100 dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="truncate max-w-[150px] sm:max-w-none">{meta.source}</span>
             </span>
@@ -129,7 +129,7 @@ export default function MarketNewsWire({ limit = 6 }) {
             <button
               onClick={() => loadNews(activeCategory, true)}
               disabled={isRefreshing || isLoading}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.08] text-xs font-mono font-semibold transition-all cursor-pointer active:scale-95 disabled:opacity-60 shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/[0.08] text-xs font-semibold transition-all cursor-pointer active:scale-95 disabled:opacity-60 shadow-xs"
               title="Force sync latest financial wire"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-500' : 'text-slate-500 dark:text-slate-400'}`} />
@@ -177,10 +177,10 @@ export default function MarketNewsWire({ limit = 6 }) {
                   {/* Top Metadata Row: Publisher Pill Badge + Timestamp + Subtle Link Arrow */}
                   <div className="flex items-center justify-between gap-2 mb-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full font-bold border ${getSourceBadgeStyle(item.source)} truncate max-w-[120px]`}>
+                      <span className={`text-xs uppercase px-2 py-0.5 rounded-full font-bold border ${getSourceBadgeStyle(item.source)} truncate max-w-[120px]`}>
                         {item.source}
                       </span>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1 shrink-0">
+                      <span className="text-xs text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1 shrink-0">
                         <Clock className="w-3 h-3" />
                         {item.timeAgo}
                       </span>
@@ -191,11 +191,11 @@ export default function MarketNewsWire({ limit = 6 }) {
                   {/* Terminal News Body: Side-by-side Headline and Compact Thumbnail */}
                   <div className="flex items-start gap-3 mt-1.5">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug tracking-tight">
+                      <h3 className="text-sm font-semibold leading-snug text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                         {item.headline}
                       </h3>
                       {item.summary && (
-                        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed font-sans">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed font-normal">
                           {item.summary}
                         </p>
                       )}
@@ -218,7 +218,7 @@ export default function MarketNewsWire({ limit = 6 }) {
                 </div>
 
                 {/* Bottom Terminal Status Bar */}
-                <div className="pt-2.5 mt-2.5 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                <div className="pt-2.5 mt-2.5 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
                   <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     Terminal Wire
@@ -233,7 +233,7 @@ export default function MarketNewsWire({ limit = 6 }) {
         )}
 
         {/* AdSense Compliance Disclosure */}
-        <div className="mt-8 pt-4 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+        <div className="mt-8 pt-4 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-slate-400 font-normal">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
             <span>Syndicated live market news wire. All external dispatches attribute original publisher.</span>

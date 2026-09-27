@@ -47,10 +47,13 @@
 
 /* Tabular Numbers for financial data, exchange rates, matrices, and live tickers */
 .tabular-nums,
+.font-tabular,
 table td,
 input[type="number"],
 .currency-rate,
 .crypto-price {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-feature-settings: 'tnum' on, 'cv05' on;
   font-variant-numeric: tabular-nums;
 }
 

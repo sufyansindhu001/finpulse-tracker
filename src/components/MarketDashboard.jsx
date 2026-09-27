@@ -173,14 +173,14 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 font-mono uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Multi-Asset Market Matrix</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Live Market Dashboard
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl font-medium">
               High-frequency multi-asset terminal monitoring leading cryptocurrencies, global forex corridors, and spot commodities.
             </p>
           </div>
@@ -240,13 +240,13 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                       <span className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {asset.symbol}
                       </span>
-                      <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase">
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                         {asset.category}
                       </span>
                     </div>
 
                     <span
-                      className={`inline-flex items-center gap-0.5 text-[11px] font-mono font-bold px-2 py-0.5 rounded-full tabular-nums ${
+                      className={`inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full tabular-nums ${
                         isPositive 
                           ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
                           : 'text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20'
@@ -258,13 +258,13 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                   </div>
 
                   {/* Asset Full Name */}
-                  <div className="text-xs text-slate-600 dark:text-slate-400 truncate mb-3">
+                  <div className="text-xs text-slate-600 dark:text-slate-400 font-medium truncate mb-3">
                     {asset.name}
                   </div>
 
                   {/* Price & Sparkline Row */}
                   <div className="flex items-baseline justify-between gap-2 mt-1">
-                    <div className="text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
+                    <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
                       {asset.formattedPrice}
                     </div>
 
@@ -291,14 +291,14 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                 </div>
 
                 {/* 24h Range Bar & Action Footer */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-[11px] font-mono">
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-xs font-medium">
                   <div className="text-slate-600 dark:text-slate-400">
-                    <span className="text-slate-500 dark:text-slate-400">24h: </span>
-                    <span className="text-slate-700 dark:text-slate-300 tabular-nums">
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">24h: </span>
+                    <span className="text-slate-800 dark:text-slate-200 tabular-nums font-semibold">
                       ${typeof asset.low === 'number' ? (asset.low < 1 ? asset.low.toFixed(4) : Math.round(asset.low).toLocaleString()) : asset.low}
                     </span>
                     <span className="text-slate-400 dark:text-slate-600 mx-1">-</span>
-                    <span className="text-slate-700 dark:text-slate-300 tabular-nums">
+                    <span className="text-slate-800 dark:text-slate-200 tabular-nums font-semibold">
                       ${typeof asset.high === 'number' ? (asset.high < 1 ? asset.high.toFixed(4) : Math.round(asset.high).toLocaleString()) : asset.high}
                     </span>
                   </div>

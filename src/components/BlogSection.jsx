@@ -37,14 +37,14 @@ export default function BlogSection() {
       {/* Blog Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 tracking-wide">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2.5 border border-blue-500/20 uppercase tracking-wider">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Market Analysis & Research</span>
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Financial Insights & Research
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl font-medium">
             Macroeconomic analysis on central bank foreign exchange policies, liquidity corridors, and digital asset economics.
           </p>
         </div>
@@ -88,20 +88,20 @@ export default function BlogSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             <div className="lg:col-span-7">
               <div className="flex items-center gap-2.5 mb-3">
-                <span className="text-[10px] font-mono uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full font-bold border border-blue-500/20">
+                <span className="text-xs uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full font-semibold border border-blue-500/20 tracking-wider">
                   Featured Story
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium font-mono">
+                <span className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1 font-medium">
                   <Calendar className="w-3.5 h-3.5" /> {featuredPost.date}
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium font-mono">
+                <span className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1 font-medium">
                   <Clock className="w-3.5 h-3.5" /> {featuredPost.readTime}
                 </span>
               </div>
               <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors leading-snug">
                 {featuredPost.title}
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2.5 line-clamp-3 leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2.5 line-clamp-3 leading-relaxed font-medium">
                 {featuredPost.summary}
               </p>
               <div className="mt-5 flex items-center gap-2 text-xs font-bold text-blue-500 group-hover:translate-x-1 transition-transform">
@@ -143,22 +143,22 @@ export default function BlogSection() {
                   width="400"
                   height="176"
                 />
-                <span className="absolute top-3 left-3 text-[10px] font-bold bg-white/90 dark:bg-[#0B0F19]/90 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm">
+                <span className="absolute top-3 left-3 text-xs font-semibold uppercase tracking-wider bg-white/90 dark:bg-[#0B0F19]/90 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-sm">
                   {post.category}
                 </span>
               </div>
 
               {/* Body */}
               <div className="p-5">
-                <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 mb-2 font-mono">
+                <div className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-slate-400 mb-2 font-medium">
                   <span>{post.date}</span>
                   <span>•</span>
                   <span>{post.readTime}</span>
                 </div>
-                <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-2 leading-snug">
+                <h4 className="text-sm font-semibold leading-snug text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-2">
                   {post.title}
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-3 leading-relaxed font-medium">
                   {post.summary}
                 </p>
               </div>
@@ -166,7 +166,7 @@ export default function BlogSection() {
 
             {/* Card Footer */}
             <div className="px-5 pb-5 pt-3 flex items-center justify-between border-t border-slate-100 dark:border-white/[0.04] mt-auto text-xs">
-              <span className="text-slate-500 dark:text-slate-400 font-medium truncate max-w-[160px]">{post.author.split(',')[0]}</span>
+              <span className="text-slate-600 dark:text-slate-400 font-medium truncate max-w-[160px]">{post.author.split(',')[0]}</span>
               <span className="inline-flex items-center gap-1 text-blue-500 font-bold group-hover:translate-x-0.5 transition-transform">
                 Read Article <ArrowRight className="w-3.5 h-3.5" />
               </span>

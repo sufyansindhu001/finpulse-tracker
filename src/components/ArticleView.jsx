@@ -92,11 +92,11 @@ export default function ArticleView() {
           <span className="px-3 py-1 rounded-full font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             {article.category}
           </span>
-          <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium font-mono">
+          <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-medium">
             <Calendar className="w-3.5 h-3.5" />
             {article.date}
           </span>
-          <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium font-mono">
+          <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-medium">
             <Clock className="w-3.5 h-3.5" />
             {article.readTime}
           </span>
@@ -122,10 +122,10 @@ export default function ArticleView() {
             </div>
             <div>
               <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'FinPulse Macro Research Desk'}</div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">FinPulse Macro Research Desk • Independent Financial Intelligence</div>
+              <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">FinPulse Macro Research Desk • Independent Financial Intelligence</div>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold font-mono">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">
             <ShieldCheck className="w-4 h-4" />
             <span>Monetary Release Verified</span>
           </div>
@@ -183,14 +183,14 @@ export default function ArticleView() {
 
         {/* Market Tickers & Editorial Tags */}
         <div className="mt-10 pt-6 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-wrap items-center gap-2">
-          <span className="text-xs font-mono font-bold text-slate-500 uppercase flex items-center gap-1.5 mr-1">
+          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mr-1">
             <Tag className="w-3.5 h-3.5 text-slate-400" />
             TAGS:
           </span>
           {(Array.isArray(article.tags) ? article.tags : (typeof article.tags === 'string' ? article.tags.split(',') : [])).map((tag, tIdx) => (
             <span 
               key={tIdx} 
-              className="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-white/[0.08] font-mono font-bold uppercase"
+              className="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-white/[0.08] font-semibold uppercase tracking-wider"
             >
               #{tag.trim().replace(/^#/, '').toUpperCase()}
             </span>
@@ -198,13 +198,13 @@ export default function ArticleView() {
         </div>
 
         {/* Human Verification Footnote */}
-        <div className="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] text-xs font-mono text-slate-600 dark:text-slate-400 flex items-center gap-2">
+        <div className="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] text-xs font-medium text-slate-600 dark:text-slate-400 flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
           <span>Source data verified against official monetary releases and interbank settlement filings.</span>
         </div>
 
         {/* AdSense Compliance Editorial Disclaimer */}
-        <div className="mt-6 p-4.5 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+        <div className="mt-6 p-4.5 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
           <strong className="text-slate-800 dark:text-slate-200">Editorial &amp; Financial Standards:</strong> All research and intelligence publications are prepared independently by the FinPulse Macro Research Desk. Foreign exchange and crypto assets involve market risk. Quoted rates reflect mid-market interbank valuations and are displayed for computational reference.
         </div>
 
@@ -221,14 +221,14 @@ export default function ArticleView() {
               className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-5 hover:border-blue-500/50 hover:shadow-xl transition-all cursor-pointer group shadow-sm flex flex-col justify-between backdrop-blur-2xl"
             >
               <div>
-                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-wider block mb-1 font-mono">
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">
                   {rel.category}
                 </span>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-2">
+                <h3 className="text-sm font-semibold leading-snug text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-2">
                   {rel.title}
                 </h3>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-medium">
                 <span>{rel.readTime}</span>
                 <span className="font-bold text-blue-500 group-hover:translate-x-1 transition-transform">Read →</span>
               </div>

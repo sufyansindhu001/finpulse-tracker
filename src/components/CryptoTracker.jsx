@@ -97,64 +97,64 @@ export default function CryptoTracker({
       {/* Top Stat Cards Calculated from Live API Data */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-5 backdrop-blur-2xl shadow-lg transition-all hover:border-slate-300 dark:hover:border-white/20">
-          <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>Market Cap (Top 20)</span>
             <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
+          <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
             {isLoading && !cryptoList.length ? (
               <span className="inline-block w-20 h-7 bg-slate-200 dark:bg-white/10 animate-pulse rounded-lg"></span>
             ) : (
               formatCompact(stats.totalCap)
             )}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-mono">
+          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 font-medium">
             Multi-Exchange aggregation
           </div>
         </div>
 
         <div className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-5 backdrop-blur-2xl shadow-lg transition-all hover:border-slate-300 dark:hover:border-white/20">
-          <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>24h Trading Volume</span>
             <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
               <BarChart3 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
+          <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
             {isLoading && !cryptoList.length ? (
               <span className="inline-block w-20 h-7 bg-slate-200 dark:bg-white/10 animate-pulse rounded-lg"></span>
             ) : (
               formatCompact(stats.totalVol)
             )}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-mono">
+          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 font-medium">
             Aggregated 24h turnover
           </div>
         </div>
 
         <div className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-5 backdrop-blur-2xl shadow-lg transition-all hover:border-slate-300 dark:hover:border-white/20">
-          <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>Bitcoin Share (Top 20)</span>
-            <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 font-bold font-mono text-sm leading-none flex items-center justify-center w-7 h-7">
+            <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 font-bold text-sm leading-none flex items-center justify-center w-7 h-7">
               ₿
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-white font-mono tabular-nums tracking-tight">
+          <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
             {isLoading && !cryptoList.length ? (
               <span className="inline-block w-16 h-7 bg-slate-200 dark:bg-white/10 animate-pulse rounded-lg"></span>
             ) : (
               `${stats.btcDominance}%`
             )}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 font-mono">
+          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 font-medium">
             Top-tier asset weighting
           </div>
         </div>
 
         <div className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-5 backdrop-blur-2xl shadow-lg transition-all hover:border-slate-300 dark:hover:border-white/20">
-          <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+          <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>24h Top Gainer</span>
             <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
               <Sparkles className="w-4 h-4" />
@@ -165,16 +165,16 @@ export default function CryptoTracker({
               <span className="inline-block w-24 h-7 bg-slate-200 dark:bg-white/10 animate-pulse rounded-lg"></span>
             ) : stats.topGainer ? (
               <>
-                <span className="font-mono uppercase tracking-tight">{stats.topGainer.symbol}</span>
-                <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-bold tabular-nums">
+                <span className="font-bold uppercase tracking-tight">{stats.topGainer.symbol}</span>
+                <span className="text-xs text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-bold tabular-nums">
                   +{(stats.topGainer.price_change_percentage_24h || 0).toFixed(2)}%
                 </span>
               </>
             ) : (
-              <span className="text-sm text-slate-400">Loading...</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">Loading...</span>
             )}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 truncate">
+          <div className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 truncate font-medium">
             {stats.topGainer ? `${stats.topGainer.name} is leading gains` : 'Real-time feed'}
           </div>
         </div>
@@ -190,12 +190,12 @@ export default function CryptoTracker({
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Live Cryptocurrency Prices
               </h3>
-              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 font-semibold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 font-semibold uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
                 Multi-Exchange Feeds
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Real-time USD prices, 24h percentage changes, and market caps for top digital assets.</p>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">Real-time USD prices, 24h percentage changes, and market caps for top digital assets.</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -263,7 +263,7 @@ export default function CryptoTracker({
         {isLoading && !cryptoList.length && (
           <div className="py-20 text-center">
             <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-3" />
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">Fetching latest prices from multi-exchange market feeds...</p>
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Fetching latest prices from multi-exchange market feeds...</p>
           </div>
         )}
 
@@ -272,7 +272,7 @@ export default function CryptoTracker({
           <div className="overflow-x-auto mt-4 rounded-2xl border border-slate-200/80 dark:border-white/[0.06]">
             <table className="w-full text-left border-collapse">
               <thead className="bg-slate-50/80 dark:bg-white/[0.02]">
-                <tr className="border-b border-slate-200/80 dark:border-white/[0.06] text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <tr className="border-b border-slate-200/80 dark:border-white/[0.06] text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                   <th 
                     onClick={() => handleSort('market_cap_rank')} 
                     className="py-3 px-3.5 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors"
@@ -341,7 +341,7 @@ export default function CryptoTracker({
                       className="hover:bg-slate-50/70 dark:hover:bg-white/[0.02] transition-colors group"
                     >
                       {/* Rank */}
-                      <td className="py-3.5 px-3.5 text-xs font-mono tabular-nums text-slate-400 dark:text-slate-500">
+                      <td className="py-3.5 px-3.5 text-xs tabular-nums text-slate-600 dark:text-slate-400 font-medium">
                         {coin.market_cap_rank || '-'}
                       </td>
 
@@ -364,7 +364,7 @@ export default function CryptoTracker({
                             <div className="font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors">
                               {coin.name}
                             </div>
-                            <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-tight">
+                            <div className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-wider font-semibold">
                               {coin.symbol}
                             </div>
                           </div>
@@ -372,19 +372,19 @@ export default function CryptoTracker({
                       </td>
 
                       {/* Price */}
-                      <td className="py-3.5 px-3.5 text-right font-mono tabular-nums font-bold text-slate-900 dark:text-white">
+                      <td className="py-3.5 px-3.5 text-right tabular-nums font-bold text-slate-900 dark:text-white">
                         ${coin.current_price < 1 
                           ? coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 }) 
                           : coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
 
                       {/* 24h Change */}
-                      <td className="py-3.5 px-3.5 text-right font-mono tabular-nums font-semibold">
+                      <td className="py-3.5 px-3.5 text-right tabular-nums font-semibold">
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
                             isPositive 
-                              ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
-                              : 'text-rose-400 bg-rose-500/10 border border-rose-500/20'
+                              ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
+                              : 'text-rose-500 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20'
                           }`}
                         >
                           {isPositive ? <TrendingUp className="w-3 h-3 stroke-[2.5]" /> : <TrendingDown className="w-3 h-3 stroke-[2.5]" />}
@@ -398,7 +398,7 @@ export default function CryptoTracker({
                       {/* 24h Range Bar */}
                       <td className="py-3.5 px-3.5 hidden md:table-cell">
                         <div className="w-32 mx-auto">
-                          <div className="flex justify-between text-[10px] font-mono tabular-nums text-slate-400 dark:text-slate-500 mb-1">
+                          <div className="flex justify-between text-xs tabular-nums text-slate-600 dark:text-slate-400 font-medium mb-1">
                             <span>${low < 1 ? low.toFixed(2) : low.toLocaleString()}</span>
                             <span>${high < 1 ? high.toFixed(2) : high.toLocaleString()}</span>
                           </div>
@@ -412,12 +412,12 @@ export default function CryptoTracker({
                       </td>
 
                       {/* 24h Volume */}
-                      <td className="py-3.5 px-3.5 text-right font-mono tabular-nums text-slate-600 dark:text-slate-400 hidden lg:table-cell text-xs">
+                      <td className="py-3.5 px-3.5 text-right tabular-nums text-slate-600 dark:text-slate-400 hidden lg:table-cell text-xs font-medium">
                         {formatCompact(coin.total_volume)}
                       </td>
 
                       {/* Market Cap */}
-                      <td className="py-3.5 px-3.5 text-right font-mono tabular-nums font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <td className="py-3.5 px-3.5 text-right tabular-nums font-bold text-slate-900 dark:text-slate-100 text-xs">
                         {formatCompact(coin.market_cap)}
                       </td>
 
