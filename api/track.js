@@ -1,7 +1,7 @@
 // api/track.js - High-Performance Centralized Telemetry & Real-Time Visitor Sync
 // Vercel Serverless Function supporting distributed cross-device visitor counting.
 
-const NAMESPACE = 'finpulse_tracker_v2';
+const NAMESPACE = 'fgc_spot_tracker_v2';
 const ABACUS_BASE = 'https://abacus.jasoncameron.dev';
 
 // In-memory state across warm serverless function invocations
@@ -137,14 +137,14 @@ export default async function handler(req, res) {
         memoryStore.seenDailyDevices[dateKey].add(deviceToken);
 
         // Try Vercel KV first, else fallback to distributed atomic counter
-        const kvRes = await tryVercelKV('sadd', `finpulse:visitors:${dateKey}`, deviceToken);
+        const kvRes = await tryVercelKV('sadd', `fgc_spot:visitors:${dateKey}`, deviceToken);
         if (kvRes === null) {
           await hitCounter(`visitors_${dateKey}`);
         }
       }
 
       // Increment total impressions
-      await tryVercelKV('incr', `finpulse:impressions:${dateKey}`);
+      await tryVercelKV('incr', `fgc_spot:impressions:${dateKey}`);
       hitCounter(`impressions_${dateKey}`).catch(() => {});
 
       // Add to rolling micro-events stream
@@ -166,7 +166,7 @@ export default async function handler(req, res) {
       const pair = `${body.from || 'USD'}/${body.to || 'PKR'}`;
       memoryStore.corridors[pair] = (memoryStore.corridors[pair] || 0) + 1;
 
-      await tryVercelKV('incr', `finpulse:conversions:${dateKey}`);
+      await tryVercelKV('incr', `fgc_spot:conversions:${dateKey}`);
       hitCounter(`conversions_${dateKey}`).catch(() => {});
 
       const eventObj = {
@@ -227,7 +227,7 @@ export default async function handler(req, res) {
 
   // Fetch unique visitors from KV or atomic counter
   let todayVisitors = 0;
-  const kvVisitors = await tryVercelKV('scard', `finpulse:visitors:${dateKey}`);
+  const kvVisitors = await tryVercelKV('scard', `fgc_spot:visitors:${dateKey}`);
   if (typeof kvVisitors === 'number') {
     todayVisitors = kvVisitors;
   } else {
@@ -236,7 +236,7 @@ export default async function handler(req, res) {
 
   // Fetch today conversions
   let todayConversions = 0;
-  const kvConversions = await tryVercelKV('get', `finpulse:conversions:${dateKey}`);
+  const kvConversions = await tryVercelKV('get', `fgc_spot:conversions:${dateKey}`);
   if (kvConversions !== null && !isNaN(Number(kvConversions))) {
     todayConversions = Number(kvConversions);
   } else {
@@ -245,7 +245,7 @@ export default async function handler(req, res) {
 
   // Fetch today impressions
   let todayImpressions = 0;
-  const kvImpressions = await tryVercelKV('get', `finpulse:impressions:${dateKey}`);
+  const kvImpressions = await tryVercelKV('get', `fgc_spot:impressions:${dateKey}`);
   if (kvImpressions !== null && !isNaN(Number(kvImpressions))) {
     todayImpressions = Number(kvImpressions);
   } else {

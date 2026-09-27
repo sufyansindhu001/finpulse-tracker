@@ -12,7 +12,7 @@ import {
   Globe
 } from 'lucide-react';
 
-export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', siteName = 'FinPulse' }) {
+export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', siteName = 'FGC Spot' }) {
   const [tab, setTab] = React.useState(activeTab);
 
   React.useEffect(() => {
@@ -133,18 +133,18 @@ export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', sit
                   Google DoubleClick DART Cookies & Publisher Ad Networks
                 </strong>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
-                  Google is a third-party vendor on our site. It uses DART cookies to serve advertisements based on users visiting FinPulse and other internet domains. Users may opt out of DART cookies by visiting the Google Ad and Content Network Privacy Policy: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">https://policies.google.com/technologies/ads</a>.
+                  Google is a third-party vendor on our site. It uses DART cookies to serve advertisements based on users visiting {siteName} and other internet domains. Users may opt out of DART cookies by visiting the Google Ad and Content Network Privacy Policy: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">https://policies.google.com/technologies/ads</a>.
                 </p>
               </div>
 
               <h5 className="font-bold text-slate-900 dark:text-white pt-2">GDPR & CCPA Rights</h5>
               <p className="text-xs text-slate-600 dark:text-slate-400">
-                You have the full right to data disclosure, data erasure, and non-sale of personal telemetry. FinPulse does not sell, broker, or monetize user browsing identities.
+                You have the full right to data disclosure, data erasure, and non-sale of personal telemetry. {siteName} does not sell, broker, or monetize user browsing identities.
               </p>
 
               <h5 className="font-bold text-slate-900 dark:text-white pt-2">Local Storage Preferences</h5>
               <p className="text-xs text-slate-600 dark:text-slate-400">
-                FinPulse uses client-side localStorage solely to retain selected currency conversion pairs and dark/light display preferences. No biometric or sensitive financial account data is ever stored on our servers.
+                {siteName} uses client-side localStorage solely to retain selected currency conversion pairs and dark/light display preferences. No biometric or sensitive financial account data is ever stored on our servers.
               </p>
             </div>
           )}
@@ -243,7 +243,7 @@ export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', sit
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/[0.08] space-y-2 text-xs">
                 <div>
                   <span className="font-bold text-slate-900 dark:text-white block">Email Desk:</span>
-                  <span className="text-blue-600 dark:text-blue-400 font-mono">support@finpulse-tracker.com</span>
+                  <span className="text-blue-600 dark:text-blue-400 font-mono">support@fgcspot.com</span>
                 </div>
                 <div>
                   <span className="font-bold text-slate-900 dark:text-white block">Turnaround Time:</span>

@@ -40,7 +40,7 @@ export default function AboutPage() {
               Company & Technology
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              About {siteSettings?.websiteName || 'FinPulse'} Media & Data
+              About {siteSettings?.websiteName || 'FGC Spot'} Media & Data
             </h1>
           </div>
         </div>
@@ -48,11 +48,11 @@ export default function AboutPage() {
         {/* Introduction */}
         <div className="text-slate-700 dark:text-slate-300 text-sm sm:text-base space-y-5 leading-relaxed">
           <p className="text-base sm:text-lg font-medium text-slate-900 dark:text-white">
-            {siteSettings?.websiteName || 'FinPulse'} is an independent, global financial data publishing platform committed to providing accessible, real-time foreign currency exchange tools, cryptocurrency market intelligence, and institutional macroeconomic analysis.
+            {siteSettings?.websiteName || 'FGC Spot'} is an independent, global financial data publishing platform committed to providing accessible, real-time foreign currency exchange tools, cryptocurrency market intelligence, and institutional macroeconomic analysis.
           </p>
 
           <p>
-            Founded by veteran fintech software engineers and economic researchers, {siteSettings?.websiteName || 'FinPulse'} was created to eliminate opacity in global money transfers and decentralized asset valuation. Whether you are an expatriate sending remittances to family across USD/PKR, EUR/INR, or AED/SAR, or a digital asset trader monitoring Bitcoin liquidity, our mission is to deliver zero-latency calculation transparency.
+            Founded by veteran fintech software engineers and economic researchers, {siteSettings?.websiteName || 'FGC Spot'} was created to eliminate opacity in global money transfers and decentralized asset valuation. Whether you are an expatriate sending remittances to family across USD/PKR, EUR/INR, or AED/SAR, or a digital asset trader monitoring Bitcoin liquidity, our mission is to deliver zero-latency calculation transparency.
           </p>
 
           {/* Feature Grid */}
@@ -82,7 +82,7 @@ export default function AboutPage() {
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4">Editorial & Independence Standards</h2>
           <p>
-            FinPulse maintains strict editorial autonomy. We do not participate in paid cryptocurrency token endorsements, sponsored coin shilling, or undisclosed affiliate promotions. All articles published under our 'Market Updates', 'Forex News', and 'Crypto Guides' categories undergo rigorous fact-checking and peer review before publication.
+            {siteSettings?.websiteName || 'FGC Spot'} maintains strict editorial autonomy. We do not participate in paid cryptocurrency token endorsements, sponsored coin shilling, or undisclosed affiliate promotions. All articles published under our 'Market Updates', 'Forex News', and 'Crypto Guides' categories undergo rigorous fact-checking and peer review before publication.
           </p>
 
           <div className="space-y-2 pt-2">

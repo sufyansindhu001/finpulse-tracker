@@ -130,8 +130,8 @@ export default function ArticleView() {
               <User className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'FinPulse Macro Research Desk'}</div>
-              <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">FinPulse Macro Research Desk • Independent Financial Intelligence</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'FGC Spot Macro Research Desk'}</div>
+              <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">FGC Spot Macro Research Desk • Independent Financial Intelligence</div>
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">
@@ -214,7 +214,7 @@ export default function ArticleView() {
 
         {/* AdSense Compliance Editorial Disclaimer */}
         <div className="mt-6 p-4.5 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-          <strong className="text-slate-800 dark:text-slate-200">Editorial &amp; Financial Standards:</strong> All research and intelligence publications are prepared independently by the FinPulse Macro Research Desk. Foreign exchange and crypto assets involve market risk. Quoted rates reflect mid-market interbank valuations and are displayed for computational reference.
+          <strong className="text-slate-800 dark:text-slate-200">Editorial &amp; Financial Standards:</strong> All research and intelligence publications are prepared independently by the FGC Spot Macro Research Desk. Foreign exchange and crypto assets involve market risk. Quoted rates reflect mid-market interbank valuations and are displayed for computational reference.
         </div>
 
       </div>

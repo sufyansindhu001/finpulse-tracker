@@ -3,12 +3,11 @@ import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 
 const AppContext = createContext();
 
-
 const DEFAULT_SETTINGS = {
-  websiteName: 'FinPulse',
-  logoText: 'FX',
+  websiteName: 'FGC Spot',
+  logoText: 'FGC',
   logoUrl: '',
-  contactEmail: 'support@finpulse-tracker.com',
+  contactEmail: 'support@fgcspot.com',
   tagline: 'Real-Time Forex & Crypto Terminal'
 };
 
@@ -16,7 +15,7 @@ export function AppProvider({ children }) {
   // 1. Site Settings with LocalStorage persistence
   const [siteSettings, setSiteSettings] = useState(() => {
     try {
-      const saved = localStorage.getItem('finpulse_site_settings');
+      const saved = localStorage.getItem('fgc_spot_site_settings') || localStorage.getItem('finpulse_site_settings');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.warn('Error reading site settings from localStorage:', e);
@@ -28,7 +27,7 @@ export function AppProvider({ children }) {
     const updated = { ...siteSettings, ...newSettings };
     setSiteSettings(updated);
     try {
-      localStorage.setItem('finpulse_site_settings', JSON.stringify(updated));
+      localStorage.setItem('fgc_spot_site_settings', JSON.stringify(updated));
     } catch (e) {
       console.warn('Error saving site settings to localStorage:', e);
     }
@@ -37,7 +36,7 @@ export function AppProvider({ children }) {
   // 2. Blog Posts with LocalStorage persistence
   const [articles, setArticles] = useState(() => {
     try {
-      const saved = localStorage.getItem('finpulse_blog_posts');
+      const saved = localStorage.getItem('fgc_spot_blog_posts') || localStorage.getItem('finpulse_blog_posts');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -53,7 +52,7 @@ export function AppProvider({ children }) {
   const saveArticles = (newArticles) => {
     setArticles(newArticles);
     try {
-      localStorage.setItem('finpulse_blog_posts', JSON.stringify(newArticles));
+      localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(newArticles));
     } catch (e) {
       console.warn('Error saving articles to localStorage:', e);
     }
@@ -66,7 +65,7 @@ export function AppProvider({ children }) {
       slug: newArticle.slug || newArticle.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
       date: newArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       readTime: newArticle.readTime || `${Math.max(2, Math.ceil((newArticle.content?.split(' ').length || 100) / 180))} min read`,
-      author: newArticle.author || 'FinPulse Research Team',
+      author: newArticle.author || 'FGC Spot Research Team',
       image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
       tags: Array.isArray(newArticle.tags) ? newArticle.tags : (newArticle.tags ? newArticle.tags.split(',').map(t => t.trim()) : ['Market'])
     };
@@ -104,10 +103,10 @@ export function AppProvider({ children }) {
 
   const [adminCredentials, setAdminCredentials] = useState(() => {
     try {
-      const saved = localStorage.getItem('finpulse_admin_credentials');
+      const saved = localStorage.getItem('fgc_spot_admin_credentials') || localStorage.getItem('finpulse_admin_credentials');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.email && parsed.password && parsed.email.toLowerCase() !== 'admin@finpulse.com') {
+        if (parsed.email && parsed.password && parsed.email.toLowerCase() !== 'admin@fgcspot.com' && parsed.email.toLowerCase() !== 'admin@finpulse.com') {
           return {
             email: parsed.email.trim(),
             password: parsed.password
@@ -127,7 +126,7 @@ export function AppProvider({ children }) {
     };
     setAdminCredentials(updated);
     try {
-      localStorage.setItem('finpulse_admin_credentials', JSON.stringify(updated));
+      localStorage.setItem('fgc_spot_admin_credentials', JSON.stringify(updated));
     } catch (e) {
       console.warn('Error saving admin credentials to localStorage:', e);
     }
@@ -137,7 +136,7 @@ export function AppProvider({ children }) {
   // 4. Session-Based Admin Authentication (Auto-Locks when session ends or tab closes)
   const [isAdminAuth, setIsAdminAuth] = useState(() => {
     try {
-      return sessionStorage.getItem('finpulse_admin_logged_in') === 'true';
+      return sessionStorage.getItem('fgc_spot_admin_logged_in') === 'true' || sessionStorage.getItem('finpulse_admin_logged_in') === 'true';
     } catch {
       return false;
     }
@@ -151,7 +150,7 @@ export function AppProvider({ children }) {
     const cleanSavedPass = (adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password || '').trim();
     const exactSavedPass = adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password;
 
-    console.log('[FinPulse Auth] Verifying admin login:', {
+    console.log('[FGC Spot Auth] Verifying admin login:', {
       providedEmail: cleanInputEmail,
       targetEmail: cleanSavedEmail,
       isEmailMatch: cleanInputEmail === cleanSavedEmail
@@ -160,10 +159,10 @@ export function AppProvider({ children }) {
     const isPasswordMatch = exactInputPass === exactSavedPass || cleanInputPass === cleanSavedPass;
 
     if (cleanInputEmail === cleanSavedEmail && isPasswordMatch) {
-      console.log('[FinPulse Auth] Login approved! Activating admin session.');
+      console.log('[FGC Spot Auth] Login approved! Activating admin session.');
       setIsAdminAuth(true);
       try {
-        sessionStorage.setItem('finpulse_admin_logged_in', 'true');
+        sessionStorage.setItem('fgc_spot_admin_logged_in', 'true');
       } catch (err) {
         console.warn('sessionStorage is unavailable:', err);
       }
@@ -171,14 +170,14 @@ export function AppProvider({ children }) {
     }
 
     if (cleanInputEmail !== cleanSavedEmail) {
-      console.warn('[FinPulse Auth] Login failed: Email mismatch.');
+      console.warn('[FGC Spot Auth] Login failed: Email mismatch.');
       return { 
         success: false, 
         message: 'Invalid Admin Email address. Please check your email.' 
       };
     }
 
-    console.warn('[FinPulse Auth] Login failed: Password mismatch.');
+    console.warn('[FGC Spot Auth] Login failed: Password mismatch.');
     return { 
       success: false, 
       message: 'Invalid Admin Password. Please check your password.' 
@@ -186,9 +185,10 @@ export function AppProvider({ children }) {
   }, [adminCredentials]);
 
   const logoutAdmin = useCallback(() => {
-    console.log('[FinPulse Auth] Terminating admin session.');
+    console.log('[FGC Spot Auth] Terminating admin session.');
     setIsAdminAuth(false);
     try {
+      sessionStorage.removeItem('fgc_spot_admin_logged_in');
       sessionStorage.removeItem('finpulse_admin_logged_in');
     } catch (err) {
       console.warn('sessionStorage is unavailable:', err);
@@ -213,7 +213,6 @@ export function AppProvider({ children }) {
     </AppContext.Provider>
   );
 }
-
 
 export function useApp() {
   const context = useContext(AppContext);

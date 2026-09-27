@@ -10,7 +10,7 @@ import {
   Calculator
 } from 'lucide-react';
 
-export default function WhyFinPulse({ onExploreMarkets, onLaunchConverter }) {
+export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
   const pillars = [
     {
       icon: ShieldCheck,

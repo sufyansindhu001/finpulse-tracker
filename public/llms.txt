@@ -1,4 +1,4 @@
-# FinPulse Media & Data
+# FGC Spot Media & Data
 
 > Real-time global currency exchange rates, high-frequency cryptocurrency market tracking, and macroeconomic intelligence.
 

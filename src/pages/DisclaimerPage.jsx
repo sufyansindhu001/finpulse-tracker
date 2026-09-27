@@ -36,7 +36,7 @@ export default function DisclaimerPage() {
               Financial & Investment Disclaimer
             </h1>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
-              Please read this disclaimer carefully before using {siteSettings?.websiteName || 'FinPulse'} data tools and calculators.
+              Please read this disclaimer carefully before using {siteSettings?.websiteName || 'FGC Spot'} data tools and calculators.
             </p>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function DisclaimerPage() {
               Important Regulatory Notice:
             </strong>
             <p>
-              FinPulse is an educational and analytical financial software portal. FinPulse is NOT a broker-dealer, registered investment advisor (RIA), money services business (MSB), financial institution, or custodian under applicable international financial regulations.
+              {siteSettings?.websiteName || 'FGC Spot'} is an educational and analytical financial software portal. {siteSettings?.websiteName || 'FGC Spot'} is NOT a broker-dealer, registered investment advisor (RIA), money services business (MSB), financial institution, or custodian under applicable international financial regulations.
             </p>
           </div>
 
@@ -59,14 +59,14 @@ export default function DisclaimerPage() {
             1. No Investment, Legal, or Financial Advice
           </h2>
           <p>
-            The information, calculators, exchange rates, cryptocurrency valuations, articles, and research commentary published on FinPulse are provided for general informational, educational, and reference purposes only. Nothing contained on this website constitutes a solicitation, recommendation, endorsement, or offer to buy or sell any currency, cryptocurrency, security, or financial instrument.
+            The information, calculators, exchange rates, cryptocurrency valuations, articles, and research commentary published on {siteSettings?.websiteName || 'FGC Spot'} are provided for general informational, educational, and reference purposes only. Nothing contained on this website constitutes a solicitation, recommendation, endorsement, or offer to buy or sell any currency, cryptocurrency, security, or financial instrument.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4 border-b border-slate-100 dark:border-slate-800 pb-2">
             2. Indicative Foreign Exchange Rates vs Retail Banking Spreads
           </h2>
           <p>
-            The currency exchange rates displayed across the FinPulse Live Currency Calculator, Popular Forex Corridors, and USD Benchmark Matrix represent indicative <strong>mid-market interbank quotes</strong> derived from global central bank repositories and institutional interbank FX networks.
+            The currency exchange rates displayed across the {siteSettings?.websiteName || 'FGC Spot'} Live Currency Calculator, Popular Forex Corridors, and USD Benchmark Matrix represent indicative <strong>mid-market interbank quotes</strong> derived from global central bank repositories and institutional interbank FX networks.
           </p>
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
             <p>
@@ -90,14 +90,14 @@ export default function DisclaimerPage() {
             4. Third-Party Data Accuracy & Disclaimers
           </h2>
           <p>
-            FinPulse aggregates market data from institutional data networks including Interbank Forex feeds and global multi-exchange cryptocurrency feeds. While we endeavor to ensure feed integrity, FinPulse makes no warranties, express or implied, regarding the accuracy, completeness, or timeliness of any market quote.
+            {siteSettings?.websiteName || 'FGC Spot'} aggregates market data from institutional data networks including Interbank Forex feeds and global multi-exchange cryptocurrency feeds. While we endeavor to ensure feed integrity, {siteSettings?.websiteName || 'FGC Spot'} makes no warranties, express or implied, regarding the accuracy, completeness, or timeliness of any market quote.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4 border-b border-slate-100 dark:border-slate-800 pb-2">
             5. Limitation of Liability
           </h2>
           <p>
-            In no event shall FinPulse, its developers, authors, or corporate affiliates be held liable for any direct, indirect, incidental, or consequential damages resulting from the use of, or inability to use, the information and calculations provided on this website.
+            In no event shall {siteSettings?.websiteName || 'FGC Spot'}, its developers, authors, or corporate affiliates be held liable for any direct, indirect, incidental, or consequential damages resulting from the use of, or inability to use, the information and calculations provided on this website.
           </p>
 
           <div className="pt-4 flex items-center gap-3 text-xs">

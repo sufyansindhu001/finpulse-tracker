@@ -163,10 +163,10 @@ export default function AdminPage() {
 
   // --- Site Settings Form State ---
   const [settingsForm, setSettingsForm] = useState(() => ({
-    websiteName: siteSettings?.websiteName || 'FinPulse',
-    logoText: siteSettings?.logoText || 'FX',
+    websiteName: siteSettings?.websiteName || 'FGC Spot',
+    logoText: siteSettings?.logoText || 'FGC',
     logoUrl: siteSettings?.logoUrl || '',
-    contactEmail: siteSettings?.contactEmail || 'support@finpulse-tracker.com',
+    contactEmail: siteSettings?.contactEmail || 'support@fgcspot.com',
     tagline: siteSettings?.tagline || 'Real-Time Forex & Crypto Terminal'
   }));
   const [settingsSaved, setSettingsSaved] = useState(false);
@@ -188,7 +188,7 @@ export default function AdminPage() {
     title: '',
     category: 'Market Updates',
     image: '',
-    author: 'FinPulse Research Lead',
+    author: 'FGC Spot Research Lead',
     summary: '',
     content: '',
     tags: 'Forex, Crypto, Market'
@@ -294,7 +294,7 @@ export default function AdminPage() {
         title: safeTitle,
         category: articleForm?.category || 'Market Updates',
         image: articleForm?.image || '',
-        author: articleForm?.author || 'FinPulse Research Lead',
+        author: articleForm?.author || 'FGC Spot Research Lead',
         summary: articleForm?.summary || '',
         content: articleForm?.content || '',
         tags: articleForm?.tags || ''
@@ -305,7 +305,7 @@ export default function AdminPage() {
         title: safeTitle,
         category: articleForm?.category || 'Market Updates',
         image: articleForm?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
-        author: articleForm?.author || 'FinPulse Research Lead',
+        author: articleForm?.author || 'FGC Spot Research Lead',
         summary: articleForm?.summary || '',
         content: articleForm?.content || '',
         tags: articleForm?.tags || ''
@@ -324,7 +324,7 @@ export default function AdminPage() {
       title: art?.title || '',
       category: art?.category || 'Market Updates',
       image: art?.image || '',
-      author: art?.author || 'FinPulse Research Lead',
+      author: art?.author || 'FGC Spot Research Lead',
       summary: art?.summary || '',
       content: art?.content || '',
       tags: Array.isArray(art?.tags) ? art.tags.join(', ') : (art?.tags || '')
@@ -465,7 +465,7 @@ export default function AdminPage() {
           <div>
             <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
               <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono text-[11px] font-bold border border-blue-500/20 uppercase tracking-wider">
-                FinPulse Telemetry Engine
+                FGC Spot Telemetry Engine
               </span>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -729,7 +729,7 @@ export default function AdminPage() {
                     <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
                     <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
                     <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
-                    <span className="ml-2 text-slate-400 font-semibold">finpulse-telemetry-stream</span>
+                    <span className="ml-2 text-slate-400 font-semibold">fgc-spot-telemetry-stream</span>
                   </div>
                   <span className="text-[10px] text-slate-400">
                     {filteredEvents.length} genuine events
@@ -1282,7 +1282,7 @@ export default function AdminPage() {
                       required
                       value={settingsForm.websiteName}
                       onChange={(e) => setSettingsForm({ ...settingsForm, websiteName: e.target.value })}
-                      placeholder="e.g. FinPulse"
+                      placeholder="e.g. FGC Spot"
                       className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>
@@ -1296,7 +1296,7 @@ export default function AdminPage() {
                       maxLength={4}
                       value={settingsForm.logoText}
                       onChange={(e) => setSettingsForm({ ...settingsForm, logoText: e.target.value })}
-                      placeholder="e.g. FX"
+                      placeholder="e.g. FGC"
                       className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 font-bold uppercase"
                     />
                   </div>
@@ -1328,7 +1328,7 @@ export default function AdminPage() {
                       required
                       value={settingsForm.contactEmail}
                       onChange={(e) => setSettingsForm({ ...settingsForm, contactEmail: e.target.value })}
-                      placeholder="support@finpulse-tracker.com"
+                      placeholder="support@fgcspot.com"
                       className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>
@@ -1355,12 +1355,12 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-sm">
                       <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center font-bold text-xs text-white">
-                        {settingsForm.logoText || 'FX'}
+                        {settingsForm.logoText || 'FGC'}
                       </div>
                     </div>
                     <div>
                       <div className="text-base font-extrabold text-slate-900 dark:text-white">
-                        {settingsForm.websiteName || 'FinPulse'}
+                        {settingsForm.websiteName || 'FGC Spot'}
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400">
                         {settingsForm.tagline || 'Real-Time Forex & Crypto Terminal'}
@@ -1767,7 +1767,7 @@ export default function AdminPage() {
                             </td>
 
                             <td className="py-3 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                              <div className="font-medium text-slate-800 dark:text-slate-300">{art?.author || 'FinPulse Team'}</div>
+                              <div className="font-medium text-slate-800 dark:text-slate-300">{art?.author || 'FGC Spot Team'}</div>
                               <div className="text-[10px] text-slate-400">{art?.date || ''}</div>
                             </td>
 

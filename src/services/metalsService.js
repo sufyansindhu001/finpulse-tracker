@@ -1,5 +1,5 @@
 /**
- * FinPulse Precious Metals Service (Gold XAU & Silver XAG)
+ * FGC Spot Precious Metals Service (Gold XAU & Silver XAG)
  * Ingests live commodity quotes from /api/metals and international bullion benchmarks.
  * Provides dynamic local benchmark pricing formulas (PKR per Tola & Gram).
  */

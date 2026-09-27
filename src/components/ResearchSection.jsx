@@ -122,7 +122,7 @@ export default function ResearchSection({ limit, showViewAll = false }) {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-600 font-mono text-xs">
-                        FINPULSE RESEARCH
+                        FGC SPOT RESEARCH
                       </div>
                     )}
                     <span className="absolute top-3 left-3 text-xs font-bold bg-white/90 dark:bg-[#07090E]/90 text-blue-600 dark:text-blue-400 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-white/[0.1] backdrop-blur-md shadow-xs uppercase tracking-wider">
@@ -136,7 +136,7 @@ export default function ResearchSection({ limit, showViewAll = false }) {
                       {/* Author Line & Date */}
                       <div className="flex items-center justify-between gap-2 text-xs text-slate-600 dark:text-slate-400 mb-2 font-medium">
                         <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
-                          {post.author || 'FinPulse Macro Research Desk'}
+                          {post.author || 'FGC Spot Macro Research Desk'}
                         </span>
                         <span className="flex items-center gap-1 shrink-0">
                           <Calendar className="w-3 h-3" /> {post.date || 'Sep 27, 2026'}
@@ -245,7 +245,7 @@ export default function ResearchSection({ limit, showViewAll = false }) {
               </h2>
 
               <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 my-4 font-mono">
-                <span>By {activeDrawerArticle.author || 'FinPulse Desk'}</span>
+                <span>By {activeDrawerArticle.author || 'FGC Spot Desk'}</span>
                 <span>•</span>
                 <span>{activeDrawerArticle.date}</span>
                 <span>•</span>
@@ -281,7 +281,7 @@ export default function ResearchSection({ limit, showViewAll = false }) {
 
             {/* Drawer Bottom Action */}
             <div className="pt-6 mt-6 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between">
-              <span className="text-xs text-slate-500 font-mono">FinPulse Institutional Data</span>
+              <span className="text-xs text-slate-500 font-mono">FGC Spot Institutional Data</span>
               <Link
                 to={`/blog/${activeDrawerArticle.id}`}
                 onClick={() => setActiveDrawerArticle(null)}

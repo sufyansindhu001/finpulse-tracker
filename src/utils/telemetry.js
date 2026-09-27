@@ -1,20 +1,20 @@
 /**
- * FinPulse 100% Authentic Telemetry & Analytics Engine
+ * FGC Spot 100% Authentic Telemetry & Analytics Engine
  * ZERO synthetic/mock data. Clean baselines starting from true zero (0).
  * Integrates real client session fingerprinting, genuine user conversions,
  * actual contact inquiries, and centralized Serverless cross-device sync (/api/track).
  */
 
 const STORAGE_KEYS = {
-  EVENTS: 'finpulse_telemetry_events',
-  DAILY: 'finpulse_telemetry_daily',
-  INQUIRIES: 'finpulse_inquiries',
-  VISITOR_ID: 'finpulse_visitor_id',
-  DAILY_VISITORS: 'finpulse_visitor_daily_ids',
-  ACTIVE_TABS: 'finpulse_active_tabs',
-  LAST_RECORDED_DATE: 'finpulse_last_recorded_date',
-  SERVER_SYNC_CACHE: 'finpulse_server_synced_kpis',
-  PURGED_FLAG: 'finpulse_telemetry_purged_v2'
+  EVENTS: 'fgc_spot_telemetry_events',
+  DAILY: 'fgc_spot_telemetry_daily',
+  INQUIRIES: 'fgc_spot_inquiries',
+  VISITOR_ID: 'fgc_spot_visitor_id',
+  DAILY_VISITORS: 'fgc_spot_visitor_daily_ids',
+  ACTIVE_TABS: 'fgc_spot_active_tabs',
+  LAST_RECORDED_DATE: 'fgc_spot_last_recorded_date',
+  SERVER_SYNC_CACHE: 'fgc_spot_server_synced_kpis',
+  PURGED_FLAG: 'fgc_spot_telemetry_purged_v2'
 };
 
 // Clean purge of any legacy fake/mock data previously stored in localStorage
@@ -38,7 +38,7 @@ purgeLegacyMockData();
 
 // Generate a random UUID-like ID
 function generateId() {
-  return 'fp_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+  return 'fgc_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
 }
 
 // Tab ID unique to this window instance
@@ -613,7 +613,7 @@ export function getDailyAuditReports(range = '7d') {
 
 export function exportAuditReportsCSV(reports) {
   if (!reports || reports.length === 0) {
-    alert('No telemetry records available to export yet. Records will generate as users interact with FinPulse.');
+    alert('No telemetry records available to export yet. Records will generate as users interact with FGC Spot.');
     return;
   }
 
@@ -643,7 +643,7 @@ export function exportAuditReportsCSV(reports) {
   
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', `FinPulse_EOD_Real_Telemetry_${getTodayKey()}.csv`);
+  link.setAttribute('download', `FGC_Spot_EOD_Real_Telemetry_${getTodayKey()}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

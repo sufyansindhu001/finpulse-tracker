@@ -253,7 +253,7 @@ export default function HeroSection({ onExploreMarkets, onViewData }) {
                   <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500/80 inline-block" />
                 </div>
                 <span className="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400 truncate ml-1 sm:ml-1.5">
-                  FINPULSE_MARKET_DEPTH_FLOW
+                  FGC_SPOT_MARKET_DEPTH_FLOW
                 </span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">

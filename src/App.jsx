@@ -9,7 +9,7 @@ import HeroSection from './components/HeroSection';
 import MarketDashboard from './components/MarketDashboard';
 import MarketIntelligence from './components/MarketIntelligence';
 import ResearchSection from './components/ResearchSection';
-import WhyFinPulse from './components/WhyFinPulse';
+import WhyFGCSpot from './components/WhyFGCSpot';
 import SearchModal from './components/SearchModal';
 import CryptoConverterModal from './components/CryptoConverterModal';
 import MarketNewsWire from './components/MarketNewsWire';
@@ -51,7 +51,7 @@ export default function App() {
   // Theme state: initialized from localStorage (defaults to 'dark')
   const [theme, setTheme] = useState(() => {
     try {
-      const saved = localStorage.getItem('finpulse_theme');
+      const saved = localStorage.getItem('fgc_spot_theme') || localStorage.getItem('finpulse_theme');
       if (saved === 'light' || saved === 'dark') return saved;
       return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     } catch {
@@ -68,7 +68,7 @@ export default function App() {
       root.classList.remove('dark');
     }
     try {
-      localStorage.setItem('finpulse_theme', theme);
+      localStorage.setItem('fgc_spot_theme', theme);
     } catch (e) {
       console.warn('LocalStorage unavailable:', e);
     }
@@ -272,7 +272,7 @@ export default function App() {
               <ResearchSection limit={3} showViewAll={true} />
 
               {/* 4 Architectural Pillars & Call to Action */}
-              <WhyFinPulse 
+              <WhyFGCSpot 
                 onExploreMarkets={() => {
                   const el = document.getElementById('markets');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });

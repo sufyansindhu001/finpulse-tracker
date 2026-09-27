@@ -183,7 +183,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
         {/* Footer info */}
         <div className="px-4 py-2.5 bg-slate-50 dark:bg-[#07090E] border-t border-slate-200 dark:border-white/[0.06] text-xs text-slate-600 dark:text-slate-400 flex justify-between font-medium">
           <span>Press ESC to close</span>
-          <span>FinPulse Real-Time Engine</span>
+          <span>FGC Spot Real-Time Engine</span>
         </div>
       </div>
     </div>

@@ -46,21 +46,21 @@ export default function PrivacyPolicyPage() {
         <div className="text-slate-700 dark:text-slate-300 text-sm sm:text-base space-y-6 leading-relaxed">
           
           <p>
-            At {siteSettings?.websiteName || 'FinPulse'}, accessible via our official domain, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of personal and anonymous telemetry collected and recorded by {siteSettings?.websiteName || 'FinPulse'} and how we utilize it.
+            At {siteSettings?.websiteName || 'FGC Spot'}, accessible via our official domain, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of personal and anonymous telemetry collected and recorded by {siteSettings?.websiteName || 'FGC Spot'} and how we utilize it.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-100 dark:border-slate-800 pb-2">
             1. Google DoubleClick DART Cookies & Third-Party Advertising
           </h2>
           <p>
-            Google is a third-party vendor on our site. Google uses cookies, specifically known as <strong>DART cookies</strong>, to serve advertisements to visitors based on their visit to FinPulse and other websites across the Internet. 
+            Google is a third-party vendor on our site. Google uses cookies, specifically known as <strong>DART cookies</strong>, to serve advertisements to visitors based on their visit to {siteSettings?.websiteName || 'FGC Spot'} and other websites across the Internet. 
           </p>
           <div className="p-4 rounded-xl bg-blue-50 dark:bg-slate-950 border border-blue-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 space-y-2">
             <p>
               <strong>User Opt-Out Choice:</strong> Visitors may opt out of the use of the DART cookie by visiting the official Google Ad and Content Network Privacy Policy at the following URL: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline font-semibold">https://policies.google.com/technologies/ads</a>.
             </p>
             <p>
-              Third-party ad networks or ad servers use technologies such as cookies, JavaScript, or Web Beacons within their respective advertisements and links that appear on FinPulse. These are sent directly to users' browsers, which automatically receive your IP address. These technologies measure the effectiveness of advertising campaigns and personalize advertising content.
+              Third-party ad networks or ad servers use technologies such as cookies, JavaScript, or Web Beacons within their respective advertisements and links that appear on {siteSettings?.websiteName || 'FGC Spot'}. These are sent directly to users' browsers, which automatically receive your IP address. These technologies measure the effectiveness of advertising campaigns and personalize advertising content.
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function PrivacyPolicyPage() {
             2. Cookies, LocalStorage & Web Analytics
           </h2>
           <p>
-            FinPulse utilizes modern browser cookies and <code className="bg-slate-100 dark:bg-slate-950 px-1.5 py-0.5 rounded font-mono text-xs text-blue-600 dark:text-blue-400">localStorage</code> exclusively to record visitor preferences, such as:
+            {siteSettings?.websiteName || 'FGC Spot'} utilizes modern browser cookies and <code className="bg-slate-100 dark:bg-slate-950 px-1.5 py-0.5 rounded font-mono text-xs text-blue-600 dark:text-blue-400">localStorage</code> exclusively to record visitor preferences, such as:
           </p>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
             <li>User theme selection (Light Mode or Dark Mode preference stored locally).</li>
@@ -80,7 +80,7 @@ export default function PrivacyPolicyPage() {
             3. Log Files & Diagnostic Telemetry
           </h2>
           <p>
-            FinPulse follows standard procedures for utilizing server log files. The information collected by log files includes internet protocol (IP) addresses, browser specification, Internet Service Provider (ISP), date/time stamps, referring/exit pages, and the number of clicks. This data is not linked to any personally identifiable information and is used exclusively for diagnosing network performance and administering the site.
+            {siteSettings?.websiteName || 'FGC Spot'} follows standard procedures for utilizing server log files. The information collected by log files includes internet protocol (IP) addresses, browser specification, Internet Service Provider (ISP), date/time stamps, referring/exit pages, and the number of clicks. This data is not linked to any personally identifiable information and is used exclusively for diagnosing network performance and administering the site.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4 border-b border-slate-100 dark:border-slate-800 pb-2">
@@ -100,7 +100,7 @@ export default function PrivacyPolicyPage() {
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <span>Request that a business that sells personal data not sell the consumer's personal data. <strong>FinPulse does not sell user personal data.</strong></span>
+              <span>Request that a business that sells personal data not sell the consumer's personal data. <strong>{siteSettings?.websiteName || 'FGC Spot'} does not sell user personal data.</strong></span>
             </div>
           </div>
 
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
             6. Children's Information Protection (COPPA)
           </h2>
           <p>
-            FinPulse does not knowingly collect any Personal Identifiable Information from children under the age of 13. If a parent or guardian believes that FinPulse has in its database personal information of a child, please contact us immediately and we will promptly remove such information from our records.
+            {siteSettings?.websiteName || 'FGC Spot'} does not knowingly collect any Personal Identifiable Information from children under the age of 13. If a parent or guardian believes that {siteSettings?.websiteName || 'FGC Spot'} has in its database personal information of a child, please contact us immediately and we will promptly remove such information from our records.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4 border-b border-slate-100 dark:border-slate-800 pb-2">

@@ -183,10 +183,10 @@ export default function ContactPage() {
                 <div>
                   <div className="font-bold text-slate-900 dark:text-white">Email Desk</div>
                   <a 
-                    href={`mailto:${siteSettings?.contactEmail || 'support@finpulse-tracker.com'}`} 
+                    href={`mailto:${siteSettings?.contactEmail || 'support@fgcspot.com'}`} 
                     className="text-blue-600 dark:text-blue-400 hover:underline"
                   >
-                    {siteSettings?.contactEmail || 'support@finpulse-tracker.com'}
+                    {siteSettings?.contactEmail || 'support@fgcspot.com'}
                   </a>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default function ContactPage() {
                 <MapPin className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-slate-900 dark:text-white">Global Headquarters</div>
-                  <p className="text-slate-600 dark:text-slate-400">{siteSettings?.websiteName || 'FinPulse'} Data Network, Inc.</p>
+                  <p className="text-slate-600 dark:text-slate-400">{siteSettings?.websiteName || 'FGC Spot'} Data Network, Inc.</p>
                   <p className="text-slate-600 dark:text-slate-400">Financial District, New York, NY</p>
                 </div>
               </div>

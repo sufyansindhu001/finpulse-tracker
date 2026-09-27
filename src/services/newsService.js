@@ -1,5 +1,5 @@
 /**
- * FinPulse Financial News Wire Service
+ * FGC Spot Financial News Wire Service
  * Fetches real-time institutional market news via the serverless wire endpoint (/api/news)
  * backed by live financial wire RSS streams (CNBC, CoinDesk, MarketWatch, Yahoo Finance)
  * and the Finnhub Market News API.
