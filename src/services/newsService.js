@@ -7,19 +7,17 @@
 
 const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1/news';
 
-// Format relative elapsed time (e.g. "12m ago", "1h ago")
+// Dynamic relative elapsed time helper function
 export function formatTimeAgo(timestamp) {
   if (!timestamp) return 'Just now';
-  const timeMs = timestamp < 1e12 ? timestamp * 1000 : timestamp;
-  const elapsedSec = Math.max(0, Math.floor((Date.now() - timeMs) / 1000));
-
-  if (elapsedSec < 60) return 'Just now';
-  const elapsedMin = Math.floor(elapsedSec / 60);
-  if (elapsedMin < 60) return `${elapsedMin}m ago`;
-  const elapsedHours = Math.floor(elapsedMin / 60);
-  if (elapsedHours < 24) return `${elapsedHours}h ago`;
-  const elapsedDays = Math.floor(elapsedHours / 24);
-  return `${elapsedDays}d ago`;
+  const seconds = Math.floor((Date.now() - (typeof timestamp === 'number' && timestamp < 1e12 ? timestamp * 1000 : new Date(timestamp).getTime())) / 1000);
+  if (seconds < 60) return 'Just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 }
 
 // Curated Institutional Fallback Feed (AdSense Safe, Tier-1 Financial Themes)
@@ -32,8 +30,7 @@ export const FALLBACK_NEWS = [
     summary: 'Policymakers at the Federal Open Market Committee noted that cross-border liquidity remains robust while balance sheet normalization proceeds according to macroeconomic baseline projections.',
     url: 'https://www.reuters.com/markets/',
     image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 480, // 8m ago
-    timeAgo: '8m ago'
+    datetime: Math.floor(Date.now() / 1000) - 480 // 8m ago
   },
   {
     id: 'wire-2',
@@ -43,8 +40,7 @@ export const FALLBACK_NEWS = [
     summary: 'Interbank trading volumes across USD/PKR, USD/AED, and USD/INR hit multi-month highs as sovereign payment channels expand real-time bilateral settlement infrastructure.',
     url: 'https://www.bloomberg.com/markets',
     image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 1200, // 20m ago
-    timeAgo: '20m ago'
+    datetime: Math.floor(Date.now() / 1000) - 1200 // 20m ago
   },
   {
     id: 'wire-3',
@@ -54,8 +50,7 @@ export const FALLBACK_NEWS = [
     summary: 'Tier-1 custodial asset managers register sustained net weekly inflows, tightening market spreads across digital asset spot and derivative trading venues.',
     url: 'https://www.ft.com/',
     image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 2100, // 35m ago
-    timeAgo: '35m ago'
+    datetime: Math.floor(Date.now() / 1000) - 2100 // 35m ago
   },
   {
     id: 'wire-4',
@@ -65,8 +60,7 @@ export const FALLBACK_NEWS = [
     summary: 'ECB executive committee highlights stable credit intermediation across major member states with EUR/USD trading firmly within historical technical bands.',
     url: 'https://www.wsj.com/economy',
     image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 3600, // 1h ago
-    timeAgo: '1h ago'
+    datetime: Math.floor(Date.now() / 1000) - 3600 // 1h ago
   },
   {
     id: 'wire-5',
@@ -76,8 +70,7 @@ export const FALLBACK_NEWS = [
     summary: 'Japanese monetary authorities observed balanced yields on 10-year sovereign paper, dampening speculative volatility across G10 currency crosses.',
     url: 'https://asia.nikkei.com/',
     image: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 5400, // 1.5h ago
-    timeAgo: '1h ago'
+    datetime: Math.floor(Date.now() / 1000) - 5400 // 1.5h ago
   },
   {
     id: 'wire-6',
@@ -87,8 +80,7 @@ export const FALLBACK_NEWS = [
     summary: 'High-throughput layer-1 blockchains demonstrate record processing reliability during peak decentralized exchange arbitrage and liquidity rebalancing sessions.',
     url: 'https://www.coindesk.com/',
     image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 7200, // 2h ago
-    timeAgo: '2h ago'
+    datetime: Math.floor(Date.now() / 1000) - 7200 // 2h ago
   },
   {
     id: 'wire-7',
@@ -98,8 +90,7 @@ export const FALLBACK_NEWS = [
     summary: 'Monetary authorities in Saudi Arabia and the United Arab Emirates maintain rigorous reserve buffers backing the USD/SAR and USD/AED parity framework.',
     url: 'https://www.zawya.com/',
     image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 10800, // 3h ago
-    timeAgo: '3h ago'
+    datetime: Math.floor(Date.now() / 1000) - 10800 // 3h ago
   },
   {
     id: 'wire-8',
@@ -109,8 +100,7 @@ export const FALLBACK_NEWS = [
     summary: 'Institutional debt traders note healthy bid-ask dispersion across benchmark sovereign issuances, with international risk premia moderating to six-month averages.',
     url: 'https://www.marketwatch.com/',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&fm=webp&q=75',
-    datetime: Math.floor(Date.now() / 1000) - 14400, // 4h ago
-    timeAgo: '4h ago'
+    datetime: Math.floor(Date.now() / 1000) - 14400 // 4h ago
   }
 ];
 

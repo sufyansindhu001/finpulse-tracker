@@ -8,7 +8,7 @@ import {
   ShieldCheck, 
   Newspaper 
 } from 'lucide-react';
-import { fetchLiveMarketNews } from '../services/newsService';
+import { fetchLiveMarketNews, formatTimeAgo } from '../services/newsService';
 
 export default function MarketNewsWire({ limit = 6 }) {
   const [news, setNews] = useState([]);
@@ -182,7 +182,7 @@ export default function MarketNewsWire({ limit = 6 }) {
                       </span>
                       <span className="text-xs text-slate-600 dark:text-slate-400 font-medium flex items-center gap-1 shrink-0">
                         <Clock className="w-3 h-3" />
-                        {item.timeAgo}
+                        {formatTimeAgo(item.datetime)}
                       </span>
                     </div>
                     <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
@@ -238,10 +238,13 @@ export default function MarketNewsWire({ limit = 6 }) {
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
             <span>Syndicated live market news wire. All external dispatches attribute original publisher.</span>
           </div>
-          <div>
-            Independent Editorial Research available under{' '}
-            <Link to="/research" className="text-blue-600 dark:text-blue-400 hover:underline">/research</Link>
-          </div>
+          <Link 
+            to="/research" 
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 transition-all shadow-sm"
+          >
+            <span>Explore Editorial Research</span>
+            <span className="text-blue-500 font-bold">→</span>
+          </Link>
         </div>
 
       </div>
