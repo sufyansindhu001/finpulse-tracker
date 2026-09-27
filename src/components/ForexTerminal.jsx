@@ -15,6 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import CurrencyFlag from './CurrencyFlag';
+import CurrencySelect from './CurrencySelect';
 
 export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdated, onRefresh }) {
   const [searchParams] = useSearchParams();
@@ -206,28 +207,16 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
 
             {/* Base Currency Dropdown */}
             <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                   From Currency
                 </label>
-                <CurrencyFlag code={baseCurrency} className="w-5 h-5" />
               </div>
-              <div className="relative">
-                <select
-                  value={baseCurrency}
-                  onChange={(e) => setBaseCurrency(e.target.value)}
-                  className="w-full bg-transparent border-0 p-0 pr-6 text-sm sm:text-base font-bold text-slate-900 dark:text-white appearance-none focus:outline-none focus:ring-0 cursor-pointer"
-                >
-                  {CURRENCIES.map((c) => (
-                    <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.code} - {c.name} ({c.symbol})
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none text-slate-400 text-xs">
-                  ▼
-                </div>
-              </div>
+              <CurrencySelect
+                value={baseCurrency}
+                onChange={setBaseCurrency}
+                align="left"
+              />
             </div>
 
             {/* Swap Button */}
@@ -243,28 +232,16 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
 
             {/* Target Currency Dropdown */}
             <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 transition-all focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                   To Currency
                 </label>
-                <CurrencyFlag code={targetCurrency} className="w-5 h-5" />
               </div>
-              <div className="relative">
-                <select
-                  value={targetCurrency}
-                  onChange={(e) => setTargetCurrency(e.target.value)}
-                  className="w-full bg-transparent border-0 p-0 pr-6 text-sm sm:text-base font-bold text-slate-900 dark:text-white appearance-none focus:outline-none focus:ring-0 cursor-pointer"
-                >
-                  {CURRENCIES.map((c) => (
-                    <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.code} - {c.name} ({c.symbol})
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none text-slate-400 text-xs">
-                  ▼
-                </div>
-              </div>
+              <CurrencySelect
+                value={targetCurrency}
+                onChange={setTargetCurrency}
+                align="right"
+              />
             </div>
 
           </div>

@@ -16,6 +16,7 @@ import {
   ArrowRight 
 } from 'lucide-react';
 import CurrencyFlag from './CurrencyFlag';
+import CurrencySelect from './CurrencySelect';
 
 export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
   const [activeTool, setActiveTool] = useState('forex'); // 'forex', 'crypto', 'risk'
@@ -201,23 +202,16 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     From Currency
                   </label>
-                  <CurrencyFlag code={forexBase} className="w-5 h-5" />
                 </div>
-                <select
+                <CurrencySelect
                   value={forexBase}
-                  onChange={(e) => setForexBase(e.target.value)}
-                  className="w-full bg-transparent text-slate-900 dark:text-white font-bold text-base focus:outline-none cursor-pointer"
-                >
-                  {CURRENCIES.map(c => (
-                    <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.code} - {c.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setForexBase}
+                  align="left"
+                />
               </div>
 
               <div className="lg:col-span-2 flex justify-center py-1 lg:py-0">
@@ -234,23 +228,16 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-3 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     To Currency
                   </label>
-                  <CurrencyFlag code={forexTarget} className="w-5 h-5" />
                 </div>
-                <select
+                <CurrencySelect
                   value={forexTarget}
-                  onChange={(e) => setForexTarget(e.target.value)}
-                  className="w-full bg-transparent text-slate-900 dark:text-white font-bold text-base focus:outline-none cursor-pointer"
-                >
-                  {CURRENCIES.map(c => (
-                    <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.code} - {c.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setForexTarget}
+                  align="right"
+                />
               </div>
 
             </div>
@@ -324,23 +311,16 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
               </div>
 
               <div className="lg:col-span-4 bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                     Destination Fiat
                   </label>
-                  <CurrencyFlag code={cryptoFiat} className="w-5 h-5" />
                 </div>
-                <select
+                <CurrencySelect
                   value={cryptoFiat}
-                  onChange={(e) => setCryptoFiat(e.target.value)}
-                  className="w-full bg-transparent text-slate-900 dark:text-white font-bold text-base focus:outline-none cursor-pointer"
-                >
-                  {CURRENCIES.map(c => (
-                    <option key={c.code} value={c.code} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.code} - {c.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setCryptoFiat}
+                  align="right"
+                />
               </div>
 
             </div>

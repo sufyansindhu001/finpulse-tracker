@@ -3,6 +3,7 @@ import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency } from '../services/forexService';
 import { X } from 'lucide-react';
 import CurrencyFlag from './CurrencyFlag';
+import CurrencySelect from './CurrencySelect';
 
 export default function CryptoConverterModal({ coin, rates, onClose }) {
   const [cryptoAmount, setCryptoAmount] = useState('1');
@@ -82,19 +83,14 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                 Target Fiat Currency
               </label>
-              <CurrencyFlag code={fiatCurrency} className="w-5 h-5" />
             </div>
-            <select
-              value={fiatCurrency}
-              onChange={(e) => setFiatCurrency(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-100/90 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] rounded-xl text-slate-900 dark:text-white font-semibold text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code} className="bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-white">
-                  {c.code} - {c.name}
-                </option>
-              ))}
-            </select>
+            <div className="px-3.5 py-2.5 bg-slate-100/90 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20">
+              <CurrencySelect
+                value={fiatCurrency}
+                onChange={setFiatCurrency}
+                align="left"
+              />
+            </div>
           </div>
 
           {/* Quick preset amount chips */}
