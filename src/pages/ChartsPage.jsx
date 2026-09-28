@@ -166,16 +166,16 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
       
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-[#A8B3C2]">
-        <Link to="/" className="hover:text-white font-medium">Home</Link>
+      <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
+        <Link to="/" className="hover:text-slate-900 dark:hover:text-white font-medium">Home</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <Link to="/rates" className="hover:text-white font-medium">Rates</Link>
+        <Link to="/rates" className="hover:text-slate-900 dark:hover:text-white font-medium">Rates</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-white font-semibold">Interactive Charts</span>
+        <span className="text-slate-900 dark:text-white font-semibold">Interactive Charts</span>
       </nav>
 
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
@@ -183,16 +183,16 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
               TECHNICAL ANALYSIS TERMINAL
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Interactive Financial Charts
           </h1>
-          <p className="text-sm text-[#A8B3C2] mt-1">
+          <p className="text-sm text-slate-600 dark:text-[#A8B3C2] mt-1">
             Real-time streaming trends, historical corridor high/lows, and multi-asset price analytics.
           </p>
         </div>
 
         {/* Timeframe Switcher */}
-        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0A1726] border border-white/10 self-start md:self-auto">
+        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 self-start md:self-auto">
           {['1D', '7D', '1M', '1Y'].map((tf) => (
             <button
               key={tf}
@@ -200,7 +200,7 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 timeframe === tf
                   ? 'bg-[#00E676] text-[#06111F] shadow-sm'
-                  : 'text-[#A8B3C2] hover:text-white hover:bg-white/5'
+                  : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
               }`}
             >
               {tf}
@@ -219,17 +219,17 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
               onClick={() => setSelectedAsset(a.id)}
               className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#00E676]/10 border-[#00E676] shadow-lg shadow-[#00E676]/10'
-                  : 'bg-[#0A1726]/80 hover:bg-[#0A1726] border-white/10 hover:border-white/20'
+                  ? 'bg-[#00E676]/10 border-[#00E676] shadow-md shadow-[#00E676]/10'
+                  : 'bg-white dark:bg-[#0A1726]/80 hover:bg-slate-50 dark:hover:bg-[#0A1726] border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 shadow-xs'
               }`}
             >
               <div className="flex items-center justify-between mb-1.5">
-                <span className={`text-xs font-black uppercase ${isSelected ? 'text-[#00E676]' : 'text-white'}`}>
+                <span className={`text-xs font-black uppercase ${isSelected ? 'text-[#00E676]' : 'text-slate-900 dark:text-white'}`}>
                   {a.id}
                 </span>
-                {a.type === 'currency' ? <Globe className="w-3.5 h-3.5 text-[#A8B3C2]" /> : a.type === 'crypto' ? <Coins className="w-3.5 h-3.5 text-[#A8B3C2]" /> : <Sparkles className="w-3.5 h-3.5 text-amber-400" />}
+                {a.type === 'currency' ? <Globe className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2]" /> : a.type === 'crypto' ? <Coins className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2]" /> : <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />}
               </div>
-              <div className="text-sm font-extrabold text-white font-tabular">
+              <div className="text-sm font-extrabold text-slate-900 dark:text-white font-tabular">
                 {a.unit}{a.basePrice > 100 ? a.basePrice.toLocaleString(undefined, { maximumFractionDigits: 2 }) : a.basePrice.toFixed(4)}
               </div>
             </button>
@@ -238,20 +238,20 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
       </div>
 
       {/* Main Interactive Chart Card */}
-      <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-6">
+      <div className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 p-6 sm:p-8 shadow-sm dark:shadow-2xl backdrop-blur-xl space-y-6">
         
         {/* Chart Header Stats */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
           <div>
-            <div className="text-xs uppercase font-bold text-[#A8B3C2] tracking-wider">
+            <div className="text-xs uppercase font-bold text-slate-500 dark:text-[#A8B3C2] tracking-wider">
               {currentAsset.name} ({timeframe} View)
             </div>
             <div className="flex items-baseline gap-3 mt-1">
-              <span className="text-3xl sm:text-4xl font-black text-white font-tabular">
+              <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-tabular">
                 {currentAsset.unit} {activePoint.price.toLocaleString(undefined, { maximumFractionDigits: 4 })}
               </span>
               <span className={`inline-flex items-center gap-1 text-sm font-bold ${
-                isPositive ? 'text-[#00E676]' : 'text-rose-400'
+                isPositive ? 'text-[#00E676]' : 'text-rose-500 dark:text-rose-400'
               }`}>
                 {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                 <span>{isPositive ? '+' : ''}{overallChange}%</span>
@@ -260,9 +260,9 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
           </div>
 
           {/* Active Hover Inspector */}
-          <div className="p-3 rounded-2xl bg-[#06111F] border border-white/10 text-right">
-            <div className="text-[10px] text-[#A8B3C2] uppercase font-bold">Snapshot Time</div>
-            <div className="text-sm font-bold text-white font-tabular">{activePoint.label}</div>
+          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-right shadow-xs">
+            <div className="text-[10px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Snapshot Time</div>
+            <div className="text-sm font-bold text-slate-900 dark:text-white font-tabular">{activePoint.label}</div>
             <div className="text-[10px] text-[#00E676] font-semibold">24/7 Verified Data</div>
           </div>
         </div>
@@ -298,13 +298,13 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
                     y1={y} 
                     x2={svgWidth - paddingX} 
                     y2={y} 
-                    stroke="rgba(255, 255, 255, 0.05)" 
+                    className="stroke-slate-200 dark:stroke-white/10"
                     strokeDasharray="4 4" 
                   />
                   <text 
                     x={svgWidth - paddingX} 
                     y={y - 4} 
-                    fill="#A8B3C2" 
+                    className="fill-slate-400 dark:fill-[#A8B3C2]"
                     fontSize="9" 
                     textAnchor="end"
                     fontFamily="Inter, sans-serif"
@@ -345,7 +345,7 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
                   cy={activePoint.y} 
                   r="5" 
                   fill="#00E676" 
-                  stroke="#06111F" 
+                  className="stroke-white dark:stroke-[#06111F]"
                   strokeWidth="2" 
                 />
               </g>
@@ -357,7 +357,7 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
                 key={i} 
                 x={pt.x} 
                 y={svgHeight - 12} 
-                fill="#A8B3C2" 
+                className="fill-slate-400 dark:fill-[#A8B3C2]"
                 fontSize="10" 
                 textAnchor="middle"
                 fontFamily="Inter, sans-serif"
@@ -369,31 +369,31 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
         </div>
 
         {/* 4 Bottom Key Statistics Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10 text-xs">
-          <div className="p-3.5 rounded-2xl bg-[#06111F] border border-white/10">
-            <div className="text-[11px] text-[#A8B3C2] uppercase font-bold">Period High</div>
-            <div className="text-base font-extrabold text-white font-tabular mt-0.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-white/10 text-xs">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
+            <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Period High</div>
+            <div className="text-base font-extrabold text-slate-900 dark:text-white font-tabular mt-0.5">
               {currentAsset.unit}{maxPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-[#06111F] border border-white/10">
-            <div className="text-[11px] text-[#A8B3C2] uppercase font-bold">Period Low</div>
-            <div className="text-base font-extrabold text-white font-tabular mt-0.5">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
+            <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Period Low</div>
+            <div className="text-base font-extrabold text-slate-900 dark:text-white font-tabular mt-0.5">
               {currentAsset.unit}{minPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-[#06111F] border border-white/10">
-            <div className="text-[11px] text-[#A8B3C2] uppercase font-bold">Corridor Range</div>
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
+            <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Corridor Range</div>
             <div className="text-base font-extrabold text-[#00E676] font-tabular mt-0.5">
               {currentAsset.unit}{priceRange.toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-[#06111F] border border-white/10">
-            <div className="text-[11px] text-[#A8B3C2] uppercase font-bold">Interbank Spread</div>
-            <div className="text-base font-extrabold text-white font-tabular mt-0.5">
+          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
+            <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Interbank Spread</div>
+            <div className="text-base font-extrabold text-slate-900 dark:text-white font-tabular mt-0.5">
               0.00% Zero-Spread
             </div>
           </div>

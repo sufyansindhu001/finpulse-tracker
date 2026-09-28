@@ -186,7 +186,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
       
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
@@ -194,10 +194,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
               INSTITUTIONAL RATES TERMINAL
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Live Financial Rates Matrix
           </h1>
-          <p className="text-sm text-[#A8B3C2] mt-1">
+          <p className="text-sm text-slate-600 dark:text-[#A8B3C2] mt-1">
             Real-time interbank quotes, cryptocurrency rankings, and certified precious metals benchmarks.
           </p>
         </div>
@@ -206,7 +206,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-white/10 text-xs font-semibold text-white transition-all cursor-pointer disabled:opacity-50 self-start md:self-auto"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-white transition-all cursor-pointer disabled:opacity-50 self-start md:self-auto shadow-xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[#00E676] ${isRefreshing ? 'animate-spin' : ''}`} />
             <span>{isRefreshing ? 'Syncing...' : 'Sync Rates'}</span>
@@ -217,13 +217,13 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       {/* Tabs & Controls */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Tab Buttons */}
-        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0A1726] border border-white/10 overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 overflow-x-auto">
           <button
             onClick={() => handleTabChange('currencies')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'currencies'
                 ? 'bg-[#00E676] text-[#06111F] shadow-md shadow-[#00E676]/20'
-                : 'text-[#A8B3C2] hover:text-white hover:bg-white/5'
+                : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
             }`}
           >
             <Globe className="w-4 h-4" />
@@ -235,7 +235,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'crypto'
                 ? 'bg-[#00E676] text-[#06111F] shadow-md shadow-[#00E676]/20'
-                : 'text-[#A8B3C2] hover:text-white hover:bg-white/5'
+                : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
             }`}
           >
             <Coins className="w-4 h-4" />
@@ -247,7 +247,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'gold'
                 ? 'bg-[#00E676] text-[#06111F] shadow-md shadow-[#00E676]/20'
-                : 'text-[#A8B3C2] hover:text-white hover:bg-white/5'
+                : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
             }`}
           >
             <Sparkles className="w-4 h-4" />
@@ -263,18 +263,18 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={`Filter ${activeTab}...`}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#0A1726] border border-white/10 text-white text-xs placeholder-[#A8B3C2] focus:outline-none focus:border-[#00E676]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-[#A8B3C2] focus:outline-none focus:border-[#00E676]"
           />
         </div>
       </div>
 
       {/* TAB 1: CURRENCIES TABLE */}
       {activeTab === 'currencies' && (
-        <div className="rounded-3xl bg-[#0A1726]/80 border border-white/10 overflow-hidden shadow-2xl backdrop-blur-xl">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-white/10 bg-[#06111F]/70 text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
                   <th className="py-4 px-6">Asset / Currency</th>
                   <th className="py-4 px-6">Rate (PKR Benchmark)</th>
                   <th className="py-4 px-6">Rate (vs USD)</th>
@@ -282,7 +282,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   <th className="py-4 px-6 text-right">Quick Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                 {filteredCurrencies.map((c) => {
                   const isHighlighted = highlightedAsset === c.code.toUpperCase();
                   return (
@@ -292,7 +292,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                       className={`transition-all duration-300 ${
                         isHighlighted 
                           ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
-                          : 'hover:bg-white/[0.02]'
+                          : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
                       <td className="py-4 px-6">
@@ -303,15 +303,15 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                             className="w-6 h-4.5 rounded object-cover shadow-xs" 
                           />
                           <div>
-                            <span className="font-extrabold text-white text-sm">{c.code}</span>
-                            <span className="text-[11px] text-[#A8B3C2] block">{c.name}</span>
+                            <span className="font-extrabold text-slate-900 dark:text-white text-sm">{c.code}</span>
+                            <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">{c.name}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6 font-bold text-white text-sm font-tabular">
+                      <td className="py-4 px-6 font-bold text-slate-900 dark:text-white text-sm font-tabular">
                         ₨ {c.ratePkr.toFixed(2)}
                       </td>
-                      <td className="py-4 px-6 text-[#A8B3C2] font-semibold font-tabular">
+                      <td className="py-4 px-6 text-slate-600 dark:text-[#A8B3C2] font-semibold font-tabular">
                         ${c.rateUsd.toFixed(4)}
                       </td>
                       <td className="py-4 px-6">
@@ -341,11 +341,11 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
       {/* TAB 2: CRYPTO TABLE */}
       {activeTab === 'crypto' && (
-        <div className="rounded-3xl bg-[#0A1726]/80 border border-white/10 overflow-hidden shadow-2xl backdrop-blur-xl">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-white/10 bg-[#06111F]/70 text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
                   <th className="py-4 px-6">Asset</th>
                   <th className="py-4 px-6">Price (USD)</th>
                   <th className="py-4 px-6">Price in PKR</th>
@@ -354,7 +354,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   <th className="py-4 px-6 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                 {filteredCrypto.map((c) => {
                   const isHighlighted = highlightedAsset === c.symbol.toUpperCase();
                   return (
@@ -364,7 +364,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                       className={`transition-all duration-300 ${
                         isHighlighted 
                           ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
-                          : 'hover:bg-white/[0.02]'
+                          : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
                       <td className="py-4 px-6">
@@ -377,12 +377,12 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                             </div>
                           )}
                           <div>
-                            <span className="font-extrabold text-white text-sm">{c.symbol}</span>
-                            <span className="text-[11px] text-[#A8B3C2] block">{c.name}</span>
+                            <span className="font-extrabold text-slate-900 dark:text-white text-sm">{c.symbol}</span>
+                            <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">{c.name}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6 font-extrabold text-white text-sm font-tabular">
+                      <td className="py-4 px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular">
                         ${c.price.toLocaleString()}
                       </td>
                       <td className="py-4 px-6 text-[#00E676] font-bold font-tabular">
@@ -396,13 +396,13 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           <span>{c.change.toFixed(2)}%</span>
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-[#A8B3C2] font-tabular">
+                      <td className="py-4 px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular">
                         ${(c.volume / 1e9).toFixed(2)}B
                       </td>
                       <td className="py-4 px-6 text-right">
                         <button
                           onClick={() => navigate(`/charts?asset=${c.symbol}`)}
-                          className="px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold text-xs transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer"
                         >
                           Chart
                         </button>
@@ -418,11 +418,11 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
       {/* TAB 3: GOLD TABLE */}
       {activeTab === 'gold' && (
-        <div className="rounded-3xl bg-[#0A1726]/80 border border-white/10 overflow-hidden shadow-2xl backdrop-blur-xl">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-white/10 bg-[#06111F]/70 text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
                   <th className="py-4 px-6">Grade / Benchmark</th>
                   <th className="py-4 px-6">Unit</th>
                   <th className="py-4 px-6">PKR Price</th>
@@ -431,7 +431,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   <th className="py-4 px-6 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                 {goldRows.map((g, idx) => {
                   const isGoldRow = highlightedAsset === 'GOLD' || highlightedAsset === 'XAU' || highlightedAsset === 'TOLA';
                   const isSilverRow = highlightedAsset === 'XAG' || highlightedAsset === 'SILVER';
@@ -445,22 +445,22 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                       className={`transition-all duration-300 ${
                         isHighlighted 
                           ? 'bg-amber-500/20 ring-2 ring-amber-400 shadow-lg shadow-amber-500/20' 
-                          : 'hover:bg-white/[0.02]'
+                          : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2.5">
-                          <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                          <span className="font-extrabold text-white text-sm">{g.purity}</span>
+                          <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
+                          <span className="font-extrabold text-slate-900 dark:text-white text-sm">{g.purity}</span>
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-amber-300 font-semibold">
+                      <td className="py-4 px-6 text-amber-600 dark:text-amber-300 font-semibold">
                         {g.unit}
                       </td>
                       <td className="py-4 px-6 font-extrabold text-[#00E676] text-sm font-tabular">
                         ₨ {Math.round(g.ratePkr).toLocaleString()}
                       </td>
-                      <td className="py-4 px-6 text-white font-tabular">
+                      <td className="py-4 px-6 text-slate-700 dark:text-white font-tabular">
                         ${g.rateUsd.toFixed(2)}
                       </td>
                       <td className="py-4 px-6">
@@ -472,7 +472,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                       <td className="py-4 px-6 text-right">
                         <button
                           onClick={() => navigate('/gold')}
-                          className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-500 dark:text-amber-400 hover:text-slate-950 font-bold text-xs transition-colors cursor-pointer"
                         >
                           Details
                         </button>

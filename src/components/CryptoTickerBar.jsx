@@ -4,8 +4,8 @@ import { TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
 export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
   if (!cryptoList || cryptoList.length === 0) {
     return (
-      <div className="w-full bg-slate-950 border-b border-slate-800 text-xs py-2 px-4 flex items-center justify-center gap-2 text-slate-400 sticky top-0 z-40">
-        <Loader2 className="w-3.5 h-3.5 text-blue-400 animate-spin" />
+      <div className="w-full bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-xs py-2 px-4 flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 sticky top-0 z-40">
+        <Loader2 className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 animate-spin" />
         <span className="font-mono text-[11px]">Connecting to live cryptocurrency ticker feed...</span>
       </div>
     );
@@ -15,7 +15,7 @@ export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
   const tickerItems = [...cryptoList, ...cryptoList];
 
   return (
-    <div className="w-full max-w-full bg-[#070A12]/95 border-b border-white/[0.06] text-xs py-1.5 overflow-hidden select-none backdrop-blur-xl sticky top-0 z-40">
+    <div className="w-full max-w-full bg-slate-100/95 dark:bg-[#070A12]/95 border-b border-slate-200 dark:border-white/[0.06] text-xs py-1.5 overflow-hidden select-none backdrop-blur-xl sticky top-0 z-40">
       <div className="animate-marquee flex items-center gap-7 whitespace-nowrap">
         {tickerItems.map((coin, index) => {
           const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
@@ -23,14 +23,14 @@ export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
             <div
               key={`${coin.id}-${index}`}
               onClick={() => onSelectCoin && onSelectCoin(coin)}
-              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full cursor-pointer hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] transition-all"
+              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full cursor-pointer hover:bg-slate-200/60 dark:hover:bg-white/[0.06] border border-transparent hover:border-slate-300 dark:hover:border-white/[0.08] transition-all"
               title={`Click to convert ${coin.name} in fiat`}
             >
               {coin.image && (
                 <img src={coin.image} alt={coin.name} className="w-3.5 h-3.5 rounded-full" width="14" height="14" loading="lazy" />
               )}
-              <span className="font-semibold text-slate-200 uppercase tracking-tight text-[11px]">{coin.symbol}</span>
-              <span className="text-slate-300 font-mono font-medium text-[11px] tabular-nums">
+              <span className="font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-tight text-[11px]">{coin.symbol}</span>
+              <span className="text-slate-600 dark:text-slate-300 font-mono font-medium text-[11px] tabular-nums">
                 ${coin.current_price < 1 
                   ? coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
                   : coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

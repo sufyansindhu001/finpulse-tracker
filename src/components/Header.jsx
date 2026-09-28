@@ -22,37 +22,10 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
   const location = useLocation();
   const { siteSettings } = useApp();
 
-  // Internal theme state fallback
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof propTheme === 'string') return propTheme === 'dark';
-    try {
-      const saved = localStorage.getItem('fgc_spot_theme');
-      if (saved) return saved === 'dark';
-      return document.documentElement.classList.contains('dark');
-    } catch {
-      return true;
-    }
-  });
-
-  useEffect(() => {
-    if (typeof propTheme === 'string') {
-      setIsDark(propTheme === 'dark');
-    }
-  }, [propTheme]);
+  // Theme state: single source of truth from props
+  const isDark = propTheme === 'dark';
 
   const handleToggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    try {
-      localStorage.setItem('fgc_spot_theme', nextDark ? 'dark' : 'light');
-    } catch (e) {
-      console.warn('LocalStorage unavailable:', e);
-    }
     if (onToggleTheme) {
       onToggleTheme();
     }
@@ -89,7 +62,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#06111F]/90 dark:bg-[#06111F]/90 backdrop-blur-md border-b border-white/10 transition-colors">
+      <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-[#06111F]/90 backdrop-blur-md border-b border-slate-200 dark:border-white/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-3">
             
@@ -107,7 +80,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               />
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className="text-base sm:text-lg font-black tracking-tight text-white font-sans">
+                  <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans">
                     {siteSettings?.websiteName || 'FGC Spot'}
                   </span>
                   <span className="hidden sm:inline-flex text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20">
@@ -118,7 +91,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
             </Link>
 
             {/* Center: Desktop Navigation Links (Clean, No "About") */}
-            <nav className="hidden md:flex items-center gap-1 bg-[#0A1726]/80 p-1.5 rounded-full border border-white/10 backdrop-blur-md">
+            <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md">
               {navLinks.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.match(currentPath);
@@ -129,7 +102,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                       isActive
                         ? 'bg-[#00E676] text-[#06111F] shadow-sm shadow-[#00E676]/30 font-bold'
-                        : 'text-[#A8B3C2] hover:text-white hover:bg-white/[0.05]'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A8B3C2] dark:hover:text-white dark:hover:bg-white/[0.05]'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -145,12 +118,12 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               {/* Functional Search Input Button */}
               <button
                 onClick={onOpenSearch}
-                className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-white/10 text-xs text-[#A8B3C2] hover:text-white transition-all cursor-pointer shadow-xs group"
+                className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group"
                 title="Search currency, crypto, gold... (Ctrl+K)"
               >
                 <Search className="w-3.5 h-3.5 text-[#00E676] group-hover:scale-110 transition-transform" />
-                <span className="text-[#A8B3C2]">Search currency, crypto, gold...</span>
-                <kbd className="text-[10px] font-mono bg-[#06111F] px-1.5 py-0.5 rounded border border-white/10 text-slate-400">
+                <span>Search currency, crypto, gold...</span>
+                <kbd className="text-[10px] font-mono bg-white dark:bg-[#06111F] px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">
                   ⌘K
                 </kbd>
               </button>
@@ -158,7 +131,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               {/* Mobile Search Icon Button */}
               <button
                 onClick={onOpenSearch}
-                className="lg:hidden p-2 rounded-xl bg-[#0A1726] border border-white/10 text-[#A8B3C2] hover:text-white cursor-pointer"
+                className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4 text-[#00E676]" />
@@ -167,19 +140,19 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               {/* Theme Toggle Button (Moon/Sun) */}
               <button
                 onClick={handleToggleTheme}
-                className="p-2 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-white/10 text-[#A8B3C2] hover:text-[#00E676] transition-all cursor-pointer shadow-xs"
+                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-[#00E676] dark:hover:text-[#00E676] transition-all cursor-pointer shadow-xs"
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 aria-label="Toggle visual theme"
               >
                 {isDark ? (
                   <Sun className="w-4 h-4 text-[#00E676] transition-transform hover:rotate-45" />
                 ) : (
-                  <Moon className="w-4 h-4 text-amber-400 transition-transform hover:-rotate-12" />
+                  <Moon className="w-4 h-4 text-amber-500 transition-transform hover:-rotate-12" />
                 )}
               </button>
 
               {/* Language Indicator */}
-              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#0A1726] border border-white/10 text-xs font-semibold text-[#A8B3C2]">
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-[#A8B3C2]">
                 <Globe className="w-3.5 h-3.5 text-[#00E676]" />
                 <span>EN</span>
               </div>
@@ -187,7 +160,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               {/* Live Rates Glowing Pulse Button */}
               <button
                 onClick={() => navigate('/rates')}
-                className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-[#00E676]/30 hover:border-[#00E676] text-white text-xs font-semibold transition-all shadow-xs cursor-pointer group"
+                className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white text-xs font-semibold transition-all shadow-xs cursor-pointer group"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
@@ -199,10 +172,10 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               {/* Mobile Hamburger Toggle Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-xl bg-[#0A1726] border border-white/10 text-[#A8B3C2] hover:text-white cursor-pointer shrink-0"
+                className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0"
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5 text-white" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
 
@@ -220,24 +193,24 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
           />
 
           {/* Slide Drawer content */}
-          <div className="relative w-4/5 max-w-sm h-full bg-[#0A1726] border-l border-white/10 p-6 flex flex-col justify-between z-10 shadow-2xl animate-in slide-in-from-right duration-200">
+          <div className="relative w-4/5 max-w-sm h-full bg-white dark:bg-[#0A1726] border-l border-slate-200 dark:border-white/10 p-6 flex flex-col justify-between z-10 shadow-2xl animate-in slide-in-from-right duration-200">
             <div className="space-y-6">
               
               {/* Drawer Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10">
                 <div className="flex items-center gap-2.5">
                   <img 
                     src={siteSettings?.logoUrl || '/logo.png'} 
                     alt="Logo" 
                     className="h-8 w-auto object-contain"
                   />
-                  <span className="font-extrabold text-white text-lg">
+                  <span className="font-extrabold text-slate-900 dark:text-white text-lg">
                     {siteSettings?.websiteName || 'FGC Spot'}
                   </span>
                 </div>
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-1.5 rounded-lg bg-[#06111F] text-slate-400 hover:text-white border border-white/10"
+                  className="p-1.5 rounded-lg bg-slate-100 dark:bg-[#06111F] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -249,7 +222,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                   setMobileMenuOpen(false);
                   onOpenSearch();
                 }}
-                className="w-full flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#06111F] border border-white/10 text-xs text-[#A8B3C2] text-left"
+                className="w-full flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-[#A8B3C2] text-left"
               >
                 <Search className="w-4 h-4 text-[#00E676]" />
                 <span>Search currency, crypto, gold...</span>
@@ -267,7 +240,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                         isActive
                           ? 'bg-[#00E676] text-[#06111F] font-bold'
-                          : 'text-[#A8B3C2] hover:text-white hover:bg-white/[0.04]'
+                          : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-[#A8B3C2] dark:hover:text-white dark:hover:bg-white/[0.04]'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -279,14 +252,14 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
             </div>
 
             {/* Drawer Footer with Theme Toggle, Language & Live Rates */}
-            <div className="pt-6 border-t border-white/10 space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-[#06111F] border border-white/10">
-                <span className="text-xs font-semibold text-[#A8B3C2]">Interface Theme</span>
+            <div className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
+                <span className="text-xs font-semibold text-slate-700 dark:text-[#A8B3C2]">Interface Theme</span>
                 <button
                   onClick={handleToggleTheme}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A1726] border border-white/10 text-xs font-bold text-white hover:text-[#00E676]"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-900 dark:text-white hover:text-[#00E676]"
                 >
-                  {isDark ? <Sun className="w-3.5 h-3.5 text-[#00E676]" /> : <Moon className="w-3.5 h-3.5 text-amber-400" />}
+                  {isDark ? <Sun className="w-3.5 h-3.5 text-[#00E676]" /> : <Moon className="w-3.5 h-3.5 text-amber-500" />}
                   <span>{isDark ? 'Dark' : 'Light'}</span>
                 </button>
               </div>
@@ -302,7 +275,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                 <span>Open Live Rates Terminal</span>
               </button>
 
-              <div className="flex items-center justify-between text-xs text-[#A8B3C2] px-1">
+              <div className="flex items-center justify-between text-xs text-slate-600 dark:text-[#A8B3C2] px-1">
                 <span className="flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5 text-[#00E676]" />
                   <span>Language: English (EN)</span>

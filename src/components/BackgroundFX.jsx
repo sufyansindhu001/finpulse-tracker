@@ -153,7 +153,7 @@ export default function BackgroundFX() {
         style={{ background: 'radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, rgba(6, 17, 31, 0) 70%)' }}
       />
       <div 
-        className="absolute bottom-0 left-1/4 w-[800px] h-[500px] rounded-full blur-[160px] opacity-20"
+        className="hidden dark:block absolute bottom-0 left-1/4 w-[800px] h-[500px] rounded-full blur-[160px] opacity-20"
         style={{ background: 'radial-gradient(circle, rgba(13, 27, 42, 0.8) 0%, rgba(6, 17, 31, 0) 70%)' }}
       />
       

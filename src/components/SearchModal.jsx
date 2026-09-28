@@ -103,11 +103,11 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-xl bg-[#0A1726] border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="w-full max-w-xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-white/10 gap-3 bg-[#06111F]">
+        <div className="flex items-center px-4 py-3.5 border-b border-slate-200 dark:border-white/10 gap-3 bg-slate-50 dark:bg-[#06111F]">
           <Search className="w-5 h-5 text-[#00E676] shrink-0" />
           <input
             type="text"
@@ -115,39 +115,39 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search currency (USD, PKR), crypto (BTC), gold, or guides..."
-            className="w-full bg-transparent text-sm text-white placeholder-[#A8B3C2] focus:outline-none"
+            className="w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#A8B3C2] focus:outline-none"
           />
           <button 
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-white/10 text-[#A8B3C2] hover:text-white transition-colors cursor-pointer"
+            className="p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-white/10 text-slate-500 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Results Area */}
-        <div className="max-h-96 overflow-y-auto p-4 space-y-4 text-xs font-medium scrollbar-thin scrollbar-thumb-white/10">
+        <div className="max-h-96 overflow-y-auto p-4 space-y-4 text-xs font-medium scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
           {!query.trim() ? (
-            <div className="py-6 text-center text-[#A8B3C2] space-y-2">
-              <span className="block font-semibold text-white">Instant Deep Financial Instrument Search</span>
+            <div className="py-6 text-center text-slate-500 dark:text-[#A8B3C2] space-y-2">
+              <span className="block font-semibold text-slate-900 dark:text-white">Instant Deep Financial Instrument Search</span>
               <div className="flex flex-wrap justify-center gap-2 pt-1 text-[11px]">
-                <button onClick={() => setQuery('USD/PKR')} className="px-2.5 py-1 rounded-lg bg-[#06111F] border border-white/10 text-[#00E676] hover:border-[#00E676]">USD/PKR</button>
-                <button onClick={() => setQuery('BTC')} className="px-2.5 py-1 rounded-lg bg-[#06111F] border border-white/10 text-[#00E676] hover:border-[#00E676]">Bitcoin</button>
-                <button onClick={() => setQuery('Gold 24K')} className="px-2.5 py-1 rounded-lg bg-[#06111F] border border-white/10 text-[#00E676] hover:border-[#00E676]">Gold 24K</button>
-                <button onClick={() => setQuery('Forex Volatility')} className="px-2.5 py-1 rounded-lg bg-[#06111F] border border-white/10 text-[#00E676] hover:border-[#00E676]">Forex Guide</button>
+                <button onClick={() => setQuery('USD/PKR')} className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-[#00E676] hover:border-[#00E676]">USD/PKR</button>
+                <button onClick={() => setQuery('BTC')} className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-[#00E676] hover:border-[#00E676]">Bitcoin</button>
+                <button onClick={() => setQuery('Gold 24K')} className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-[#00E676] hover:border-[#00E676]">Gold 24K</button>
+                <button onClick={() => setQuery('Forex Volatility')} className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-[#00E676] hover:border-[#00E676]">Forex Guide</button>
               </div>
             </div>
           ) : (
             <>
               {/* Currency Pair Quick Converter & Chart Shortcut */}
               {results.pairResult && (
-                <div className="p-3.5 rounded-2xl bg-[#06111F] border border-[#00E676]/40 space-y-2">
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-[#00E676]/40 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>Direct Currency Corridor Match</span>
                     </span>
-                    <span className="text-white font-extrabold">{results.pairResult.from} / {results.pairResult.to}</span>
+                    <span className="text-slate-900 dark:text-white font-extrabold">{results.pairResult.from} / {results.pairResult.to}</span>
                   </div>
                   <div className="flex items-center gap-2 pt-1">
                     <button
@@ -165,7 +165,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                         navigate(`/charts?pair=${results.pairResult.from}-${results.pairResult.to}`);
                         onClose();
                       }}
-                      className="flex-1 py-2 px-3 rounded-xl bg-[#0A1726] border border-white/10 text-white font-bold text-xs flex items-center justify-center gap-1.5 hover:border-[#00E676]/40 cursor-pointer"
+                      className="flex-1 py-2 px-3 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white font-bold text-xs flex items-center justify-center gap-1.5 hover:border-[#00E676]/40 cursor-pointer shadow-xs"
                     >
                       <LineChart className="w-3.5 h-3.5 text-[#00E676]" />
                       <span>View Chart</span>
@@ -177,7 +177,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {/* Currencies matches */}
               {results.currencies.length > 0 && (
                 <div>
-                  <div className="text-[11px] font-bold text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <div className="text-[11px] font-bold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Globe className="w-3.5 h-3.5 text-[#00E676]" />
                     <span>Currencies &bull; Deep Links</span>
                   </div>
@@ -185,7 +185,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                     {results.currencies.map(curr => (
                       <div
                         key={curr.code}
-                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors group"
+                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/10 transition-colors group"
                       >
                         <div 
                           onClick={() => {
@@ -196,7 +196,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                         >
                           <CurrencyFlag code={curr.code} className="w-5 h-4 rounded shadow-xs shrink-0" />
                           <div className="truncate">
-                            <span className="text-white font-bold">{curr.name}</span>
+                            <span className="text-slate-900 dark:text-white font-bold">{curr.name}</span>
                             <span className="text-[#00E676] font-bold ml-1.5 font-mono">({curr.code})</span>
                           </div>
                         </div>
@@ -208,7 +208,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                               navigate(`/converter?from=${curr.code}&to=PKR`);
                               onClose();
                             }}
-                            className="px-2 py-1 rounded-lg bg-[#06111F] text-[#00E676] hover:bg-[#00E676] hover:text-[#06111F] border border-white/10 font-bold text-[10px] transition-all cursor-pointer"
+                            className="px-2 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] text-[#00E676] hover:bg-[#00E676] hover:text-[#06111F] border border-slate-200 dark:border-white/10 font-bold text-[10px] transition-all cursor-pointer"
                             title="Convert with PKR"
                           >
                             Convert
@@ -218,7 +218,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                               navigate(`/rates?asset=${curr.code}&tab=currencies`);
                               onClose();
                             }}
-                            className="px-2 py-1 rounded-lg bg-[#06111F] text-[#A8B3C2] hover:text-white border border-white/10 font-bold text-[10px] transition-all cursor-pointer"
+                            className="px-2 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 font-bold text-[10px] transition-all cursor-pointer"
                             title="Highlight in rates matrix"
                           >
                             Rate
@@ -233,7 +233,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {/* Cryptocurrencies matches */}
               {results.cryptos.length > 0 && (
                 <div>
-                  <div className="text-[11px] font-bold text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <div className="text-[11px] font-bold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Coins className="w-3.5 h-3.5 text-[#00E676]" />
                     <span>Cryptocurrencies &bull; Deep Links</span>
                   </div>
@@ -241,7 +241,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                     {results.cryptos.map(coin => (
                       <div
                         key={coin.id}
-                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-colors group"
+                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10 transition-colors group"
                       >
                         <div 
                           onClick={() => {
@@ -250,17 +250,17 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                           }}
                           className="flex items-center gap-2.5 cursor-pointer flex-1 min-w-0"
                         >
-                          <div className="w-5 h-5 rounded-full bg-[#06111F] border border-white/10 flex items-center justify-center text-[10px] font-black text-[#00E676]">
+                          <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[10px] font-black text-[#00E676]">
                             {coin.symbol.slice(0, 3)}
                           </div>
                           <div className="truncate">
-                            <span className="text-white font-bold">{coin.name}</span>
-                            <span className="text-[#A8B3C2] font-mono ml-1.5 uppercase">({coin.symbol})</span>
+                            <span className="text-slate-900 dark:text-white font-bold">{coin.name}</span>
+                            <span className="text-slate-500 dark:text-[#A8B3C2] font-mono ml-1.5 uppercase">({coin.symbol})</span>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0 ml-2">
-                          <span className="text-white font-bold tabular-nums">
+                          <span className="text-slate-900 dark:text-white font-bold tabular-nums">
                             ${coin.current_price?.toLocaleString()}
                           </span>
                           <button
@@ -268,7 +268,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                               navigate(`/rates?asset=${coin.symbol.toUpperCase()}&tab=crypto`);
                               onClose();
                             }}
-                            className="px-2 py-1 rounded-lg bg-[#06111F] text-[#00E676] hover:bg-[#00E676] hover:text-[#06111F] border border-white/10 font-bold text-[10px] transition-all cursor-pointer"
+                            className="px-2 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] text-[#00E676] hover:bg-[#00E676] hover:text-[#06111F] border border-slate-200 dark:border-white/10 font-bold text-[10px] transition-all cursor-pointer"
                           >
                             Terminal
                           </button>
@@ -282,8 +282,8 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {/* Gold & Bullion matches */}
               {results.metals.length > 0 && (
                 <div>
-                  <div className="text-[11px] font-bold text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+                  <div className="text-[11px] font-bold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <TrendingUp className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                     <span>Gold &amp; Precious Metals &bull; Deep Links</span>
                   </div>
                   <div className="space-y-1">
@@ -294,15 +294,15 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                           navigate(`/gold?purity=${metal.purity}&unit=${metal.unit}`);
                           onClose();
                         }}
-                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 cursor-pointer transition-colors group"
+                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10 cursor-pointer transition-colors group"
                       >
                         <div className="flex items-center gap-2.5">
-                          <span className="w-5 h-5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-[10px]">
+                          <span className="w-5 h-5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-[10px]">
                             Au
                           </span>
-                          <span className="text-white font-bold">{metal.name}</span>
+                          <span className="text-slate-900 dark:text-white font-bold">{metal.name}</span>
                         </div>
-                        <span className="text-amber-400 font-bold text-[11px] group-hover:underline flex items-center gap-1">
+                        <span className="text-amber-600 dark:text-amber-400 font-bold text-[11px] group-hover:underline flex items-center gap-1">
                           <span>Bullion Rates</span>
                           <ArrowRight className="w-3 h-3" />
                         </span>
@@ -315,7 +315,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               {/* Research & Blog Articles */}
               {results.articles.length > 0 && (
                 <div>
-                  <div className="text-[11px] font-bold text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <div className="text-[11px] font-bold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <BookOpen className="w-3.5 h-3.5 text-[#00E676]" />
                     <span>Financial Guides &amp; Blog</span>
                   </div>
@@ -327,10 +327,10 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
                           navigate(`/blog/${art.slug || art.id}`);
                           onClose();
                         }}
-                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 cursor-pointer transition-colors group"
+                        className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:border-white/10 cursor-pointer transition-colors group"
                       >
-                        <span className="text-white font-medium truncate max-w-sm group-hover:text-[#00E676] transition-colors">{art.title}</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-[#A8B3C2] group-hover:text-[#00E676] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                        <span className="text-slate-900 dark:text-white font-medium truncate max-w-sm group-hover:text-[#00E676] transition-colors">{art.title}</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2] group-hover:text-[#00E676] group-hover:translate-x-1 transition-all shrink-0 ml-2" />
                       </div>
                     ))}
                   </div>
@@ -338,7 +338,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
               )}
 
               {results.cryptos.length === 0 && results.currencies.length === 0 && results.metals.length === 0 && results.articles.length === 0 && !results.pairResult && (
-                <div className="py-8 text-center text-[#A8B3C2]">
+                <div className="py-8 text-center text-slate-500 dark:text-[#A8B3C2]">
                   No instruments found matching "{query}". Try "USD", "BTC", "Gold", or "Forex".
                 </div>
               )}
@@ -347,7 +347,7 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
         </div>
 
         {/* Footer info */}
-        <div className="px-4 py-2.5 bg-[#06111F] border-t border-white/10 text-xs text-[#A8B3C2] flex justify-between font-medium">
+        <div className="px-4 py-2.5 bg-slate-50 dark:bg-[#06111F] border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-[#A8B3C2] flex justify-between font-medium">
           <span>ESC to close</span>
           <span className="text-[#00E676] font-mono">FGC Spot Deep Router</span>
         </div>

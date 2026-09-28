@@ -71,45 +71,45 @@ export default function ArticleView() {
     <article className="w-full max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300 pb-16 px-4 sm:px-6">
       
       {/* Breadcrumb Navigation */}
-      <nav className="flex items-center gap-2 text-xs text-[#A8B3C2] flex-wrap">
+      <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2] flex-wrap">
         <Link 
           to="/"
-          className="hover:text-white transition-colors font-medium"
+          className="hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
         >
           Home
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <Link 
           to="/blog"
-          className="hover:text-white transition-colors font-medium flex items-center gap-1"
+          className="hover:text-slate-900 dark:hover:text-white transition-colors font-medium flex items-center gap-1"
         >
           <span>Market Analysis &amp; Blog</span>
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <span className="text-[#00E676] font-semibold">{article.category}</span>
         <ChevronRight className="w-3.5 h-3.5 hidden sm:inline" />
-        <span className="truncate max-w-[220px] hidden sm:inline text-white font-medium">{article.title}</span>
+        <span className="truncate max-w-[220px] hidden sm:inline text-slate-900 dark:text-white font-medium">{article.title}</span>
       </nav>
 
       {/* Main Article Container */}
-      <div className="bg-[#0A1726] border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl">
+      <div className="bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-10 shadow-sm dark:shadow-2xl backdrop-blur-xl">
         
         {/* Header Metadata */}
         <div className="flex flex-wrap items-center gap-3 text-xs mb-4">
           <span className="px-3 py-1 rounded-full font-bold bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20">
             {article.category}
           </span>
-          <span className="flex items-center gap-1.5 text-[#A8B3C2] font-medium">
+          <span className="flex items-center gap-1.5 text-slate-500 dark:text-[#A8B3C2] font-medium">
             <Calendar className="w-3.5 h-3.5 text-[#00E676]" />
             {article.date}
           </span>
-          <span className="flex items-center gap-1.5 text-[#A8B3C2] font-medium">
+          <span className="flex items-center gap-1.5 text-slate-500 dark:text-[#A8B3C2] font-medium">
             <Clock className="w-3.5 h-3.5 text-[#00E676]" />
             {article.readTime}
           </span>
           <button
             onClick={handleShare}
-            className="ml-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#06111F] hover:bg-[#0D1B2A] text-white text-xs font-semibold border border-white/10 hover:border-[#00E676]/40 transition-all cursor-pointer shadow-xs"
+            className="ml-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#06111F] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] text-slate-700 dark:text-white text-xs font-semibold border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-all cursor-pointer shadow-xs"
           >
             <Share2 className="w-3.5 h-3.5 text-[#00E676]" />
             <span>Share</span>
@@ -117,19 +117,19 @@ export default function ArticleView() {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-6">
+        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
           {article.title}
         </h1>
 
         {/* Author Bio Bar */}
-        <div className="flex items-center justify-between pb-6 border-b border-white/10 mb-8 gap-4">
+        <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 mb-8 gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-[#06111F] border border-white/10 flex items-center justify-center text-[#00E676] font-bold">
+            <div className="w-11 h-11 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold">
               <User className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-white">{article.author || 'FGC Spot Macro Research Desk'}</div>
-              <div className="text-xs text-[#A8B3C2] font-medium">FGC Spot Financial Research Desk &bull; Independent Intelligence</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'FGC Spot Macro Research Desk'}</div>
+              <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">FGC Spot Financial Research Desk &bull; Independent Intelligence</div>
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20 font-semibold">
@@ -140,7 +140,7 @@ export default function ArticleView() {
 
         {/* Featured Image */}
         {article.image && (
-          <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-white/10 bg-[#06111F]">
+          <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F]">
             <img 
               src={article.image} 
               alt={article.title} 
@@ -151,18 +151,18 @@ export default function ArticleView() {
         )}
 
         {/* Executive Summary Callout */}
-        <div className="p-6 rounded-2xl bg-[#06111F] border-l-4 border-[#00E676] border-t border-r border-b border-white/10 mb-8 text-[#A8B3C2] text-sm sm:text-base italic leading-relaxed">
-          <strong className="text-white font-semibold not-italic block mb-1">Executive Takeaway:</strong>
+        <div className="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border-l-4 border-[#00E676] border-t border-r border-b border-slate-200 dark:border-white/10 mb-8 text-slate-600 dark:text-[#A8B3C2] text-sm sm:text-base italic leading-relaxed">
+          <strong className="text-slate-900 dark:text-white font-semibold not-italic block mb-1">Executive Takeaway:</strong>
           "{article.summary}"
         </div>
 
         {/* Full Article Content */}
-        <div className="text-[#A8B3C2] text-base leading-relaxed space-y-6">
+        <div className="text-slate-700 dark:text-[#A8B3C2] text-base leading-relaxed space-y-6">
           {article.content.split('\n\n').map((paragraph, idx) => {
             const trimmed = paragraph.trim();
             if (trimmed.startsWith('###')) {
               return (
-                <h2 key={idx} className="text-xl sm:text-2xl font-extrabold text-white pt-6 pb-2 border-b border-white/10">
+                <h2 key={idx} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-white/10">
                   {trimmed.replace('###', '').trim()}
                 </h2>
               );
@@ -173,7 +173,7 @@ export default function ArticleView() {
                   {trimmed.split('\n').map((line, lIdx) => (
                     <div key={lIdx} className="flex items-start gap-2 text-sm sm:text-base">
                       <span className="text-[#00E676] font-bold shrink-0">&bull;</span>
-                      <span className="text-[#A8B3C2]">{line.replace(/^[*•-]\s*/, '').replace(/^\d+\.\s*/, '')}</span>
+                      <span className="text-slate-600 dark:text-[#A8B3C2]">{line.replace(/^[*•-]\s*/, '').replace(/^\d+\.\s*/, '')}</span>
                     </div>
                   ))}
                 </div>
@@ -188,15 +188,15 @@ export default function ArticleView() {
         </div>
 
         {/* Market Tickers & Editorial Tags */}
-        <div className="mt-10 pt-6 border-t border-white/10 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-[#A8B3C2] uppercase tracking-wider flex items-center gap-1.5 mr-1">
+        <div className="mt-10 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider flex items-center gap-1.5 mr-1">
             <Tag className="w-3.5 h-3.5 text-[#00E676]" />
             TAGS:
           </span>
           {(Array.isArray(article.tags) ? article.tags : (typeof article.tags === 'string' ? article.tags.split(',') : [])).map((tag, tIdx) => (
             <span 
               key={tIdx} 
-              className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-[#06111F] text-[#A8B3C2] border border-white/10"
+              className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] text-slate-600 dark:text-[#A8B3C2] border border-slate-200 dark:border-white/10"
             >
               #{tag.trim()}
             </span>
@@ -209,7 +209,7 @@ export default function ArticleView() {
       {relatedArticles.length > 0 && (
         <div className="space-y-4 pt-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-[#00E676]" />
               <span>Related Market Research</span>
             </h3>
@@ -224,17 +224,17 @@ export default function ArticleView() {
               <Link
                 key={rel.id}
                 to={`/blog/${rel.slug || rel.id}`}
-                className="p-4 rounded-2xl bg-[#0A1726] border border-white/10 hover:border-[#00E676]/40 transition-all duration-200 group flex flex-col justify-between"
+                className="p-4 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-all duration-200 group flex flex-col justify-between shadow-xs"
               >
                 <div className="space-y-2">
                   <span className="text-[10px] font-bold text-[#00E676] uppercase tracking-wider">
                     {rel.category}
                   </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
                     {rel.title}
                   </h4>
                 </div>
-                <div className="pt-3 mt-3 border-t border-white/5 flex items-center justify-between text-[11px] text-[#A8B3C2]">
+                <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px] text-slate-500 dark:text-[#A8B3C2]">
                   <span>{rel.readTime}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-[#00E676] group-hover:translate-x-1 transition-transform" />
                 </div>

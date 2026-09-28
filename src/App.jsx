@@ -201,7 +201,7 @@ export default function App() {
 
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#0A1726] text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-[#00E676]/40 backdrop-blur-md">
+        <div className="fixed bottom-6 right-6 z-50 bg-white dark:bg-[#0A1726] text-slate-900 dark:text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-slate-200 dark:border-[#00E676]/40 backdrop-blur-md">
           <CheckCircle className="w-4 h-4 text-[#00E676]" />
           <span>{toast}</span>
         </div>
@@ -232,7 +232,7 @@ export default function App() {
         <Suspense fallback={
           <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 animate-pulse">
             <div className="w-8 h-8 border-2 border-[#00E676] border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-xs font-mono text-[#A8B3C2]">Loading FGC Spot Terminal...</span>
+            <span className="text-xs font-mono text-slate-500 dark:text-[#A8B3C2]">Loading FGC Spot Terminal...</span>
           </div>
         }>
           <Routes>
@@ -260,7 +260,7 @@ export default function App() {
                 />
 
                 {/* Quick Currency Conversion Matrix */}
-                <section id="forex-corridors" className="py-12 border-b border-white/10 w-full max-w-full overflow-hidden">
+                <section id="forex-corridors" className="py-12 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <QuickConversionMatrix
                       rates={rates}

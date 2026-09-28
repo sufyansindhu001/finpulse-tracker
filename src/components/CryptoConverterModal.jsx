@@ -112,14 +112,14 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
           </div>
 
           {/* Calculated Output Card */}
-          <div className="mt-5 p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0B0F19] to-[#070A12] border border-slate-800 dark:border-white/[0.08] text-center text-white shadow-xl">
-            <span className="text-xs text-slate-300 dark:text-slate-400 uppercase tracking-wider block mb-1 font-semibold">
+          <div className="mt-5 p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/[0.08] text-center shadow-sm dark:shadow-xl">
+            <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-semibold">
               Live Converted Total
             </span>
-            <div className="text-3xl sm:text-4xl font-black text-emerald-400 tabular-nums tracking-tight">
+            <div className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight">
               {fiatObj.symbol} {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
-            <div className="text-xs text-slate-400 mt-1.5 tabular-nums font-medium">
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 tabular-nums font-medium">
               {numAmount} {coin.symbol.toUpperCase()} = {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiatCurrency}
             </div>
           </div>

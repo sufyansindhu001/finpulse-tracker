@@ -90,33 +90,33 @@ export default function ConverterPage({ rates = {} }) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 animate-in fade-in duration-300">
       
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-[#A8B3C2]">
-        <Link to="/" className="hover:text-white font-medium">Home</Link>
+      <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
+        <Link to="/" className="hover:text-slate-900 dark:hover:text-white font-medium">Home</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <Link to="/rates" className="hover:text-white font-medium">Rates</Link>
+        <Link to="/rates" className="hover:text-slate-900 dark:hover:text-white font-medium">Rates</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-white font-semibold">Smart Converter</span>
+        <span className="text-slate-900 dark:text-white font-semibold">Smart Converter</span>
       </nav>
 
       {/* Header Banner */}
-      <div className="text-left space-y-2 pb-6 border-b border-white/10">
+      <div className="text-left space-y-2 pb-6 border-b border-slate-200 dark:border-white/10">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
           <span className="text-xs uppercase font-bold tracking-widest text-[#00E676]">
             ZERO-MARKUP CALCULATION ENGINE
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
           Real-Time Currency Converter
         </h1>
-        <p className="text-sm text-[#A8B3C2] max-w-2xl">
+        <p className="text-sm text-slate-600 dark:text-[#A8B3C2] max-w-2xl">
           Instantly calculate cross-currency conversions using authentic institutional mid-market rates without hidden bank markups.
         </p>
       </div>
 
       {/* Quick Corridor Shortcut Chips */}
       <div className="space-y-2">
-        <span className="text-xs font-bold text-[#A8B3C2] uppercase tracking-wider block">
+        <span className="text-xs font-bold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider block">
           Quick Currency Corridors:
         </span>
         <div className="flex flex-wrap gap-2">
@@ -128,8 +128,8 @@ export default function ConverterPage({ rates = {} }) {
                 onClick={() => handleSelectCorridor(c.from, c.to)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   isMatch
-                    ? 'bg-[#00E676] text-[#06111F] shadow-sm'
-                    : 'bg-[#0A1726] hover:bg-[#0D1B2A] text-white border border-white/10 hover:border-[#00E676]/30'
+                    ? 'bg-[#00E676] text-slate-950 shadow-sm'
+                    : 'bg-white dark:bg-[#0A1726] hover:bg-slate-100 dark:hover:bg-[#0D1B2A] text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 hover:border-[#00E676]/30 shadow-sm'
                 }`}
               >
                 <span>{c.label}</span>
@@ -140,16 +140,16 @@ export default function ConverterPage({ rates = {} }) {
       </div>
 
       {/* Main Glassmorphic Converter Card */}
-      <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-10 shadow-2xl backdrop-blur-xl space-y-8">
+      <div className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-2xl backdrop-blur-xl space-y-8">
         
         <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
           
           {/* FROM COLUMN (5 cols) */}
           <div className="md:col-span-5 space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#A8B3C2]">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#A8B3C2]">
               You Convert
             </label>
-            <div className="p-4 rounded-2xl bg-[#06111F] border border-white/10 focus-within:border-[#00E676] transition-colors">
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 focus-within:border-[#00E676] transition-colors">
               <CurrencySelect
                 value={fromCurrency}
                 onChange={(code) => {
@@ -165,7 +165,7 @@ export default function ConverterPage({ rates = {} }) {
                 step="any"
                 value={amount}
                 onChange={(e) => setAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full mt-3 bg-transparent text-3xl sm:text-4xl font-black text-white font-tabular focus:outline-none"
+                className="w-full mt-3 bg-transparent text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-tabular focus:outline-none"
                 placeholder="100"
               />
             </div>
@@ -175,7 +175,7 @@ export default function ConverterPage({ rates = {} }) {
           <div className="md:col-span-1 flex justify-center py-2 md:py-0">
             <button
               onClick={handleSwap}
-              className={`p-3.5 rounded-2xl bg-[#0D1B2A] hover:bg-[#00E676] text-white hover:text-[#06111F] border border-white/10 hover:border-[#00E676] transition-all cursor-pointer shadow-lg active:scale-90 ${
+              className={`p-3.5 rounded-2xl bg-slate-100 dark:bg-[#0D1B2A] hover:bg-[#00E676] text-slate-700 dark:text-white hover:text-slate-950 dark:hover:text-[#06111F] border border-slate-200 dark:border-white/10 hover:border-[#00E676] transition-all cursor-pointer shadow-sm dark:shadow-lg active:scale-90 ${
                 isSwapping ? 'rotate-180 duration-300' : ''
               }`}
               title="Swap Currencies"
@@ -186,10 +186,10 @@ export default function ConverterPage({ rates = {} }) {
 
           {/* TO COLUMN (5 cols) */}
           <div className="md:col-span-5 space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#A8B3C2]">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#A8B3C2]">
               You Receive (Estimated)
             </label>
-            <div className="p-4 rounded-2xl bg-[#06111F] border border-white/10">
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
               <CurrencySelect
                 value={toCurrency}
                 onChange={(code) => {
@@ -208,14 +208,14 @@ export default function ConverterPage({ rates = {} }) {
         </div>
 
         {/* Live Exchange Rate Math Banner */}
-        <div className="p-5 rounded-2xl bg-[#06111F] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-left">
-            <div className="text-xs text-[#A8B3C2] font-medium">Interbank Mid-Market Exchange Rate</div>
-            <div className="text-base sm:text-lg font-black text-white font-tabular">
+            <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">Interbank Mid-Market Exchange Rate</div>
+            <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white font-tabular">
               1 {fromCurrency} = {unitRate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {toCurrency}
             </div>
           </div>
-          <div className="text-xs text-[#A8B3C2] text-center sm:text-right font-medium">
+          <div className="text-xs text-slate-500 dark:text-[#A8B3C2] text-center sm:text-right font-medium">
             Inverse: 1 {toCurrency} = {inverseRate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {fromCurrency}
           </div>
         </div>
@@ -226,18 +226,18 @@ export default function ConverterPage({ rates = {} }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Table 1: Base to Target Multiples */}
-        <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 space-y-4 shadow-xl">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <h3 className="font-extrabold text-white text-base">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 p-6 space-y-4 shadow-sm dark:shadow-xl">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+            <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
               Convert {fromCurrency} to {toCurrency}
             </h3>
             <span className="text-xs text-[#00E676] font-bold">Standard Multiples</span>
           </div>
 
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {denominations.map((d) => (
               <div key={d} className="py-2.5 flex items-center justify-between text-xs sm:text-sm">
-                <span className="font-semibold text-white font-tabular">
+                <span className="font-semibold text-slate-700 dark:text-white font-tabular">
                   {d.toLocaleString()} {fromCurrency}
                 </span>
                 <span className="font-bold text-[#00E676] font-tabular">
@@ -249,21 +249,21 @@ export default function ConverterPage({ rates = {} }) {
         </div>
 
         {/* Table 2: Target to Base Multiples (Reverse) */}
-        <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 space-y-4 shadow-xl">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <h3 className="font-extrabold text-white text-base">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 p-6 space-y-4 shadow-sm dark:shadow-xl">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+            <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
               Convert {toCurrency} to {fromCurrency}
             </h3>
-            <span className="text-xs text-[#A8B3C2] font-bold">Reverse Multiples</span>
+            <span className="text-xs text-slate-500 dark:text-[#A8B3C2] font-bold">Reverse Multiples</span>
           </div>
 
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {denominations.map((d) => (
               <div key={d} className="py-2.5 flex items-center justify-between text-xs sm:text-sm">
-                <span className="font-semibold text-white font-tabular">
+                <span className="font-semibold text-slate-700 dark:text-white font-tabular">
                   {d.toLocaleString()} {toCurrency}
                 </span>
-                <span className="font-bold text-white font-tabular">
+                <span className="font-bold text-slate-900 dark:text-white font-tabular">
                   {(d * inverseRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fromCurrency}
                 </span>
               </div>
