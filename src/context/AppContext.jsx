@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
+import { supabase, normalizeArticle } from '../lib/supabase';
 
 const AppContext = createContext();
 
@@ -180,6 +181,37 @@ export function AppProvider({ children }) {
     return INITIAL_BLOG_POSTS;
   });
 
+  // Keep AppContext articles synced with Supabase in real-time
+  useEffect(() => {
+    async function syncSupabaseArticles() {
+      try {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          const normalized = data.map(normalizeArticle);
+          setArticles(normalized);
+          try {
+            localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(normalized));
+            localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(normalized));
+          } catch {}
+        }
+      } catch (e) {
+        console.warn('[AppContext] Supabase sync error:', e);
+      }
+    }
+
+    syncSupabaseArticles();
+
+    const handleSync = () => syncSupabaseArticles();
+    window.addEventListener('fgc_articles_updated', handleSync);
+    return () => {
+      window.removeEventListener('fgc_articles_updated', handleSync);
+    };
+  }, []);
+
   const saveArticles = (newArticles) => {
     setArticles(newArticles);
     try {
@@ -194,22 +226,42 @@ export function AppProvider({ children }) {
     }
   };
 
-  const addArticle = (newArticle) => {
+  const addArticle = async (newArticle) => {
     const rawTitle = (newArticle.title || '').trim() || 'Untitled Financial Guide';
     const cleanSlug = newArticle.slug || rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `post-${Date.now()}`;
-    const articleWithId = {
+    const newId = newArticle.id || ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : cleanSlug);
+    
+    const articleWithId = normalizeArticle({
       ...newArticle,
-      id: newArticle.id || cleanSlug,
+      id: newId,
       slug: cleanSlug,
       title: rawTitle,
       date: newArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      readTime: newArticle.readTime || `${Math.max(2, Math.ceil(((newArticle.content || '').split(' ').length) / 180))} min read`,
-      author: newArticle.author || 'FGC Spot Research Lead',
+      readTime: newArticle.readTime || `${Math.max(1, Math.ceil(((newArticle.content || '').split(' ').length) / 200))} min read`,
+      author: newArticle.author || 'Sufyan Saleem (Financial Research Desk)',
       summary: newArticle.summary || newArticle.excerpt || '',
       excerpt: newArticle.excerpt || newArticle.summary || '',
       image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
       tags: Array.isArray(newArticle.tags) ? newArticle.tags : (newArticle.tags ? newArticle.tags.split(',').map(t => t.trim()) : ['Market'])
-    };
+    });
+
+    try {
+      await supabase.from('articles').insert([{
+        id: articleWithId.id,
+        slug: articleWithId.slug,
+        title: articleWithId.title,
+        category: articleWithId.category,
+        author: articleWithId.author,
+        tags: articleWithId.tags,
+        image: articleWithId.image,
+        excerpt: articleWithId.excerpt,
+        content: articleWithId.content,
+        read_time: articleWithId.read_time,
+        created_at: articleWithId.created_at
+      }]);
+    } catch (e) {
+      console.warn('[AppContext] Supabase insert error:', e);
+    }
 
     let currentList = articles;
     try {
@@ -225,8 +277,26 @@ export function AppProvider({ children }) {
     return articleWithId;
   };
 
-  const updateArticle = (id, updatedFields) => {
+  const updateArticle = async (id, updatedFields) => {
     if (!id) return;
+    try {
+      await supabase
+        .from('articles')
+        .update({
+          title: updatedFields.title,
+          category: updatedFields.category,
+          author: updatedFields.author,
+          tags: updatedFields.tags,
+          image: updatedFields.image,
+          excerpt: updatedFields.excerpt || updatedFields.summary,
+          content: updatedFields.content,
+          read_time: updatedFields.read_time || updatedFields.readTime
+        })
+        .or(`id.eq.${id},slug.eq.${id}`);
+    } catch (e) {
+      console.warn('[AppContext] Supabase update error:', e);
+    }
+
     let currentList = articles;
     try {
       const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
@@ -255,8 +325,14 @@ export function AppProvider({ children }) {
     saveArticles(updated);
   };
 
-  const deleteArticle = (id) => {
+  const deleteArticle = async (id) => {
     if (!id) return;
+    try {
+      await supabase.from('articles').delete().or(`id.eq.${id},slug.eq.${id}`);
+    } catch (e) {
+      console.warn('[AppContext] Supabase delete error:', e);
+    }
+
     try {
       const deletedRaw = localStorage.getItem(PORTAL_KEYS.DELETED_ARTICLES);
       const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];

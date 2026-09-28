@@ -13,6 +13,7 @@ import {
   Image as ImageIcon 
 } from 'lucide-react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
+import { supabase, normalizeArticle } from '../lib/supabase';
 
 const STORAGE_KEY = 'fgc_portal_articles';
 const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
@@ -21,7 +22,7 @@ const INITIAL_FORM_STATE = {
   title: '',
   category: 'Market Updates',
   image: '',
-  author: 'FGC Spot Research Lead',
+  author: 'Sufyan Saleem (Financial Research Desk)',
   summary: '',
   content: '',
   tags: 'Forex, Crypto, Market'
@@ -32,11 +33,9 @@ export default function ArticleManager() {
   const [articleForm, setArticleForm] = useState(INITIAL_FORM_STATE);
   const [editingArticleId, setEditingArticleId] = useState(null);
   const [articleSaved, setArticleSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // 1. Critical Persistence Safeguard:
-  // On page load/refresh, check if localStorage.getItem('fgc_portal_articles') exists.
-  // If it exists, merge any newly added built-in articles (unless explicitly deleted).
-  // Only seed initial articles if the key is completely null.
+  // Local storage fallback loader
   const loadArticlesFromStorage = useCallback(() => {
     try {
       const deletedRaw = localStorage.getItem('fgc_portal_deleted_articles');
@@ -54,57 +53,66 @@ export default function ArticleManager() {
             !deletedIds.includes(b.slug)
           );
           if (missingBuiltins.length > 0) {
-            const merged = [...parsed, ...missingBuiltins];
+            const merged = [...parsed, ...missingBuiltins].map(normalizeArticle);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
             localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(merged));
             setArticles(merged);
             return;
           }
-          setArticles(parsed);
-          return;
-        }
-      }
-
-      // Check legacy key if primary is completely null
-      const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
-      if (legacy !== null) {
-        const parsedLegacy = JSON.parse(legacy);
-        if (Array.isArray(parsedLegacy) && parsedLegacy.length > 0) {
-          const existingIds = new Set(parsedLegacy.flatMap(a => [a.id, a.slug]));
-          const missingBuiltins = INITIAL_BLOG_POSTS.filter(b => 
-            !existingIds.has(b.id) && 
-            !existingIds.has(b.slug) && 
-            !deletedIds.includes(b.id) && 
-            !deletedIds.includes(b.slug)
-          );
-          const merged = missingBuiltins.length > 0 ? [...parsedLegacy, ...missingBuiltins] : parsedLegacy;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-          setArticles(merged);
+          setArticles(parsed.map(normalizeArticle));
           return;
         }
       }
 
       // Seed only when key is completely null
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_BLOG_POSTS));
-      localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(INITIAL_BLOG_POSTS));
-      setArticles(INITIAL_BLOG_POSTS);
+      const defaultNormalized = INITIAL_BLOG_POSTS.map(normalizeArticle);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultNormalized));
+      localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(defaultNormalized));
+      setArticles(defaultNormalized);
     } catch (e) {
       console.error('[ArticleManager] Error loading articles:', e);
-      setArticles(INITIAL_BLOG_POSTS);
+      setArticles(INITIAL_BLOG_POSTS.map(normalizeArticle));
     }
   }, []);
 
-  useEffect(() => {
-    loadArticlesFromStorage();
+  // Primary cloud loader: fetch from Supabase
+  const fetchArticlesFromSupabase = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    const handleSync = () => loadArticlesFromStorage();
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const normalized = data.map(normalizeArticle);
+        setArticles(normalized);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+          localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(normalized));
+        } catch {}
+        return;
+      }
+    } catch (err) {
+      console.warn('[ArticleManager] Supabase fetch error, fallback to local storage:', err);
+    } finally {
+      setLoading(false);
+    }
+
+    loadArticlesFromStorage();
+  }, [loadArticlesFromStorage]);
+
+  useEffect(() => {
+    fetchArticlesFromSupabase();
+
+    const handleSync = () => fetchArticlesFromSupabase();
     window.addEventListener('fgc_articles_updated', handleSync);
     window.addEventListener('storage', handleSync);
     return () => {
       window.removeEventListener('fgc_articles_updated', handleSync);
       window.removeEventListener('storage', handleSync);
     };
-  }, [loadArticlesFromStorage]);
+  }, [fetchArticlesFromSupabase]);
 
   // Helper to persist articles list to storage & dispatch sync events
   const persistArticles = (updatedList) => {
@@ -122,7 +130,7 @@ export default function ArticleManager() {
   };
 
   // 2. Publish / Edit Submission Handler
-  const handleArticleSubmit = (e) => {
+  const handleArticleSubmit = async (e) => {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
     const rawTitle = (articleForm.title || '').trim();
     if (!rawTitle) {
@@ -130,43 +138,50 @@ export default function ArticleManager() {
       return;
     }
 
-    // Generate a clean slug from title if missing
-    const generatedSlug = rawTitle
+    // Auto-generate a URL slug from the title if not provided
+    const slug = rawTitle
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '') || `article-${Date.now()}`;
 
-    // Read current articles directly from localStorage first
-    let currentList = [];
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored !== null) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) currentList = parsed;
-      } else {
-        currentList = [...INITIAL_BLOG_POSTS];
-      }
-    } catch {
-      currentList = articles.length > 0 ? articles : [...INITIAL_BLOG_POSTS];
-    }
+    const tags = Array.isArray(articleForm.tags) 
+      ? articleForm.tags 
+      : (typeof articleForm.tags === 'string' ? articleForm.tags.split(',').map(t => t.trim()).filter(Boolean) : ['Market']);
+
+    const content = articleForm.content || '';
+    const read_time = `${Math.max(1, Math.ceil(content.split(' ').length / 200))} min read`;
+    const author = articleForm.author || 'Sufyan Saleem (Financial Research Desk)';
+    const excerpt = articleForm.summary || articleForm.excerpt || '';
+    const image = articleForm.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75';
+    const category = articleForm.category || 'Market Updates';
 
     if (editingArticleId) {
-      // Update existing article
-      const updatedList = currentList.map(art => {
+      const updatePayload = {
+        title: rawTitle,
+        category,
+        author,
+        tags,
+        image,
+        excerpt,
+        content,
+        read_time
+      };
+
+      try {
+        await supabase
+          .from('articles')
+          .update(updatePayload)
+          .or(`id.eq.${editingArticleId},slug.eq.${editingArticleId}`);
+      } catch (err) {
+        console.warn('[ArticleManager] Supabase update error:', err);
+      }
+
+      const updatedList = articles.map(art => {
         if (art.id === editingArticleId || art.slug === editingArticleId) {
-          return {
+          return normalizeArticle({
             ...art,
-            title: rawTitle,
-            category: articleForm.category || 'Market Updates',
-            image: articleForm.image || art.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
-            author: articleForm.author || art.author || 'FGC Spot Research Lead',
-            summary: articleForm.summary || '',
-            excerpt: articleForm.summary || '',
-            content: articleForm.content || '',
-            tags: Array.isArray(articleForm.tags) 
-              ? articleForm.tags 
-              : (articleForm.tags ? articleForm.tags.split(',').map(t => t.trim()) : art.tags)
-          };
+            ...updatePayload
+          });
         }
         return art;
       });
@@ -174,25 +189,32 @@ export default function ArticleManager() {
       persistArticles(updatedList);
       setEditingArticleId(null);
     } else {
-      // Create full article object and prepend into localStorage
+      const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `art-${Date.now()}`;
       const newArticle = {
-        id: generatedSlug,
-        slug: generatedSlug,
+        id: newId,
+        slug,
         title: rawTitle,
-        category: articleForm.category || 'Market Updates',
-        image: articleForm.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
-        author: articleForm.author || 'FGC Spot Research Lead',
-        summary: articleForm.summary || '',
-        excerpt: articleForm.summary || '',
-        content: articleForm.content || '',
-        tags: typeof articleForm.tags === 'string' 
-          ? articleForm.tags.split(',').map(t => t.trim()).filter(Boolean)
-          : (Array.isArray(articleForm.tags) ? articleForm.tags : ['Market']),
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-        readTime: `${Math.max(2, Math.ceil(((articleForm.content || '').split(' ').length) / 180))} min read`
+        category,
+        author,
+        tags,
+        image,
+        excerpt,
+        content,
+        read_time,
+        created_at: new Date().toISOString()
       };
 
-      const updatedList = [newArticle, ...currentList.filter(a => a.id !== newArticle.id && a.slug !== newArticle.slug)];
+      try {
+        const { error } = await supabase.from('articles').insert([newArticle]);
+        if (error) {
+          console.error('[ArticleManager] Supabase insert error:', error);
+        }
+      } catch (err) {
+        console.warn('[ArticleManager] Supabase insert error:', err);
+      }
+
+      const normalized = normalizeArticle(newArticle);
+      const updatedList = [normalized, ...articles.filter(a => a.id !== normalized.id && a.slug !== normalized.slug)];
       persistArticles(updatedList);
     }
 
@@ -209,7 +231,7 @@ export default function ArticleManager() {
       title: art.title || '',
       category: art.category || 'Market Updates',
       image: art.image || '',
-      author: art.author || 'FGC Spot Research Lead',
+      author: art.author || 'Sufyan Saleem (Financial Research Desk)',
       summary: art.summary || art.excerpt || '',
       content: art.content || '',
       tags: Array.isArray(art.tags) ? art.tags.join(', ') : (art.tags || '')
@@ -222,10 +244,19 @@ export default function ArticleManager() {
     setArticleForm(INITIAL_FORM_STATE);
   };
 
-  // Delete action: immediately update localStorage
-  const handleDeleteArticle = (targetId) => {
+  // Delete action: immediately update Supabase & localStorage
+  const handleDeleteArticle = async (targetId) => {
     if (!window.confirm('Are you sure you want to permanently delete this article?')) return;
     
+    try {
+      await supabase
+        .from('articles')
+        .delete()
+        .or(`id.eq.${targetId},slug.eq.${targetId}`);
+    } catch (err) {
+      console.warn('[ArticleManager] Supabase delete error:', err);
+    }
+
     try {
       const deletedRaw = localStorage.getItem('fgc_portal_deleted_articles');
       const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
@@ -235,16 +266,7 @@ export default function ArticleManager() {
       }
     } catch {}
 
-    let currentList = articles;
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored !== null) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) currentList = parsed;
-      }
-    } catch {}
-
-    const updated = currentList.filter(a => a.id !== targetId && a.slug !== targetId);
+    const updated = articles.filter(a => a.id !== targetId && a.slug !== targetId);
     persistArticles(updated);
   };
 

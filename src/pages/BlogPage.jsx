@@ -14,32 +14,56 @@ import {
   Tag
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
+import { supabase, normalizeArticle } from '../lib/supabase';
 
 export default function BlogPage() {
   const { articles: contextArticles = [] } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [articles, setArticles] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_portal_articles');
       if (saved !== null) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed.map(normalizeArticle);
       }
     } catch (e) {
       console.error("Failed to parse articles from localStorage", e);
     }
-    return BLOG_POSTS;
+    return BLOG_POSTS.map(normalizeArticle);
   });
 
-  const loadArticles = React.useCallback(() => {
+  const fetchArticles = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        const normalized = data.map(normalizeArticle);
+        setArticles(normalized);
+        try {
+          localStorage.setItem('fgc_portal_articles', JSON.stringify(normalized));
+        } catch {}
+        return;
+      }
+    } catch (e) {
+      console.warn('[BlogPage] Supabase fetch error, using fallback:', e);
+    } finally {
+      setLoading(false);
+    }
+
+    // Fallback gracefully to localStorage or bundled default articles
     try {
       const saved = localStorage.getItem('fgc_portal_articles');
       if (saved !== null) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setArticles(parsed);
+          setArticles(parsed.map(normalizeArticle));
           return;
         }
       }
@@ -47,18 +71,18 @@ export default function BlogPage() {
       console.error("Failed to parse articles from localStorage", e);
     }
     if (Array.isArray(contextArticles) && contextArticles.length > 0) {
-      setArticles(contextArticles);
+      setArticles(contextArticles.map(normalizeArticle));
     } else {
-      setArticles(BLOG_POSTS);
+      setArticles(BLOG_POSTS.map(normalizeArticle));
     }
   }, [contextArticles]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Market Analysis & Financial Blog | FGC Spot';
-    loadArticles();
+    fetchArticles();
 
-    const handleSync = () => loadArticles();
+    const handleSync = () => fetchArticles();
     window.addEventListener('fgc_articles_updated', handleSync);
     window.addEventListener('storage', handleSync);
 
@@ -66,7 +90,7 @@ export default function BlogPage() {
       window.removeEventListener('fgc_articles_updated', handleSync);
       window.removeEventListener('storage', handleSync);
     };
-  }, [loadArticles]);
+  }, [fetchArticles]);
 
   // Dynamically include all categories present across published articles
   const categories = useMemo(() => {

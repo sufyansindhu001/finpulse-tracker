@@ -14,6 +14,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
+import { supabase, normalizeArticle } from '../lib/supabase';
 
 function formatInlineText(text) {
   if (!text) return '';
@@ -62,64 +63,120 @@ export default function BlogDetailPage() {
     ? 'usd-to-pkr-interbank-vs-open-market-guide'
     : rawIdentifier;
 
-  const { articles: contextArticles = [] } = useApp();
-  
-  // Read articles dynamically from localStorage.getItem('fgc_portal_articles') with fallback to default articles
-  const [articles, setArticles] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved !== null) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.error("Failed to parse articles from localStorage in BlogDetailPage", e);
-    }
-    return BLOG_POSTS;
-  });
-
-  const loadArticles = useCallback(() => {
-    try {
-      const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved !== null) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setArticles(parsed);
-          return;
-        }
-      }
-    } catch (e) {
-      console.error("Failed to parse articles from localStorage", e);
-    }
-    if (Array.isArray(contextArticles) && contextArticles.length > 0) {
-      setArticles(contextArticles);
-    } else {
-      setArticles(BLOG_POSTS);
-    }
-  }, [contextArticles]);
-
-  useEffect(() => {
-    loadArticles();
-    const handleSync = () => loadArticles();
-    window.addEventListener('fgc_articles_updated', handleSync);
-    window.addEventListener('storage', handleSync);
-    return () => {
-      window.removeEventListener('fgc_articles_updated', handleSync);
-      window.removeEventListener('storage', handleSync);
-    };
-  }, [loadArticles]);
-
-  // Find article by id or slug (case-insensitive lookup with primary fallback)
-  const article = useMemo(() => {
-    if (!targetIdentifier) return articles[0] || null;
+  // Immediate fallback from bundled articles to ensure instantaneous initial paint
+  const defaultMatch = useMemo(() => {
+    if (!targetIdentifier) return normalizeArticle(BLOG_POSTS[0]);
     const cleanTarget = targetIdentifier.toLowerCase().trim();
-    return articles.find(p => {
-      if (!p) return false;
+    const found = BLOG_POSTS.find(p => {
       const s = (p.slug || '').toLowerCase().trim();
       const i = (p.id || '').toLowerCase().trim();
       return s === cleanTarget || i === cleanTarget;
-    }) || null;
-  }, [articles, targetIdentifier]);
+    });
+    return found ? normalizeArticle(found) : normalizeArticle(BLOG_POSTS[0]);
+  }, [targetIdentifier]);
+
+  const [article, setArticle] = useState(defaultMatch);
+  const [allArticles, setAllArticles] = useState(BLOG_POSTS.map(normalizeArticle));
+  const [loading, setLoading] = useState(false);
+
+  // 1. Fetch exact article by slug from Supabase
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchArticleFromSupabase() {
+      if (!targetIdentifier) return;
+      const cleanTarget = targetIdentifier.toLowerCase().trim();
+
+      try {
+        setLoading(true);
+        // Supabase query matching by slug
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('slug', cleanTarget)
+          .maybeSingle();
+
+        if (data && isMounted) {
+          setArticle(normalizeArticle(data));
+          setLoading(false);
+          return;
+        }
+
+        // If not found by slug, fallback check by ID in Supabase
+        const idQuery = await supabase
+          .from('articles')
+          .select('*')
+          .eq('id', cleanTarget)
+          .maybeSingle();
+
+        if (idQuery.data && isMounted) {
+          setArticle(normalizeArticle(idQuery.data));
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn('[BlogDetailPage] Supabase fetch error, checking default articles:', err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+
+      // If not found in Supabase, fallback check in default bundled articles and localStorage
+      if (isMounted) {
+        let localList = [];
+        try {
+          const saved = localStorage.getItem('fgc_portal_articles');
+          if (saved) localList = JSON.parse(saved);
+        } catch {}
+        const fallbackList = [...(Array.isArray(localList) ? localList : []), ...BLOG_POSTS];
+        const match = fallbackList.find(p => {
+          if (!p) return false;
+          const s = (p.slug || '').toLowerCase().trim();
+          const i = (p.id || '').toLowerCase().trim();
+          return s === cleanTarget || i === cleanTarget;
+        }) || defaultMatch;
+
+        setArticle(normalizeArticle(match));
+      }
+    }
+
+    fetchArticleFromSupabase();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [targetIdentifier, defaultMatch]);
+
+  // Load all articles for related stories list
+  useEffect(() => {
+    async function loadAllArticles() {
+      try {
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+          setAllArticles(data.map(normalizeArticle));
+          return;
+        }
+      } catch {}
+
+      try {
+        const saved = localStorage.getItem('fgc_portal_articles');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setAllArticles(parsed.map(normalizeArticle));
+            return;
+          }
+        }
+      } catch {}
+
+      setAllArticles(BLOG_POSTS.map(normalizeArticle));
+    }
+
+    loadAllArticles();
+  }, []);
 
   // Scroll to top and set document title
   useEffect(() => {
@@ -129,7 +186,9 @@ export default function BlogDetailPage() {
     }
   }, [targetIdentifier, article?.title]);
 
-  const relatedArticles = articles.filter(p => p && p.id !== article?.id).slice(0, 3);
+  const relatedArticles = useMemo(() => {
+    return allArticles.filter(p => p && p.id !== article?.id && p.slug !== article?.slug).slice(0, 3);
+  }, [allArticles, article]);
 
   const handleShare = () => {
     if (navigator.share) {
