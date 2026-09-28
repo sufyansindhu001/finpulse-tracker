@@ -69,14 +69,17 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
             {/* Left: Brand Identity with /logo.png */}
             <Link 
               to="/"
-              className="flex items-center gap-2.5 sm:gap-3 shrink-0 group cursor-pointer"
+              className="flex items-center gap-2.5 sm:gap-3 shrink-0 group cursor-pointer relative z-10"
             >
               <img 
                 src={siteSettings?.logoUrl || '/logo.png'} 
                 alt={siteSettings?.websiteName || 'FGC Spot'} 
-                className="h-8 sm:h-9 w-auto object-contain shrink-0 rounded-lg transition-transform group-hover:scale-105" 
-                width="36"
-                height="36"
+                className="h-8 w-auto md:h-10 object-contain shrink-0 rounded-lg transition-transform group-hover:scale-105 block relative z-10" 
+                style={{ filter: 'none' }}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/logo.png';
+                }}
               />
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
@@ -201,8 +204,13 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                 <div className="flex items-center gap-2.5">
                   <img 
                     src={siteSettings?.logoUrl || '/logo.png'} 
-                    alt="Logo" 
-                    className="h-8 w-auto object-contain"
+                    alt={siteSettings?.websiteName || 'FGC Spot'} 
+                    className="h-8 w-auto md:h-10 object-contain shrink-0 block"
+                    style={{ filter: 'none' }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/logo.png';
+                    }}
                   />
                   <span className="font-extrabold text-slate-900 dark:text-white text-lg">
                     {siteSettings?.websiteName || 'FGC Spot'}

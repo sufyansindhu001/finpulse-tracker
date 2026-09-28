@@ -228,7 +228,7 @@ export default function App() {
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}
-      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden pt-4">
+      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden pt-2 sm:pt-4">
         <Suspense fallback={
           <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 animate-pulse">
             <div className="w-8 h-8 border-2 border-[#00E676] border-t-transparent rounded-full animate-spin"></div>

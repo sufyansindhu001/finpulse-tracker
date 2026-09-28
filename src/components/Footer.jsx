@@ -19,7 +19,7 @@ export default function Footer({ onSelectPair }) {
   ];
 
   return (
-    <footer className="w-full max-w-full overflow-hidden bg-slate-100 dark:bg-[#0A1726] border-t border-slate-200 dark:border-white/10 pt-16 pb-12 mt-20 text-slate-600 dark:text-[#A8B3C2] text-xs transition-colors duration-200">
+    <footer className="w-full max-w-full overflow-hidden bg-slate-50/80 dark:bg-[#06111F] border-t border-slate-200 dark:border-white/10 pt-16 pb-12 mt-20 text-slate-600 dark:text-[#A8B3C2] text-xs transition-colors duration-200 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}
@@ -31,9 +31,12 @@ export default function Footer({ onSelectPair }) {
               <img 
                 src={siteSettings?.logoUrl || '/logo.png'} 
                 alt={siteSettings?.websiteName || 'FGC Spot'} 
-                className="h-8 sm:h-9 w-auto object-contain shrink-0" 
-                width="36"
-                height="36"
+                className="h-8 w-auto md:h-10 object-contain shrink-0 block" 
+                style={{ filter: 'none' }}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/logo.png';
+                }}
                 loading="lazy"
               />
               <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-[#00E676] transition-colors">
@@ -162,15 +165,6 @@ export default function Footer({ onSelectPair }) {
                   <Mail className="w-3.5 h-3.5" />
                   <span>Contact & Support</span>
                 </Link>
-              </li>
-              <li>
-                <a
-                  href="mailto:fgcspot4@gmail.com"
-                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
-                >
-                  <Mail className="w-3.5 h-3.5 text-[#00E676]" />
-                  <span>Email Desk</span>
-                </a>
               </li>
               <li>
                 <Link

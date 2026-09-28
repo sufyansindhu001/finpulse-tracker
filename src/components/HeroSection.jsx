@@ -63,16 +63,16 @@ export default function HeroSection({ rates, cryptoList }) {
   ];
 
   return (
-    <section className="relative overflow-hidden pt-10 pb-16 lg:pt-16 lg:pb-24">
+    <section className="relative overflow-hidden pt-4 pb-8 sm:pt-10 sm:pb-16 lg:pt-16 lg:pb-24">
       {/* Background ambient glow blooms */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00E676]/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[450px] h-[450px] bg-[#06B6D4]/10 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 lg:gap-8 items-center">
           
           {/* LEFT COLUMN: Headline & CTAs */}
-          <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-left">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-6 lg:space-y-8 text-left">
             
             {/* Real-time Badge */}
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-semibold shadow-xs">
@@ -100,31 +100,31 @@ export default function HeroSection({ rates, cryptoList }) {
             </p>
 
             {/* 4 Feature Pills */}
-            <div className="flex flex-wrap gap-2.5 pt-1">
+            <div className="flex flex-wrap gap-2 sm:gap-2.5 pt-0.5 sm:pt-1">
               <button 
                 onClick={() => navigate('/rates')} 
-                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-1.5 sm:gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
               >
                 <Zap className="w-3.5 h-3.5 text-[#00E676]" />
                 <span>Live Rates</span>
               </button>
               <button 
                 onClick={() => navigate('/charts')} 
-                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-1.5 sm:gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
               >
                 <LineChart className="w-3.5 h-3.5 text-[#00E676]" />
                 <span>Interactive Charts</span>
               </button>
               <button 
                 onClick={() => navigate('/converter')} 
-                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-1.5 sm:gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
               >
                 <ArrowLeftRight className="w-3.5 h-3.5 text-[#00E676]" />
                 <span>Smart Converter</span>
               </button>
               <button 
                 onClick={() => navigate('/news')} 
-                className="px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white flex items-center gap-1.5 sm:gap-2 transition-all hover:border-[#00E676]/40 shadow-xs cursor-pointer"
               >
                 <Bell className="w-3.5 h-3.5 text-[#00E676]" />
                 <span>Market News</span>
@@ -132,10 +132,10 @@ export default function HeroSection({ rates, cryptoList }) {
             </div>
 
             {/* Primary & Secondary Action CTAs */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1 sm:pt-2">
               <button
                 onClick={() => navigate('/rates')}
-                className="px-7 py-3.5 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] font-black text-sm flex items-center gap-2 transition-all shadow-lg shadow-[#00E676]/25 hover:shadow-[#00FF88]/35 active:scale-95 cursor-pointer group"
+                className="w-full sm:w-auto px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#00E676]/25 hover:shadow-[#00FF88]/35 active:scale-95 cursor-pointer group"
               >
                 <span>Explore Live Rates</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -143,7 +143,7 @@ export default function HeroSection({ rates, cryptoList }) {
 
               <button
                 onClick={() => navigate('/converter')}
-                className="px-6 py-3.5 rounded-xl bg-white dark:bg-[#0A1726] hover:bg-slate-100 dark:hover:bg-[#0D1B2A] text-slate-900 dark:text-white font-bold text-sm border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-all active:scale-95 shadow-xs cursor-pointer"
+                className="w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl bg-white dark:bg-[#0A1726] hover:bg-slate-100 dark:hover:bg-[#0D1B2A] text-slate-900 dark:text-white font-bold text-sm border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-all active:scale-95 shadow-xs cursor-pointer flex items-center justify-center"
               >
                 Try Currency Converter
               </button>

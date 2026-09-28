@@ -21,6 +21,9 @@ export function AppProvider({ children }) {
         if (parsed.contactEmail === 'support@fgcspot.com') {
           parsed.contactEmail = 'fgcspot4@gmail.com';
         }
+        if (!parsed.logoUrl || parsed.logoUrl.trim() === '') {
+          parsed.logoUrl = '/logo.png';
+        }
         return { ...DEFAULT_SETTINGS, ...parsed };
       }
     } catch (e) {
