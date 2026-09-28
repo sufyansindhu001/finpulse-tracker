@@ -117,7 +117,7 @@ export default function NewsPage() {
         <div className="flex items-center gap-3 self-start md:self-auto">
           <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs text-[#00E676] font-semibold shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
-            <span>Live RSS Feed &bull; 0 Mock Data</span>
+            <span>Live Financial Wire &bull; Real-Time</span>
           </div>
 
           <button

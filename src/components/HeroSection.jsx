@@ -80,13 +80,13 @@ export default function HeroSection({ rates, cryptoList }) {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
               </span>
-              <span className="text-slate-900 dark:text-white tracking-wider uppercase font-bold text-[11px]">
+              <span className="text-slate-900 dark:text-white tracking-wider uppercase font-bold text-[10px] sm:text-[11px] truncate">
                 REAL-TIME RATES | ACCURATE | ALWAYS ON
               </span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.12]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] break-words">
               Your Trusted Source for{' '}
               <span className="text-[#00E676] bg-gradient-to-r from-[#00E676] to-[#00FF88] bg-clip-text text-transparent">
                 Live
@@ -157,7 +157,7 @@ export default function HeroSection({ rates, cryptoList }) {
             {/* Floating Top Badge */}
             <div className="absolute -top-4 -right-2 z-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/95 dark:bg-[#0A1726]/95 border border-slate-200 dark:border-[#00E676]/40 shadow-md backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
-              <span className="text-[11px] font-bold text-slate-900 dark:text-white tracking-wide">⚡ 0ms Latency Feeds</span>
+              <span className="text-[11px] font-bold text-slate-900 dark:text-white tracking-wide">⚡ Live Stream</span>
             </div>
 
             {/* Floating Bottom Badge */}

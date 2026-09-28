@@ -210,7 +210,7 @@ export default function GoldPage({ rates = {} }) {
             <button
               key={u.id}
               onClick={() => setSelectedUnit(u.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-2 sm:px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer text-center ${
                 selectedUnit === u.id
                   ? 'bg-[#00E676] text-[#06111F] shadow-sm'
                   : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
