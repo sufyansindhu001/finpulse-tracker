@@ -16,40 +16,71 @@ import {
 import { BLOG_POSTS } from '../data/blogPosts';
 
 export default function BlogPage() {
-  const { articles = [] } = useApp();
+  const { articles: contextArticles = [] } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = 'Market Analysis & Financial Blog | FGC Spot';
-  }, []);
-
-  // Dynamically include all categories present across published articles
-  const allArticles = useMemo(() => {
-    if (Array.isArray(articles) && articles.length > 0) return articles;
+  const [articles, setArticles] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_portal_articles');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-    } catch {}
+    } catch (e) {
+      console.error("Failed to parse articles from localStorage", e);
+    }
     return BLOG_POSTS;
-  }, [articles]);
+  });
 
+  const loadArticles = React.useCallback(() => {
+    try {
+      const saved = localStorage.getItem('fgc_portal_articles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setArticles(parsed);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse articles from localStorage", e);
+    }
+    if (Array.isArray(contextArticles) && contextArticles.length > 0) {
+      setArticles(contextArticles);
+    } else {
+      setArticles(BLOG_POSTS);
+    }
+  }, [contextArticles]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.title = 'Market Analysis & Financial Blog | FGC Spot';
+    loadArticles();
+
+    const handleSync = () => loadArticles();
+    window.addEventListener('fgc_articles_updated', handleSync);
+    window.addEventListener('storage', handleSync);
+
+    return () => {
+      window.removeEventListener('fgc_articles_updated', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
+  }, [loadArticles]);
+
+  // Dynamically include all categories present across published articles
   const categories = useMemo(() => {
     const list = ['All'];
-    allArticles.forEach(a => {
+    articles.forEach(a => {
       if (a?.category && !list.includes(a.category)) {
         list.push(a.category);
       }
     });
     return list;
-  }, [allArticles]);
+  }, [articles]);
 
   const filteredPosts = useMemo(() => {
-    return allArticles.filter(post => {
+    return articles.filter(post => {
       if (!post) return false;
       const matchCat = selectedCategory === 'All' || (post.category || '') === selectedCategory;
       const tagsList = Array.isArray(post.tags) 
@@ -63,9 +94,9 @@ export default function BlogPage() {
         tagsList.some(t => (t || '').toLowerCase().includes(searchQuery.toLowerCase()));
       return matchCat && matchSearch;
     });
-  }, [allArticles, selectedCategory, searchQuery]);
+  }, [articles, selectedCategory, searchQuery]);
 
-  const featuredPost = allArticles[0] || null;
+  const featuredPost = articles[0] || null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 animate-in fade-in duration-300">

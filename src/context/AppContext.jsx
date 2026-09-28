@@ -205,6 +205,10 @@ export function AppProvider({ children }) {
     try {
       localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(newArticles));
       localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(newArticles));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('fgc_articles_updated'));
+        window.dispatchEvent(new Event('storage'));
+      }
     } catch (e) {
       console.warn('[AppContext] Error saving articles:', e);
     }

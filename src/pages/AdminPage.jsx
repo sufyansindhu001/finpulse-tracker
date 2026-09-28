@@ -380,6 +380,11 @@ export default function AdminPage() {
     setArticleForm(INITIAL_ARTICLE_FORM);
     setArticleSaved(true);
     setTimeout(() => setArticleSaved(false), 3000);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('fgc_articles_updated'));
+      window.dispatchEvent(new Event('storage'));
+    }
   };
 
   const handleEditArticle = (art) => {
@@ -1991,14 +1996,14 @@ export default function AdminPage() {
                                 />
                                 <div>
                                   <Link
-                                    to={`/blog/${art?.id || ''}`}
+                                    to={`/blog/${art?.slug || art?.id || ''}`}
                                     target="_blank"
                                     className="font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-1 flex items-center gap-1"
                                   >
                                     <span>{art?.title || 'Untitled Article'}</span>
                                     <ExternalLink className="w-3 h-3 text-slate-400 shrink-0" />
                                   </Link>
-                                  <span className="text-[10px] text-slate-400 font-mono">/blog/{art?.id || ''}</span>
+                                  <span className="text-[10px] text-slate-400 font-mono">/blog/{art?.slug || art?.id || ''}</span>
                                 </div>
                               </div>
                             </td>
@@ -2025,7 +2030,13 @@ export default function AdminPage() {
                                   onClick={() => {
                                     if (confirm(`Are you sure you want to delete "${art?.title || 'this article'}"?`)) {
                                       const targetId = art?.id || art?.slug;
-                                      if (targetId) deleteArticle(targetId);
+                                      if (targetId) {
+                                        deleteArticle(targetId);
+                                        if (typeof window !== 'undefined') {
+                                          window.dispatchEvent(new Event('fgc_articles_updated'));
+                                          window.dispatchEvent(new Event('storage'));
+                                        }
+                                      }
                                     }
                                   }}
                                   className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors cursor-pointer"

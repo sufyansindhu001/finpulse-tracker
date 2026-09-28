@@ -17,17 +17,41 @@ import { BLOG_POSTS } from '../data/blogPosts';
 
 function formatInlineText(text) {
   if (!text) return '';
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return (
-        <strong key={i} className="text-slate-900 dark:text-white font-bold">
-          {part.slice(2, -2)}
+  const regex = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g;
+  const parts = [];
+  let lastIdx = 0;
+  let match;
+  
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIdx) {
+      parts.push(text.substring(lastIdx, match.index));
+    }
+    const token = match[0];
+    if (token.startsWith('**') && token.endsWith('**')) {
+      parts.push(
+        <strong key={match.index} className="text-slate-900 dark:text-white font-bold">
+          {token.slice(2, -2)}
         </strong>
       );
+    } else if (token.startsWith('`') && token.endsWith('`')) {
+      parts.push(
+        <code key={match.index} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[#00E676] font-mono text-xs font-semibold">
+          {token.slice(1, -1)}
+        </code>
+      );
+    } else if (token.startsWith('*') && token.endsWith('*')) {
+      parts.push(
+        <em key={match.index} className="italic text-slate-800 dark:text-slate-300">
+          {token.slice(1, -1)}
+        </em>
+      );
     }
-    return part;
-  });
+    lastIdx = regex.lastIndex;
+  }
+  if (lastIdx < text.length) {
+    parts.push(text.substring(lastIdx));
+  }
+  return parts.length > 0 ? parts : text;
 }
 
 export default function ArticleView() {
@@ -38,23 +62,62 @@ export default function ArticleView() {
     ? 'usd-to-pkr-interbank-vs-open-market-guide'
     : rawIdentifier;
 
-  const { articles = [] } = useApp();
-  const allArticles = React.useMemo(() => {
-    if (Array.isArray(articles) && articles.length > 0) return articles;
+  const { articles: contextArticles = [] } = useApp();
+  const [articles, setArticles] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_portal_articles');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-    } catch {}
+    } catch (e) {
+      console.error("Failed to parse articles from localStorage", e);
+    }
     return BLOG_POSTS;
-  }, [articles]);
+  });
 
-  // Find article by id or slug
-  const article = allArticles.find(
-    p => p && (p.slug === targetIdentifier || p.id === targetIdentifier)
-  ) || allArticles[0] || null;
+  const loadArticles = React.useCallback(() => {
+    try {
+      const saved = localStorage.getItem('fgc_portal_articles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setArticles(parsed);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse articles from localStorage", e);
+    }
+    if (Array.isArray(contextArticles) && contextArticles.length > 0) {
+      setArticles(contextArticles);
+    } else {
+      setArticles(BLOG_POSTS);
+    }
+  }, [contextArticles]);
+
+  useEffect(() => {
+    loadArticles();
+    const handleSync = () => loadArticles();
+    window.addEventListener('fgc_articles_updated', handleSync);
+    window.addEventListener('storage', handleSync);
+    return () => {
+      window.removeEventListener('fgc_articles_updated', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
+  }, [loadArticles]);
+
+  // Find article by id or slug (case-insensitive lookup with primary fallback)
+  const article = React.useMemo(() => {
+    if (!targetIdentifier) return articles[0] || null;
+    const cleanTarget = targetIdentifier.toLowerCase().trim();
+    return articles.find(p => {
+      if (!p) return false;
+      const s = (p.slug || '').toLowerCase().trim();
+      const i = (p.id || '').toLowerCase().trim();
+      return s === cleanTarget || i === cleanTarget;
+    }) || null;
+  }, [articles, targetIdentifier]);
 
   // Scroll to top and set document title
   useEffect(() => {
@@ -64,7 +127,7 @@ export default function ArticleView() {
     }
   }, [targetIdentifier, article?.title]);
 
-  const relatedArticles = allArticles.filter(p => p && p.id !== article?.id).slice(0, 3);
+  const relatedArticles = articles.filter(p => p && p.id !== article?.id).slice(0, 3);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -191,7 +254,7 @@ export default function ArticleView() {
 
         {/* Full Article Content */}
         <div className="text-slate-700 dark:text-[#A8B3C2] text-base leading-relaxed space-y-6">
-          {article.content.replace(/\n(?=\d+\.\s)/g, '\n\n').split('\n\n').map((paragraph, idx) => {
+          {(article.content || '').replace(/\n(?=\d+\.\s)/g, '\n\n').split('\n\n').map((paragraph, idx) => {
             const trimmed = paragraph.trim();
             if (!trimmed) return null;
 
@@ -200,21 +263,48 @@ export default function ArticleView() {
               return <hr key={idx} className="my-8 border-slate-200 dark:border-white/10" />;
             }
 
-            // Subheadings (H4 -> H3)
+            // Headings (H1)
+            if (trimmed.startsWith('# ')) {
+              return (
+                <h2 key={idx} className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-white/10">
+                  {trimmed.replace(/^#\s*/, '')}
+                </h2>
+              );
+            }
+
+            // Headings (H2)
+            if (trimmed.startsWith('## ')) {
+              return (
+                <h2 key={idx} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-white/10">
+                  {trimmed.replace(/^##\s*/, '')}
+                </h2>
+              );
+            }
+
+            // Subheadings (H4)
             if (trimmed.startsWith('####')) {
               return (
-                <h3 key={idx} className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3 pb-1">
+                <h4 key={idx} className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3 pb-1">
                   {trimmed.replace(/^####\s*/, '')}
+                </h4>
+              );
+            }
+
+            // Headings (H3)
+            if (trimmed.startsWith('###')) {
+              return (
+                <h3 key={idx} className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pt-5 pb-1">
+                  {trimmed.replace(/^###\s*/, '')}
                 </h3>
               );
             }
 
-            // Headings (H3 -> H2)
-            if (trimmed.startsWith('###')) {
+            // Blockquotes
+            if (trimmed.startsWith('>')) {
               return (
-                <h2 key={idx} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-white/10">
-                  {trimmed.replace(/^###\s*/, '')}
-                </h2>
+                <blockquote key={idx} className="my-5 pl-4 sm:pl-6 border-l-4 border-[#00E676] bg-slate-50 dark:bg-[#06111F] p-4 rounded-r-xl italic text-slate-700 dark:text-[#A8B3C2]">
+                  {formatInlineText(trimmed.replace(/^>\s*/, ''))}
+                </blockquote>
               );
             }
 
