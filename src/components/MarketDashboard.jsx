@@ -69,7 +69,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     };
 
     // 2. Forex Corridors
-    const usdPkrRate = rates.PKR || 278.09;
+    const usdPkrRate = rates.PKR || 277.10;
     const eurUsdRate = rates.EUR ? (1 / rates.EUR) : 1.0845;
     const gbpUsdRate = rates.GBP ? (1 / rates.GBP) : 1.2890;
 

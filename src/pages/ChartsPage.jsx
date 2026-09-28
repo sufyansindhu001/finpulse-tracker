@@ -23,7 +23,7 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   const [hoverIndex, setHoverIndex] = useState(null);
   const chartContainerRef = useRef(null);
 
-  const usdToPkr = rates.PKR || 278.09;
+  const usdToPkr = rates.PKR || 277.10;
   const eurToPkr = usdToPkr / (rates.EUR || 0.92);
   const gbpToPkr = usdToPkr / (rates.GBP || 0.79);
 

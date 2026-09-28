@@ -38,7 +38,7 @@ export default function ConverterPage({ rates = {} }) {
   // Conversion math
   const { fromRate, toRate, convertedAmount, unitRate, inverseRate } = useMemo(() => {
     const fromR = rates[fromCurrency] || (fromCurrency === 'USD' ? 1.0 : 1.0);
-    const toR = rates[toCurrency] || (toCurrency === 'PKR' ? 278.09 : 1.0);
+    const toR = rates[toCurrency] || (toCurrency === 'PKR' ? 277.10 : 1.0);
 
     // Amount in USD = amount / fromR
     const inUsd = amount / fromR;

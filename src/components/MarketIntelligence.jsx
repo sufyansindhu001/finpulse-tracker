@@ -187,7 +187,7 @@ export default function MarketIntelligence() {
               </h3>
 
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Interbank rates for the Pakistani Rupee (USD/PKR 278.09 baseline) remain stable following foreign reserve inflows and compliant bilateral remittance flows. Meanwhile, Bitcoin (BTC) and Solana (SOL) continue consolidating above critical moving averages as global institutional liquidity expands.
+                Interbank rates for the Pakistani Rupee (USD/PKR ~277.10 baseline) remain stable following foreign reserve inflows and compliant bilateral remittance flows. Meanwhile, Bitcoin (BTC) and Solana (SOL) continue consolidating above critical moving averages as global institutional liquidity expands.
               </p>
             </div>
 

@@ -24,7 +24,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
   // Quick amount buttons
   const amountPresets = [10, 50, 100, 250, 500, 1000, 5000];
 
-  // Guaranteed rates object with 1 USD = 278.09 PKR fallback baseline
+  // Guaranteed rates object with 1 USD = ~277.10 PKR fallback baseline
   const activeRates = useMemo(() => {
     return (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
   }, [rates]);

@@ -19,7 +19,7 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('rank'); // 'rank' | 'price' | 'change'
   const [highlightedCoin, setHighlightedCoin] = useState(null);
-  const usdToPkr = rates.PKR || 278.09;
+  const usdToPkr = rates.PKR || 277.10;
 
   useEffect(() => {
     const asset = searchParams.get('asset') || searchParams.get('coin');

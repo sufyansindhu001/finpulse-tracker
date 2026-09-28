@@ -36,7 +36,7 @@ export const DEFAULT_METALS = {
  * 1 Troy Ounce = 31.1035 grams
  * 1 Tola = 11.6638 grams
  */
-export function calculateGoldLocalMetrics(goldPriceUsd = 4321.20, localRateAgainstUsd = 278.09) {
+export function calculateGoldLocalMetrics(goldPriceUsd = 4321.20, localRateAgainstUsd = 277.10) {
   const pricePerOunceLocal = goldPriceUsd * localRateAgainstUsd;
   const pricePerGram24K = pricePerOunceLocal / TROY_OUNCE_TO_GRAMS;
   const pricePerTola24K = pricePerGram24K * TOLA_TO_GRAMS;

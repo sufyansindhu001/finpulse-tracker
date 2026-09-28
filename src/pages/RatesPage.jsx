@@ -79,7 +79,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   };
 
   // Base currency rates calculations
-  const usdToPkr = rates.PKR || 278.09;
+  const usdToPkr = rates.PKR || 277.10;
 
   // Format currency list
   const currencyRows = useMemo(() => {

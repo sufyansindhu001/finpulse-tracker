@@ -29,11 +29,11 @@ export default function HeroSection({ rates, cryptoList }) {
     return () => clearInterval(interval);
   }, []);
 
-  const usdToPkr = rates?.PKR || 278.09;
-  const eurToPkr = ((rates?.PKR || 278.09) / (rates?.EUR || 0.92)).toFixed(2);
-  const gbpToPkr = ((rates?.PKR || 278.09) / (rates?.GBP || 0.79)).toFixed(2);
-  const sarToPkr = ((rates?.PKR || 278.09) / (rates?.SAR || 3.75)).toFixed(2);
-  const aedToPkr = ((rates?.PKR || 278.09) / (rates?.AED || 3.6725)).toFixed(2);
+  const usdToPkr = rates?.PKR || 277.10;
+  const eurToPkr = ((rates?.PKR || 277.10) / (rates?.EUR || 0.92)).toFixed(2);
+  const gbpToPkr = ((rates?.PKR || 277.10) / (rates?.GBP || 0.79)).toFixed(2);
+  const sarToPkr = ((rates?.PKR || 277.10) / (rates?.SAR || 3.75)).toFixed(2);
+  const aedToPkr = ((rates?.PKR || 277.10) / (rates?.AED || 3.6725)).toFixed(2);
 
   const goldPriceUsd = 2684.50;
   const goldPkrPerTola = Math.round((goldPriceUsd * usdToPkr / 31.1035) * 11.6638);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
-import { fetchLiveExchangeRates, DEFAULT_RATES } from './services/forexService';
+import { fetchLiveExchangeRates, DEFAULT_RATES, getCachedRates } from './services/forexService';
 import { fetchLiveCryptoMarkets, DEFAULT_CRYPTO_BENCHMARKS } from './services/cryptoService';
 
 import BackgroundFX from './components/BackgroundFX';
@@ -82,8 +82,11 @@ export default function App() {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
   
-  // Market data states initialized with reliable DEFAULT_RATES & DEFAULT_CRYPTO_BENCHMARKS
-  const [rates, setRates] = useState(DEFAULT_RATES);
+  // Market data states initialized with valid cached rates or reliable DEFAULT_RATES (~277.10 PKR)
+  const [rates, setRates] = useState(() => {
+    const cached = getCachedRates();
+    return cached?.rates || DEFAULT_RATES;
+  });
   const [cryptoList, setCryptoList] = useState(DEFAULT_CRYPTO_BENCHMARKS);
   
   // Loading & Error states
@@ -94,9 +97,12 @@ export default function App() {
   const [cryptoError, setCryptoError] = useState(null);
 
   // Metadata
-  const [forexMeta, setForexMeta] = useState({
-    lastUpdated: '',
-    source: 'Interbank FX Feeds'
+  const [forexMeta, setForexMeta] = useState(() => {
+    const cached = getCachedRates();
+    return {
+      lastUpdated: cached?.lastUpdated || '',
+      source: cached?.source || 'Interbank FX Feeds'
+    };
   });
   const [cryptoMeta, setCryptoMeta] = useState({
     lastUpdated: '',
@@ -133,14 +139,14 @@ export default function App() {
   const loadLiveData = useCallback(async (isManual = false) => {
     setIsRefreshing(true);
 
-    // 1. Fetch Live Fiat Rates (https://open.er-api.com/v6/latest/USD)
-    const forexPromise = fetchLiveExchangeRates()
+    // 1. Fetch Live Fiat Rates (low-latency interbank mid-market feeds)
+    const forexPromise = fetchLiveExchangeRates(true)
       .then((res) => {
         if (res && res.rates) {
           setRates(res.rates);
           setForexMeta({
             lastUpdated: res.lastUpdated || new Date().toLocaleTimeString(),
-            source: res.source || 'Interbank FX Feeds'
+            source: res.source || 'Live Interbank Feeds'
           });
         }
         setForexError(null);

@@ -15,7 +15,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 export default function GoldPage({ rates = {} }) {
   const [searchParams] = useSearchParams();
-  const usdToPkr = rates.PKR || 278.09;
+  const usdToPkr = rates.PKR || 277.10;
   const [selectedUnit, setSelectedUnit] = useState('tola'); // 'tola' | '10g' | 'gram' | 'oz'
   const [calcPurity, setCalcPurity] = useState('24K');
   const [calcWeight, setCalcWeight] = useState(1);
