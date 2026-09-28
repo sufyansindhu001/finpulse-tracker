@@ -15,6 +15,21 @@ import {
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 
+function formatInlineText(text) {
+  if (!text) return '';
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="text-slate-900 dark:text-white font-bold">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
+
 export default function ArticleView() {
   const { slug, id } = useParams();
   const targetIdentifier = slug || id;
@@ -41,7 +56,7 @@ export default function ArticleView() {
     if (navigator.share) {
       navigator.share({
         title: article.title,
-        text: article.summary,
+        text: article.summary || article.excerpt,
         url: window.location.href,
       }).catch(() => {});
     } else {
@@ -153,27 +168,31 @@ export default function ArticleView() {
         {/* Executive Summary Callout */}
         <div className="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border-l-4 border-[#00E676] border-t border-r border-b border-slate-200 dark:border-white/10 mb-8 text-slate-600 dark:text-[#A8B3C2] text-sm sm:text-base italic leading-relaxed">
           <strong className="text-slate-900 dark:text-white font-semibold not-italic block mb-1">Executive Takeaway:</strong>
-          "{article.summary}"
+          "{article.summary || article.excerpt}"
         </div>
 
         {/* Full Article Content */}
         <div className="text-slate-700 dark:text-[#A8B3C2] text-base leading-relaxed space-y-6">
           {article.content.split('\n\n').map((paragraph, idx) => {
             const trimmed = paragraph.trim();
+            if (!trimmed) return null;
             if (trimmed.startsWith('###')) {
               return (
                 <h2 key={idx} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-white/10">
-                  {trimmed.replace('###', '').trim()}
+                  {trimmed.replace(/^###\s*/, '')}
                 </h2>
               );
             }
-            if (trimmed.startsWith('*') || trimmed.startsWith('1.')) {
+            if (trimmed.startsWith('*') || trimmed.startsWith('-') || trimmed.startsWith('1.') || trimmed.includes('\n*') || trimmed.includes('\n-') || trimmed.includes('\n1.')) {
+              const lines = trimmed.split('\n').filter(l => l.trim().length > 0);
               return (
-                <div key={idx} className="my-4 pl-4 border-l-2 border-[#00E676]/50 space-y-2 py-1">
-                  {trimmed.split('\n').map((line, lIdx) => (
-                    <div key={lIdx} className="flex items-start gap-2 text-sm sm:text-base">
-                      <span className="text-[#00E676] font-bold shrink-0">&bull;</span>
-                      <span className="text-slate-600 dark:text-[#A8B3C2]">{line.replace(/^[*•-]\s*/, '').replace(/^\d+\.\s*/, '')}</span>
+                <div key={idx} className="my-4 pl-4 border-l-2 border-[#00E676]/50 space-y-2.5 py-1">
+                  {lines.map((line, lIdx) => (
+                    <div key={lIdx} className="flex items-start gap-2.5 text-sm sm:text-base">
+                      <span className="text-[#00E676] font-bold shrink-0 mt-0.5">&bull;</span>
+                      <span className="text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                        {formatInlineText(line.replace(/^[*•-]\s*/, '').replace(/^\d+\.\s*/, ''))}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -181,7 +200,7 @@ export default function ArticleView() {
             }
             return (
               <p key={idx} className="leading-relaxed">
-                {trimmed}
+                {formatInlineText(trimmed)}
               </p>
             );
           })}

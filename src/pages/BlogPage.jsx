@@ -25,7 +25,7 @@ export default function BlogPage() {
     document.title = 'Market Analysis & Financial Blog | FGC Spot';
   }, []);
 
-  const categories = ['All', 'Market Updates', 'Forex News', 'Crypto Guides', 'Macro Analysis'];
+  const categories = ['All', 'Currency & Forex', 'Forex News', 'Crypto Guides', 'Market Updates', 'Macro Analysis'];
 
   // Ensure articles fallback to BLOG_POSTS if state is empty
   const allArticles = useMemo(() => {
@@ -41,7 +41,7 @@ export default function BlogPage() {
         ? post.tags 
         : (typeof post.tags === 'string' ? post.tags.split(',') : []);
       const title = post.title || '';
-      const summary = post.summary || '';
+      const summary = post.summary || post.excerpt || '';
       const matchSearch = 
         title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -134,7 +134,7 @@ export default function BlogPage() {
               </h2>
 
               <p className="text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed line-clamp-3">
-                {featuredPost.summary}
+                {featuredPost.summary || featuredPost.excerpt}
               </p>
 
               <div className="pt-2 flex items-center gap-2 text-xs font-bold text-[#00E676]">
@@ -208,7 +208,7 @@ export default function BlogPage() {
                       {post.title}
                     </h3>
                     <p className="text-xs text-slate-600 dark:text-[#A8B3C2] line-clamp-3 leading-relaxed">
-                      {post.summary}
+                      {post.summary || post.excerpt}
                     </p>
                   </div>
                 </div>

@@ -1,5 +1,32 @@
 export const BLOG_POSTS = [
   {
+    id: 'usd-pkr-interbank-vs-open-market-guide',
+    title: 'Understanding USD to PKR Live Rates: Interbank vs Open Market Explained',
+    slug: 'usd-pkr-interbank-vs-open-market-guide',
+    date: 'September 28, 2026',
+    category: 'Currency & Forex',
+    readTime: '4 min read',
+    author: 'FGC Spot Research Desk',
+    excerpt: 'A complete breakdown of how the US Dollar to Pakistani Rupee rate is calculated, why open market spreads differ from interbank feeds, and how to track live conversions accurately.',
+    summary: 'A complete breakdown of how the US Dollar to Pakistani Rupee rate is calculated, why open market spreads differ from interbank feeds, and how to track live conversions accurately.',
+    image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=1200&fm=webp&q=80',
+    tags: ['USDPKR', 'FOREX', 'INTERBANK', 'OPENMARKET', 'REMITTANCE'],
+    content: `
+      ### What Drives the USD to PKR Exchange Rate?
+      Exchange rates between the US Dollar (USD) and the Pakistani Rupee (PKR) fluctuate continuously during trading hours. This pricing movement is driven by international macroeconomic indicators, import-export settlement balances, foreign exchange reserves, and remittance volumes sent by overseas communities.
+
+      ### Interbank vs. Open Market: The Key Differences
+      - **Interbank Rate:** The wholesale exchange rate at which authorized commercial banks and the central bank buy and sell foreign currencies among themselves. It acts as the benchmark rate for corporate trade settlements, oil imports, and official debt servicing.
+      - **Open Market Rate:** The retail rate offered by currency exchange companies and money changers to individual retail customers (e.g., travelers, overseas families converting cash, and personal remittances). Due to operational overheads and physical cash logistics, open market rates often include a small spread over interbank quotes.
+
+      ### Why Live Financial Trackers Matter
+      Using automated rate engines like FGC Spot allows individuals and enterprises to monitor bid/ask spreads before executing foreign remittances or retail conversions. Rather than relying on outdated end-of-day reports, tracking real-time API feeds ensures you get true market valuation.
+
+      ### Key Takeaway for Remittance Senders
+      When transferring funds across borders, always verify whether your banking partner or fintech provider uses the live mid-market benchmark. Small variances in the spread can make a noticeable impact on large transaction values.
+    `
+  },
+  {
     id: 'forex-market-volatility-strategies',
     title: 'Navigating Forex Volatility: Strategies for Central Bank Rate Shifts',
     slug: 'navigating-forex-volatility-strategies',

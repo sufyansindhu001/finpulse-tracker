@@ -46,6 +46,19 @@ export function AppProvider({ children }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
+          // Merge any newly introduced INITIAL_BLOG_POSTS that aren't yet in localStorage
+          const missingDefaults = INITIAL_BLOG_POSTS.filter(
+            initPost => !parsed.some(savedPost => savedPost.id === initPost.id || savedPost.slug === initPost.slug)
+          );
+          if (missingDefaults.length > 0) {
+            const merged = [...missingDefaults, ...parsed];
+            try {
+              localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(merged));
+            } catch (err) {
+              console.warn('Error syncing merged articles to localStorage:', err);
+            }
+            return merged;
+          }
           return parsed;
         }
       }

@@ -83,7 +83,12 @@ export default function SearchModal({ isOpen, onClose, cryptoList = [] }) {
       .slice(0, 3);
 
     const matchingArticles = allArticles
-      .filter(a => (a?.title || '').toLowerCase().includes(q) || (a?.summary || '').toLowerCase().includes(q))
+      .filter(a => {
+        const title = (a?.title || '').toLowerCase();
+        const summary = (a?.summary || a?.excerpt || '').toLowerCase();
+        const tags = Array.isArray(a?.tags) ? a.tags.join(' ').toLowerCase() : '';
+        return title.includes(q) || summary.includes(q) || tags.includes(q);
+      })
       .slice(0, 3);
 
     return {
