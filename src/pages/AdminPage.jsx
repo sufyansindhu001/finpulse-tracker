@@ -166,7 +166,7 @@ export default function AdminPage() {
     websiteName: siteSettings?.websiteName || 'FGC Spot',
     logoText: siteSettings?.logoText || 'FGC',
     logoUrl: siteSettings?.logoUrl || '',
-    contactEmail: siteSettings?.contactEmail || 'support@fgcspot.com',
+    contactEmail: siteSettings?.contactEmail || 'fgcspot4@gmail.com',
     tagline: siteSettings?.tagline || 'Real-Time Forex & Crypto Terminal'
   }));
   const [settingsSaved, setSettingsSaved] = useState(false);
@@ -1328,7 +1328,7 @@ export default function AdminPage() {
                       required
                       value={settingsForm.contactEmail}
                       onChange={(e) => setSettingsForm({ ...settingsForm, contactEmail: e.target.value })}
-                      placeholder="support@fgcspot.com"
+                      placeholder="fgcspot4@gmail.com"
                       className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                   </div>

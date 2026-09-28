@@ -52,6 +52,17 @@ export default function Footer({ onSelectPair }) {
                 <Zap className="w-3.5 h-3.5 text-[#00E676]" /> Sub-Second Live Feeds
               </span>
             </div>
+
+            <div className="pt-1">
+              <a 
+                href="mailto:fgcspot4@gmail.com" 
+                className="inline-flex items-center gap-2 text-xs text-[#00E676] hover:text-[#00FF88] font-mono font-semibold transition-colors"
+                title="Direct Support Desk"
+              >
+                <Mail className="w-3.5 h-3.5 shrink-0" />
+                <span>fgcspot4@gmail.com</span>
+              </a>
+            </div>
           </div>
 
           {/* Quick Currency Pairs */}
@@ -151,6 +162,15 @@ export default function Footer({ onSelectPair }) {
                   <Mail className="w-3.5 h-3.5" />
                   <span>Contact & Support</span>
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="mailto:fgcspot4@gmail.com"
+                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
+                >
+                  <Mail className="w-3.5 h-3.5 text-[#00E676]" />
+                  <span>Email Desk</span>
+                </a>
               </li>
               <li>
                 <Link

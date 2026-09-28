@@ -77,6 +77,20 @@ export default function ContactPage() {
           Have questions regarding our live exchange rate calculations, cryptocurrency tracking data, advertising opportunities, or editorial suggestions? Send us a message and our support team will reply within 24 to 48 business hours.
         </p>
 
+        {/* Minimalist Direct Support Badge */}
+        <div className="flex items-center justify-center p-3.5 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2]">
+          <span className="flex items-center gap-1.5 flex-wrap justify-center">
+            <Mail className="w-4 h-4 text-[#00E676] shrink-0" />
+            <span>Need direct assistance? Email us at:</span>
+            <a 
+              href="mailto:fgcspot4@gmail.com" 
+              className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40 hover:decoration-[#00FF88] transition-colors"
+            >
+              fgcspot4@gmail.com
+            </a>
+          </span>
+        </div>
+
         {submitted ? (
           <div className="py-12 px-6 rounded-2xl bg-slate-50 dark:bg-[#0D1B2A] border border-[#00E676]/30 text-center space-y-3 animate-in zoom-in-95 duration-200 shadow-sm">
             <CheckCircle2 className="w-12 h-12 text-[#00E676] mx-auto" />

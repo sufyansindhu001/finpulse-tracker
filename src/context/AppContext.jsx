@@ -7,7 +7,7 @@ const DEFAULT_SETTINGS = {
   websiteName: 'FGC Spot',
   logoText: 'FGC',
   logoUrl: '/logo.png',
-  contactEmail: 'support@fgcspot.com',
+  contactEmail: 'fgcspot4@gmail.com',
   tagline: 'Real-Time Forex & Crypto Terminal'
 };
 
@@ -16,7 +16,13 @@ export function AppProvider({ children }) {
   const [siteSettings, setSiteSettings] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_spot_site_settings');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.contactEmail === 'support@fgcspot.com') {
+          parsed.contactEmail = 'fgcspot4@gmail.com';
+        }
+        return { ...DEFAULT_SETTINGS, ...parsed };
+      }
     } catch (e) {
       console.warn('Error reading site settings from localStorage:', e);
     }

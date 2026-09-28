@@ -83,6 +83,13 @@ export default function TermsPage() {
             We reserve the right to revise these terms at any time. Continued use of the platform after updates constitutes acceptance of the amended terms.
           </p>
 
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-200 dark:border-white/10 pb-2">
+            6. Inquiries, DMCA &amp; Support Contact
+          </h2>
+          <p>
+            For any legal inquiries, DMCA copyright notices, terms clarifications, or general support questions, please contact our desk at <a href="mailto:fgcspot4@gmail.com" className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40">fgcspot4@gmail.com</a>.
+          </p>
+
         </div>
 
       </div>

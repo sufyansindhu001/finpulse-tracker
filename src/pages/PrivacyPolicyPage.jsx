@@ -81,6 +81,13 @@ export default function PrivacyPolicyPage() {
             By using our website, you hereby consent to our Privacy Policy and agree to its terms.
           </p>
 
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-200 dark:border-white/10 pb-2">
+            5. Contact Information &amp; Privacy Requests
+          </h2>
+          <p>
+            If you have questions regarding this Privacy Policy, wish to exercise your GDPR or CCPA privacy rights, or request deletion of data, please direct all formal inquiries to our compliance team at <a href="mailto:fgcspot4@gmail.com" className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40">fgcspot4@gmail.com</a>. We respond to all verified privacy requests within 30 days.
+          </p>
+
         </div>
 
       </div>

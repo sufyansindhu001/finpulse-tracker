@@ -243,7 +243,7 @@ export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', sit
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/[0.08] space-y-2 text-xs">
                 <div>
                   <span className="font-bold text-slate-900 dark:text-white block">Email Desk:</span>
-                  <span className="text-blue-600 dark:text-blue-400 font-mono">support@fgcspot.com</span>
+                  <a href="mailto:fgcspot4@gmail.com" className="text-[#00E676] hover:text-[#00FF88] font-mono font-bold underline">fgcspot4@gmail.com</a>
                 </div>
                 <div>
                   <span className="font-bold text-slate-900 dark:text-white block">Turnaround Time:</span>

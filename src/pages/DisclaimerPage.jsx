@@ -75,6 +75,13 @@ export default function DisclaimerPage() {
             Under no circumstances shall {siteSettings?.websiteName || 'FGC Spot'}, its developers, officers, or partners be liable for any direct, indirect, incidental, or consequential losses, damages, or claims arising from the use of, or inability to use, our exchange rate tools, conversion calculators, or market indicators.
           </p>
 
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-200 dark:border-white/10 pb-2">
+            4. Reporting Inaccuracies &amp; Inquiries
+          </h2>
+          <p>
+            If you notice any computational discrepancies, delayed feeds, or have questions regarding our exchange rate methodology, please alert our technical support desk at <a href="mailto:fgcspot4@gmail.com" className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40">fgcspot4@gmail.com</a>.
+          </p>
+
         </div>
 
       </div>
