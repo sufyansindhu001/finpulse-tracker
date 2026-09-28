@@ -8,7 +8,9 @@
 const STORAGE_KEYS = {
   EVENTS: 'fgc_spot_telemetry_events',
   DAILY: 'fgc_spot_telemetry_daily',
-  INQUIRIES: 'fgc_spot_inquiries',
+  INQUIRIES: 'fgc_portal_messages',
+  LEGACY_INQUIRIES: 'fgc_spot_inquiries',
+  DELETED_MESSAGES: 'fgc_portal_deleted_messages',
   VISITOR_ID: 'fgc_spot_visitor_id',
   DAILY_VISITORS: 'fgc_spot_visitor_daily_ids',
   ACTIVE_TABS: 'fgc_spot_active_tabs',
@@ -196,29 +198,68 @@ function saveStoredDaily(data) {
   }
 }
 
+// Default initial seed messages
+const DEFAULT_PORTAL_MESSAGES = [
+  {
+    id: 'msg_welcome_01',
+    name: 'Dr. Tariq Mahmood',
+    email: 'tariq.mahmood@finconsult.com',
+    subject: 'Forex API Integration & Commercial License',
+    message: 'Greetings FGC Spot desk, we are developing an institutional treasury portal and would like to license your real-time interbank PKR and AED feed APIs.',
+    timestamp: '2026-09-28T09:15:00.000Z',
+    status: 'New'
+  },
+  {
+    id: 'msg_welcome_02',
+    name: 'Ayesha Khan',
+    email: 'ayesha.k@karachitraders.pk',
+    subject: 'Sarafa Gold Rate Calculation Query',
+    message: 'Hello, your gold tola calculator is extremely helpful! Could you also add 21K jewelry calculations for Italian designs?',
+    timestamp: '2026-09-28T11:42:00.000Z',
+    status: 'In Progress'
+  }
+];
+
 export function getInquiries() {
-  // Check if server sync cache has real inquiries
   try {
-    const rawCache = localStorage.getItem(STORAGE_KEYS.SERVER_SYNC_CACHE);
-    if (rawCache) {
-      const parsed = JSON.parse(rawCache);
-      if (Array.isArray(parsed.inquiries) && parsed.inquiries.length > 0) {
-        return parsed.inquiries;
+    const deletedRaw = localStorage.getItem(STORAGE_KEYS.DELETED_MESSAGES);
+    const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
+
+    // 1. Read directly from persistent fgc_portal_messages
+    const raw = localStorage.getItem(STORAGE_KEYS.INQUIRIES);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(item => item && !deletedIds.includes(item.id));
       }
     }
-  } catch {}
 
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.INQUIRIES);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
+    // 2. Check legacy key if fgc_portal_messages not yet created
+    const legacyRaw = localStorage.getItem(STORAGE_KEYS.LEGACY_INQUIRIES);
+    if (legacyRaw) {
+      const parsedLegacy = JSON.parse(legacyRaw);
+      if (Array.isArray(parsedLegacy) && parsedLegacy.length > 0) {
+        const filtered = parsedLegacy.filter(item => item && !deletedIds.includes(item.id));
+        localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(filtered));
+        return filtered;
+      }
+    }
+  } catch (e) {
+    console.warn('[Telemetry] Error reading inquiries:', e);
   }
+
+  // 3. Seed once with default initial inquiries
+  try {
+    localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(DEFAULT_PORTAL_MESSAGES));
+    localStorage.setItem(STORAGE_KEYS.LEGACY_INQUIRIES, JSON.stringify(DEFAULT_PORTAL_MESSAGES));
+  } catch {}
+  return DEFAULT_PORTAL_MESSAGES;
 }
 
 export function saveInquiries(inquiries) {
   try {
     localStorage.setItem(STORAGE_KEYS.INQUIRIES, JSON.stringify(inquiries));
+    localStorage.setItem(STORAGE_KEYS.LEGACY_INQUIRIES, JSON.stringify(inquiries));
   } catch (e) {
     console.warn('[Telemetry] Unable to save inquiries:', e);
   }
@@ -480,8 +521,30 @@ export function updateInquiryStatus(id, newStatus) {
 }
 
 export function deleteInquiry(id) {
+  if (!id) return [];
+  try {
+    const deletedRaw = localStorage.getItem(STORAGE_KEYS.DELETED_MESSAGES);
+    const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
+    if (!deletedIds.includes(id)) {
+      deletedIds.push(id);
+      localStorage.setItem(STORAGE_KEYS.DELETED_MESSAGES, JSON.stringify(deletedIds));
+    }
+
+    // Also remove from SERVER_SYNC_CACHE so server telemetry polling never restores it
+    const rawCache = localStorage.getItem(STORAGE_KEYS.SERVER_SYNC_CACHE);
+    if (rawCache) {
+      const cacheObj = JSON.parse(rawCache);
+      if (Array.isArray(cacheObj.inquiries)) {
+        cacheObj.inquiries = cacheObj.inquiries.filter(i => i && i.id !== id);
+        localStorage.setItem(STORAGE_KEYS.SERVER_SYNC_CACHE, JSON.stringify(cacheObj));
+      }
+    }
+  } catch (e) {
+    console.warn('[Telemetry] Error updating deleted list in localStorage:', e);
+  }
+
   const inquiries = getInquiries();
-  const filtered = inquiries.filter(item => item.id !== id);
+  const filtered = inquiries.filter(item => item && item.id !== id);
   saveInquiries(filtered);
   trackEvent('INQUIRY_DELETED', `Inquiry #${id} purged`, 'Management');
   return filtered;

@@ -39,7 +39,17 @@ export default function ArticleView() {
     : rawIdentifier;
 
   const { articles = [] } = useApp();
-  const allArticles = Array.isArray(articles) && articles.length > 0 ? articles : BLOG_POSTS;
+  const allArticles = React.useMemo(() => {
+    if (Array.isArray(articles) && articles.length > 0) return articles;
+    try {
+      const saved = localStorage.getItem('fgc_portal_articles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return BLOG_POSTS;
+  }, [articles]);
 
   // Find article by id or slug
   const article = allArticles.find(

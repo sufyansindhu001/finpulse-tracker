@@ -28,6 +28,13 @@ export default function BlogPage() {
   // Dynamically include all categories present across published articles
   const allArticles = useMemo(() => {
     if (Array.isArray(articles) && articles.length > 0) return articles;
+    try {
+      const saved = localStorage.getItem('fgc_portal_articles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
     return BLOG_POSTS;
   }, [articles]);
 

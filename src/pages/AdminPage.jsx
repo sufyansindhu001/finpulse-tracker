@@ -30,7 +30,8 @@ import {
   CheckCircle2,
   Calendar,
   MessageSquare,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 
 import {
@@ -53,6 +54,10 @@ export default function AdminPage() {
     addArticle, 
     updateArticle, 
     deleteArticle,
+    subscribers,
+    addSubscriber,
+    deleteSubscriber,
+    deleteMessage,
     adminCredentials,
     updateAdminCredentials,
     isAdminAuth,
@@ -61,6 +66,7 @@ export default function AdminPage() {
   } = useApp();
 
   const safeArticles = Array.isArray(articles) ? articles : [];
+  const safeSubscribers = Array.isArray(subscribers) ? subscribers : [];
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -153,6 +159,9 @@ export default function AdminPage() {
   const handleDeleteInquiry = (id) => {
     if (window.confirm('Are you sure you want to permanently delete this inquiry record?')) {
       const updated = deleteInquiry(id);
+      if (typeof deleteMessage === 'function') {
+        deleteMessage(id);
+      }
       setInquiries(updated);
       setKpis(getLiveKPIs());
       if (selectedInquiry && selectedInquiry.id === id) {
@@ -160,6 +169,62 @@ export default function AdminPage() {
       }
     }
   };
+
+  // --- Subscribers State & Handlers ---
+  const [subSearch, setSubSearch] = useState('');
+  const [newSubEmail, setNewSubEmail] = useState('');
+  const [newSubSource, setNewSubSource] = useState('Manual Entry');
+  const [subMsg, setSubMsg] = useState({ text: '', type: '' });
+
+  const handleAddSubscriber = (e) => {
+    e.preventDefault();
+    if (!newSubEmail || !newSubEmail.includes('@')) {
+      setSubMsg({ text: 'Please enter a valid email address.', type: 'error' });
+      return;
+    }
+    const res = addSubscriber(newSubEmail, newSubSource);
+    setSubMsg({ text: res.message, type: res.success ? 'success' : 'error' });
+    if (res.success) {
+      setNewSubEmail('');
+    }
+    setTimeout(() => setSubMsg({ text: '', type: '' }), 3500);
+  };
+
+  const handleDeleteSubscriber = (id, email) => {
+    if (window.confirm(`Are you sure you want to remove subscriber "${email}"?`)) {
+      deleteSubscriber(id);
+    }
+  };
+
+  const handleExportSubscribersCSV = () => {
+    const headers = ['Subscriber ID', 'Email Address', 'Acquisition Source', 'Date Subscribed', 'Status'];
+    const rows = safeSubscribers.map(s => [
+      s.id,
+      `"${s.email}"`,
+      `"${s.source || 'Website'}"`,
+      s.date,
+      s.status || 'Active'
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `fgc_subscribers_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const filteredSubscribers = useMemo(() => {
+    const q = subSearch.toLowerCase().trim();
+    if (!q) return safeSubscribers;
+    return safeSubscribers.filter(s => 
+      (s.email || '').toLowerCase().includes(q) || 
+      (s.source || '').toLowerCase().includes(q)
+    );
+  }, [safeSubscribers, subSearch]);
 
   // --- Site Settings Form State ---
   const [settingsForm, setSettingsForm] = useState(() => ({
@@ -652,6 +717,18 @@ export default function AdminPage() {
           >
             <Inbox className="w-4 h-4" />
             <span>Contact Inbox ({inquiries.filter(i => i.status === 'New').length} New)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('subscribers')}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+              activeTab === 'subscribers'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                : 'bg-white dark:bg-[#0B0F19] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Subscribers ({safeSubscribers.length})</span>
           </button>
 
           <button
@@ -1247,7 +1324,171 @@ export default function AdminPage() {
         )}
 
         {/* ------------------------------------------------------------- */}
-        {/* TAB 4: SITE SETTINGS & CREDENTIALS */}
+        {/* TAB 4: SUBSCRIBER LIST (fgc_portal_subscribers) */}
+        {/* ------------------------------------------------------------- */}
+        {activeTab === 'subscribers' && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            
+            {/* Header & KPI Summary */}
+            <div className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-4">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Users className="w-5 h-5 text-blue-500" />
+                    <span>Newsletter &amp; Rate Alert Subscribers ({safeSubscribers.length})</span>
+                  </h2>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+                    Real subscriber emails stored persistently in <code className="text-blue-500 font-mono">fgc_portal_subscribers</code>.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={handleExportSubscribersCSV}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+                    title="Export CSV"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Export CSV</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Add Subscriber Inline Form */}
+              <form onSubmit={handleAddSubscriber} className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-slate-800 space-y-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 block">
+                  Add New Subscriber
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                  <div className="sm:col-span-6">
+                    <input
+                      type="email"
+                      required
+                      placeholder="e.g. subscriber@finconsult.com"
+                      value={newSubEmail}
+                      onChange={(e) => setNewSubEmail(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-white dark:bg-[#0B0F19] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
+                    <select
+                      value={newSubSource}
+                      onChange={(e) => setNewSubSource(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-white dark:bg-[#0B0F19] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs focus:outline-none focus:border-blue-500 cursor-pointer"
+                    >
+                      <option value="Manual Entry">Manual Entry</option>
+                      <option value="Direct Portal">Direct Portal</option>
+                      <option value="Newsletter Widget">Newsletter Widget</option>
+                      <option value="Daily FX Alert">Daily FX Alert</option>
+                      <option value="Institutional Lead">Institutional Lead</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-3">
+                    <button
+                      type="submit"
+                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <PlusCircle className="w-3.5 h-3.5" />
+                      <span>Add Subscriber</span>
+                    </button>
+                  </div>
+                </div>
+
+                {subMsg.text && (
+                  <div className={`p-2.5 rounded-lg text-xs font-bold flex items-center gap-2 ${
+                    subMsg.type === 'success' 
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                      : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                  }`}>
+                    {subMsg.type === 'success' ? <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> : <AlertCircle className="w-3.5 h-3.5 shrink-0" />}
+                    <span>{subMsg.text}</span>
+                  </div>
+                )}
+              </form>
+
+              {/* Search Filter Bar */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+                <div className="relative w-full sm:w-72">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={subSearch}
+                    onChange={(e) => setSubSearch(e.target.value)}
+                    placeholder="Search by email or source..."
+                    className="w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  Showing {filteredSubscribers.length} of {safeSubscribers.length} subscribers
+                </span>
+              </div>
+
+              {/* Subscribers Table */}
+              <div className="overflow-x-auto border border-slate-100 dark:border-slate-800 rounded-2xl">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 dark:bg-[#07090E] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold border-b border-slate-100 dark:border-slate-800">
+                    <tr>
+                      <th className="py-3 px-4">Subscriber Email</th>
+                      <th className="py-3 px-3">Acquisition Source</th>
+                      <th className="py-3 px-3">Date Subscribed</th>
+                      <th className="py-3 px-3">Status</th>
+                      <th className="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {filteredSubscribers.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="py-8 text-center text-slate-400">
+                          No subscribers match your search filter.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredSubscribers.map((sub) => (
+                        <tr key={sub.id} className="hover:bg-slate-50/60 dark:hover:bg-white/[0.02] transition-colors">
+                          <td className="py-3 px-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Mail className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                              <a href={`mailto:${sub.email}`} className="hover:underline font-mono text-xs">
+                                {sub.email}
+                              </a>
+                            </div>
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                              {sub.source || 'Website'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-slate-500 dark:text-slate-400 whitespace-nowrap font-mono text-[11px]">
+                            {sub.date || '2026-09-28'}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              {sub.status || 'Active'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right whitespace-nowrap">
+                            <button
+                              onClick={() => handleDeleteSubscriber(sub.id, sub.email)}
+                              className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors cursor-pointer"
+                              title="Delete Subscriber"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ------------------------------------------------------------- */}
+        {/* TAB 5: SITE SETTINGS & CREDENTIALS */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'settings' && (
           <div className="space-y-8">

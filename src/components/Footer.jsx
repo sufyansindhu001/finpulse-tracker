@@ -6,8 +6,21 @@ import LegalModal from './LegalModal';
 
 export default function Footer({ onSelectPair }) {
   const navigate = useNavigate();
-  const { siteSettings } = useApp();
+  const { siteSettings, addSubscriber } = useApp();
   const [legalModalTab, setLegalModalTab] = useState(null);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterMsg, setNewsletterMsg] = useState('');
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    if (!newsletterEmail || !newsletterEmail.includes('@')) return;
+    if (typeof addSubscriber === 'function') {
+      const res = addSubscriber(newsletterEmail, 'Footer Newsletter');
+      setNewsletterMsg(res.message);
+      if (res.success) setNewsletterEmail('');
+      setTimeout(() => setNewsletterMsg(''), 4000);
+    }
+  };
 
   const popularPairs = [
     { from: 'USD', to: 'PKR', label: 'USD to PKR (Pakistan)' },
@@ -66,6 +79,34 @@ export default function Footer({ onSelectPair }) {
                 <span>fgcspot4@gmail.com</span>
               </a>
             </div>
+
+            {/* Quick Newsletter Dispatch Form */}
+            <form onSubmit={handleNewsletterSubmit} className="pt-2 max-w-xs space-y-1.5">
+              <span className="text-[11px] font-bold text-slate-800 dark:text-white uppercase tracking-wider block">
+                Daily Financial Dispatch
+              </span>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="email"
+                  required
+                  placeholder="Enter email for daily alerts..."
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  className="w-full px-2.5 py-1.5 bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 rounded-lg text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#00E676]"
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-1.5 bg-[#00E676] hover:bg-[#00FF88] text-slate-950 font-bold text-xs rounded-lg transition-all cursor-pointer shrink-0"
+                >
+                  Join
+                </button>
+              </div>
+              {newsletterMsg && (
+                <span className="text-[10px] text-[#00E676] font-medium block animate-in fade-in">
+                  {newsletterMsg}
+                </span>
+              )}
+            </form>
           </div>
 
           {/* Quick Currency Pairs */}

@@ -13,7 +13,7 @@ import {
 import { recordInquiry } from '../utils/telemetry';
 
 export default function ContactPage() {
-  const { siteSettings } = useApp();
+  const { siteSettings, addMessage } = useApp();
   const [submitted, setSubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -30,6 +30,14 @@ export default function ContactPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
+      if (typeof addMessage === 'function') {
+        addMessage({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        });
+      }
       recordInquiry({
         name: formData.name,
         email: formData.email,
@@ -37,7 +45,7 @@ export default function ContactPage() {
         message: formData.message
       });
     } catch (err) {
-      console.warn('Error recording inquiry telemetry:', err);
+      console.warn('Error recording inquiry:', err);
     }
     setSubmitted(true);
     // Reset form after short delay
