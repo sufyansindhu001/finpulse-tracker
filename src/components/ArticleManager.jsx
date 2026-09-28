@@ -35,14 +35,31 @@ export default function ArticleManager() {
 
   // 1. Critical Persistence Safeguard:
   // On page load/refresh, check if localStorage.getItem('fgc_portal_articles') exists.
-  // If it exists, NEVER overwrite it with initial static mock data!
+  // If it exists, merge any newly added built-in articles (unless explicitly deleted).
   // Only seed initial articles if the key is completely null.
   const loadArticlesFromStorage = useCallback(() => {
     try {
+      const deletedRaw = localStorage.getItem('fgc_portal_deleted_articles');
+      const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
+
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored !== null) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
+          const existingIds = new Set(parsed.flatMap(a => [a.id, a.slug]));
+          const missingBuiltins = INITIAL_BLOG_POSTS.filter(b => 
+            !existingIds.has(b.id) && 
+            !existingIds.has(b.slug) && 
+            !deletedIds.includes(b.id) && 
+            !deletedIds.includes(b.slug)
+          );
+          if (missingBuiltins.length > 0) {
+            const merged = [...parsed, ...missingBuiltins];
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(merged));
+            setArticles(merged);
+            return;
+          }
           setArticles(parsed);
           return;
         }
@@ -53,8 +70,16 @@ export default function ArticleManager() {
       if (legacy !== null) {
         const parsedLegacy = JSON.parse(legacy);
         if (Array.isArray(parsedLegacy) && parsedLegacy.length > 0) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedLegacy));
-          setArticles(parsedLegacy);
+          const existingIds = new Set(parsedLegacy.flatMap(a => [a.id, a.slug]));
+          const missingBuiltins = INITIAL_BLOG_POSTS.filter(b => 
+            !existingIds.has(b.id) && 
+            !existingIds.has(b.slug) && 
+            !deletedIds.includes(b.id) && 
+            !deletedIds.includes(b.slug)
+          );
+          const merged = missingBuiltins.length > 0 ? [...parsedLegacy, ...missingBuiltins] : parsedLegacy;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          setArticles(merged);
           return;
         }
       }
@@ -201,6 +226,15 @@ export default function ArticleManager() {
   const handleDeleteArticle = (targetId) => {
     if (!window.confirm('Are you sure you want to permanently delete this article?')) return;
     
+    try {
+      const deletedRaw = localStorage.getItem('fgc_portal_deleted_articles');
+      const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
+      if (!deletedIds.includes(targetId)) {
+        deletedIds.push(targetId);
+        localStorage.setItem('fgc_portal_deleted_articles', JSON.stringify(deletedIds));
+      }
+    } catch {}
+
     let currentList = articles;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);

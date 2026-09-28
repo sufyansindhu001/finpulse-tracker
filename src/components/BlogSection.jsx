@@ -8,9 +8,17 @@ export default function BlogSection() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['All', 'Market Updates', 'Forex News', 'Crypto Guides', 'Macro Analysis'];
-
   const safeArticles = Array.isArray(articles) ? articles : [];
+
+  const categories = useMemo(() => {
+    const list = ['All'];
+    safeArticles.forEach(a => {
+      if (a?.category && !list.includes(a.category)) {
+        list.push(a.category);
+      }
+    });
+    return list;
+  }, [safeArticles]);
 
   const filteredPosts = useMemo(() => {
     return safeArticles.filter(post => {
