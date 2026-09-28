@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://finpulse-tracker-lovat.vercel.app/sitemap.xml
+Sitemap: https://www.fgcspot.com/sitemap.xml

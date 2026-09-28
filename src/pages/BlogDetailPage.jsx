@@ -178,13 +178,66 @@ export default function BlogDetailPage() {
     loadAllArticles();
   }, []);
 
-  // Scroll to top and set document title
+  // Scroll to top and set dynamic document title & meta description for SEO
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (article?.title) {
-      document.title = `${article.title} | FGC Spot Analysis`;
+    if (!article?.title) return;
+
+    // Document title: <Article Title> | FGC Spot
+    document.title = `${article.title} | FGC Spot`;
+
+    // Dynamic meta description with article excerpt
+    const excerpt = article.excerpt || article.summary || '';
+    let metaDesc = document.querySelector('meta[name="description"]');
+    const prevDesc = metaDesc ? metaDesc.getAttribute('content') : '';
+
+    if (excerpt) {
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', excerpt);
     }
-  }, [targetIdentifier, article?.title]);
+
+    // OpenGraph & Social Crawler Meta Tags
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (!ogTitle) {
+      ogTitle = document.createElement('meta');
+      ogTitle.setAttribute('property', 'og:title');
+      document.head.appendChild(ogTitle);
+    }
+    ogTitle.setAttribute('content', `${article.title} | FGC Spot`);
+
+    let ogDesc = document.querySelector('meta[property="og:description"]');
+    if (!ogDesc) {
+      ogDesc = document.createElement('meta');
+      ogDesc.setAttribute('property', 'og:description');
+      document.head.appendChild(ogDesc);
+    }
+    ogDesc.setAttribute('content', excerpt);
+
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (!ogUrl) {
+      ogUrl = document.createElement('meta');
+      ogUrl.setAttribute('property', 'og:url');
+      document.head.appendChild(ogUrl);
+    }
+    ogUrl.setAttribute('content', window.location.href);
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', `https://www.fgcspot.com/blog/${article.slug || targetIdentifier}`);
+
+    return () => {
+      if (metaDesc && prevDesc) metaDesc.setAttribute('content', prevDesc);
+      document.title = 'FGC Spot — Live Forex, Gold & Crypto Terminals';
+    };
+  }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug]);
 
   const relatedArticles = useMemo(() => {
     return allArticles.filter(p => p && p.id !== article?.id && p.slug !== article?.slug).slice(0, 3);

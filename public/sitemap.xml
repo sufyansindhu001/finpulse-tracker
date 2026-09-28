@@ -1,57 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://www.fgcspot.com/</loc>
+    <lastmod>2026-09-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/forex</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>hourly</changefreq>
+    <loc>https://www.fgcspot.com/blog</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/crypto</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>always</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.fgcspot.com/about</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/research</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://www.fgcspot.com/contact</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/privacy-policy</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/terms</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/disclaimer</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/converter</loc>
+    <lastmod>2026-09-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/tools</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.fgcspot.com/rates</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/about</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://www.fgcspot.com/crypto</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/contact</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://www.fgcspot.com/gold</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/privacy-policy</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://www.fgcspot.com/charts</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://finpulse-tracker-lovat.vercel.app/disclaimer</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://www.fgcspot.com/blog/global-energy-markets-commodity-supercycles-how-crude-oil-brent-vs-wti-shapes-the-world-economy</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/the-s-p-500-global-index-investing-why-90-of-active-fund-managers-fail-to-beat-the-market</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/understanding-roshan-digital-account-rda-naya-pakistan-certificates-repatriation-rules-tax-shields</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/spotting-fake-gold-hallmarking-standards-the-complete-investor-guide-to-bullion-bars-vs-jewelry</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/stock-market-vs-real-estate-in-pakistan-which-asset-truly-builds-wealth-over-10-years</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/beating-inflation-why-keeping-cash-in-a-savings-account-is-losing-you-money-and-better-alternatives</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/remittances-forex-spread-the-hidden-costs-of-sending-money-to-pakistan-and-how-to-get-real-rates</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/storing-crypto-safely-exchanges-vs-wallets-guide</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/blog/usd-to-pkr-interbank-vs-open-market-guide</loc>
+    <lastmod>2026-09-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
