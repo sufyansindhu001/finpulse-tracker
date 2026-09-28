@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Coins, 
   TrendingUp, 
@@ -7,17 +7,35 @@ import {
   ArrowRight, 
   Zap, 
   ShieldCheck, 
-  Layers,
-  ArrowUpDown,
+  Layers, 
+  ArrowUpDown, 
   ChevronRight
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rates = {} }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('rank'); // 'rank' | 'price' | 'change'
+  const [highlightedCoin, setHighlightedCoin] = useState(null);
   const usdToPkr = rates.PKR || 278.09;
+
+  useEffect(() => {
+    const asset = searchParams.get('asset') || searchParams.get('coin');
+    if (asset) {
+      const sym = asset.toUpperCase();
+      setHighlightedCoin(sym);
+      setTimeout(() => {
+        const el = document.getElementById(`crypto-row-${sym}`) || document.getElementById(`crypto-card-${sym}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+      const timer = setTimeout(() => setHighlightedCoin(null), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   const defaultCrypto = [
     { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', current_price: 96420, price_change_percentage_24h: 2.84, high_24h: 97800, low_24h: 94100, market_cap: 1890000000000, total_volume: 42500000000, circulating_supply: 19780000 },
@@ -97,11 +115,17 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {topFeatured.map((coin) => {
           const isUp = (coin.price_change_percentage_24h || 0) >= 0;
+          const isHighlighted = highlightedCoin === coin.symbol.toUpperCase();
           return (
             <div
               key={coin.id}
+              id={`crypto-card-${coin.symbol.toUpperCase()}`}
               onClick={() => navigate(`/charts?asset=${coin.symbol.toUpperCase()}`)}
-              className="rounded-3xl bg-[#0A1726]/80 hover:bg-[#0A1726] border border-white/10 hover:border-[#00E676]/40 p-5 transition-all duration-300 shadow-xl backdrop-blur-xl space-y-4 cursor-pointer group"
+              className={`rounded-3xl border p-5 transition-all duration-300 shadow-xl backdrop-blur-xl space-y-4 cursor-pointer group ${
+                isHighlighted
+                  ? 'bg-[#00E676]/20 border-[#00E676] ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20'
+                  : 'bg-[#0A1726]/80 hover:bg-[#0A1726] border-white/10 hover:border-[#00E676]/40'
+              }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -211,8 +235,17 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
               <tbody className="divide-y divide-white/5">
                 {filteredCoins.map((coin) => {
                   const isUp = (coin.price_change_percentage_24h || 0) >= 0;
+                  const isHighlighted = highlightedCoin === coin.symbol.toUpperCase();
                   return (
-                    <tr key={coin.id} className="hover:bg-white/[0.02] transition-colors">
+                    <tr 
+                      key={coin.id} 
+                      id={`crypto-row-${coin.symbol.toUpperCase()}`}
+                      className={`transition-all duration-300 ${
+                        isHighlighted 
+                          ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
+                          : 'hover:bg-white/[0.02]'
+                      }`}
+                    >
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
                           {coin.image ? (

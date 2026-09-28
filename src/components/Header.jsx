@@ -12,7 +12,8 @@ import {
   Newspaper, 
   Home,
   Sun,
-  Moon
+  Moon,
+  BookOpen
 } from 'lucide-react';
 
 export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }) {
@@ -82,7 +83,8 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
     { label: 'Rates', path: '/rates', icon: TrendingUp, match: (p) => p === '/rates' || p === '/forex' },
     { label: 'Charts', path: '/charts', icon: LineChart, match: (p) => p === '/charts' },
     { label: 'Converter', path: '/converter', icon: ArrowLeftRight, match: (p) => p === '/converter' || p === '/tools' },
-    { label: 'News', path: '/news', icon: Newspaper, match: (p) => p.startsWith('/news') || p.startsWith('/research') || p.startsWith('/blog') },
+    { label: 'News', path: '/news', icon: Newspaper, match: (p) => p.startsWith('/news') },
+    { label: 'Blog', path: '/blog', icon: BookOpen, match: (p) => p.startsWith('/blog') || p.startsWith('/research') },
   ];
 
   return (

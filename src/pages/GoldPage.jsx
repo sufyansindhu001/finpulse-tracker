@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Sparkles, 
   TrendingUp, 
@@ -11,14 +11,40 @@ import {
   Award,
   ChevronRight
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 export default function GoldPage({ rates = {} }) {
+  const [searchParams] = useSearchParams();
   const usdToPkr = rates.PKR || 278.09;
   const [selectedUnit, setSelectedUnit] = useState('tola'); // 'tola' | '10g' | 'gram' | 'oz'
   const [calcPurity, setCalcPurity] = useState('24K');
   const [calcWeight, setCalcWeight] = useState(1);
   const [calcUnit, setCalcUnit] = useState('tola');
+  const [highlightedPurity, setHighlightedPurity] = useState(null);
+
+  useEffect(() => {
+    const purity = searchParams.get('purity');
+    const unit = searchParams.get('unit');
+    if (purity) {
+      const pClean = purity.toUpperCase();
+      setCalcPurity(pClean);
+      setHighlightedPurity(pClean);
+    }
+    if (unit) {
+      setSelectedUnit(unit.toLowerCase());
+      setCalcUnit(unit.toLowerCase());
+    }
+    if (purity || unit) {
+      setTimeout(() => {
+        const el = document.getElementById(`gold-card-${(purity || '24K').toUpperCase()}`) || document.getElementById('gold-calculator');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+      const timer = setTimeout(() => setHighlightedPurity(null), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
 
   // Benchmark spot prices
   const goldSpotOzUsd = 2684.50;
@@ -197,13 +223,19 @@ export default function GoldPage({ rates = {} }) {
       </div>
 
       {/* 4 Karat Purity Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="gold-purity-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {purities.map((item) => {
           const price = getPriceForPurity(item.factor);
+          const isHighlighted = highlightedPurity === item.karat;
           return (
             <div
               key={item.karat}
-              className="rounded-3xl bg-[#0A1726]/80 hover:bg-[#0A1726] border border-white/10 hover:border-amber-500/40 p-6 transition-all duration-300 shadow-xl backdrop-blur-xl space-y-5 flex flex-col justify-between group"
+              id={`gold-card-${item.karat}`}
+              className={`rounded-3xl border p-6 transition-all duration-300 shadow-xl backdrop-blur-xl space-y-5 flex flex-col justify-between group ${
+                isHighlighted
+                  ? 'bg-amber-500/20 border-amber-400 ring-2 ring-amber-400 shadow-2xl shadow-amber-500/30'
+                  : 'bg-[#0A1726]/80 hover:bg-[#0A1726] border-white/10 hover:border-amber-500/40'
+              }`}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -242,7 +274,7 @@ export default function GoldPage({ rates = {} }) {
       </div>
 
       {/* Interactive Quick Bullion Calculator */}
-      <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+      <div id="gold-calculator" className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
             <Calculator className="w-5 h-5" />

@@ -23,6 +23,8 @@ const GoldPage = lazy(() => import('./pages/GoldPage'));
 const ChartsPage = lazy(() => import('./pages/ChartsPage'));
 const ConverterPage = lazy(() => import('./pages/ConverterPage'));
 const NewsPage = lazy(() => import('./pages/NewsPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const ArticleView = lazy(() => import('./components/ArticleView'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
@@ -334,8 +336,29 @@ export default function App() {
                 <NewsPage />
               </div>
             } />
-            <Route path="/research" element={<Navigate to="/news" replace />} />
-            <Route path="/blog" element={<Navigate to="/news" replace />} />
+
+            {/* ROUTE 7B: DEDICATED BLOG & FINANCIAL ANALYSIS (/blog) */}
+            <Route path="/blog" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <BlogPage />
+              </div>
+            } />
+            <Route path="/blog/:slug" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <ArticleView />
+              </div>
+            } />
+            <Route path="/blog/id/:id" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <ArticleView />
+              </div>
+            } />
+            <Route path="/research" element={<Navigate to="/blog" replace />} />
+            <Route path="/research/:id" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <ArticleView />
+              </div>
+            } />
 
             {/* ROUTE 8: ABOUT US PAGE (/about) */}
             <Route path="/about" element={

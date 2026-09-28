@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   LineChart, 
   TrendingUp, 
@@ -16,7 +16,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 
 export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   const [searchParams] = useSearchParams();
-  const initialAsset = searchParams.get('asset') || 'USD/PKR';
+  const initialAsset = searchParams.get('asset') || searchParams.get('pair')?.replace('-', '/') || 'USD/PKR';
 
   const [selectedAsset, setSelectedAsset] = useState(initialAsset);
   const [timeframe, setTimeframe] = useState('1M'); // '1D' | '7D' | '1M' | '1Y'
@@ -37,7 +37,26 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
     { id: 'Gold', name: 'Gold Spot / USD', basePrice: 2684.50, unit: '$', type: 'metal' },
   ];
 
-  const currentAsset = assets.find(a => a.id === selectedAsset) || assets[0];
+  const currentAsset = assets.find(a => a.id.toUpperCase() === selectedAsset.toUpperCase()) || assets[0];
+
+  useEffect(() => {
+    const assetParam = searchParams.get('asset');
+    const pairParam = searchParams.get('pair');
+    let target = pairParam || assetParam;
+    if (target) {
+      target = target.replace('-', '/').toUpperCase();
+      if (target === 'XAU' || target === 'GOLD') target = 'Gold';
+      const match = assets.find(a => a.id.toUpperCase() === target.toUpperCase());
+      if (match) {
+        setSelectedAsset(match.id);
+      } else {
+        setSelectedAsset(target);
+      }
+      setTimeout(() => {
+        chartContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 150);
+    }
+  }, [searchParams]);
 
   // Generate deterministic realistic historical price curve based on timeframe & asset
   const chartData = useMemo(() => {

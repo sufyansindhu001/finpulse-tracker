@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { 
   ArrowLeftRight, 
@@ -17,10 +17,23 @@ import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 export default function ConverterPage({ rates = {} }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [amount, setAmount] = useState(100);
-  const [fromCurrency, setFromCurrency] = useState(searchParams.get('from') || 'USD');
-  const [toCurrency, setToCurrency] = useState(searchParams.get('to') || 'PKR');
+  const [amount, setAmount] = useState(() => {
+    const amt = searchParams.get('amount');
+    return amt && !isNaN(Number(amt)) ? Number(amt) : 100;
+  });
+  const [fromCurrency, setFromCurrency] = useState(searchParams.get('from')?.toUpperCase() || 'USD');
+  const [toCurrency, setToCurrency] = useState(searchParams.get('to')?.toUpperCase() || 'PKR');
   const [isSwapping, setIsSwapping] = useState(false);
+
+  // Sync state whenever URL query params change (e.g. from footer popular pairs or search)
+  useEffect(() => {
+    const from = searchParams.get('from');
+    const to = searchParams.get('to');
+    const amt = searchParams.get('amount');
+    if (from) setFromCurrency(from.toUpperCase());
+    if (to) setToCurrency(to.toUpperCase());
+    if (amt && !isNaN(Number(amt))) setAmount(Number(amt));
+  }, [searchParams]);
 
   // Conversion math
   const { fromRate, toRate, convertedAmount, unitRate, inverseRate } = useMemo(() => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Zap, ArrowUpRight } from 'lucide-react';
+import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Zap, ArrowUpRight, BookOpen } from 'lucide-react';
 import LegalModal from './LegalModal';
 
 export default function Footer({ onSelectPair }) {
@@ -17,12 +17,6 @@ export default function Footer({ onSelectPair }) {
     { from: 'SAR', to: 'PKR', label: 'SAR to PKR (Riyal)' },
     { from: 'CAD', to: 'PKR', label: 'CAD to PKR (Canada)' },
   ];
-
-  const handlePairClick = (e, from, to) => {
-    e.preventDefault();
-    navigate(`/rates?search=${from}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <footer className="w-full max-w-full overflow-hidden bg-[#0A1726] border-t border-white/10 pt-16 pb-12 mt-20 text-[#A8B3C2] text-xs transition-colors duration-200">
@@ -68,13 +62,12 @@ export default function Footer({ onSelectPair }) {
             <ul className="space-y-2 text-xs">
               {popularPairs.map((pair) => (
                 <li key={`${pair.from}-${pair.to}`}>
-                  <a 
-                    href={`/rates?search=${pair.from}`}
-                    onClick={(e) => handlePairClick(e, pair.from, pair.to)}
+                  <Link 
+                    to={`/converter?from=${pair.from}&to=${pair.to}`}
                     className="hover:text-[#00E676] transition-colors cursor-pointer block py-0.5 text-left font-medium text-[#A8B3C2]"
                   >
                     {pair.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -115,6 +108,12 @@ export default function Footer({ onSelectPair }) {
                 <Link to="/news" className="hover:text-[#00E676] cursor-pointer transition-colors flex items-center justify-between">
                   <span>Market News Wire</span>
                   <span className="text-[10px] uppercase bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20 px-1.5 py-0.5 rounded font-bold">Live</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="hover:text-[#00E676] cursor-pointer transition-colors flex items-center justify-between">
+                  <span>Guides & Analysis</span>
+                  <span className="text-[10px] uppercase bg-white/5 text-[#A8B3C2] border border-white/10 px-1.5 py-0.5 rounded font-bold">Blog</span>
                 </Link>
               </li>
             </ul>

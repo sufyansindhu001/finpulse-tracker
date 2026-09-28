@@ -23,10 +23,53 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   const [searchQuery, setSearchQuery] = useState('');
   const [sortField, setSortField] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [highlightedAsset, setHighlightedAsset] = useState(null);
 
   useEffect(() => {
-    if (searchParams.get('tab')) {
-      setActiveTab(searchParams.get('tab'));
+    const tab = searchParams.get('tab');
+    const asset = searchParams.get('asset') || searchParams.get('search');
+
+    if (tab) {
+      setActiveTab(tab);
+    } else if (asset) {
+      const upper = asset.toUpperCase();
+      const cryptoSymbols = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'DOGE', 'TRX', 'USDT', 'USDC'];
+      const isGold = ['XAU', 'XAG', 'GOLD', 'SILVER', 'TOLA'].includes(upper);
+      const isCrypto = cryptoSymbols.includes(upper);
+
+      if (isGold) {
+        setActiveTab('gold');
+      } else if (isCrypto) {
+        setActiveTab('crypto');
+      } else {
+        setActiveTab('currencies');
+      }
+    }
+
+    if (asset) {
+      const upper = asset.toUpperCase();
+      setHighlightedAsset(upper);
+
+      const timer = setTimeout(() => {
+        const targetId = ['XAU', 'GOLD'].includes(upper) 
+          ? 'rate-row-XAU' 
+          : upper === 'XAG' 
+            ? 'rate-row-XAG' 
+            : `rate-row-${upper}`;
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+
+      const clearTimer = setTimeout(() => {
+        setHighlightedAsset(null);
+      }, 3500);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(clearTimer);
+      };
     }
   }, [searchParams]);
 
@@ -240,45 +283,56 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filteredCurrencies.map((c) => (
-                  <tr key={c.code} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src={c.flagUrl} 
-                          alt={c.code} 
-                          className="w-6 h-4.5 rounded object-cover shadow-xs" 
-                        />
-                        <div>
-                          <span className="font-extrabold text-white text-sm">{c.code}</span>
-                          <span className="text-[11px] text-[#A8B3C2] block">{c.name}</span>
+                {filteredCurrencies.map((c) => {
+                  const isHighlighted = highlightedAsset === c.code.toUpperCase();
+                  return (
+                    <tr 
+                      key={c.code} 
+                      id={`rate-row-${c.code.toUpperCase()}`}
+                      className={`transition-all duration-300 ${
+                        isHighlighted 
+                          ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
+                          : 'hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <img 
+                            src={c.flagUrl} 
+                            alt={c.code} 
+                            className="w-6 h-4.5 rounded object-cover shadow-xs" 
+                          />
+                          <div>
+                            <span className="font-extrabold text-white text-sm">{c.code}</span>
+                            <span className="text-[11px] text-[#A8B3C2] block">{c.name}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 font-bold text-white text-sm font-tabular">
-                      ₨ {c.ratePkr.toFixed(2)}
-                    </td>
-                    <td className="py-4 px-6 text-[#A8B3C2] font-semibold font-tabular">
-                      ${c.rateUsd.toFixed(4)}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
-                        c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
-                      }`}>
-                        {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                        <span>{c.change}</span>
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => navigate(`/converter?from=${c.code}&to=PKR`)}
-                        className="px-3.5 py-1.5 rounded-lg bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
-                      >
-                        Convert
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-4 px-6 font-bold text-white text-sm font-tabular">
+                        ₨ {c.ratePkr.toFixed(2)}
+                      </td>
+                      <td className="py-4 px-6 text-[#A8B3C2] font-semibold font-tabular">
+                        ${c.rateUsd.toFixed(4)}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                          c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
+                        }`}>
+                          {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                          <span>{c.change}</span>
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => navigate(`/converter?from=${c.code}&to=PKR`)}
+                          className="px-3.5 py-1.5 rounded-lg bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
+                        >
+                          Convert
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -301,50 +355,61 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filteredCrypto.map((c) => (
-                  <tr key={c.symbol} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        {c.image ? (
-                          <img src={c.image} alt={c.name} className="w-7 h-7 rounded-full" />
-                        ) : (
-                          <div className="w-7 h-7 rounded-full bg-[#00E676]/10 text-[#00E676] font-black flex items-center justify-center text-xs">
-                            {c.symbol.slice(0, 2)}
+                {filteredCrypto.map((c) => {
+                  const isHighlighted = highlightedAsset === c.symbol.toUpperCase();
+                  return (
+                    <tr 
+                      key={c.symbol} 
+                      id={`rate-row-${c.symbol.toUpperCase()}`}
+                      className={`transition-all duration-300 ${
+                        isHighlighted 
+                          ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
+                          : 'hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          {c.image ? (
+                            <img src={c.image} alt={c.name} className="w-7 h-7 rounded-full" />
+                          ) : (
+                            <div className="w-7 h-7 rounded-full bg-[#00E676]/10 text-[#00E676] font-black flex items-center justify-center text-xs">
+                              {c.symbol.slice(0, 2)}
+                            </div>
+                          )}
+                          <div>
+                            <span className="font-extrabold text-white text-sm">{c.symbol}</span>
+                            <span className="text-[11px] text-[#A8B3C2] block">{c.name}</span>
                           </div>
-                        )}
-                        <div>
-                          <span className="font-extrabold text-white text-sm">{c.symbol}</span>
-                          <span className="text-[11px] text-[#A8B3C2] block">{c.name}</span>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 font-extrabold text-white text-sm font-tabular">
-                      ${c.price.toLocaleString()}
-                    </td>
-                    <td className="py-4 px-6 text-[#00E676] font-bold font-tabular">
-                      ₨ {(c.price * usdToPkr).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
-                        c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
-                      }`}>
-                        {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                        <span>{c.change.toFixed(2)}%</span>
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-[#A8B3C2] font-tabular">
-                      ${(c.volume / 1e9).toFixed(2)}B
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => navigate(`/charts?asset=${c.symbol}`)}
-                        className="px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold text-xs transition-colors cursor-pointer"
-                      >
-                        Chart
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-4 px-6 font-extrabold text-white text-sm font-tabular">
+                        ${c.price.toLocaleString()}
+                      </td>
+                      <td className="py-4 px-6 text-[#00E676] font-bold font-tabular">
+                        ₨ {(c.price * usdToPkr).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                          c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
+                        }`}>
+                          {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                          <span>{c.change.toFixed(2)}%</span>
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-[#A8B3C2] font-tabular">
+                        ${(c.volume / 1e9).toFixed(2)}B
+                      </td>
+                      <td className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => navigate(`/charts?asset=${c.symbol}`)}
+                          className="px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white font-bold text-xs transition-colors cursor-pointer"
+                        >
+                          Chart
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -367,39 +432,54 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {goldRows.map((g, idx) => (
-                  <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-2.5">
-                        <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                        <span className="font-extrabold text-white text-sm">{g.purity}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-amber-300 font-semibold">
-                      {g.unit}
-                    </td>
-                    <td className="py-4 px-6 font-extrabold text-[#00E676] text-sm font-tabular">
-                      ₨ {Math.round(g.ratePkr).toLocaleString()}
-                    </td>
-                    <td className="py-4 px-6 text-white font-tabular">
-                      ${g.rateUsd.toFixed(2)}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[#00E676]/10 text-[#00E676]">
-                        <TrendingUp className="w-3 h-3" />
-                        <span>{g.change}</span>
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => navigate('/gold')}
-                        className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
-                      >
-                        Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {goldRows.map((g, idx) => {
+                  const isGoldRow = highlightedAsset === 'GOLD' || highlightedAsset === 'XAU' || highlightedAsset === 'TOLA';
+                  const isSilverRow = highlightedAsset === 'XAG' || highlightedAsset === 'SILVER';
+                  const isHighlighted = (idx === 0 && isGoldRow) || (idx === 8 && isSilverRow);
+                  const rowId = idx === 0 ? 'rate-row-XAU' : idx === 8 ? 'rate-row-XAG' : `rate-row-gold-${idx}`;
+
+                  return (
+                    <tr 
+                      key={idx} 
+                      id={rowId}
+                      className={`transition-all duration-300 ${
+                        isHighlighted 
+                          ? 'bg-amber-500/20 ring-2 ring-amber-400 shadow-lg shadow-amber-500/20' 
+                          : 'hover:bg-white/[0.02]'
+                      }`}
+                    >
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-2.5">
+                          <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                          <span className="font-extrabold text-white text-sm">{g.purity}</span>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 text-amber-300 font-semibold">
+                        {g.unit}
+                      </td>
+                      <td className="py-4 px-6 font-extrabold text-[#00E676] text-sm font-tabular">
+                        ₨ {Math.round(g.ratePkr).toLocaleString()}
+                      </td>
+                      <td className="py-4 px-6 text-white font-tabular">
+                        ${g.rateUsd.toFixed(2)}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[#00E676]/10 text-[#00E676]">
+                          <TrendingUp className="w-3 h-3" />
+                          <span>{g.change}</span>
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => navigate('/gold')}
+                          className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
