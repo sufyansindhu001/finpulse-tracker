@@ -144,7 +144,11 @@ export default function ArticleView() {
             </div>
             <div>
               <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'FGC Spot Macro Research Desk'}</div>
-              <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">FGC Spot Financial Research Desk &bull; Independent Intelligence</div>
+              <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">
+                {article.author === 'Sufyan Saleem' 
+                  ? 'Contributing Financial Columnist & Forex Analyst' 
+                  : 'FGC Spot Financial Research Desk • Independent Intelligence'}
+              </div>
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20 font-semibold">
@@ -176,6 +180,22 @@ export default function ArticleView() {
           {article.content.split('\n\n').map((paragraph, idx) => {
             const trimmed = paragraph.trim();
             if (!trimmed) return null;
+
+            // Horizontal Rule
+            if (trimmed === '---' || trimmed === '***') {
+              return <hr key={idx} className="my-8 border-slate-200 dark:border-white/10" />;
+            }
+
+            // Subheadings (H4 -> H3)
+            if (trimmed.startsWith('####')) {
+              return (
+                <h3 key={idx} className="text-base sm:text-lg font-bold text-slate-900 dark:text-white pt-3 pb-1">
+                  {trimmed.replace(/^####\s*/, '')}
+                </h3>
+              );
+            }
+
+            // Headings (H3 -> H2)
             if (trimmed.startsWith('###')) {
               return (
                 <h2 key={idx} className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white pt-6 pb-2 border-b border-slate-200 dark:border-white/10">
@@ -183,7 +203,33 @@ export default function ArticleView() {
                 </h2>
               );
             }
-            if (trimmed.startsWith('*') || trimmed.startsWith('-') || trimmed.startsWith('1.') || trimmed.includes('\n*') || trimmed.includes('\n-') || trimmed.includes('\n1.')) {
+
+            // Numbered List Items / Rules (1. **Title:**\nDescription)
+            if (/^\d+\.\s/.test(trimmed)) {
+              const match = trimmed.match(/^(\d+)\.\s+([\s\S]*)/);
+              if (match) {
+                const num = match[1];
+                const body = match[2];
+                const lines = body.split('\n').filter(l => l.trim().length > 0);
+                return (
+                  <div key={idx} className="my-5 p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-start gap-4 shadow-xs">
+                    <div className="w-8 h-8 rounded-xl bg-[#00E676]/15 border border-[#00E676]/30 flex items-center justify-center text-[#00E676] font-extrabold text-sm shrink-0 mt-0.5 shadow-[0_0_10px_rgba(0,230,118,0.15)]">
+                      {num}
+                    </div>
+                    <div className="space-y-1.5 flex-1 text-slate-700 dark:text-[#A8B3C2] text-sm sm:text-base leading-relaxed">
+                      {lines.map((line, bIdx) => (
+                        <p key={bIdx} className={bIdx === 0 ? "font-bold text-slate-900 dark:text-white" : "leading-relaxed"}>
+                          {formatInlineText(line.trim())}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+            }
+
+            // Bullet Lists
+            if (trimmed.startsWith('*') || trimmed.startsWith('-') || trimmed.includes('\n*') || trimmed.includes('\n-')) {
               const lines = trimmed.split('\n').filter(l => l.trim().length > 0);
               return (
                 <div key={idx} className="my-4 pl-4 border-l-2 border-[#00E676]/50 space-y-2.5 py-1">
@@ -191,13 +237,15 @@ export default function ArticleView() {
                     <div key={lIdx} className="flex items-start gap-2.5 text-sm sm:text-base">
                       <span className="text-[#00E676] font-bold shrink-0 mt-0.5">&bull;</span>
                       <span className="text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                        {formatInlineText(line.replace(/^[*•-]\s*/, '').replace(/^\d+\.\s*/, ''))}
+                        {formatInlineText(line.replace(/^[*•-]\s*/, ''))}
                       </span>
                     </div>
                   ))}
                 </div>
               );
             }
+
+            // Standard Paragraph
             return (
               <p key={idx} className="leading-relaxed">
                 {formatInlineText(trimmed)}

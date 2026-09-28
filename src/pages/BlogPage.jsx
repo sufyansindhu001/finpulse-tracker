@@ -25,7 +25,16 @@ export default function BlogPage() {
     document.title = 'Market Analysis & Financial Blog | FGC Spot';
   }, []);
 
-  const categories = ['All', 'Currency & Forex', 'Forex News', 'Crypto Guides', 'Market Updates', 'Macro Analysis'];
+  // Dynamically include all categories present across articles
+  const categories = useMemo(() => {
+    const list = ['All', 'Personal Finance & Currency', 'Currency & Forex', 'Forex News', 'Crypto Guides', 'Market Updates', 'Macro Analysis'];
+    (articles && articles.length > 0 ? articles : BLOG_POSTS).forEach(a => {
+      if (a?.category && !list.includes(a.category)) {
+        list.push(a.category);
+      }
+    });
+    return list;
+  }, [articles]);
 
   // Ensure articles fallback to BLOG_POSTS if state is empty
   const allArticles = useMemo(() => {
