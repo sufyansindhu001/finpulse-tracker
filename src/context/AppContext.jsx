@@ -120,80 +120,33 @@ export function AppProvider({ children }) {
   // -------------------------------------------------------------
   const [articles, setArticles] = useState(() => {
     try {
-      const deletedRaw = localStorage.getItem(PORTAL_KEYS.DELETED_ARTICLES);
-      const userDeletedList = deletedRaw ? JSON.parse(deletedRaw) : [];
-
-      const legacyBlacklist = [
-        'usd-pkr-interbank-vs-open-market-guide',
-        'forex-market-volatility-strategies',
-        'crypto-market-cycles-bitcoin-dominance',
-        'emerging-market-currencies-usd-pegs',
-        'crypto-security-wallet-best-practices',
-        'digital-remittance-revolution'
-      ];
-
-      const allExclusions = new Set([...legacyBlacklist, ...userDeletedList]);
-
       // 1. Primary check: fgc_portal_articles
       const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
-      if (saved) {
+      if (saved !== null) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          const sanitized = parsed.filter(post => {
-            if (!post) return false;
-            return !allExclusions.has(post.id) && !allExclusions.has(post.slug);
-          });
-
-          // If empty because user deleted all, return sanitized empty array
-          if (parsed.length > 0 && sanitized.length === 0 && userDeletedList.length > 0) {
-            return [];
-          }
-
-          // If newly initialised or missing our 2 approved human-written guides, merge them if not deleted
-          const missingDefaults = INITIAL_BLOG_POSTS.filter(
-            initPost => !allExclusions.has(initPost.id) && 
-                        !allExclusions.has(initPost.slug) &&
-                        !sanitized.some(s => s.id === initPost.id || s.slug === initPost.slug)
-          );
-
-          const finalArticles = [...sanitized, ...missingDefaults];
-          try {
-            localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(finalArticles));
-            localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(finalArticles));
-          } catch {}
-          return finalArticles;
+          return parsed;
         }
       }
 
-      // 2. Fallback check: legacy fgc_spot_blog_posts
+      // 2. Legacy key check
       const legacy = localStorage.getItem('fgc_spot_blog_posts');
-      if (legacy) {
+      if (legacy !== null) {
         const parsedLegacy = JSON.parse(legacy);
         if (Array.isArray(parsedLegacy) && parsedLegacy.length > 0) {
-          const sanitized = parsedLegacy.filter(post => {
-            if (!post) return false;
-            return !allExclusions.has(post.id) && !allExclusions.has(post.slug);
-          });
-          const missingDefaults = INITIAL_BLOG_POSTS.filter(
-            initPost => !allExclusions.has(initPost.id) && 
-                        !allExclusions.has(initPost.slug) &&
-                        !sanitized.some(s => s.id === initPost.id || s.slug === initPost.slug)
-          );
-          const finalArticles = [...sanitized, ...missingDefaults];
-          localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(finalArticles));
-          return finalArticles;
+          try {
+            localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(parsedLegacy));
+          } catch {}
+          return parsedLegacy;
         }
       }
 
-      // 3. Not found: Seed with only our 2 approved human-written articles
-      const seedArticles = INITIAL_BLOG_POSTS.filter(
-        p => !allExclusions.has(p.id) && !allExclusions.has(p.slug)
-      );
+      // 3. Only seed initial articles if the key is completely null
       try {
-        localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(seedArticles));
-        localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(seedArticles));
+        localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(INITIAL_BLOG_POSTS));
+        localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(INITIAL_BLOG_POSTS));
       } catch {}
-      return seedArticles;
+      return INITIAL_BLOG_POSTS;
     } catch (e) {
       console.warn('[AppContext] Error initializing articles:', e);
     }
@@ -215,28 +168,48 @@ export function AppProvider({ children }) {
   };
 
   const addArticle = (newArticle) => {
-    const rawTitle = newArticle.title || 'Untitled Financial Guide';
-    const generatedSlug = rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const rawTitle = (newArticle.title || '').trim() || 'Untitled Financial Guide';
+    const cleanSlug = newArticle.slug || rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `post-${Date.now()}`;
     const articleWithId = {
       ...newArticle,
-      id: newArticle.id || generatedSlug || `post-${Date.now()}`,
-      slug: newArticle.slug || generatedSlug || `post-${Date.now()}`,
+      id: newArticle.id || cleanSlug,
+      slug: cleanSlug,
+      title: rawTitle,
       date: newArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      readTime: newArticle.readTime || `${Math.max(2, Math.ceil((newArticle.content?.split(' ').length || 100) / 180))} min read`,
-      author: newArticle.author || 'FGC Spot Research Team',
+      readTime: newArticle.readTime || `${Math.max(2, Math.ceil(((newArticle.content || '').split(' ').length) / 180))} min read`,
+      author: newArticle.author || 'FGC Spot Research Lead',
       summary: newArticle.summary || newArticle.excerpt || '',
       excerpt: newArticle.excerpt || newArticle.summary || '',
       image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
       tags: Array.isArray(newArticle.tags) ? newArticle.tags : (newArticle.tags ? newArticle.tags.split(',').map(t => t.trim()) : ['Market'])
     };
-    const updated = [articleWithId, ...articles];
+
+    let currentList = articles;
+    try {
+      const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) currentList = parsed;
+      }
+    } catch {}
+
+    const updated = [articleWithId, ...currentList.filter(a => a.id !== articleWithId.id && a.slug !== articleWithId.slug)];
     saveArticles(updated);
     return articleWithId;
   };
 
   const updateArticle = (id, updatedFields) => {
     if (!id) return;
-    const updated = articles.map(art => {
+    let currentList = articles;
+    try {
+      const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) currentList = parsed;
+      }
+    } catch {}
+
+    const updated = currentList.map(art => {
       if (art.id === id || art.slug === id) {
         const summaryText = updatedFields.summary !== undefined ? updatedFields.summary : (art.summary || art.excerpt || '');
         const excerptText = updatedFields.excerpt !== undefined ? updatedFields.excerpt : (art.excerpt || summaryText);
@@ -257,25 +230,16 @@ export function AppProvider({ children }) {
 
   const deleteArticle = (id) => {
     if (!id) return;
+    let currentList = articles;
     try {
-      const deletedRaw = localStorage.getItem(PORTAL_KEYS.DELETED_ARTICLES);
-      const deletedList = deletedRaw ? JSON.parse(deletedRaw) : [];
-      const target = articles.find(art => art.id === id || art.slug === id);
-      const identifiersToExclude = [id];
-      if (target?.id && !identifiersToExclude.includes(target.id)) identifiersToExclude.push(target.id);
-      if (target?.slug && !identifiersToExclude.includes(target.slug)) identifiersToExclude.push(target.slug);
+      const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
+      if (saved !== null) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) currentList = parsed;
+      }
+    } catch {}
 
-      identifiersToExclude.forEach(identifier => {
-        if (!deletedList.includes(identifier)) {
-          deletedList.push(identifier);
-        }
-      });
-      localStorage.setItem(PORTAL_KEYS.DELETED_ARTICLES, JSON.stringify(deletedList));
-    } catch (e) {
-      console.warn('[AppContext] Error tracking deleted article:', e);
-    }
-
-    const updated = articles.filter(art => art.id !== id && art.slug !== id);
+    const updated = currentList.filter(art => art.id !== id && art.slug !== id);
     saveArticles(updated);
     return updated;
   };

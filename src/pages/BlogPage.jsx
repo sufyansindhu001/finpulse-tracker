@@ -23,7 +23,7 @@ export default function BlogPage() {
   const [articles, setArticles] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved) {
+      if (saved !== null) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
@@ -36,7 +36,7 @@ export default function BlogPage() {
   const loadArticles = React.useCallback(() => {
     try {
       const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved) {
+      if (saved !== null) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setArticles(parsed);

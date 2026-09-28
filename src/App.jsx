@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { fetchLiveExchangeRates, DEFAULT_RATES } from './services/forexService';
-import { fetchLiveCryptoMarkets } from './services/cryptoService';
+import { fetchLiveCryptoMarkets, DEFAULT_CRYPTO_BENCHMARKS } from './services/cryptoService';
 
 import BackgroundFX from './components/BackgroundFX';
 import Header from './components/Header';
@@ -24,6 +24,7 @@ const ChartsPage = lazy(() => import('./pages/ChartsPage'));
 const ConverterPage = lazy(() => import('./pages/ConverterPage'));
 const NewsPage = lazy(() => import('./pages/NewsPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
+const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
 const ArticleView = lazy(() => import('./components/ArticleView'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
@@ -81,9 +82,9 @@ export default function App() {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
   
-  // Market data states initialized with reliable DEFAULT_RATES (1 USD = 278.09 PKR)
+  // Market data states initialized with reliable DEFAULT_RATES & DEFAULT_CRYPTO_BENCHMARKS
   const [rates, setRates] = useState(DEFAULT_RATES);
-  const [cryptoList, setCryptoList] = useState([]);
+  const [cryptoList, setCryptoList] = useState(DEFAULT_CRYPTO_BENCHMARKS);
   
   // Loading & Error states
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -153,17 +154,19 @@ export default function App() {
     // 2. Fetch Live Crypto Markets
     const cryptoPromise = fetchLiveCryptoMarkets()
       .then((res) => {
-        setCryptoList(res.data);
-        setCryptoMeta({
-          lastUpdated: res.lastUpdated,
-          source: res.source || 'Multi-Exchange Feeds'
-        });
+        if (res && res.data && res.data.length > 0) {
+          setCryptoList(res.data);
+          setCryptoMeta({
+            lastUpdated: res.lastUpdated || new Date().toLocaleTimeString(),
+            source: res.source || 'Multi-Exchange Feeds'
+          });
+        }
         setCryptoError(null);
         setIsCryptoLoading(false);
       })
       .catch((err) => {
-        console.error('Crypto fetch error:', err);
-        setCryptoError(err.message || 'Failed to fetch live digital asset prices');
+        console.warn('Crypto fetch warning:', err);
+        setCryptoList(DEFAULT_CRYPTO_BENCHMARKS);
         setIsCryptoLoading(false);
       });
 
@@ -345,18 +348,18 @@ export default function App() {
             } />
             <Route path="/blog/:slug" element={
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-                <ArticleView />
+                <BlogDetailPage />
               </div>
             } />
             <Route path="/blog/id/:id" element={
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-                <ArticleView />
+                <BlogDetailPage />
               </div>
             } />
             <Route path="/research" element={<Navigate to="/blog" replace />} />
             <Route path="/research/:id" element={
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-                <ArticleView />
+                <BlogDetailPage />
               </div>
             } />
 

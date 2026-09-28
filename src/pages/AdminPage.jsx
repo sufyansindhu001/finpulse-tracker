@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import AdminErrorBoundary from '../components/AdminErrorBoundary';
+import ArticleManager from '../components/ArticleManager';
 import { 
   Lock, 
   Eye, 
@@ -1769,6 +1770,15 @@ export default function AdminPage() {
         {/* TAB 5: BLOG / ARTICLE MANAGER */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'articles' && (
+          <AdminErrorBoundary 
+            title="Blog / Article Manager Error"
+            onSwitchTab={setActiveTab}
+            onReset={() => {}}
+          >
+            <ArticleManager />
+          </AdminErrorBoundary>
+        )}
+        {false && activeTab === 'articles' && (
           <AdminErrorBoundary 
             title="Blog / Article Manager Error"
             onSwitchTab={setActiveTab}

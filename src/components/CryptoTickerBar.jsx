@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { DEFAULT_CRYPTO_BENCHMARKS } from '../services/cryptoService';
 
 export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
-  if (!cryptoList || cryptoList.length === 0) {
+  // 2-second timeout safeguard state
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // If live prices don't stream within 2000ms, immediately disable loading spinner
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const hasLiveCoins = Array.isArray(cryptoList) && cryptoList.length > 0;
+
+  // Show connecting spinner ONLY if still loading within the 2-second window and no coins yet
+  if (loading && !hasLiveCoins) {
     return (
       <div className="w-full bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-xs py-2 px-4 flex items-center justify-center gap-2 text-slate-500 dark:text-slate-400 sticky top-0 z-40">
         <Loader2 className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 animate-spin" />
@@ -11,8 +27,11 @@ export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
     );
   }
 
+  // Immediately fallback to standard cached benchmark prices so ticker items scroll smoothly
+  const activeList = hasLiveCoins ? cryptoList : DEFAULT_CRYPTO_BENCHMARKS;
+
   // Duplicate list to achieve continuous infinite marquee loop
-  const tickerItems = [...cryptoList, ...cryptoList];
+  const tickerItems = [...activeList, ...activeList];
 
   return (
     <div className="w-full max-w-full bg-slate-100/95 dark:bg-[#070A12]/95 border-b border-slate-200 dark:border-white/[0.06] text-xs py-1.5 overflow-hidden select-none backdrop-blur-xl sticky top-0 z-40">
