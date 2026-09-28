@@ -32,7 +32,11 @@ function formatInlineText(text) {
 
 export default function ArticleView() {
   const { slug, id } = useParams();
-  const targetIdentifier = slug || id;
+  const rawIdentifier = slug || id;
+  // Gracefully map legacy AI slug to the approved authentic guide to prevent 404s
+  const targetIdentifier = rawIdentifier === 'usd-pkr-interbank-vs-open-market-guide'
+    ? 'usd-to-pkr-interbank-vs-open-market-guide'
+    : rawIdentifier;
 
   const { articles = [] } = useApp();
   const allArticles = Array.isArray(articles) && articles.length > 0 ? articles : BLOG_POSTS;

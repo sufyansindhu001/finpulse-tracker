@@ -42,29 +42,55 @@ export function AppProvider({ children }) {
     }
   };
 
-  // 2. Blog Posts with LocalStorage persistence
+  // 2. Blog Posts with LocalStorage persistence & exclusion tracking
   const [articles, setArticles] = useState(() => {
     try {
+      const deletedRaw = localStorage.getItem('fgc_spot_deleted_articles');
+      const userDeletedList = deletedRaw ? JSON.parse(deletedRaw) : [];
+
+      // Permanent blacklist of old mock/AI articles to remove them from legacy client caches
+      const legacyBlacklist = [
+        'usd-pkr-interbank-vs-open-market-guide',
+        'forex-market-volatility-strategies',
+        'crypto-market-cycles-bitcoin-dominance',
+        'emerging-market-currencies-usd-pegs',
+        'crypto-security-wallet-best-practices',
+        'digital-remittance-revolution'
+      ];
+
+      const allExclusions = new Set([...legacyBlacklist, ...userDeletedList]);
+
       const saved = localStorage.getItem('fgc_spot_blog_posts');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge any newly introduced INITIAL_BLOG_POSTS that aren't yet in localStorage
+        if (Array.isArray(parsed)) {
+          // Remove blacklisted or user-deleted items from existing local storage
+          const sanitized = parsed.filter(post => {
+            if (!post) return false;
+            return !allExclusions.has(post.id) && !allExclusions.has(post.slug);
+          });
+
+          // Merge any newly introduced INITIAL_BLOG_POSTS that aren't yet in local storage and not excluded
           const missingDefaults = INITIAL_BLOG_POSTS.filter(
-            initPost => !parsed.some(savedPost => savedPost.id === initPost.id || savedPost.slug === initPost.slug)
+            initPost => !allExclusions.has(initPost.id) && 
+                        !allExclusions.has(initPost.slug) &&
+                        !sanitized.some(savedPost => savedPost.id === initPost.id || savedPost.slug === initPost.slug)
           );
-          if (missingDefaults.length > 0) {
-            const merged = [...missingDefaults, ...parsed];
-            try {
-              localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(merged));
-            } catch (err) {
-              console.warn('Error syncing merged articles to localStorage:', err);
-            }
-            return merged;
+
+          const merged = [...sanitized, ...missingDefaults];
+          try {
+            localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(merged));
+          } catch (err) {
+            console.warn('Error syncing merged articles to localStorage:', err);
           }
-          return parsed;
+          return merged;
         }
       }
+
+      // If no saved articles, return approved defaults that are not excluded
+      return INITIAL_BLOG_POSTS.filter(
+        initPost => !allExclusions.has(initPost.id) && !allExclusions.has(initPost.slug)
+      );
     } catch (e) {
       console.warn('Error reading articles from localStorage:', e);
     }
@@ -81,13 +107,17 @@ export function AppProvider({ children }) {
   };
 
   const addArticle = (newArticle) => {
+    const rawTitle = newArticle.title || 'Untitled Financial Guide';
+    const generatedSlug = rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     const articleWithId = {
       ...newArticle,
-      id: newArticle.id || newArticle.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `post-${Date.now()}`,
-      slug: newArticle.slug || newArticle.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
+      id: newArticle.id || generatedSlug || `post-${Date.now()}`,
+      slug: newArticle.slug || generatedSlug || `post-${Date.now()}`,
       date: newArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       readTime: newArticle.readTime || `${Math.max(2, Math.ceil((newArticle.content?.split(' ').length || 100) / 180))} min read`,
       author: newArticle.author || 'FGC Spot Research Team',
+      summary: newArticle.summary || newArticle.excerpt || '',
+      excerpt: newArticle.excerpt || newArticle.summary || '',
       image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
       tags: Array.isArray(newArticle.tags) ? newArticle.tags : (newArticle.tags ? newArticle.tags.split(',').map(t => t.trim()) : ['Market'])
     };
@@ -97,11 +127,16 @@ export function AppProvider({ children }) {
   };
 
   const updateArticle = (id, updatedFields) => {
+    if (!id) return;
     const updated = articles.map(art => {
-      if (art.id === id) {
+      if (art.id === id || art.slug === id) {
+        const summaryText = updatedFields.summary !== undefined ? updatedFields.summary : (art.summary || art.excerpt || '');
+        const excerptText = updatedFields.excerpt !== undefined ? updatedFields.excerpt : (art.excerpt || summaryText);
         return {
           ...art,
           ...updatedFields,
+          summary: summaryText,
+          excerpt: excerptText,
           tags: Array.isArray(updatedFields.tags) 
             ? updatedFields.tags 
             : (updatedFields.tags ? updatedFields.tags.split(',').map(t => t.trim()) : art.tags)
@@ -113,7 +148,29 @@ export function AppProvider({ children }) {
   };
 
   const deleteArticle = (id) => {
-    const updated = articles.filter(art => art.id !== id);
+    if (!id) return;
+    try {
+      const deletedRaw = localStorage.getItem('fgc_spot_deleted_articles');
+      const deletedList = deletedRaw ? JSON.parse(deletedRaw) : [];
+      
+      // Target matching article to also record its id and slug
+      const target = articles.find(art => art.id === id || art.slug === id);
+      const identifiersToExclude = [id];
+      if (target?.id && !identifiersToExclude.includes(target.id)) identifiersToExclude.push(target.id);
+      if (target?.slug && !identifiersToExclude.includes(target.slug)) identifiersToExclude.push(target.slug);
+
+      identifiersToExclude.forEach(identifier => {
+        if (!deletedList.includes(identifier)) {
+          deletedList.push(identifier);
+        }
+      });
+
+      localStorage.setItem('fgc_spot_deleted_articles', JSON.stringify(deletedList));
+    } catch (e) {
+      console.warn('Error recording deleted article in localStorage:', e);
+    }
+
+    const updated = articles.filter(art => art.id !== id && art.slug !== id);
     saveArticles(updated);
   };
 

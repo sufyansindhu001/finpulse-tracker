@@ -319,13 +319,13 @@ export default function AdminPage() {
 
   const handleEditArticle = (art) => {
     if (!art) return;
-    setEditingArticleId(art.id || null);
+    setEditingArticleId(art.id || art.slug || null);
     setArticleForm({
       title: art?.title || '',
       category: art?.category || 'Market Updates',
       image: art?.image || '',
       author: art?.author || 'FGC Spot Research Lead',
-      summary: art?.summary || '',
+      summary: art?.summary || art?.excerpt || '',
       content: art?.content || '',
       tags: Array.isArray(art?.tags) ? art.tags.join(', ') : (art?.tags || '')
     });
@@ -1783,7 +1783,8 @@ export default function AdminPage() {
                                 <button
                                   onClick={() => {
                                     if (confirm(`Are you sure you want to delete "${art?.title || 'this article'}"?`)) {
-                                      if (art?.id) deleteArticle(art.id);
+                                      const targetId = art?.id || art?.slug;
+                                      if (targetId) deleteArticle(targetId);
                                     }
                                   }}
                                   className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors cursor-pointer"
