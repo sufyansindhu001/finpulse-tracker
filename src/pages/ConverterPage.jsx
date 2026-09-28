@@ -11,6 +11,7 @@ import {
   Percent,
   Zap
 } from 'lucide-react';
+import CurrencySelect from '../components/CurrencySelect';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 
 export default function ConverterPage({ rates = {} }) {
@@ -20,10 +21,6 @@ export default function ConverterPage({ rates = {} }) {
   const [fromCurrency, setFromCurrency] = useState(searchParams.get('from') || 'USD');
   const [toCurrency, setToCurrency] = useState(searchParams.get('to') || 'PKR');
   const [isSwapping, setIsSwapping] = useState(false);
-
-  const currencyCodes = useMemo(() => {
-    return Object.keys(rates).filter(c => c !== 'XAU' && c !== 'XAG').sort();
-  }, [rates]);
 
   // Conversion math
   const { fromRate, toRate, convertedAmount, unitRate, inverseRate } = useMemo(() => {
@@ -139,25 +136,15 @@ export default function ConverterPage({ rates = {} }) {
             <label className="block text-xs font-bold uppercase tracking-wider text-[#A8B3C2]">
               You Convert
             </label>
-            <div className="p-3 rounded-2xl bg-[#06111F] border border-white/10 focus-within:border-[#00E676] transition-colors">
-              <div className="flex items-center gap-3">
-                <img 
-                  src={getCurrencyFlagUrl(fromCurrency)} 
-                  alt={fromCurrency} 
-                  className="w-7 h-5 rounded object-cover shadow-xs" 
-                />
-                <select
-                  value={fromCurrency}
-                  onChange={(e) => setFromCurrency(e.target.value)}
-                  className="bg-transparent text-white font-black text-lg focus:outline-none cursor-pointer"
-                >
-                  {currencyCodes.map(code => (
-                    <option key={code} value={code} className="bg-[#06111F] text-white">
-                      {code}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="p-4 rounded-2xl bg-[#06111F] border border-white/10 focus-within:border-[#00E676] transition-colors">
+              <CurrencySelect
+                value={fromCurrency}
+                onChange={(code) => {
+                  setFromCurrency(code);
+                  setSearchParams({ from: code, to: toCurrency });
+                }}
+                align="left"
+              />
 
               <input
                 type="number"
@@ -165,14 +152,14 @@ export default function ConverterPage({ rates = {} }) {
                 step="any"
                 value={amount}
                 onChange={(e) => setAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full mt-2 bg-transparent text-3xl sm:text-4xl font-black text-white font-tabular focus:outline-none"
+                className="w-full mt-3 bg-transparent text-3xl sm:text-4xl font-black text-white font-tabular focus:outline-none"
                 placeholder="100"
               />
             </div>
           </div>
 
           {/* SWAP BUTTON (1 col) */}
-          <div className="md:col-span-1 flex justify-center">
+          <div className="md:col-span-1 flex justify-center py-2 md:py-0">
             <button
               onClick={handleSwap}
               className={`p-3.5 rounded-2xl bg-[#0D1B2A] hover:bg-[#00E676] text-white hover:text-[#06111F] border border-white/10 hover:border-[#00E676] transition-all cursor-pointer shadow-lg active:scale-90 ${
@@ -189,27 +176,17 @@ export default function ConverterPage({ rates = {} }) {
             <label className="block text-xs font-bold uppercase tracking-wider text-[#A8B3C2]">
               You Receive (Estimated)
             </label>
-            <div className="p-3 rounded-2xl bg-[#06111F] border border-white/10">
-              <div className="flex items-center gap-3">
-                <img 
-                  src={getCurrencyFlagUrl(toCurrency)} 
-                  alt={toCurrency} 
-                  className="w-7 h-5 rounded object-cover shadow-xs" 
-                />
-                <select
-                  value={toCurrency}
-                  onChange={(e) => setToCurrency(e.target.value)}
-                  className="bg-transparent text-white font-black text-lg focus:outline-none cursor-pointer"
-                >
-                  {currencyCodes.map(code => (
-                    <option key={code} value={code} className="bg-[#06111F] text-white">
-                      {code}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="p-4 rounded-2xl bg-[#06111F] border border-white/10">
+              <CurrencySelect
+                value={toCurrency}
+                onChange={(code) => {
+                  setToCurrency(code);
+                  setSearchParams({ from: fromCurrency, to: code });
+                }}
+                align="left"
+              />
 
-              <div className="mt-2 text-3xl sm:text-4xl font-black text-[#00E676] font-tabular truncate">
+              <div className="mt-3 text-3xl sm:text-4xl font-black text-[#00E676] font-tabular truncate">
                 {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </div>
             </div>
@@ -224,43 +201,63 @@ export default function ConverterPage({ rates = {} }) {
             <div className="text-base sm:text-lg font-black text-white font-tabular">
               1 {fromCurrency} = {unitRate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {toCurrency}
             </div>
-            <div className="text-xs text-[#00E676] font-semibold">
-              Inverse: 1 {toCurrency} = {inverseRate.toFixed(6)} {fromCurrency}
-            </div>
           </div>
-
-          <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-white">
-            <ShieldCheck className="w-4 h-4 text-[#00E676]" />
-            <span>0.00% Zero-Markup Pricing</span>
+          <div className="text-xs text-[#A8B3C2] text-center sm:text-right font-medium">
+            Inverse: 1 {toCurrency} = {inverseRate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {fromCurrency}
           </div>
         </div>
 
       </div>
 
-      {/* Denominations Multiples Table */}
-      <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-8 shadow-xl space-y-4">
-        <h3 className="text-lg font-black text-white">
-          Convert {fromCurrency} to {toCurrency} Multiples Table
-        </h3>
-        <p className="text-xs text-[#A8B3C2]">
-          Instant breakdown across common transaction sizes:
-        </p>
+      {/* Multiples & Conversion Matrix Tables */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        {/* Table 1: Base to Target Multiples */}
+        <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <h3 className="font-extrabold text-white text-base">
+              Convert {fromCurrency} to {toCurrency}
+            </h3>
+            <span className="text-xs text-[#00E676] font-bold">Standard Multiples</span>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-          {denominations.map((denom) => (
-            <div 
-              key={denom}
-              className="p-3.5 rounded-xl bg-[#06111F] border border-white/10 flex items-center justify-between font-tabular"
-            >
-              <span className="text-sm font-bold text-white">
-                {denom.toLocaleString()} {fromCurrency}
-              </span>
-              <span className="text-sm font-extrabold text-[#00E676]">
-                {(denom * unitRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {toCurrency}
-              </span>
-            </div>
-          ))}
+          <div className="divide-y divide-white/5">
+            {denominations.map((d) => (
+              <div key={d} className="py-2.5 flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-semibold text-white font-tabular">
+                  {d.toLocaleString()} {fromCurrency}
+                </span>
+                <span className="font-bold text-[#00E676] font-tabular">
+                  {(d * unitRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {toCurrency}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Table 2: Target to Base Multiples (Reverse) */}
+        <div className="rounded-3xl bg-[#0A1726] border border-white/10 p-6 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <h3 className="font-extrabold text-white text-base">
+              Convert {toCurrency} to {fromCurrency}
+            </h3>
+            <span className="text-xs text-[#A8B3C2] font-bold">Reverse Multiples</span>
+          </div>
+
+          <div className="divide-y divide-white/5">
+            {denominations.map((d) => (
+              <div key={d} className="py-2.5 flex items-center justify-between text-xs sm:text-sm">
+                <span className="font-semibold text-white font-tabular">
+                  {d.toLocaleString()} {toCurrency}
+                </span>
+                <span className="font-bold text-white font-tabular">
+                  {(d * inverseRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fromCurrency}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
     </div>

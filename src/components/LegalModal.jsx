@@ -125,7 +125,7 @@ export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', sit
               </div>
 
               <p>
-                At <strong>{siteName}</strong>, accessible via our official web platform, the privacy of our visitors is our highest institutional priority. This document outlines the telemetry collected by {siteName} and how it is protected.
+                At <strong>{siteName}</strong>, accessible via our official web platform, the privacy of our visitors is our highest institutional priority. This document outlines the analytics data collected by {siteName} and how it is protected.
               </p>
 
               <div className="p-4 rounded-xl bg-blue-50 dark:bg-slate-900 border border-blue-200 dark:border-white/[0.08] space-y-2">
@@ -139,7 +139,7 @@ export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', sit
 
               <h5 className="font-bold text-slate-900 dark:text-white pt-2">GDPR & CCPA Rights</h5>
               <p className="text-xs text-slate-600 dark:text-slate-400">
-                You have the full right to data disclosure, data erasure, and non-sale of personal telemetry. {siteName} does not sell, broker, or monetize user browsing identities.
+                You have the full right to data disclosure, data erasure, and non-sale of personal data. {siteName} does not sell, broker, or monetize user browsing identities.
               </p>
 
               <h5 className="font-bold text-slate-900 dark:text-white pt-2">Local Storage Preferences</h5>

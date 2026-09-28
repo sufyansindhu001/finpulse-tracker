@@ -155,6 +155,15 @@ export default function Footer({ onSelectPair }) {
               </li>
               <li>
                 <Link
+                  to="/terms"
+                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer text-[#A8B3C2]"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Terms of Service</span>
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/privacy-policy"
                   className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer text-[#A8B3C2]"
                 >
@@ -190,6 +199,8 @@ export default function Footer({ onSelectPair }) {
           </div>
           <div className="flex items-center gap-4">
             <Link to="/privacy-policy" className="hover:text-white transition-colors cursor-pointer">Privacy Policy</Link>
+            <span>•</span>
+            <Link to="/terms" className="hover:text-white transition-colors cursor-pointer">Terms of Service</Link>
             <span>•</span>
             <Link to="/disclaimer" className="hover:text-white transition-colors cursor-pointer">Disclaimer</Link>
             <span>•</span>

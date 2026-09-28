@@ -26,6 +26,7 @@ const NewsPage = lazy(() => import('./pages/NewsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
 const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 
@@ -48,7 +49,7 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  // Theme state: default dark for institutional FGC Spot theme
+  // Theme state: initialized from localStorage (default 'dark')
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_spot_theme');
@@ -59,10 +60,14 @@ export default function App() {
     }
   });
 
-  // Apply dark theme class to documentElement
+  // Apply or remove 'dark' class on documentElement and sync localStorage
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.add('dark');
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
     try {
       localStorage.setItem('fgc_spot_theme', theme);
     } catch (e) {
@@ -187,7 +192,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#06111F] text-[#A8B3C2] flex flex-col font-sans selection:bg-[#00E676] selection:text-[#06111F] relative w-full max-w-full overflow-x-hidden">
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#06111F] text-[#A8B3C2]' : 'bg-slate-50 text-slate-800'} flex flex-col font-sans selection:bg-[#00E676] selection:text-[#06111F] relative w-full max-w-full overflow-x-hidden transition-colors duration-200`}>
       
       {/* 0. Optimized Canvas Financial Glowing Grid & Wave Background (Responds to Scroll) */}
       <BackgroundFX />
@@ -208,7 +213,7 @@ export default function App() {
         />
       </div>
 
-      {/* 2. Glassmorphic Fixed/Sticky Header with Logo & Navigation */}
+      {/* 2. Glassmorphic Fixed/Sticky Header with Logo, Navigation & Theme Toggle */}
       <Header
         isRefreshing={isRefreshing}
         onRefresh={() => loadLiveData(true)}
@@ -354,14 +359,22 @@ export default function App() {
             } />
             <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
 
-            {/* ROUTE 11: FINANCIAL DISCLAIMER PAGE (/disclaimer) */}
+            {/* ROUTE 11: TERMS OF SERVICE PAGE (/terms) */}
+            <Route path="/terms" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <TermsPage />
+              </div>
+            } />
+            <Route path="/terms-of-service" element={<Navigate to="/terms" replace />} />
+
+            {/* ROUTE 12: FINANCIAL DISCLAIMER PAGE (/disclaimer) */}
             <Route path="/disclaimer" element={
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
                 <DisclaimerPage />
               </div>
             } />
 
-            {/* ROUTE 12: ADMIN CONTROL PORTAL (/admin) */}
+            {/* ROUTE 13: ADMIN CONTROL PORTAL (/admin) */}
             <Route path="/admin" element={
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
                 <AdminPage />

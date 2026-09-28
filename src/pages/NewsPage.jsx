@@ -12,7 +12,9 @@ import {
   ChevronRight,
   X,
   Share2,
-  BookOpen
+  BookOpen,
+  ArrowUpRight,
+  RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchLiveMarketNews, getLiveTimeAgo } from '../services/newsService';
@@ -20,42 +22,44 @@ import { fetchLiveMarketNews, getLiveTimeAgo } from '../services/newsService';
 export default function NewsPage() {
   const [newsItems, setNewsItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeArticle, setActiveArticle] = useState(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    async function loadNews() {
+  const loadNews = async (isManual = false) => {
+    if (isManual) {
+      setIsRefreshing(true);
+    } else {
       setIsLoading(true);
-      try {
-        const items = await fetchLiveMarketNews('all');
-        if (isMounted && Array.isArray(items)) {
-          setNewsItems(items);
-        }
-      } catch (e) {
-        console.warn('Failed to load live news wire:', e);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
     }
-    loadNews();
+    try {
+      const res = await fetchLiveMarketNews('all');
+      const items = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
+      setNewsItems(items);
+    } catch (e) {
+      console.warn('Failed to load live news wire:', e);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadNews(false);
 
     // Re-evaluate timestamps every 60 seconds
     const timer = setInterval(() => {
       setNewsItems(prev => [...prev]);
     }, 60000);
 
-    return () => {
-      isMounted = false;
-      clearInterval(timer);
-    };
+    return () => clearInterval(timer);
   }, []);
 
   const categories = [
     { id: 'All', label: 'All News' },
-    { id: 'Markets', label: 'Markets & Forex' },
     { id: 'Crypto', label: 'Cryptocurrency' },
+    { id: 'Markets', label: 'Markets & Forex' },
     { id: 'Gold', label: 'Gold & Commodities' },
     { id: 'Economy', label: 'Economy & Central Banks' },
   ];
@@ -67,10 +71,10 @@ export default function NewsPage() {
         : selectedCategory === 'Markets' 
           ? (item.category === 'Forex' || item.category === 'Macro' || item.category === 'Markets')
           : selectedCategory === 'Crypto'
-            ? (item.category === 'Crypto' || item.category === 'Digital Assets')
+            ? (item.category === 'Crypto' || item.category === 'Digital Assets' || item.headline?.toLowerCase().includes('bitcoin') || item.headline?.toLowerCase().includes('crypto') || item.headline?.toLowerCase().includes('ethereum'))
             : selectedCategory === 'Gold'
-              ? (item.category === 'Commodities' || item.headline?.toLowerCase().includes('gold') || item.headline?.toLowerCase().includes('silver'))
-              : (item.category === 'Macro' || item.category === 'Central Bank');
+              ? (item.category === 'Commodities' || item.headline?.toLowerCase().includes('gold') || item.headline?.toLowerCase().includes('silver') || item.headline?.toLowerCase().includes('oil'))
+              : (item.category === 'Economy' || item.category === 'Macro' || item.category === 'Central Bank');
 
       const matchQuery = searchQuery.trim() === ''
         ? true
@@ -109,17 +113,29 @@ export default function NewsPage() {
           </p>
         </div>
 
-        {/* Live Feed Pill */}
-        <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#0A1726] border border-white/10 self-start md:self-auto text-xs text-[#00E676] font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
-          <span>Feed Synchronized &bull; Live Updates</span>
+        {/* Live Feed Pill & Sync Button */}
+        <div className="flex items-center gap-3 self-start md:self-auto">
+          <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#0A1726] border border-white/10 text-xs text-[#00E676] font-semibold">
+            <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+            <span>Live RSS Feed &bull; 0 Mock Data</span>
+          </div>
+
+          <button
+            onClick={() => loadNews(true)}
+            disabled={isRefreshing || isLoading}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-white/10 text-xs text-[#A8B3C2] hover:text-white transition-all cursor-pointer shadow-xs disabled:opacity-50"
+            title="Refresh News Feed"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#00E676]' : ''}`} />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
         </div>
       </div>
 
       {/* Controls & Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0A1726] border border-white/10 overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0A1726] border border-white/10 overflow-x-auto scrollbar-none">
           {categories.map((c) => (
             <button
               key={c.id}
@@ -137,7 +153,7 @@ export default function NewsPage() {
 
         {/* Search Field */}
         <div className="relative min-w-[280px]">
-          <Search className="w-4 h-4 text-[#00E676] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#00E676] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
@@ -170,28 +186,30 @@ export default function NewsPage() {
           {filteredNews.map((item, idx) => (
             <div
               key={item.id || idx}
-              onClick={() => setActiveArticle(item)}
-              className="rounded-3xl bg-[#0A1726]/80 hover:bg-[#0A1726] border border-white/10 hover:border-[#00E676]/40 p-6 transition-all duration-300 shadow-xl backdrop-blur-xl flex flex-col justify-between cursor-pointer group hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#00E676]/10"
+              className="rounded-3xl bg-[#0A1726]/80 hover:bg-[#0A1726] border border-white/10 hover:border-[#00E676]/40 p-6 transition-all duration-300 shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#00E676]/10"
             >
               <div className="space-y-4">
                 {/* Image if available */}
                 {item.image && (
-                  <div className="w-full h-40 rounded-2xl overflow-hidden bg-[#06111F]">
+                  <div className="w-full h-44 rounded-2xl overflow-hidden bg-[#06111F] relative">
                     <img 
                       src={item.image} 
                       alt={item.headline} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
                   </div>
                 )}
 
                 {/* Source & Time */}
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
+                  <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20 truncate max-w-[150px]">
                     {item.source || 'Wire Feed'}
                   </span>
-                  <span className="text-[#A8B3C2] flex items-center gap-1 font-medium">
+                  <span className="text-[#A8B3C2] flex items-center gap-1 font-medium shrink-0">
                     <Clock className="w-3.5 h-3.5 text-[#00E676]" />
                     <span>{getLiveTimeAgo(item.datetime || item.pubDate)}</span>
                   </span>
@@ -199,22 +217,43 @@ export default function NewsPage() {
 
                 {/* Headline & Summary */}
                 <div className="space-y-2">
-                  <h3 className="text-base sm:text-lg font-extrabold text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
+                  <h3 
+                    onClick={() => setActiveArticle(item)}
+                    className="text-base sm:text-lg font-extrabold text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug cursor-pointer"
+                  >
                     {item.headline}
                   </h3>
-                  <p className="text-xs text-[#A8B3C2] line-clamp-3 leading-relaxed">
-                    {item.summary}
-                  </p>
+                  {item.summary && (
+                    <p className="text-xs text-[#A8B3C2] line-clamp-3 leading-relaxed">
+                      {item.summary}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {/* Bottom Read Action */}
-              <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-xs font-bold text-[#A8B3C2] group-hover:text-white transition-colors">
-                <span className="flex items-center gap-1">
+              {/* Bottom Actions: Read Modal and Direct Source Link */}
+              <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-xs font-bold">
+                <button
+                  type="button"
+                  onClick={() => setActiveArticle(item)}
+                  className="flex items-center gap-1 text-[#A8B3C2] hover:text-white transition-colors cursor-pointer"
+                >
                   <BookOpen className="w-3.5 h-3.5 text-[#00E676]" />
-                  <span>Read Article</span>
-                </span>
-                <ChevronRight className="w-4 h-4 text-[#00E676] group-hover:translate-x-1 transition-transform" />
+                  <span>Quick Read</span>
+                </button>
+
+                {item.url && (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-[#00E676] hover:underline transition-colors"
+                    title="Open external source article"
+                  >
+                    <span>Source</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )}
               </div>
             </div>
           ))}
@@ -223,8 +262,14 @@ export default function NewsPage() {
 
       {/* Full Article Reader Modal */}
       {activeArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-8 shadow-2xl space-y-6">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setActiveArticle(null)}
+        >
+          <div 
+            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-[#0A1726] border border-white/10 p-6 sm:p-8 shadow-2xl space-y-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
@@ -249,7 +294,7 @@ export default function NewsPage() {
               <img 
                 src={activeArticle.image} 
                 alt={activeArticle.headline} 
-                className="w-full h-56 sm:h-64 object-cover rounded-2xl"
+                className="w-full h-56 sm:h-64 object-cover rounded-2xl bg-[#06111F]"
               />
             )}
 
@@ -266,7 +311,7 @@ export default function NewsPage() {
             {/* Modal Footer with External Link */}
             <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
               <div className="text-xs text-[#A8B3C2]">
-                Verified Interbank &amp; Multi-Exchange Wire Feed
+                Verified Institutional Wire Feed &bull; Live Syndication
               </div>
 
               {activeArticle.url && (
@@ -276,7 +321,7 @@ export default function NewsPage() {
                   rel="noopener noreferrer"
                   className="px-5 py-2.5 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-[#00E676]/20"
                 >
-                  <span>Open Full Wire Source</span>
+                  <span>Open Full Article Source</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}

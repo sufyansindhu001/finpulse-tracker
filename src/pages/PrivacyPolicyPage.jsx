@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
         <div className="text-[#A8B3C2] text-sm sm:text-base space-y-6 leading-relaxed">
           
           <p>
-            At {siteSettings?.websiteName || 'FGC Spot'}, accessible via our official domain, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of personal and anonymous telemetry collected and recorded by {siteSettings?.websiteName || 'FGC Spot'} and how we utilize it.
+            At {siteSettings?.websiteName || 'FGC Spot'}, accessible via our official domain, the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of personal and anonymous analytics data collected and recorded by {siteSettings?.websiteName || 'FGC Spot'} and how we utilize it.
           </p>
 
           <h2 className="text-xl font-bold text-white pt-2 border-b border-white/10 pb-2">

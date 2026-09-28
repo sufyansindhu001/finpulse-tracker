@@ -10,15 +10,52 @@ import {
   LineChart, 
   ArrowLeftRight, 
   Newspaper, 
-  Info, 
-  Home
+  Home,
+  Sun,
+  Moon
 } from 'lucide-react';
 
-export default function Header({ onOpenSearch }) {
+export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
+
+  // Internal theme state fallback
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof propTheme === 'string') return propTheme === 'dark';
+    try {
+      const saved = localStorage.getItem('fgc_spot_theme');
+      if (saved) return saved === 'dark';
+      return document.documentElement.classList.contains('dark');
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    if (typeof propTheme === 'string') {
+      setIsDark(propTheme === 'dark');
+    }
+  }, [propTheme]);
+
+  const handleToggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    if (nextDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    try {
+      localStorage.setItem('fgc_spot_theme', nextDark ? 'dark' : 'light');
+    } catch (e) {
+      console.warn('LocalStorage unavailable:', e);
+    }
+    if (onToggleTheme) {
+      onToggleTheme();
+    }
+  };
 
   const currentPath = location.pathname;
 
@@ -39,18 +76,18 @@ export default function Header({ onOpenSearch }) {
     };
   }, [mobileMenuOpen]);
 
+  // Clean navigation links (About removed per policy update)
   const navLinks = [
     { label: 'Home', path: '/', icon: Home, match: (p) => p === '/' },
     { label: 'Rates', path: '/rates', icon: TrendingUp, match: (p) => p === '/rates' || p === '/forex' },
     { label: 'Charts', path: '/charts', icon: LineChart, match: (p) => p === '/charts' },
     { label: 'Converter', path: '/converter', icon: ArrowLeftRight, match: (p) => p === '/converter' || p === '/tools' },
     { label: 'News', path: '/news', icon: Newspaper, match: (p) => p.startsWith('/news') || p.startsWith('/research') || p.startsWith('/blog') },
-    { label: 'About', path: '/about', icon: Info, match: (p) => p === '/about' },
   ];
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-[#06111F]/90 backdrop-blur-md border-b border-white/10 transition-colors">
+      <header className="sticky top-0 z-40 w-full bg-[#06111F]/90 dark:bg-[#06111F]/90 backdrop-blur-md border-b border-white/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-3">
             
@@ -62,7 +99,7 @@ export default function Header({ onOpenSearch }) {
               <img 
                 src={siteSettings?.logoUrl || '/logo.png'} 
                 alt={siteSettings?.websiteName || 'FGC Spot'} 
-                className="h-8 sm:h-9 w-auto object-contain shrink-0 rounded-lg transition-transform group-hover:scale-105"
+                className="h-8 sm:h-9 w-auto object-contain shrink-0 rounded-lg transition-transform group-hover:scale-105" 
                 width="36"
                 height="36"
               />
@@ -78,7 +115,7 @@ export default function Header({ onOpenSearch }) {
               </div>
             </Link>
 
-            {/* Center: Desktop Navigation Links */}
+            {/* Center: Desktop Navigation Links (Clean, No "About") */}
             <nav className="hidden md:flex items-center gap-1 bg-[#0A1726]/80 p-1.5 rounded-full border border-white/10 backdrop-blur-md">
               {navLinks.map((item) => {
                 const Icon = item.icon;
@@ -100,7 +137,7 @@ export default function Header({ onOpenSearch }) {
               })}
             </nav>
 
-            {/* Right: Search, Language Indicator & Live Rates CTA */}
+            {/* Right: Search, Theme Toggle, Language Indicator & Live Rates CTA */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               
               {/* Functional Search Input Button */}
@@ -123,6 +160,20 @@ export default function Header({ onOpenSearch }) {
                 aria-label="Search"
               >
                 <Search className="w-4 h-4 text-[#00E676]" />
+              </button>
+
+              {/* Theme Toggle Button (Moon/Sun) */}
+              <button
+                onClick={handleToggleTheme}
+                className="p-2 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-white/10 text-[#A8B3C2] hover:text-[#00E676] transition-all cursor-pointer shadow-xs"
+                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                aria-label="Toggle visual theme"
+              >
+                {isDark ? (
+                  <Sun className="w-4 h-4 text-[#00E676] transition-transform hover:rotate-45" />
+                ) : (
+                  <Moon className="w-4 h-4 text-amber-400 transition-transform hover:-rotate-12" />
+                )}
               </button>
 
               {/* Language Indicator */}
@@ -202,7 +253,7 @@ export default function Header({ onOpenSearch }) {
                 <span>Search currency, crypto, gold...</span>
               </button>
 
-              {/* Nav items list */}
+              {/* Nav items list (No About link) */}
               <div className="space-y-1.5">
                 {navLinks.map((item) => {
                   const Icon = item.icon;
@@ -225,8 +276,19 @@ export default function Header({ onOpenSearch }) {
               </div>
             </div>
 
-            {/* Drawer Footer with Language & Live Rates */}
+            {/* Drawer Footer with Theme Toggle, Language & Live Rates */}
             <div className="pt-6 border-t border-white/10 space-y-3">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-[#06111F] border border-white/10">
+                <span className="text-xs font-semibold text-[#A8B3C2]">Interface Theme</span>
+                <button
+                  onClick={handleToggleTheme}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0A1726] border border-white/10 text-xs font-bold text-white hover:text-[#00E676]"
+                >
+                  {isDark ? <Sun className="w-3.5 h-3.5 text-[#00E676]" /> : <Moon className="w-3.5 h-3.5 text-amber-400" />}
+                  <span>{isDark ? 'Dark' : 'Light'}</span>
+                </button>
+              </div>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

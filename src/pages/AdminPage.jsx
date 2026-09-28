@@ -465,7 +465,7 @@ export default function AdminPage() {
           <div>
             <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
               <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono text-[11px] font-bold border border-blue-500/20 uppercase tracking-wider">
-                FGC Spot Telemetry Engine
+                FGC Spot System Monitor
               </span>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
