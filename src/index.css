@@ -2,10 +2,14 @@
 
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --color-fintech-dark: #07090e;
-  --color-fintech-surface: #0c1017;
-  --color-fintech-card: #0f141f;
-  --color-fintech-border: rgba(255, 255, 255, 0.08);
+  --color-navy-base: #06111F;
+  --color-navy-section: #0A1726;
+  --color-navy-card: #0D1B2A;
+  --color-neon-green: #00E676;
+  --color-neon-bright: #00FF88;
+  --color-text-heading: #FFFFFF;
+  --color-text-secondary: #A8B3C2;
+  --color-border-subtle: rgba(255, 255, 255, 0.10);
 }
 
 @variant dark (&:where(.dark, .dark *));
@@ -16,31 +20,28 @@
   }
   html {
     scroll-behavior: smooth;
+    background-color: #06111F;
+    color: #FFFFFF;
   }
   html, body {
     margin: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
     max-width: 100vw;
     width: 100%;
-  }
-
-  body {
-    background-color: #f8fafc;
-    color: #0f172a;
-  }
-
-  html.dark body,
-  .dark body {
-    background-color: #07090e;
-    color: #f1f5f9;
+    background-color: #06111F;
+    color: #A8B3C2;
   }
 
   /* Headings, buttons, form controls and tables default to Inter */
-  h1, h2, h3, h4, h5, h6, input, select, textarea, button, table {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+  input, select, textarea, button, table {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
@@ -57,84 +58,84 @@ input[type="number"],
   font-variant-numeric: tabular-nums;
 }
 
-/* Institutional Fintech Glassmorphism Surfaces */
-.fintech-surface {
-  background: rgba(11, 15, 25, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+/* Glassmorphic Cards & Surface Styles */
+.fgc-card {
+  background: rgba(10, 23, 38, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
 }
 
-:root:not(.dark) .fintech-surface {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+.fgc-card-glow {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.fgc-card-glow:hover {
+  border-color: rgba(0, 230, 118, 0.4);
+  box-shadow: 0 0 30px -5px rgba(0, 230, 118, 0.15), 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px);
 }
 
-/* Fintech Input styling with subtle inner glow */
-.fintech-input {
-  background: rgba(7, 10, 18, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Custom Neon Button */
+.btn-neon {
+  background: #00E676;
+  color: #06111F;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 230, 118, 0.25);
+}
+.btn-neon:hover {
+  background: #00FF88;
+  box-shadow: 0 6px 25px rgba(0, 255, 136, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #FFFFFF;
+  backdrop-filter: blur(10px);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.fintech-input:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), inset 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
 
-:root:not(.dark) .fintech-input {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+/* Subtle glowing pulse */
+@keyframes neon-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.6);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 4px rgba(0, 230, 118, 0.2);
+  }
 }
-:root:not(.dark) .fintech-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-}
-
-/* Subtle corner radial gradient mesh accents for fintech depth */
-.fintech-mesh-glow {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  opacity: 0.6;
-}
-
-.dark .fintech-mesh-glow {
-  background:
-    radial-gradient(circle 800px at 0% -10%, rgba(37, 99, 235, 0.15), transparent 70%),
-    radial-gradient(circle 700px at 100% 10%, rgba(16, 185, 129, 0.08), transparent 60%),
-    radial-gradient(circle 900px at 50% 100%, rgba(99, 102, 241, 0.09), transparent 70%);
-}
-
-:root:not(.dark) .fintech-mesh-glow {
-  opacity: 0.4;
-  background:
-    radial-gradient(circle 800px at 0% -10%, rgba(59, 130, 246, 0.06), transparent 70%),
-    radial-gradient(circle 700px at 100% 10%, rgba(16, 185, 129, 0.04), transparent 60%),
-    radial-gradient(circle 900px at 50% 100%, rgba(99, 102, 241, 0.04), transparent 70%);
+.animate-neon-pulse {
+  animation: neon-pulse 2s infinite ease-in-out;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #06111F;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(0, 230, 118, 0.4);
 }
 
+/* Marquee */
 @keyframes marquee {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }

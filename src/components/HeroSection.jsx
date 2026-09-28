@@ -1,323 +1,350 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, BarChart2, ShieldCheck, Zap, Globe, Sparkles, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  ArrowRight, 
+  TrendingUp, 
+  TrendingDown, 
+  Zap, 
+  LineChart, 
+  ArrowLeftRight, 
+  Bell, 
+  ShieldCheck, 
+  Coins, 
+  Globe, 
+  Sparkles 
+} from 'lucide-react';
+import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 
-export default function HeroSection({ onExploreMarkets, onViewData }) {
-  const canvasRef = useRef(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0, active: false });
+export default function HeroSection({ rates, cryptoList }) {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('currencies'); // 'currencies' | 'crypto' | 'gold'
+  const [tickEffect, setTickEffect] = useState(false);
 
-  // Interactive Financial Depth & Wave Canvas Visualizer
+  // Periodic subtle tick animation to simulate live streaming ticks
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let step = 0;
-    let width = 0;
-    let height = 0;
+    const interval = setInterval(() => {
+      setTickEffect(true);
+      setTimeout(() => setTickEffect(false), 800);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
-    const resize = () => {
-      if (!canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+  const usdToPkr = rates?.PKR || 278.09;
+  const eurToPkr = ((rates?.PKR || 278.09) / (rates?.EUR || 0.92)).toFixed(2);
+  const gbpToPkr = ((rates?.PKR || 278.09) / (rates?.GBP || 0.79)).toFixed(2);
+  const sarToPkr = ((rates?.PKR || 278.09) / (rates?.SAR || 3.75)).toFixed(2);
+  const aedToPkr = ((rates?.PKR || 278.09) / (rates?.AED || 3.6725)).toFixed(2);
 
-    resize();
-    const resizeObserver = new ResizeObserver(() => resize());
-    resizeObserver.observe(canvas);
-    window.addEventListener('resize', resize);
+  const goldPriceUsd = 2684.50;
+  const goldPkrPerTola = Math.round((goldPriceUsd * usdToPkr / 31.1035) * 11.6638);
+  const goldPkr22KTola = Math.round(goldPkrPerTola * (22 / 24));
 
-    const render = () => {
-      step += 0.015;
-      if (width === 0 || height === 0) {
-        animationFrameId = requestAnimationFrame(render);
-        return;
-      }
+  const currencyItems = [
+    { pair: 'USD/PKR', name: 'US Dollar', rate: usdToPkr.toFixed(2), change: '+0.04%', up: true, code: 'USD' },
+    { pair: 'EUR/PKR', name: 'Euro', rate: eurToPkr, change: '+0.18%', up: true, code: 'EUR' },
+    { pair: 'GBP/PKR', name: 'British Pound', rate: gbpToPkr, change: '-0.12%', up: false, code: 'GBP' },
+    { pair: 'SAR/PKR', name: 'Saudi Riyal', rate: sarToPkr, change: '+0.01%', up: true, code: 'SAR' },
+    { pair: 'AED/PKR', name: 'UAE Dirham', rate: aedToPkr, change: '+0.02%', up: true, code: 'AED' },
+  ];
 
-      ctx.clearRect(0, 0, width, height);
+  const cryptoItems = [
+    { symbol: 'BTC', name: 'Bitcoin', price: '$96,420.00', change: '+2.84%', up: true, icon: '₿' },
+    { symbol: 'ETH', name: 'Ethereum', price: '$2,745.50', change: '+1.92%', up: true, icon: 'Ξ' },
+    { symbol: 'SOL', name: 'Solana', price: '$194.50', change: '+5.12%', up: true, icon: '◎' },
+    { symbol: 'BNB', name: 'BNB Chain', price: '$648.20', change: '+1.10%', up: true, icon: '◆' },
+    { symbol: 'XRP', name: 'XRP Ledger', price: '$2.34', change: '-0.85%', up: false, icon: '✕' },
+  ];
 
-      // Draw subtle grid lines
-      const isDark = document.documentElement.classList.contains('dark');
-      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(15, 23, 42, 0.04)';
-      ctx.lineWidth = 1;
-      const gridSpacing = 36;
-      for (let x = 0; x < width; x += gridSpacing) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
-      }
-      for (let y = 0; y < height; y += gridSpacing) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-
-      // Financial waves (Bid Depth in blue, Ask Depth in emerald, Secondary in indigo)
-      const waves = [
-        {
-          color: 'rgba(59, 130, 246, 0.4)', // Blue
-          fillGradient: ['rgba(59, 130, 246, 0.12)', 'rgba(59, 130, 246, 0.0)'],
-          amplitude: 24,
-          frequency: 0.008,
-          speed: step,
-          yOffset: height * 0.52
-        },
-        {
-          color: 'rgba(16, 185, 129, 0.45)', // Emerald
-          fillGradient: ['rgba(16, 185, 129, 0.1)', 'rgba(16, 185, 129, 0.0)'],
-          amplitude: 18,
-          frequency: 0.012,
-          speed: step * 1.2 + 1,
-          yOffset: height * 0.58
-        },
-        {
-          color: 'rgba(129, 140, 248, 0.28)', // Indigo
-          fillGradient: ['rgba(129, 140, 248, 0.06)', 'rgba(129, 140, 248, 0.0)'],
-          amplitude: 14,
-          frequency: 0.015,
-          speed: step * 0.8 + 2,
-          yOffset: height * 0.64
-        }
-      ];
-
-      waves.forEach((wave) => {
-        ctx.beginPath();
-        ctx.moveTo(0, height);
-
-        for (let x = 0; x <= width; x += 4) {
-          let mouseInfluence = 0;
-          if (mousePos.active) {
-            const dist = Math.abs(x - mousePos.x);
-            if (dist < 120) {
-              mouseInfluence = Math.cos((dist / 120) * (Math.PI / 2)) * -20;
-            }
-          }
-
-          const y = wave.yOffset + 
-            Math.sin(x * wave.frequency + wave.speed) * wave.amplitude +
-            Math.cos(x * 0.003 + wave.speed * 0.6) * 8 +
-            mouseInfluence;
-
-          if (x === 0) ctx.lineTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-
-        ctx.lineTo(width, height);
-        ctx.closePath();
-
-        const grad = ctx.createLinearGradient(0, wave.yOffset - wave.amplitude, 0, height);
-        grad.addColorStop(0, wave.fillGradient[0]);
-        grad.addColorStop(1, wave.fillGradient[1]);
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        // Stroke line
-        ctx.beginPath();
-        for (let x = 0; x <= width; x += 4) {
-          let mouseInfluence = 0;
-          if (mousePos.active) {
-            const dist = Math.abs(x - mousePos.x);
-            if (dist < 120) {
-              mouseInfluence = Math.cos((dist / 120) * (Math.PI / 2)) * -20;
-            }
-          }
-          const y = wave.yOffset + 
-            Math.sin(x * wave.frequency + wave.speed) * wave.amplitude +
-            Math.cos(x * 0.003 + wave.speed * 0.6) * 8 +
-            mouseInfluence;
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = wave.color;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      });
-
-      // Subtle luminous nodes riding the waves
-      const nodes = [
-        { xRatio: 0.22, yRatio: 0.52, color: '#10B981' },
-        { xRatio: 0.52, yRatio: 0.44, color: '#3B82F6' },
-        { xRatio: 0.82, yRatio: 0.58, color: '#818CF8' }
-      ];
-
-      nodes.forEach((node) => {
-        const nx = width * node.xRatio;
-        const ny = height * node.yRatio + Math.sin(step * 1.5 + nx) * 5;
-        ctx.beginPath();
-        ctx.arc(nx, ny, 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = node.color;
-        ctx.shadowColor = node.color;
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      });
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', resize);
-    };
-  }, [mousePos]);
-
-  const handleMouseMove = (e) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      active: true
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setMousePos(prev => ({ ...prev, active: false }));
-  };
+  const goldItems = [
+    { title: 'Gold Spot / Troy Oz', tag: 'XAU/USD', price: `$${goldPriceUsd.toLocaleString()}`, change: '+0.45%', up: true },
+    { title: 'Gold 24K / Tola', tag: 'PKR Bullion', price: `₨${goldPkrPerTola.toLocaleString()}`, change: '+0.38%', up: true },
+    { title: 'Gold 22K / Tola', tag: 'PKR Jewelry', price: `₨${goldPkr22KTola.toLocaleString()}`, change: '+0.38%', up: true },
+    { title: 'Silver Spot / Troy Oz', tag: 'XAG/USD', price: '$31.85', change: '+1.12%', up: true },
+  ];
 
   return (
-    <section className="relative overflow-hidden pt-8 pb-14 border-b border-slate-200/80 dark:border-white/[0.06]">
-      {/* Background ambient radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-blue-500/[0.05] dark:bg-blue-600/[0.07] rounded-full blur-[120px] pointer-events-none" />
+    <section className="relative overflow-hidden pt-10 pb-16 lg:pt-16 lg:pb-24">
+      {/* Background ambient glow blooms */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00E676]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 w-[450px] h-[450px] bg-[#06B6D4]/10 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Top Institutional Badge */}
-        <div className="flex items-center justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-xs backdrop-blur-md">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-slate-600 dark:text-slate-400 text-xs font-semibold tracking-wider uppercase">Live Terminal Feed</span>
-            <span className="text-slate-300 dark:text-white/[0.2]">•</span>
-            <span className="text-emerald-600 dark:text-emerald-400 text-xs font-semibold tabular-nums">160+ Currencies &amp; Crypto</span>
-          </div>
-        </div>
-
-        {/* Hero Title & Subtitle */}
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12]">
-            Global Currency Terminals &amp;{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 dark:from-blue-400 dark:via-indigo-300 dark:to-emerald-400 bg-clip-text text-transparent">
-              Digital Asset Analytics
-            </span>
-          </h1>
-
-          <p className="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed">
-            Independent interbank exchange rates, historical corridor analytics, and high-frequency digital market feeds.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <button
-              onClick={onExploreMarkets}
-              className="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold text-sm transition-all shadow-md shadow-blue-600/25 flex items-center gap-2 cursor-pointer group"
-            >
-              <span>Open Forex Terminal</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-
-            <button
-              onClick={onViewData}
-              className="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 dark:bg-[#0C1017] dark:hover:bg-[#111622] dark:text-slate-200 dark:hover:text-white font-semibold text-sm transition-all border border-slate-200 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15] flex items-center gap-2 cursor-pointer active:scale-95 shadow-xs"
-            >
-              <BarChart2 className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-              <span>Browse Digital Assets</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Interactive Financial Depth & Wave Canvas Visualizer */}
-        <div className="mt-12 max-w-5xl mx-auto">
-          <div 
-            className="relative rounded-2xl bg-white dark:bg-[#0C1017] border border-slate-200 dark:border-white/[0.08] p-2 sm:p-4 overflow-hidden shadow-lg dark:shadow-2xl"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            {/* Visualizer Header Bar: Dedicated Two-Column Row */}
-            <div className="flex items-center justify-between gap-2 px-2.5 sm:px-3 py-2 border-b border-slate-100 dark:border-white/[0.05] text-xs">
-              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                <div className="flex gap-1 sm:gap-1.5 shrink-0">
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-rose-500/80 inline-block" />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-500/80 inline-block" />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500/80 inline-block" />
-                </div>
-                <span className="text-xs font-semibold tracking-wider uppercase text-slate-600 dark:text-slate-400 truncate ml-1 sm:ml-1.5">
-                  FGC_SPOT_MARKET_DEPTH_FLOW
-                </span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-1 font-semibold text-xs shrink-0 whitespace-nowrap">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                  Order Flow: Balanced
-                </span>
-                <span className="text-slate-500 dark:text-slate-400 text-xs hidden md:inline shrink-0 font-medium">
-                  Latency &lt; 40ms
-                </span>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          
+          {/* LEFT COLUMN: Headline & CTAs */}
+          <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-left">
+            
+            {/* Real-time Badge */}
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0A1726] border border-white/10 text-xs font-semibold shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
+              </span>
+              <span className="text-white tracking-wider uppercase font-bold text-[11px]">
+                REAL-TIME RATES | ACCURATE | ALWAYS ON
+              </span>
             </div>
 
-            {/* Dynamic HTML5 Wave Canvas Container: w-full h-44 sm:h-52 */}
-            <div className="relative w-full h-44 sm:h-52 overflow-hidden rounded-xl bg-slate-50/50 dark:bg-black/20">
-              <canvas
-                ref={canvasRef}
-                className="w-full h-full block cursor-crosshair"
-              />
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.12]">
+              Your Trusted Source for{' '}
+              <span className="text-[#00E676] bg-gradient-to-r from-[#00E676] to-[#00FF88] bg-clip-text text-transparent">
+                Live
+              </span>{' '}
+              Financial Rates
+            </h1>
 
-              {/* Responsive Market Price Tags (clean flex spacing, no hardcoded left percentages) */}
-              <div className="absolute inset-x-0 bottom-2.5 sm:bottom-3 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-2 pointer-events-none z-10">
-                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-xs font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                  <span className="text-slate-900 dark:text-white font-bold">BTC/USD</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">+2.4%</span>
-                </div>
+            {/* Subtitle */}
+            <p className="text-base sm:text-lg text-[#A8B3C2] max-w-xl leading-relaxed">
+              Get real-time exchange rates, cryptocurrency prices, gold rates and more — all in one place.
+            </p>
 
-                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-xs font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <span className="text-slate-900 dark:text-white font-bold">USD/PKR</span>
-                  <span className="text-blue-600 dark:text-blue-400 font-semibold tabular-nums">278.09</span>
-                </div>
-
-                <div className="px-2 sm:px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#07090E]/90 border border-slate-200/90 dark:border-white/10 backdrop-blur-md shadow-xs flex items-center gap-1.5 text-xs font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
-                  <span className="text-slate-900 dark:text-white font-bold">EUR/USD</span>
-                  <span className="text-indigo-600 dark:text-indigo-400 font-semibold tabular-nums">1.084</span>
-                </div>
-              </div>
+            {/* 4 Feature Pills */}
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              <button 
+                onClick={() => navigate('/rates')} 
+                className="px-3.5 py-1.5 rounded-xl bg-[#0A1726]/80 hover:bg-[#0D1B2A] border border-white/10 text-xs font-semibold text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 cursor-pointer"
+              >
+                <Zap className="w-3.5 h-3.5 text-[#00E676]" />
+                <span>Live Rates</span>
+              </button>
+              <button 
+                onClick={() => navigate('/charts')} 
+                className="px-3.5 py-1.5 rounded-xl bg-[#0A1726]/80 hover:bg-[#0D1B2A] border border-white/10 text-xs font-semibold text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 cursor-pointer"
+              >
+                <LineChart className="w-3.5 h-3.5 text-[#00E676]" />
+                <span>Interactive Charts</span>
+              </button>
+              <button 
+                onClick={() => navigate('/converter')} 
+                className="px-3.5 py-1.5 rounded-xl bg-[#0A1726]/80 hover:bg-[#0D1B2A] border border-white/10 text-xs font-semibold text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 cursor-pointer"
+              >
+                <ArrowLeftRight className="w-3.5 h-3.5 text-[#00E676]" />
+                <span>Smart Converter</span>
+              </button>
+              <button 
+                onClick={() => navigate('/news')} 
+                className="px-3.5 py-1.5 rounded-xl bg-[#0A1726]/80 hover:bg-[#0D1B2A] border border-white/10 text-xs font-semibold text-white flex items-center gap-2 transition-all hover:border-[#00E676]/40 cursor-pointer"
+              >
+                <Bell className="w-3.5 h-3.5 text-[#00E676]" />
+                <span>Market News</span>
+              </button>
             </div>
 
-            {/* Metric Footer Ribbon: 2x2 grid on mobile, 4 columns on sm+ */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-white/[0.05] text-xs font-sans">
-              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Live Fiat Pairs</div>
-                <div className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-bold tabular-nums mt-0.5 truncate">160+ Currencies</div>
-              </div>
-              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Digital Asset Feed</div>
-                <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-bold tabular-nums mt-0.5 truncate">20 Tier-1 Assets</div>
-              </div>
-              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Benchmark USD/PKR</div>
-                <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-bold tabular-nums mt-0.5 truncate">278.09 Baseline</div>
-              </div>
-              <div className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-50 dark:bg-[#07090E] border border-slate-200/80 dark:border-white/[0.04] min-w-0">
-                <div className="text-xs text-slate-600 dark:text-slate-400 uppercase font-semibold tracking-wider truncate">Markup Spread</div>
-                <div className="text-xs sm:text-sm text-slate-900 dark:text-white font-bold tabular-nums mt-0.5 truncate">0.00% Zero Fee</div>
-              </div>
+            {/* Primary & Secondary Action CTAs */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <button
+                onClick={() => navigate('/rates')}
+                className="px-7 py-3.5 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] font-black text-sm flex items-center gap-2 transition-all shadow-lg shadow-[#00E676]/25 hover:shadow-[#00FF88]/35 active:scale-95 cursor-pointer group"
+              >
+                <span>Explore Live Rates</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </button>
+
+              <button
+                onClick={() => navigate('/converter')}
+                className="px-6 py-3.5 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] text-white font-bold text-sm border border-white/10 hover:border-white/20 transition-all active:scale-95 cursor-pointer"
+              >
+                Try Currency Converter
+              </button>
             </div>
+
           </div>
-        </div>
 
+          {/* RIGHT COLUMN: Ultra-Premium Glassmorphic Live Market Terminal Card */}
+          <div className="lg:col-span-5 relative">
+            
+            {/* Floating Top Badge */}
+            <div className="absolute -top-4 -right-2 z-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0A1726]/95 border border-[#00E676]/40 shadow-xl backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+              <span className="text-[11px] font-bold text-white tracking-wide">⚡ 0ms Latency Feeds</span>
+            </div>
+
+            {/* Floating Bottom Badge */}
+            <div className="absolute -bottom-4 -left-2 z-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0A1726]/95 border border-white/10 shadow-xl backdrop-blur-md text-[#A8B3C2]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#00E676]" />
+              <span className="text-[11px] font-semibold text-white">Bank-Grade Precision</span>
+            </div>
+
+            {/* Main Terminal Card */}
+            <div className="relative rounded-3xl bg-[#0A1726]/90 border border-white/10 p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-5">
+              
+              {/* Terminal Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] inline-block" />
+                  </div>
+                  <span className="text-xs font-bold text-white uppercase tracking-wider ml-1">
+                    LIVE MARKET TERMINAL
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] text-[#00E676] font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-pulse" />
+                  <span>Streaming</span>
+                </div>
+              </div>
+
+              {/* Multi-Tab Buttons */}
+              <div className="grid grid-cols-3 gap-1 bg-[#06111F] p-1 rounded-xl border border-white/10">
+                <button
+                  onClick={() => setActiveTab('currencies')}
+                  className={`py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    activeTab === 'currencies'
+                      ? 'bg-[#00E676] text-[#06111F] shadow-sm'
+                      : 'text-[#A8B3C2] hover:text-white'
+                  }`}
+                >
+                  Currencies
+                </button>
+                <button
+                  onClick={() => setActiveTab('crypto')}
+                  className={`py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    activeTab === 'crypto'
+                      ? 'bg-[#00E676] text-[#06111F] shadow-sm'
+                      : 'text-[#A8B3C2] hover:text-white'
+                  }`}
+                >
+                  Crypto
+                </button>
+                <button
+                  onClick={() => setActiveTab('gold')}
+                  className={`py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    activeTab === 'gold'
+                      ? 'bg-[#00E676] text-[#06111F] shadow-sm'
+                      : 'text-[#A8B3C2] hover:text-white'
+                  }`}
+                >
+                  Gold
+                </button>
+              </div>
+
+              {/* Tab Content List */}
+              <div className="space-y-2.5 min-h-[260px]">
+                
+                {/* 1. CURRENCIES TAB */}
+                {activeTab === 'currencies' && (
+                  <div className="space-y-2 animate-in fade-in duration-200">
+                    {currencyItems.map((item) => (
+                      <div 
+                        key={item.pair}
+                        onClick={() => navigate(`/rates?tab=currencies&pair=${item.pair}`)}
+                        className={`flex items-center justify-between p-3 rounded-2xl bg-[#0D1B2A]/70 hover:bg-[#0D1B2A] border border-white/5 hover:border-[#00E676]/30 transition-all cursor-pointer ${
+                          tickEffect ? 'border-[#00E676]/20' : ''
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <img 
+                            src={getCurrencyFlagUrl(item.code)} 
+                            alt={item.code} 
+                            className="w-6 h-4.5 rounded object-cover shadow-xs" 
+                          />
+                          <div>
+                            <div className="font-bold text-white text-sm tracking-tight">{item.pair}</div>
+                            <div className="text-[11px] text-[#A8B3C2]">{item.name}</div>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="font-extrabold text-white text-sm font-tabular">{item.rate}</div>
+                          <span className="text-[11px] font-bold text-[#00E676] flex items-center justify-end gap-0.5">
+                            <TrendingUp className="w-3 h-3" />
+                            <span>{item.change}</span>
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 2. CRYPTO TAB */}
+                {activeTab === 'crypto' && (
+                  <div className="space-y-2 animate-in fade-in duration-200">
+                    {cryptoItems.map((item) => (
+                      <div 
+                        key={item.symbol}
+                        onClick={() => navigate('/crypto')}
+                        className="flex items-center justify-between p-3 rounded-2xl bg-[#0D1B2A]/70 hover:bg-[#0D1B2A] border border-white/5 hover:border-[#00E676]/30 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-[#06111F] border border-white/10 flex items-center justify-center font-bold text-sm text-[#00E676]">
+                            {item.icon}
+                          </div>
+                          <div>
+                            <div className="font-bold text-white text-sm tracking-tight">{item.symbol}/USD</div>
+                            <div className="text-[11px] text-[#A8B3C2]">{item.name}</div>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="font-extrabold text-white text-sm font-tabular">{item.price}</div>
+                          <span className={`text-[11px] font-bold flex items-center justify-end gap-0.5 ${
+                            item.up ? 'text-[#00E676]' : 'text-rose-400'
+                          }`}>
+                            {item.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            <span>{item.change}</span>
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 3. GOLD TAB */}
+                {activeTab === 'gold' && (
+                  <div className="space-y-2 animate-in fade-in duration-200">
+                    {goldItems.map((item) => (
+                      <div 
+                        key={item.title}
+                        onClick={() => navigate('/gold')}
+                        className="flex items-center justify-between p-3 rounded-2xl bg-[#0D1B2A]/70 hover:bg-[#0D1B2A] border border-white/5 hover:border-amber-500/30 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-xs text-amber-400">
+                            24K
+                          </div>
+                          <div>
+                            <div className="font-bold text-white text-sm tracking-tight">{item.title}</div>
+                            <div className="text-[11px] text-amber-400 font-medium">{item.tag}</div>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="font-extrabold text-white text-sm font-tabular">{item.price}</div>
+                          <span className="text-[11px] font-bold text-[#00E676] flex items-center justify-end gap-0.5">
+                            <TrendingUp className="w-3 h-3" />
+                            <span>{item.change}</span>
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+              </div>
+
+              {/* Bottom Quick Action Strip */}
+              <div className="pt-2 flex items-center justify-between text-xs text-[#A8B3C2] border-t border-white/5">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#00E676]" />
+                  <span>Aggregated Interbank + Multi-Exchange</span>
+                </span>
+                <button
+                  onClick={() => navigate('/rates')}
+                  className="text-[#00E676] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Full Matrix</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
       </div>
     </section>
   );

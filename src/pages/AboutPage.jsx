@@ -7,7 +7,10 @@ import {
   Cpu, 
   ArrowRight, 
   ChevronRight,
-  CheckCircle2
+  CheckCircle2,
+  ShieldCheck,
+  Zap,
+  TrendingUp
 } from 'lucide-react';
 
 export default function AboutPage() {
@@ -18,95 +21,116 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300 pb-12">
+    <div className="w-full max-w-5xl mx-auto space-y-8 animate-in fade-in duration-300 pb-16 px-4 sm:px-6">
       
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-        <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Home</Link>
+      <nav className="flex items-center gap-2 text-xs text-[#A8B3C2]">
+        <Link to="/" className="hover:text-[#00E676] transition-colors font-medium">Home</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-800 dark:text-slate-200 font-semibold">About Us</span>
+        <span className="text-white font-semibold">About Us</span>
       </nav>
 
-      {/* Main Content Container */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-10 shadow-xl backdrop-blur-xl">
+      {/* Main Content Card */}
+      <div className="bg-[#0A1726] border border-white/10 rounded-2xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl space-y-8">
         
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
-            <FileText className="w-6 h-6" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#00E676]/10 border border-[#00E676]/30 flex items-center justify-center text-[#00E676] shadow-[0_0_15px_rgba(0,230,118,0.15)]">
+              <FileText className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
+                Enterprise & Technology
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                About {siteSettings?.websiteName || 'FGC Spot'}
+              </h1>
+            </div>
           </div>
-          <div>
-            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-              Company & Technology
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              About {siteSettings?.websiteName || 'FGC Spot'} Media & Data
-            </h1>
+          <div className="flex items-center gap-2 text-xs text-[#A8B3C2] bg-[#0D1B2A] border border-white/10 px-3.5 py-1.5 rounded-full w-fit">
+            <span className="w-2 h-2 rounded-full bg-[#00E676] animate-ping" />
+            <span>High-Frequency Global Terminal</span>
           </div>
         </div>
 
         {/* Introduction */}
-        <div className="text-slate-700 dark:text-slate-300 text-sm sm:text-base space-y-5 leading-relaxed">
-          <p className="text-base sm:text-lg font-medium text-slate-900 dark:text-white">
-            {siteSettings?.websiteName || 'FGC Spot'} is an independent, global financial data publishing platform committed to providing accessible, real-time foreign currency exchange tools, cryptocurrency market intelligence, and institutional macroeconomic analysis.
+        <div className="text-[#A8B3C2] text-sm sm:text-base space-y-5 leading-relaxed">
+          <p className="text-base sm:text-lg font-medium text-white">
+            {siteSettings?.websiteName || 'FGC Spot'} is a high-speed global financial data platform committed to providing accessible, real-time foreign currency exchange rates, bullion benchmark valuation, and high-frequency cryptocurrency market intelligence.
           </p>
 
           <p>
-            Founded by veteran fintech software engineers and economic researchers, {siteSettings?.websiteName || 'FGC Spot'} was created to eliminate opacity in global money transfers and decentralized asset valuation. Whether you are an expatriate sending remittances to family across USD/PKR, EUR/INR, or AED/SAR, or a digital asset trader monitoring Bitcoin liquidity, our mission is to deliver zero-latency calculation transparency.
+            Founded by fintech engineers and quantitative researchers, {siteSettings?.websiteName || 'FGC Spot'} was engineered to eliminate opacity in international exchange calculations and cross-border commerce. Whether you are monitoring major currency corridors (USD/PKR, EUR/PKR, GBP/USD), tracking digital assets (BTC, ETH, SOL), or calculating gold purity benchmarks, our mission is to deliver zero-latency calculation transparency.
           </p>
 
           {/* Feature Grid */}
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4">Our Data Architecture & Reliability</h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2">
-              <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm">
-                <Globe className="w-4 h-4" />
-                <span>Central Bank Forex Feeds</span>
+          <div className="pt-4">
+            <h2 className="text-xl font-bold text-white mb-4">Our Data Architecture & Reliability</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-5 rounded-xl bg-[#0D1B2A] border border-white/10 space-y-2 hover:border-[#00E676]/40 transition-all">
+                <div className="flex items-center gap-2 text-[#00E676] font-bold text-sm">
+                  <Globe className="w-4 h-4" />
+                  <span>Central Bank Forex</span>
+                </div>
+                <p className="text-xs text-[#A8B3C2] leading-relaxed">
+                  Real-time rates ingested from interbank institutional feeds covering 160+ fiat currencies without retail markups.
+                </p>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                We ingest real-time currency exchange rates directly from institutional central bank repositories and interbank liquidity providers, covering 160+ world fiat currencies without artificial markups.
-              </p>
-            </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2">
-              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
-                <Cpu className="w-4 h-4" />
-                <span>Multi-Exchange Feeds</span>
+              <div className="p-5 rounded-xl bg-[#0D1B2A] border border-white/10 space-y-2 hover:border-[#00E676]/40 transition-all">
+                <div className="flex items-center gap-2 text-[#00E676] font-bold text-sm">
+                  <Cpu className="w-4 h-4" />
+                  <span>Multi-Exchange Crypto</span>
+                </div>
+                <p className="text-xs text-[#A8B3C2] leading-relaxed">
+                  Live order book streaming, 24-hour volume metrics, and capitalization rankings via multi-exchange aggregation.
+                </p>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Cryptocurrency order books, 24-hour volume metrics, and capitalization rankings are streamed live via multi-exchange aggregation, ensuring verifiable on-chain parity.
-              </p>
+
+              <div className="p-5 rounded-xl bg-[#0D1B2A] border border-white/10 space-y-2 hover:border-[#00E676]/40 transition-all">
+                <div className="flex items-center gap-2 text-[#00E676] font-bold text-sm">
+                  <TrendingUp className="w-4 h-4" />
+                  <span>Bullion Benchmarks</span>
+                </div>
+                <p className="text-xs text-[#A8B3C2] leading-relaxed">
+                  Live Troy Ounce spot pricing automatically converted to 24K, 22K, 21K, 18K per Tola, 10g, and Gram in local currencies.
+                </p>
+              </div>
             </div>
           </div>
 
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-4">Editorial & Independence Standards</h2>
-          <p>
-            {siteSettings?.websiteName || 'FGC Spot'} maintains strict editorial autonomy. We do not participate in paid cryptocurrency token endorsements, sponsored coin shilling, or undisclosed affiliate promotions. All articles published under our 'Market Updates', 'Forex News', and 'Crypto Guides' categories undergo rigorous fact-checking and peer review before publication.
-          </p>
+          {/* Trust & Principles */}
+          <div className="pt-4">
+            <h2 className="text-xl font-bold text-white mb-4">Integrity & Transparency Standards</h2>
+            <p>
+              {siteSettings?.websiteName || 'FGC Spot'} maintains strict editorial autonomy and data integrity. We do not participate in paid cryptocurrency token endorsements or undisclosed affiliate promotions.
+            </p>
 
-          <div className="space-y-2 pt-2">
-            {[
-              '100% Free Public Access: No mandatory paywalls or account creation required.',
-              'AdSense & Consumer Privacy Compliant: Strictly adhering to Google Publisher Policies, GDPR, and CCPA standards.',
-              'Interbank Mid-Market Transparency: Calculating rates without retail bank spreads.'
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                <span>{item}</span>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
+              {[
+                '100% Free Public Access: No mandatory paywalls or account creation required.',
+                'Interbank Mid-Market Transparency: Calculating rates without retail bank spreads.',
+                'AdSense & Privacy Compliant: Strictly adhering to GDPR, CCPA, and publisher standards.',
+                'Sub-Second Ticks: Low latency WebSocket and API feeds.'
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-[#06111F] border border-white/5 text-xs sm:text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676] shrink-0 mt-0.5" />
+                  <span className="text-[#A8B3C2]">{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Contact CTA */}
-          <div className="mt-8 p-6 rounded-2xl bg-blue-50 dark:bg-slate-950 border border-blue-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mt-8 p-6 rounded-2xl bg-[#0D1B2A] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Have questions or press inquiries?</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Our technical and research desk is available for partnerships and data verification.</p>
+              <h3 className="text-base font-bold text-white">Have questions or data inquiries?</h3>
+              <p className="text-xs text-[#A8B3C2] mt-0.5">Our technical desk is available for enterprise partnerships and rate verification.</p>
             </div>
             <Link
               to="/contact"
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shrink-0 flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] rounded-xl text-xs font-bold transition-all shadow-[0_0_15px_rgba(0,230,118,0.25)] shrink-0 flex items-center gap-1.5"
             >
               <span>Contact Us</span>
               <ArrowRight className="w-3.5 h-3.5" />

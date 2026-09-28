@@ -3,26 +3,26 @@ import { Routes, Route, useNavigate, Navigate, Link, useLocation } from 'react-r
 import { fetchLiveExchangeRates, DEFAULT_RATES } from './services/forexService';
 import { fetchLiveCryptoMarkets } from './services/cryptoService';
 
+import BackgroundFX from './components/BackgroundFX';
 import Header from './components/Header';
 import CryptoTickerBar from './components/CryptoTickerBar';
 import HeroSection from './components/HeroSection';
+import WhatWeOffer from './components/WhatWeOffer';
 import MarketDashboard from './components/MarketDashboard';
-import MarketIntelligence from './components/MarketIntelligence';
-import ResearchSection from './components/ResearchSection';
+import QuickConversionMatrix from './components/QuickConversionMatrix';
+import MarketNewsWire from './components/MarketNewsWire';
 import WhyFGCSpot from './components/WhyFGCSpot';
 import SearchModal from './components/SearchModal';
 import CryptoConverterModal from './components/CryptoConverterModal';
-import MarketNewsWire from './components/MarketNewsWire';
-import QuickConversionMatrix from './components/QuickConversionMatrix';
 import Footer from './components/Footer';
 
-// Asynchronous lazy-loaded routes for minimal initial bundle size and near-instant TBT
-const ForexTerminal = lazy(() => import('./components/ForexTerminal'));
-const CryptoHub = lazy(() => import('./components/CryptoHub'));
-const ToolsSuite = lazy(() => import('./components/ToolsSuite'));
-const ArticleView = lazy(() => import('./components/ArticleView'));
-
-// Standalone dedicated pages for full Google AdSense & SEO compliance
+// Standalone dedicated pages & terminal views
+const RatesPage = lazy(() => import('./pages/RatesPage'));
+const CryptoPage = lazy(() => import('./pages/CryptoPage'));
+const GoldPage = lazy(() => import('./pages/GoldPage'));
+const ChartsPage = lazy(() => import('./pages/ChartsPage'));
+const ConverterPage = lazy(() => import('./pages/ConverterPage'));
+const NewsPage = lazy(() => import('./pages/NewsPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
@@ -48,25 +48,21 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  // Theme state: initialized from localStorage (defaults to 'dark')
+  // Theme state: default dark for institutional FGC Spot theme
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem('fgc_spot_theme');
       if (saved === 'light' || saved === 'dark') return saved;
-      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      return 'dark';
     } catch {
       return 'dark';
     }
   });
 
-  // Apply theme class to documentElement and persist in localStorage
+  // Apply dark theme class to documentElement
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    root.classList.add('dark');
     try {
       localStorage.setItem('fgc_spot_theme', theme);
     } catch (e) {
@@ -185,35 +181,34 @@ export default function App() {
 
   // Quick pair select handler
   const handleSelectPair = (base, target) => {
-    navigate(`/forex?from=${base}&to=${target}`);
-    setTimeout(() => {
-      const el = document.getElementById('forex-terminal');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 150);
+    navigate(`/converter?from=${base}&to=${target}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     showToast(`Loaded ${base} / ${target}`);
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-[#07090E] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-300 selection:bg-blue-600 selection:text-white relative w-full max-w-full overflow-x-hidden`}>
+    <div className="min-h-screen bg-[#06111F] text-[#A8B3C2] flex flex-col font-sans selection:bg-[#00E676] selection:text-[#06111F] relative w-full max-w-full overflow-x-hidden">
       
-      {/* Subtle Fintech Atmospheric Radial Mesh Glow */}
-      <div className="fintech-mesh-glow" aria-hidden="true" />
-      
+      {/* 0. Optimized Canvas Financial Glowing Grid & Wave Background (Responds to Scroll) */}
+      <BackgroundFX />
+
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-blue-400/40 backdrop-blur-md">
-          <CheckCircle className="w-4 h-4 text-white" />
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0A1726] text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-[#00E676]/40 backdrop-blur-md">
+          <CheckCircle className="w-4 h-4 text-[#00E676]" />
           <span>{toast}</span>
         </div>
       )}
 
       {/* 1. Real-time Crypto Marquee Ticker */}
-      <CryptoTickerBar 
-        cryptoList={cryptoList} 
-        onSelectCoin={(coin) => setSelectedCryptoForConvert(coin)} 
-      />
+      <div className="relative z-20">
+        <CryptoTickerBar 
+          cryptoList={cryptoList} 
+          onSelectCoin={(coin) => setSelectedCryptoForConvert(coin)} 
+        />
+      </div>
 
-      {/* 2. Main Header / Navigation with Dual Ticking Clock */}
+      {/* 2. Glassmorphic Fixed/Sticky Header with Logo & Navigation */}
       <Header
         isRefreshing={isRefreshing}
         onRefresh={() => loadLiveData(true)}
@@ -226,205 +221,158 @@ export default function App() {
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}
-      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden">
+      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden pt-4">
         <Suspense fallback={
           <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 animate-pulse">
-            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">Loading terminal module...</span>
+            <div className="w-8 h-8 border-2 border-[#00E676] border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-xs font-mono text-[#A8B3C2]">Loading FGC Spot Terminal...</span>
           </div>
         }>
           <Routes>
-          {/* ROUTE 1: BESPOKE INSTITUTIONAL HOMEPAGE */}
-          <Route path="/" element={
-            <div className="space-y-0 animate-in fade-in duration-300">
-              
-              {/* Hero Section */}
-              <HeroSection 
-                onExploreMarkets={() => navigate('/forex')}
-                onViewData={() => navigate('/crypto')}
-              />
+            {/* ROUTE 1: BESPOKE INSTITUTIONAL HOMEPAGE */}
+            <Route path="/" element={
+              <div className="space-y-0 animate-in fade-in duration-300">
+                
+                {/* Hero Section (No phone mockup, Glassmorphic Live Market Terminal Card) */}
+                <HeroSection 
+                  rates={rates}
+                  cryptoList={cryptoList}
+                  onExploreMarkets={() => navigate('/rates')}
+                  onViewData={() => navigate('/converter')}
+                />
 
-              {/* Summary Overview Matrix (Live Market Dashboard) */}
-              <MarketDashboard 
-                rates={rates}
-                cryptoList={cryptoList}
-                onSelectAsset={handleSelectPair}
-                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
-              />
+                {/* What We Offer Section with 5 hover glowing cards */}
+                <WhatWeOffer />
 
-              {/* Automated Real-Time Financial News Wire (Finnhub API) */}
-              <MarketNewsWire limit={6} />
+                {/* Summary Overview Matrix (Live Market Dashboard) */}
+                <MarketDashboard 
+                  rates={rates}
+                  cryptoList={cryptoList}
+                  onSelectAsset={handleSelectPair}
+                  onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
+                />
 
-              {/* Popular Forex Corridors & Matrix Section */}
-              <section id="forex-corridors" className="py-12 border-b border-slate-200/80 dark:border-white/[0.06] w-full max-w-full overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <QuickConversionMatrix
-                    rates={rates}
-                    onSelectPair={handleSelectPair}
-                  />
-                </div>
-              </section>
+                {/* Quick Currency Conversion Matrix */}
+                <section id="forex-corridors" className="py-12 border-b border-white/10 w-full max-w-full overflow-hidden">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <QuickConversionMatrix
+                      rates={rates}
+                      onSelectPair={handleSelectPair}
+                    />
+                  </div>
+                </section>
 
-              {/* Market Highlights & Analytical Desk Memo */}
-              <MarketIntelligence />
+                {/* Automated Real-Time Financial News Wire */}
+                <MarketNewsWire limit={6} />
 
-              {/* Latest Research snippet (3 posts) */}
-              <ResearchSection limit={3} showViewAll={true} />
+                {/* Architectural Pillars & Platform Trust */}
+                <WhyFGCSpot 
+                  onExploreMarkets={() => navigate('/rates')}
+                  onLaunchConverter={() => navigate('/converter')}
+                />
 
-              {/* 4 Architectural Pillars & Call to Action */}
-              <WhyFGCSpot 
-                onExploreMarkets={() => {
-                  const el = document.getElementById('markets');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                onLaunchConverter={() => navigate('/forex')}
-              />
+              </div>
+            } />
 
-            </div>
-          } />
+            {/* ROUTE 2: DEDICATED LIVE RATES PAGE (/rates) */}
+            <Route path="/rates" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <RatesPage 
+                  rates={rates}
+                  cryptoList={cryptoList}
+                  onRefresh={() => loadLiveData(true)}
+                />
+              </div>
+            } />
+            {/* Route Aliases */}
+            <Route path="/forex" element={<Navigate to="/rates" replace />} />
+            <Route path="/matrix" element={<Navigate to="/converter" replace />} />
 
-          {/* ROUTE 2: DEDICATED FOREX TERMINAL & QUICK CONVERSION MATRIX */}
-          <Route path="/forex" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <ForexTerminal 
-                rates={rates}
-                source={forexMeta.source}
-                lastUpdated={forexMeta.lastUpdated}
-                onRefresh={() => loadLiveData(true)}
-              />
-              <QuickConversionMatrix
-                rates={rates}
-                onSelectPair={handleSelectPair}
-              />
-            </div>
-          } />
-          {/* Forex Aliases */}
-          <Route path="/converter" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <ForexTerminal 
-                rates={rates}
-                source={forexMeta.source}
-                lastUpdated={forexMeta.lastUpdated}
-                onRefresh={() => loadLiveData(true)}
-              />
-              <QuickConversionMatrix
-                rates={rates}
-                onSelectPair={handleSelectPair}
-              />
-            </div>
-          } />
-          <Route path="/matrix" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <ForexTerminal 
-                rates={rates}
-                source={forexMeta.source}
-                lastUpdated={forexMeta.lastUpdated}
-                onRefresh={() => loadLiveData(true)}
-              />
-              <QuickConversionMatrix
-                rates={rates}
-                onSelectPair={handleSelectPair}
-              />
-            </div>
-          } />
+            {/* ROUTE 3: DEDICATED CRYPTO TERMINAL PAGE (/crypto) */}
+            <Route path="/crypto" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <CryptoPage 
+                  cryptoList={cryptoList}
+                  isLoading={isCryptoLoading}
+                  error={cryptoError}
+                  onRefresh={() => loadLiveData(true)}
+                  onOpenConvert={(coin) => setSelectedCryptoForConvert(coin)}
+                />
+              </div>
+            } />
 
-          {/* ROUTE 3: DEDICATED LIVE CRYPTO TRACKER PAGE */}
-          <Route path="/crypto" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <CryptoHub 
-                cryptoList={cryptoList}
-                isLoading={isCryptoLoading}
-                error={cryptoError}
-                onRetry={() => loadLiveData(true)}
-                onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
-              />
-            </div>
-          } />
+            {/* ROUTE 4: DEDICATED GOLD & PRECIOUS METALS PAGE (/gold) */}
+            <Route path="/gold" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <GoldPage rates={rates} />
+              </div>
+            } />
 
-          {/* ROUTE 4: DEDICATED RESEARCH HUB */}
-          <Route path="/research" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <ResearchSection />
-            </div>
-          } />
-          {/* Research Alias */}
-          <Route path="/blog" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <ResearchSection />
-            </div>
-          } />
+            {/* ROUTE 5: INTERACTIVE FINANCIAL CHARTS PAGE (/charts) */}
+            <Route path="/charts" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <ChartsPage rates={rates} cryptoList={cryptoList} />
+              </div>
+            } />
 
-          {/* ROUTE 5: DEDICATED ARTICLE DETAIL PAGE */}
-          <Route path="/blog/:id" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-              <ArticleView />
-            </div>
-          } />
-          <Route path="/research/:id" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-              <ArticleView />
-            </div>
-          } />
+            {/* ROUTE 6: STANDALONE CURRENCY CONVERTER PAGE (/converter) */}
+            <Route path="/converter" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <ConverterPage rates={rates} />
+              </div>
+            } />
+            <Route path="/tools" element={<Navigate to="/converter" replace />} />
 
-          {/* ROUTE 6: DEDICATED FINANCIAL TOOLS / CALCULATORS PAGE */}
-          <Route path="/tools" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <ToolsSuite 
-                rates={rates}
-                cryptoList={cryptoList}
-              />
-            </div>
-          } />
+            {/* ROUTE 7: DEDICATED REAL-TIME FINANCIAL NEWS WIRE (/news) */}
+            <Route path="/news" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <NewsPage />
+              </div>
+            } />
+            <Route path="/research" element={<Navigate to="/news" replace />} />
+            <Route path="/blog" element={<Navigate to="/news" replace />} />
 
-          {/* ROUTE 7: DEDICATED REAL-TIME FINANCIAL NEWS WIRE (/news) */}
-          <Route path="/news" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
-              <MarketNewsWire />
-            </div>
-          } />
+            {/* ROUTE 8: ABOUT US PAGE (/about) */}
+            <Route path="/about" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <AboutPage />
+              </div>
+            } />
 
-          {/* ROUTE 7: DEDICATED ABOUT US PAGE (/about) */}
-          <Route path="/about" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <AboutPage />
-            </div>
-          } />
+            {/* ROUTE 9: CONTACT US PAGE (/contact) */}
+            <Route path="/contact" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <ContactPage />
+              </div>
+            } />
 
-          {/* ROUTE 8: DEDICATED CONTACT US PAGE (/contact) */}
-          <Route path="/contact" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <ContactPage />
-            </div>
-          } />
+            {/* ROUTE 10: PRIVACY POLICY PAGE (/privacy-policy) */}
+            <Route path="/privacy-policy" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <PrivacyPolicyPage />
+              </div>
+            } />
+            <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
 
-          {/* ROUTE 9: DEDICATED PRIVACY POLICY PAGE (/privacy-policy) */}
-          <Route path="/privacy-policy" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <PrivacyPolicyPage />
-            </div>
-          } />
-          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+            {/* ROUTE 11: FINANCIAL DISCLAIMER PAGE (/disclaimer) */}
+            <Route path="/disclaimer" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <DisclaimerPage />
+              </div>
+            } />
 
-          {/* ROUTE 10: DEDICATED DISCLAIMER PAGE (/disclaimer) */}
-          <Route path="/disclaimer" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <DisclaimerPage />
-            </div>
-          } />
+            {/* ROUTE 12: ADMIN CONTROL PORTAL (/admin) */}
+            <Route path="/admin" element={
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <AdminPage />
+              </div>
+            } />
 
-          {/* ROUTE 11: STEALTH PASSWORD-PROTECTED ADMIN PORTAL (/admin) */}
-          <Route path="/admin" element={
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <AdminPage />
-            </div>
-          } />
+            {/* Fallback to Home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
 
-          {/* Fallback to Home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-
-        </Routes>
+          </Routes>
         </Suspense>
-
       </main>
 
       {/* Quick Crypto-to-Fiat Calculation Modal */}
@@ -443,7 +391,7 @@ export default function App() {
         cryptoList={cryptoList}
       />
 
-      {/* Footer with Standalone Router Links & Risk Disclaimers */}
+      {/* Footer with Unified FGC Spot Theme & Standalone Router Links */}
       <Footer onSelectPair={handleSelectPair} />
 
       {/* Official Vercel Real-Traffic Analytics & Web Vitals Speed Insights */}

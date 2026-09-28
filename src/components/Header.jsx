@@ -2,238 +2,254 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { 
-  ArrowLeftRight, 
-  Coins, 
-  BookOpen, 
-  RefreshCw, 
   Menu, 
   X, 
-  Layers,
-  Sun,
-  Moon,
-  Search,
-  Calculator,
-  Compass,
-  Zap,
-  Globe
+  Search, 
+  Globe, 
+  TrendingUp, 
+  LineChart, 
+  ArrowLeftRight, 
+  Newspaper, 
+  Info, 
+  Home
 } from 'lucide-react';
 
-export default function Header({ 
-  isRefreshing, 
-  onRefresh, 
-  forexSource, 
-  lastUpdated,
-  theme,
-  onToggleTheme,
-  onOpenSearch
-}) {
+export default function Header({ onOpenSearch }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
 
-  // Clean ticking live UTC clock (HH:mm:ss)
-  const [currentTime, setCurrentTime] = useState(() => {
-    const now = new Date();
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
-  });
-
-  useEffect(() => {
-    const pad = (n) => String(n).padStart(2, '0');
-    const timer = setInterval(() => {
-      const now = new Date();
-      setCurrentTime(`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const currentPath = location.pathname;
 
-  const handleNavClick = (item) => {
-    navigate(item.path);
+  const handleNavClick = (path) => {
+    navigate(path);
     setMobileMenuOpen(false);
   };
 
-  const navItems = [
-    { label: 'Markets', path: '/', icon: Compass, match: (p) => p === '/' },
-    { label: 'Forex', path: '/forex', icon: Globe, match: (p) => p === '/forex' || p === '/converter' || p === '/matrix' },
-    { label: 'Crypto', path: '/crypto', icon: Coins, match: (p) => p === '/crypto' },
-    { label: 'Research', path: '/research', icon: BookOpen, match: (p) => p.startsWith('/research') || p.startsWith('/blog') },
-    { label: 'Tools', path: '/tools', icon: Calculator, match: (p) => p === '/tools' },
+  // Prevent background scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
+  const navLinks = [
+    { label: 'Home', path: '/', icon: Home, match: (p) => p === '/' },
+    { label: 'Rates', path: '/rates', icon: TrendingUp, match: (p) => p === '/rates' || p === '/forex' },
+    { label: 'Charts', path: '/charts', icon: LineChart, match: (p) => p === '/charts' },
+    { label: 'Converter', path: '/converter', icon: ArrowLeftRight, match: (p) => p === '/converter' || p === '/tools' },
+    { label: 'News', path: '/news', icon: Newspaper, match: (p) => p.startsWith('/news') || p.startsWith('/research') || p.startsWith('/blog') },
+    { label: 'About', path: '/about', icon: Info, match: (p) => p === '/about' },
   ];
 
   return (
-    <header className="w-full max-w-full overflow-hidden bg-white/95 dark:bg-[#07090E]/95 border-b border-slate-200 dark:border-white/[0.08] backdrop-blur-xl sticky top-[31px] z-30 transition-colors duration-200 shadow-xs dark:shadow-none">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 w-full max-w-full">
-          
-          {/* Logo & Brand Identity (FGC Spot) */}
-          <Link 
-            to="/"
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group shrink-0 min-w-0"
-          >
-            <img 
-              src={siteSettings?.logoUrl || '/logo.png'} 
-              alt={siteSettings?.websiteName || 'FGC Spot'} 
-              className="h-8 sm:h-9 w-auto object-contain shrink-0 rounded-lg"
-              width="36"
-              height="36"
-            />
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans truncate">
-                  {siteSettings?.websiteName || 'FGC Spot'}
-                </span>
-                {/* TERMINAL Pill Badge: Hidden on mobile (<640px sm:hidden), kept inside hamburger drawer */}
-                <span className="hidden sm:inline-flex text-xs uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider shrink-0">
-                  TERMINAL
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium hidden sm:block tracking-tight truncate">
-                {siteSettings?.tagline || 'Institutional Market Data & Intelligence'}
-              </p>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation Links (Markets, Forex, Crypto, Research, Tools) */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-[#0C1017] p-1.5 rounded-full border border-slate-200/80 dark:border-white/[0.06] backdrop-blur-md">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.match(currentPath);
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => handleNavClick(item)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-bold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-white dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/[0.05]'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Right Status, Search, Clock, Theme Toggle & Controls */}
-          {/* Visible top row on mobile strictly fits: [Search Icon, Theme Toggle, Hamburger Menu Button] */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+    <>
+      <header className="sticky top-0 z-40 w-full bg-[#06111F]/90 backdrop-blur-md border-b border-white/10 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-3">
             
-            {/* Quick Search Button */}
-            <button
-              onClick={onOpenSearch}
-              className="flex items-center justify-center p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/[0.08] text-xs font-medium transition-all cursor-pointer active:scale-95 shadow-xs"
-              title="Search currencies, crypto, and research (Ctrl+K)"
-              aria-label="Search"
+            {/* Left: Brand Identity with /logo.png */}
+            <Link 
+              to="/"
+              className="flex items-center gap-2.5 sm:gap-3 shrink-0 group cursor-pointer"
             >
-              <Search className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-              <span className="hidden lg:inline text-slate-600 dark:text-slate-400">Search</span>
-              <kbd className="hidden lg:inline text-[9px] bg-white dark:bg-[#07090E] px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/[0.08] text-slate-500 font-sans">
-                ⌘K
-              </kbd>
-            </button>
+              <img 
+                src={siteSettings?.logoUrl || '/logo.png'} 
+                alt={siteSettings?.websiteName || 'FGC Spot'} 
+                className="h-8 sm:h-9 w-auto object-contain shrink-0 rounded-lg transition-transform group-hover:scale-105"
+                width="36"
+                height="36"
+              />
+              <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <span className="text-base sm:text-lg font-black tracking-tight text-white font-sans">
+                    {siteSettings?.websiteName || 'FGC Spot'}
+                  </span>
+                  <span className="hidden sm:inline-flex text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20">
+                    Live
+                  </span>
+                </div>
+              </div>
+            </Link>
 
-            {/* Clean Live Ticking Clock & Feed Indicator (Desktop only) */}
-            <div className="hidden lg:flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-[#0C1017] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] tabular-nums shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-slate-800 dark:text-slate-200 font-semibold">{currentTime} UTC</span>
-              <span className="text-slate-400 dark:text-slate-600">|</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">Live Feed</span>
+            {/* Center: Desktop Navigation Links */}
+            <nav className="hidden md:flex items-center gap-1 bg-[#0A1726]/80 p-1.5 rounded-full border border-white/10 backdrop-blur-md">
+              {navLinks.map((item) => {
+                const Icon = item.icon;
+                const isActive = item.match(currentPath);
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavClick(item.path)}
+                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-[#00E676] text-[#06111F] shadow-sm shadow-[#00E676]/30 font-bold'
+                        : 'text-[#A8B3C2] hover:text-white hover:bg-white/[0.05]'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Right: Search, Language Indicator & Live Rates CTA */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              
+              {/* Functional Search Input Button */}
+              <button
+                onClick={onOpenSearch}
+                className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-white/10 text-xs text-[#A8B3C2] hover:text-white transition-all cursor-pointer shadow-xs group"
+                title="Search currency, crypto, gold... (Ctrl+K)"
+              >
+                <Search className="w-3.5 h-3.5 text-[#00E676] group-hover:scale-110 transition-transform" />
+                <span className="text-[#A8B3C2]">Search currency, crypto, gold...</span>
+                <kbd className="text-[10px] font-mono bg-[#06111F] px-1.5 py-0.5 rounded border border-white/10 text-slate-400">
+                  ⌘K
+                </kbd>
+              </button>
+
+              {/* Mobile Search Icon Button */}
+              <button
+                onClick={onOpenSearch}
+                className="lg:hidden p-2 rounded-xl bg-[#0A1726] border border-white/10 text-[#A8B3C2] hover:text-white cursor-pointer"
+                aria-label="Search"
+              >
+                <Search className="w-4 h-4 text-[#00E676]" />
+              </button>
+
+              {/* Language Indicator */}
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#0A1726] border border-white/10 text-xs font-semibold text-[#A8B3C2]">
+                <Globe className="w-3.5 h-3.5 text-[#00E676]" />
+                <span>EN</span>
+              </div>
+
+              {/* Live Rates Glowing Pulse Button */}
+              <button
+                onClick={() => navigate('/rates')}
+                className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0A1726] hover:bg-[#0D1B2A] border border-[#00E676]/30 hover:border-[#00E676] text-white text-xs font-semibold transition-all shadow-xs cursor-pointer group"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
+                </span>
+                <span className="group-hover:text-[#00E676] transition-colors">Live Rates</span>
+              </button>
+
+              {/* Mobile Hamburger Toggle Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-xl bg-[#0A1726] border border-white/10 text-[#A8B3C2] hover:text-white cursor-pointer shrink-0"
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5 text-white" /> : <Menu className="w-5 h-5 text-white" />}
+              </button>
             </div>
 
-            {/* Dark / Light Mode Toggle Button */}
-            <button
-              onClick={onToggleTheme}
-              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-amber-500 dark:text-amber-400 border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all cursor-pointer shadow-xs"
-              aria-label="Toggle Dark/Light Mode"
-            >
-              {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-400 animate-in spin-in-180 duration-300" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-700 animate-in spin-in-180 duration-300" />
-              )}
-            </button>
-
-            {/* Refresh Rates Button: Hidden on mobile (<640px sm:hidden), kept in hamburger drawer */}
-            <button
-              onClick={onRefresh}
-              disabled={isRefreshing}
-              title="Force Refresh Latest Exchange Rates & Crypto Prices"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-xs"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-500' : 'text-slate-500 dark:text-slate-400'}`} />
-              <span>Sync</span>
-            </button>
-
-            {/* Mobile Menu Button: Pinned inside viewport with right padding pr-3 or pr-4 */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-[#0C1017] dark:text-slate-300 dark:hover:bg-[#111622] border border-slate-200 dark:border-white/[0.08] cursor-pointer shrink-0"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Slide-Out Drawer Overlay & Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 dark:bg-[#07090E]/95 border-b border-slate-200 dark:border-white/[0.08] px-4 pt-3 pb-5 space-y-2 shadow-2xl backdrop-blur-2xl">
-          
-          {/* Mobile Drawer Top Utility Bar with TERMINAL Pill & Refresh Sync Button */}
-          <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-200 dark:border-white/[0.06] px-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-sans">System Status</span>
-              <span className="text-xs uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold tracking-wider">
-                TERMINAL
-              </span>
-            </div>
-            
-            <button
-              onClick={() => {
-                onRefresh();
-              }}
-              disabled={isRefreshing}
-              className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-[#0C1017] dark:hover:bg-[#111622] text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] active:scale-95 transition-all disabled:opacity-60 cursor-pointer shadow-xs"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-500' : 'text-slate-500 dark:text-slate-400'}`} />
-              <span className="text-xs">Sync Rates</span>
-            </button>
-          </div>
+        <div className="fixed inset-0 z-50 md:hidden flex justify-end">
+          {/* Backdrop blur overlay */}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+          />
 
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = item.match(currentPath);
-            return (
+          {/* Slide Drawer content */}
+          <div className="relative w-4/5 max-w-sm h-full bg-[#0A1726] border-l border-white/10 p-6 flex flex-col justify-between z-10 shadow-2xl animate-in slide-in-from-right duration-200">
+            <div className="space-y-6">
+              
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                <div className="flex items-center gap-2.5">
+                  <img 
+                    src={siteSettings?.logoUrl || '/logo.png'} 
+                    alt="Logo" 
+                    className="h-8 w-auto object-contain"
+                  />
+                  <span className="font-extrabold text-white text-lg">
+                    {siteSettings?.websiteName || 'FGC Spot'}
+                  </span>
+                </div>
+                <button 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-1.5 rounded-lg bg-[#06111F] text-slate-400 hover:text-white border border-white/10"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Search input in drawer */}
               <button
-                key={item.label}
-                onClick={() => handleNavClick(item)}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? 'bg-blue-600 text-white font-bold'
-                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/[0.04]'
-                }`}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSearch();
+                }}
+                className="w-full flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#06111F] border border-white/10 text-xs text-[#A8B3C2] text-left"
               >
-                <Icon className="w-4 h-4" />
-                <span>{item.label}</span>
+                <Search className="w-4 h-4 text-[#00E676]" />
+                <span>Search currency, crypto, gold...</span>
               </button>
-            );
-          })}
 
-          <div className="pt-3 mt-3 border-t border-slate-200 dark:border-white/[0.06] flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-medium px-2">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-slate-800 dark:text-slate-200 font-semibold">{currentTime} UTC</span>
+              {/* Nav items list */}
+              <div className="space-y-1.5">
+                {navLinks.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = item.match(currentPath);
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={() => handleNavClick(item.path)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-[#00E676] text-[#06111F] font-bold'
+                          : 'text-[#A8B3C2] hover:text-white hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium">Live Feed</span>
+
+            {/* Drawer Footer with Language & Live Rates */}
+            <div className="pt-6 border-t border-white/10 space-y-3">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/rates');
+                }}
+                className="w-full py-3 rounded-xl bg-[#00E676] text-[#06111F] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#00E676]/25"
+              >
+                <span className="w-2 h-2 rounded-full bg-[#06111F] animate-pulse"></span>
+                <span>Open Live Rates Terminal</span>
+              </button>
+
+              <div className="flex items-center justify-between text-xs text-[#A8B3C2] px-1">
+                <span className="flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-[#00E676]" />
+                  <span>Language: English (EN)</span>
+                </span>
+                <span className="text-[#00E676] font-semibold">24/7 Always On</span>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
