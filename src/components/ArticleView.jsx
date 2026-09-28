@@ -177,7 +177,7 @@ export default function ArticleView() {
 
         {/* Full Article Content */}
         <div className="text-slate-700 dark:text-[#A8B3C2] text-base leading-relaxed space-y-6">
-          {article.content.split('\n\n').map((paragraph, idx) => {
+          {article.content.replace(/\n(?=\d+\.\s)/g, '\n\n').split('\n\n').map((paragraph, idx) => {
             const trimmed = paragraph.trim();
             if (!trimmed) return null;
 
@@ -204,6 +204,15 @@ export default function ArticleView() {
               );
             }
 
+            // Golden Rule / Editorial Callouts
+            if (trimmed.startsWith('**The Golden Rule:**') || trimmed.startsWith('**Important:**')) {
+              return (
+                <div key={idx} className="my-5 p-5 sm:p-6 rounded-2xl bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/30 text-slate-800 dark:text-[#A8B3C2] text-sm sm:text-base leading-relaxed shadow-xs">
+                  {formatInlineText(trimmed)}
+                </div>
+              );
+            }
+
             // Numbered List Items / Rules (1. **Title:**\nDescription)
             if (/^\d+\.\s/.test(trimmed)) {
               const match = trimmed.match(/^(\d+)\.\s+([\s\S]*)/);
@@ -216,12 +225,25 @@ export default function ArticleView() {
                     <div className="w-8 h-8 rounded-xl bg-[#00E676]/15 border border-[#00E676]/30 flex items-center justify-center text-[#00E676] font-extrabold text-sm shrink-0 mt-0.5 shadow-[0_0_10px_rgba(0,230,118,0.15)]">
                       {num}
                     </div>
-                    <div className="space-y-1.5 flex-1 text-slate-700 dark:text-[#A8B3C2] text-sm sm:text-base leading-relaxed">
-                      {lines.map((line, bIdx) => (
-                        <p key={bIdx} className={bIdx === 0 ? "font-bold text-slate-900 dark:text-white" : "leading-relaxed"}>
-                          {formatInlineText(line.trim())}
-                        </p>
-                      ))}
+                    <div className="space-y-2 flex-1 text-slate-700 dark:text-[#A8B3C2] text-sm sm:text-base leading-relaxed">
+                      {lines.map((line, bIdx) => {
+                        const trimmedLine = line.trim();
+                        if (trimmedLine.startsWith('-') || trimmedLine.startsWith('*')) {
+                          return (
+                            <div key={bIdx} className="flex items-start gap-2.5 pl-3 py-0.5 text-xs sm:text-sm">
+                              <span className="text-[#00E676] font-bold shrink-0 mt-0.5">&bull;</span>
+                              <span className="text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                                {formatInlineText(trimmedLine.replace(/^[*•-]\s*/, ''))}
+                              </span>
+                            </div>
+                          );
+                        }
+                        return (
+                          <p key={bIdx} className={bIdx === 0 ? "font-bold text-slate-900 dark:text-white" : "leading-relaxed"}>
+                            {formatInlineText(trimmedLine)}
+                          </p>
+                        );
+                      })}
                     </div>
                   </div>
                 );

@@ -27,7 +27,7 @@ export default function BlogPage() {
 
   // Dynamically include all categories present across articles
   const categories = useMemo(() => {
-    const list = ['All', 'Personal Finance & Currency', 'Currency & Forex', 'Forex News', 'Crypto Guides', 'Market Updates', 'Macro Analysis'];
+    const list = ['All', 'Precious Metals & Wealth', 'Personal Finance & Currency', 'Currency & Forex', 'Forex News', 'Crypto Guides', 'Market Updates', 'Macro Analysis'];
     (articles && articles.length > 0 ? articles : BLOG_POSTS).forEach(a => {
       if (a?.category && !list.includes(a.category)) {
         list.push(a.category);

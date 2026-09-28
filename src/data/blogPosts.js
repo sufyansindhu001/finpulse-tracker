@@ -1,5 +1,89 @@
 export const BLOG_POSTS = [
   {
+    id: 'buying-gold-in-pakistan-tola-karat-making-charges-guide',
+    slug: 'buying-gold-in-pakistan-tola-karat-making-charges-guide',
+    title: "Buying Gold in Pakistan: Tola vs Gram, 24K vs 22K, and How Jewelers Calculate 'Katt' (Making Charges)",
+    date: 'September 28, 2026',
+    category: 'Precious Metals & Wealth',
+    readTime: '6 min read',
+    author: 'Sufyan Saleem',
+    excerpt: "Buying gold as an inflation hedge or for a wedding? Here is the unvarnished breakdown of how Sarafa Bazaar dealers calculate weight, why 22K jewelry loses value upon resale, and how to verify pure rates.",
+    summary: "Buying gold as an inflation hedge or for a wedding? Here is the unvarnished breakdown of how Sarafa Bazaar dealers calculate weight, why 22K jewelry loses value upon resale, and how to verify pure rates.",
+    image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&fm=webp&q=80',
+    tags: ['Gold', 'Personal Finance', 'Bullion', 'Pakistan Sarafa'],
+    content: `
+      Walk into any Sarafa Bazaar in Lahore, Karachi, or Rawalpindi, and you will hear rapid talk of tolas, mashas, ratis, pure 24 Karat bars, and intricate jewelry deductions. 
+
+      For generations, families across Pakistan have relied on gold as the ultimate store of value against local currency devaluation. Yet, an overwhelming majority of buyers still walk away from jewelry shops paying anywhere from 5% to 15% more than the market rate—or losing substantial money when they attempt to sell their gold back.
+
+      Understanding how gold is priced, measured, and deducted isn’t just for seasoned traders. Here is the clear, practical breakdown every individual should know before stepping into a jewelry shop.
+
+      ---
+
+      ### 1. The Metric System vs. The Traditional System (Grams vs. Tolas)
+
+      While the international market benchmarks gold in Troy Ounces ($USD/oz), Pakistan traditionally operates on the Tola system, alongside standard metric grams.
+
+      * **1 Tola** = exactly 11.664 Grams (frequently rounded to 11.66g by retail jewelers)
+      * **1 Tola** = 12 Mashas
+      * **1 Masha** = 8 Ratis
+
+      When reviewing live rates on trackers like FGC Spot, you will typically see rates quoted per 10 Grams and per Tola. Always make sure the electronic scale at the counter is calibrated in grams to two decimal places (e.g., 11.66g) rather than relying on loose estimates.
+
+      ---
+
+      ### 2. 24 Karat vs. 22 Karat: The Purity Difference
+
+      Gold purity is graded out of 24 parts:
+
+      * **24 Karat (99.9% Pure):** Raw bullion, minted biscuits, and certified bars (like ARY or local refinery minted pieces). Pure 24K gold is soft, malleable, and almost never used for wearable jewelry because it bends easily under pressure.
+      * **22 Karat (91.6% Pure):** Standard wearable jewelry. Jewelers mix 2 parts of copper, silver, or zinc alloy with 22 parts gold to make the metal sturdy enough to hold shapes, clasps, and stones.
+      * **21K / 18K:** Often used for lightweight Italian chains or designer stone-studded rings.
+
+      **The Golden Rule:** If you are buying gold strictly as an **investment or hedge against inflation**, NEVER buy wearable jewelry. Buy certified **24K cast bars or minted coins**.
+
+      ---
+
+      ### 3. How Jewelers Calculate Resale Value & The "Katt" (Deduction)
+
+      The biggest surprise for buyers happens when they take old jewelry back to the market to convert it into cash. 
+
+      Jewelers make deductions based on two factors:
+
+      1. **Making Charges (Ujrat / Making Waste):** When you buy jewelry, you pay anywhere from 800 PKR to 2,500+ PKR per gram for craftsmanship. The moment you step outside the store, that craftsmanship value is gone. When you sell it back, no one pays for the making charge.
+
+      2. **The "Katt" or Purity Test Deduction:** Even on 22K pieces, many jewelers deduct an additional 1% to 2% claiming standard soldering waste (tanka) was used to join links together.
+
+      If your jewelry contains artificial stones, pearls, or zircons, ensure the jeweler measures and weighs the stones **separately** at the time of purchase. Otherwise, you end up paying gold prices for glass stones, only to have their weight deducted entirely when selling.
+
+      ---
+
+      ### 4. Checklist Before Finalizing Any Gold Purchase
+
+      Before handing over your money or trading old gold:
+
+      1. **Verify the Sarafa Union Rate for the Day:**
+         Check the live benchmark rate on FGC Spot before walking into the bazaar. Sarafa associations update rates once or twice daily based on international spot movements and the USD/PKR interbank parity.
+
+      2. **Demand a Detailed, Itemized Slip:**
+         Your purchase receipt must clearly state:
+         - Gross weight of the piece
+         - Net gold weight (excluding stones and enamel)
+         - Karat purity (24K or 22K)
+         - Making charges explicitly itemized per gram
+         - Signature and contact phone of the shop owner
+
+      3. **Ask for the Karat Purity Stamp:**
+         Authentic jewelry will have a tiny laser hallmark stamp (such as "916" for 22K or "750" for 18K) engraved discreetly on the inner ring or clasp.
+
+      ---
+
+      ### Protecting Your Purchasing Power
+
+      Gold remains one of the most reliable stores of value in inflationary environments. However, understanding the subtle nuances of retail markups, karat values, and scrap deductions ensures your wealth actually remains protected. Treat gold purchases with the same diligence as a property deal—inspect the numbers, verify the live rates, and know the fine print.
+    `
+  },
+  {
     id: 'usd-to-pkr-interbank-vs-open-market-guide',
     slug: 'usd-to-pkr-interbank-vs-open-market-guide',
     title: 'USD to PKR: Why the Rate at Exchange Counters Never Matches Google (And How to Protect Your Money)',
