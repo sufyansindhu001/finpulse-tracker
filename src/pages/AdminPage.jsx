@@ -1353,11 +1353,11 @@ export default function AdminPage() {
                     Header Live Preview
                   </span>
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-sm">
-                      <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center font-bold text-xs text-white">
-                        {settingsForm.logoText || 'FGC'}
-                      </div>
-                    </div>
+                    <img 
+                      src={settingsForm.logoUrl || '/logo.png'} 
+                      alt="Logo" 
+                      className="h-9 w-auto object-contain shrink-0 rounded-lg" 
+                    />
                     <div>
                       <div className="text-base font-extrabold text-slate-900 dark:text-white">
                         {settingsForm.websiteName || 'FGC Spot'}

@@ -73,23 +73,13 @@ export default function Header({
             to="/"
             className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group shrink-0 min-w-0"
           >
-            {siteSettings?.logoUrl ? (
-              <img 
-                src={siteSettings.logoUrl} 
-                alt={siteSettings?.websiteName || 'FGC Spot'} 
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover border border-slate-200 dark:border-white/10 shadow-sm shrink-0"
-                width="36"
-                height="36"
-              />
-            ) : (
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-emerald-400 p-[1px] shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/30 transition-shadow shrink-0">
-                <div className="w-full h-full bg-slate-900 rounded-[11px] flex items-center justify-center group-hover:bg-slate-800 transition-colors">
-                  <span className="text-[11px] sm:text-xs font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-300 bg-clip-text text-transparent uppercase font-mono">
-                    {siteSettings?.logoText || 'FGC'}
-                  </span>
-                </div>
-              </div>
-            )}
+            <img 
+              src={siteSettings?.logoUrl || '/logo.png'} 
+              alt={siteSettings?.websiteName || 'FGC Spot'} 
+              className="h-8 sm:h-9 w-auto object-contain shrink-0 rounded-lg"
+              width="36"
+              height="36"
+            />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans truncate">

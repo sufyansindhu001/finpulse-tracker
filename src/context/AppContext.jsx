@@ -6,7 +6,7 @@ const AppContext = createContext();
 const DEFAULT_SETTINGS = {
   websiteName: 'FGC Spot',
   logoText: 'FGC',
-  logoUrl: '',
+  logoUrl: '/logo.png',
   contactEmail: 'support@fgcspot.com',
   tagline: 'Real-Time Forex & Crypto Terminal'
 };

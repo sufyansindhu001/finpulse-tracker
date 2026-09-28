@@ -45,22 +45,14 @@ export default function Footer({ onSelectPair }) {
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5 group">
-              {siteSettings?.logoUrl ? (
-                <img 
-                  src={siteSettings.logoUrl} 
-                  alt={siteSettings.websiteName || 'FGC Spot'} 
-                  className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-white/10" 
-                  width="32"
-                  height="32"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-emerald-400 p-[1px]">
-                  <div className="w-full h-full bg-slate-900 rounded-[7px] flex items-center justify-center font-black text-xs text-white uppercase">
-                    {siteSettings?.logoText || 'FGC'}
-                  </div>
-                </div>
-              )}
+              <img 
+                src={siteSettings?.logoUrl || '/logo.png'} 
+                alt={siteSettings?.websiteName || 'FGC Spot'} 
+                className="h-8 w-auto object-contain shrink-0 rounded-lg" 
+                width="32"
+                height="32"
+                loading="lazy"
+              />
               <span className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                 {siteSettings?.websiteName || 'FGC Spot'} Media & Data
               </span>
