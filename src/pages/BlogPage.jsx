@@ -22,7 +22,7 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const [visibleArticleCount, setVisibleArticleCount] = useState(5);
+  const [visibleArticleCount, setVisibleArticleCount] = useState(6);
 
   const [articles, setArticles] = useState(() => {
     try {
@@ -122,9 +122,9 @@ export default function BlogPage() {
     });
   }, [articles, selectedCategory, searchQuery]);
 
-  // Reset pagination back to initial 5 when category filter or search query changes
+  // Reset pagination back to initial 6 when category filter or search query changes
   useEffect(() => {
-    setVisibleArticleCount(5);
+    setVisibleArticleCount(6);
   }, [selectedCategory, searchQuery]);
 
   const displayedPosts = useMemo(() => {
@@ -132,7 +132,7 @@ export default function BlogPage() {
   }, [filteredPosts, visibleArticleCount]);
 
   const handleLoadMoreArticles = () => {
-    setVisibleArticleCount(prev => prev + 10);
+    setVisibleArticleCount(prev => prev + 6);
   };
 
   const featuredPost = articles[0] || null;

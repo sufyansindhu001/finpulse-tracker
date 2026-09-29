@@ -11,10 +11,22 @@ import {
   ShieldCheck, 
   ChevronRight, 
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  ThumbsUp
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
+
+function getBaseLikes(seed) {
+  if (!seed) return 42;
+  const str = String(seed);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return 28 + Math.abs(hash % 38);
+}
 
 function formatInlineText(text) {
   if (!text) return '';
@@ -78,6 +90,97 @@ export default function BlogDetailPage() {
   const [article, setArticle] = useState(defaultMatch);
   const [allArticles, setAllArticles] = useState(BLOG_POSTS.map(normalizeArticle));
   const [loading, setLoading] = useState(false);
+
+  const articleKey = article?.slug || article?.id || targetIdentifier;
+  const likedStorageKey = `fgc_liked_article_${articleKey}`;
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(() => {
+    return typeof defaultMatch?.likes === 'number'
+      ? defaultMatch.likes
+      : getBaseLikes(defaultMatch?.slug || targetIdentifier);
+  });
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Sync likes and user's voted state when article loads
+  useEffect(() => {
+    if (!articleKey) return;
+    try {
+      const userHasLiked = localStorage.getItem(likedStorageKey) === 'true';
+      setIsLiked(userHasLiked);
+
+      let initialCount = typeof article?.likes === 'number' ? article.likes : null;
+      if (initialCount === null) {
+        try {
+          const storedArticles = JSON.parse(localStorage.getItem('fgc_portal_articles') || '[]');
+          const stored = storedArticles.find(a => (a.slug || a.id) === articleKey);
+          if (stored && typeof stored.likes === 'number') {
+            initialCount = stored.likes;
+          }
+        } catch {}
+      }
+
+      if (initialCount === null) {
+        initialCount = getBaseLikes(articleKey) + (userHasLiked ? 1 : 0);
+      }
+
+      setLikesCount(initialCount);
+    } catch (e) {
+      console.warn('Error reading like state:', e);
+    }
+  }, [articleKey, article?.likes]);
+
+  const handleToggleLike = async () => {
+    if (!articleKey) return;
+
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 400);
+
+    const willLike = !isLiked;
+    const nextCount = willLike ? likesCount + 1 : Math.max(0, likesCount - 1);
+
+    setIsLiked(willLike);
+    setLikesCount(nextCount);
+
+    // 1. Persist user's personal vote in localStorage to prevent repeat spam
+    try {
+      if (willLike) {
+        localStorage.setItem(likedStorageKey, 'true');
+      } else {
+        localStorage.removeItem(likedStorageKey);
+      }
+    } catch {}
+
+    // 2. Update fgc_portal_articles in localStorage
+    try {
+      const storedArticles = JSON.parse(localStorage.getItem('fgc_portal_articles') || '[]');
+      let updated = false;
+      const newArticles = storedArticles.map(a => {
+        if ((a.slug || a.id) === articleKey) {
+          updated = true;
+          return { ...a, likes: nextCount };
+        }
+        return a;
+      });
+      if (!updated && article) {
+        newArticles.push({ ...article, likes: nextCount });
+      }
+      localStorage.setItem('fgc_portal_articles', JSON.stringify(newArticles));
+      window.dispatchEvent(new Event('fgc_articles_updated'));
+    } catch {}
+
+    // 3. Sync to Supabase in background
+    try {
+      if (article?.id) {
+        await supabase
+          .from('articles')
+          .update({ likes: nextCount })
+          .eq('id', article.id);
+      }
+    } catch (err) {
+      console.warn('[HelpfulReaction] Supabase update notice (persisted locally):', err?.message);
+    }
+  };
 
   // 1. Fetch exact article by slug from Supabase
   useEffect(() => {
@@ -286,13 +389,33 @@ export default function BlogDetailPage() {
           <span>Back to Analysis Desk</span>
         </Link>
 
-        <button
-          onClick={handleShare}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs"
-        >
-          <Share2 className="w-3.5 h-3.5 text-[#00E676]" />
-          <span>Share</span>
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleToggleLike}
+            title={isLiked ? "You marked this as helpful" : "Mark as helpful"}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all duration-300 cursor-pointer shadow-xs ${
+              isLiked
+                ? 'bg-[#00E676]/15 border-[#00E676]/50 text-[#00E676] ring-1 ring-[#00E676]/30'
+                : 'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white'
+            } ${isAnimating ? 'scale-110' : 'hover:-translate-y-0.5'}`}
+          >
+            <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? 'fill-[#00E676] text-[#00E676]' : 'text-[#00E676]'}`} />
+            <span>{isLiked ? 'Helpful' : 'Helpful'}</span>
+            <span className={`px-1.5 py-0.2 rounded-md font-tabular text-[11px] ${
+              isLiked ? 'bg-[#00E676]/20 text-[#00E676]' : 'bg-slate-200/60 dark:bg-white/10 text-slate-600 dark:text-slate-300'
+            }`}>
+              {likesCount}
+            </span>
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white text-xs font-semibold transition-all cursor-pointer shadow-xs"
+          >
+            <Share2 className="w-3.5 h-3.5 text-[#00E676]" />
+            <span>Share</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Container Card */}
@@ -317,7 +440,7 @@ export default function BlogDetailPage() {
         </h1>
 
         {/* Author Bio Bar */}
-        <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 mb-8 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold">
               <User className="w-5 h-5" />
@@ -331,9 +454,30 @@ export default function BlogDetailPage() {
               </div>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20 font-semibold">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Editorial Peer Verified</span>
+
+          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+            <button
+              onClick={handleToggleLike}
+              title={isLiked ? "You marked this as helpful" : "Mark as helpful"}
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-bold transition-all duration-300 cursor-pointer shadow-xs ${
+                isLiked
+                  ? 'bg-[#00E676]/15 border-[#00E676]/50 text-[#00E676] ring-1 ring-[#00E676]/30'
+                  : 'bg-slate-100 dark:bg-[#06111F] border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white'
+              } ${isAnimating ? 'scale-105' : 'hover:-translate-y-0.5'}`}
+            >
+              <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? 'fill-[#00E676] text-[#00E676]' : 'text-[#00E676]'}`} />
+              <span>{isLiked ? 'Helpful' : 'Helpful'}</span>
+              <span className={`px-2 py-0.5 rounded-full font-tabular text-[11px] font-bold ${
+                isLiked ? 'bg-[#00E676]/20 text-[#00E676]' : 'bg-slate-200/70 dark:bg-white/10 text-slate-600 dark:text-slate-300'
+              }`}>
+                {likesCount}
+              </span>
+            </button>
+
+            <div className="hidden md:flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1.5 rounded-full border border-[#00E676]/20 font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Editorial Verified</span>
+            </div>
           </div>
         </div>
 
@@ -483,8 +627,48 @@ export default function BlogDetailPage() {
           })}
         </div>
 
+        {/* Helpful Reader Reaction & Share Banner */}
+        <div className="mt-10 p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#06111F]/70 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-[#00E676]/10 border border-[#00E676]/20 flex items-center justify-center text-[#00E676] shrink-0">
+              <ThumbsUp className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white">Did this analysis help you?</h4>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2]">Your reaction supports our independent macroeconomic research desk.</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+            <button
+              onClick={handleToggleLike}
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border text-xs font-bold transition-all duration-300 cursor-pointer shadow-sm ${
+                isLiked
+                  ? 'bg-[#00E676] text-[#06111F] border-[#00E676] shadow-md shadow-[#00E676]/25 font-black ring-2 ring-[#00E676]/30'
+                  : 'bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-800 dark:text-white'
+              } ${isAnimating ? 'scale-105' : 'hover:-translate-y-0.5'}`}
+            >
+              <ThumbsUp className={`w-4 h-4 ${isLiked ? 'fill-[#06111F]' : 'text-[#00E676]'}`} />
+              <span>{isLiked ? 'Marked as Helpful' : 'Helpful'}</span>
+              <span className={`px-2 py-0.5 rounded-lg text-xs font-tabular font-bold ${
+                isLiked ? 'bg-[#06111F]/20 text-[#06111F]' : 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-[#00E676]'
+              }`}>
+                {likesCount}
+              </span>
+            </button>
+
+            <button
+              onClick={handleShare}
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
+            >
+              <Share2 className="w-3.5 h-3.5 text-[#00E676]" />
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+
         {/* Market Tickers & Editorial Tags */}
-        <div className="mt-10 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center gap-2">
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center gap-2">
           <span className="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider flex items-center gap-1.5 mr-1">
             <Tag className="w-3.5 h-3.5 text-[#00E676]" />
             TAGS:

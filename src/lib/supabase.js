@@ -35,6 +35,7 @@ export function normalizeArticle(raw) {
     summary: raw.summary || raw.excerpt || '',
     excerpt: raw.excerpt || raw.summary || '',
     content: raw.content || '',
+    likes: typeof raw.likes === 'number' ? raw.likes : (raw.likes ? parseInt(raw.likes, 10) : undefined),
     image: raw.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
     tags: Array.isArray(raw.tags)
       ? raw.tags
