@@ -177,7 +177,7 @@ export default function MarketNewsWire({ limit = 6 }) {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between group shadow-sm dark:shadow-xl hover:shadow-md dark:hover:shadow-2xl transition-all duration-200 overflow-hidden"
+                className="bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between group shadow-sm dark:shadow-xl hover:shadow-md dark:hover:shadow-2xl transition-all duration-200 overflow-hidden"
               >
                 <div>
                   {/* Top Metadata Row: Publisher Pill Badge + Timestamp + Subtle Link Arrow */}
@@ -196,7 +196,7 @@ export default function MarketNewsWire({ limit = 6 }) {
 
                   {/* Terminal News Body: Side-by-side Headline and Compact Thumbnail */}
                   <div className="flex items-start gap-3 mt-1.5">
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 pr-1">
                       <h3 className="text-sm font-semibold leading-snug text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
                         {item.headline}
                       </h3>
@@ -207,16 +207,16 @@ export default function MarketNewsWire({ limit = 6 }) {
                       )}
                     </div>
 
-                    {/* Compact Thumbnail */}
+                    {/* Uncompressed Thumbnail Container */}
                     {item.image && (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden shrink-0 bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative">
                         <img
                           src={item.image}
                           alt={item.headline}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
-                          width="80"
-                          height="80"
+                          width="96"
+                          height="96"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}

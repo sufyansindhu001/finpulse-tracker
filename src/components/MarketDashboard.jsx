@@ -45,6 +45,25 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     return () => clearInterval(interval);
   }, []);
 
+  const formatRangeVal = (val, asset) => {
+    if (typeof val !== 'number') return val;
+    // Major Forex pairs with 4 decimals (EUR/USD, GBP/USD, etc.)
+    if (asset.symbol === 'EUR/USD' || asset.symbol === 'GBP/USD' || (asset.type === 'forex' && !asset.isGold && !asset.isSilver && val < 5)) {
+      return val.toFixed(4);
+    }
+    // Emerging FX like USD/PKR
+    if (asset.type === 'forex' && !asset.isGold && !asset.isSilver && val < 1000) {
+      return val.toFixed(2);
+    }
+    if (val < 1) {
+      return val.toFixed(4);
+    }
+    if (val < 20) {
+      return val.toFixed(2);
+    }
+    return Math.round(val).toLocaleString();
+  };
+
   // Extract Live Assets
   const assets = useMemo(() => {
     // 1. Cryptos from live list
@@ -356,7 +375,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
               <div
                 key={asset.id}
                 onClick={() => handleAssetAction(asset)}
-                className={`border rounded-2xl p-4.5 transition-all duration-200 group flex flex-col justify-between shadow-xs dark:shadow-lg cursor-pointer ${
+                className={`border rounded-2xl p-3.5 sm:p-4.5 transition-all duration-200 group flex flex-col justify-between shadow-xs dark:shadow-lg cursor-pointer ${
                   asset.isGold
                     ? 'bg-gradient-to-b from-amber-500/[0.04] to-white dark:to-[#0C1017] border-amber-500/30 hover:border-amber-500/60 hover:shadow-amber-500/5'
                     : asset.isSilver
@@ -366,10 +385,10 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
               >
                 <div>
                   {/* Card Header: Flag/Badge, Symbol, Tag & 24h Change */}
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between mb-2 gap-1">
+                    <div className="flex items-center gap-2 min-w-0">
                       <CurrencyFlag code={asset.flagCode || asset.base} className="w-5 h-5 shrink-0" />
-                      <span className={`font-bold text-sm transition-colors ${
+                      <span className={`font-bold text-sm transition-colors truncate ${
                         asset.isGold 
                           ? 'text-amber-500 dark:text-amber-400 group-hover:text-amber-600' 
                           : 'text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
@@ -377,22 +396,22 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                         {asset.symbol}
                       </span>
                       {asset.isGold ? (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
                           {asset.customTag || 'Gold'}
                         </span>
                       ) : asset.isSilver ? (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/20">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/20 shrink-0">
                           {asset.customTag || 'Silver'}
                         </span>
                       ) : (
-                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                        <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">
                           {asset.category}
                         </span>
                       )}
                     </div>
 
                     <span
-                      className={`inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full tabular-nums ${
+                      className={`inline-flex items-center gap-0.5 text-xs font-semibold px-2 py-0.5 rounded-full tabular-nums shrink-0 ${
                         isPositive 
                           ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
                           : 'text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20'
@@ -410,21 +429,21 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
 
                   {/* Price & Sparkline Row */}
                   <div className="flex items-baseline justify-between gap-2 mt-1">
-                    <div>
-                      <div className={`text-2xl font-black tabular-nums tracking-tight ${
+                    <div className="min-w-0">
+                      <div className={`text-xl sm:text-2xl font-black tabular-nums tracking-tight truncate ${
                         asset.isGold ? 'text-amber-500 dark:text-amber-400' : 'text-slate-900 dark:text-white'
                       }`}>
                         {asset.formattedPrice}
                       </div>
                       {asset.subMetric && (
-                        <div className="text-[11px] font-medium text-amber-600 dark:text-amber-400/90 mt-1 tabular-nums">
+                        <div className="text-[10px] sm:text-[11px] font-medium text-amber-600 dark:text-amber-400/90 mt-0.5 tabular-nums truncate">
                           {asset.subMetric}
                         </div>
                       )}
                     </div>
 
                     {/* Interactive SVG Sparkline */}
-                    <div className="w-24 h-9 shrink-0 self-center">
+                    <div className="w-20 sm:w-24 h-8 sm:h-9 shrink-0 self-center">
                       <svg viewBox="0 0 90 45" className="w-full h-full overflow-visible">
                         <polyline
                           fill="none"
@@ -440,15 +459,15 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                 </div>
 
                 {/* 24h Range Bar & Action Footer */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-xs font-medium">
-                  <div className="text-slate-600 dark:text-slate-400">
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">24h: </span>
+                <div className="mt-3.5 pt-2.5 sm:mt-4 sm:pt-3 border-t border-slate-100 dark:border-white/[0.05] flex items-center justify-between text-[11px] sm:text-xs font-medium gap-2">
+                  <div className="text-slate-600 dark:text-slate-400 min-w-0 truncate">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">24h: </span>
                     <span className="text-slate-800 dark:text-slate-200 tabular-nums font-semibold">
-                      {asset.rangePrefix || '$'}{typeof asset.low === 'number' ? (asset.low < 1 ? asset.low.toFixed(4) : Math.round(asset.low).toLocaleString()) : asset.low}
+                      {asset.rangePrefix || '$'}{formatRangeVal(asset.low, asset)}
                     </span>
                     <span className="text-slate-400 dark:text-slate-600 mx-1">-</span>
                     <span className="text-slate-800 dark:text-slate-200 tabular-nums font-semibold">
-                      {asset.rangePrefix || '$'}{typeof asset.high === 'number' ? (asset.high < 1 ? asset.high.toFixed(4) : Math.round(asset.high).toLocaleString()) : asset.high}
+                      {asset.rangePrefix || '$'}{formatRangeVal(asset.high, asset)}
                     </span>
                   </div>
 
@@ -457,7 +476,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
                       e.stopPropagation();
                       handleAssetAction(asset);
                     }}
-                    className={`p-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer flex items-center gap-1 active:scale-95 shadow-xs ${
+                    className={`p-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer flex items-center gap-1 active:scale-95 shadow-xs shrink-0 ${
                       asset.isGold
                         ? 'bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-slate-950 border-amber-500/25'
                         : 'bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-600 dark:bg-white/[0.04] dark:hover:bg-blue-600 dark:hover:text-white dark:text-slate-400 border-slate-200 dark:border-white/[0.06]'

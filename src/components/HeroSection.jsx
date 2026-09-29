@@ -231,23 +231,23 @@ export default function HeroSection({ rates, cryptoList }) {
                       <div 
                         key={item.pair}
                         onClick={() => navigate(`/rates?tab=currencies&pair=${item.pair}`)}
-                        className={`flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#0A1726]/70 hover:bg-slate-100 dark:hover:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-[#00E676]/30 transition-all cursor-pointer ${
+                        className={`flex items-center justify-between py-2.5 px-3 sm:px-3.5 pr-3.5 sm:pr-4 rounded-2xl bg-slate-50 dark:bg-[#0A1726]/70 hover:bg-slate-100 dark:hover:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-[#00E676]/30 transition-all cursor-pointer ${
                           tickEffect ? 'border-[#00E676]/30' : ''
                         }`}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
                           <img 
                             src={getCurrencyFlagUrl(item.code)} 
                             alt={item.code} 
-                            className="w-6 h-4.5 rounded object-cover shadow-xs" 
+                            className="w-6 h-4.5 rounded object-cover shadow-xs shrink-0" 
                           />
-                          <div>
+                          <div className="truncate">
                             <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">{item.pair}</div>
-                            <div className="text-[11px] text-slate-600 dark:text-[#A8B3C2]">{item.name}</div>
+                            <div className="text-[11px] text-slate-600 dark:text-[#A8B3C2] truncate">{item.name}</div>
                           </div>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-right shrink-0 pl-2">
                           <div className="font-extrabold text-slate-900 dark:text-white text-sm font-tabular">{item.rate}</div>
                           <span className="text-[11px] font-bold text-[#00E676] flex items-center justify-end gap-0.5">
                             <TrendingUp className="w-3 h-3" />
@@ -266,19 +266,19 @@ export default function HeroSection({ rates, cryptoList }) {
                       <div 
                         key={item.symbol}
                         onClick={() => navigate('/crypto')}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#0A1726]/70 hover:bg-slate-100 dark:hover:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-[#00E676]/30 transition-all cursor-pointer"
+                        className="flex items-center justify-between py-2.5 px-3 sm:px-3.5 pr-3.5 sm:pr-4 rounded-2xl bg-slate-50 dark:bg-[#0A1726]/70 hover:bg-slate-100 dark:hover:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-[#00E676]/30 transition-all cursor-pointer"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-sm text-[#00E676]">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-sm text-[#00E676] shrink-0">
                             {item.icon}
                           </div>
-                          <div>
+                          <div className="truncate">
                             <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">{item.symbol}/USD</div>
-                            <div className="text-[11px] text-slate-600 dark:text-[#A8B3C2]">{item.name}</div>
+                            <div className="text-[11px] text-slate-600 dark:text-[#A8B3C2] truncate">{item.name}</div>
                           </div>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-right shrink-0 pl-2">
                           <div className="font-extrabold text-slate-900 dark:text-white text-sm font-tabular">{item.price}</div>
                           <span className={`text-[11px] font-bold flex items-center justify-end gap-0.5 ${
                             item.up ? 'text-[#00E676]' : 'text-rose-400'
@@ -299,19 +299,19 @@ export default function HeroSection({ rates, cryptoList }) {
                       <div 
                         key={item.title}
                         onClick={() => navigate('/gold')}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#0A1726]/70 hover:bg-slate-100 dark:hover:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-amber-500/30 transition-all cursor-pointer"
+                        className="flex items-center justify-between py-2.5 px-3 sm:px-3.5 pr-3.5 sm:pr-4 rounded-2xl bg-slate-50 dark:bg-[#0A1726]/70 hover:bg-slate-100 dark:hover:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-amber-500/30 transition-all cursor-pointer"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-xs text-amber-500 dark:text-amber-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-xs text-amber-500 dark:text-amber-400 shrink-0">
                             24K
                           </div>
-                          <div>
+                          <div className="truncate">
                             <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">{item.title}</div>
-                            <div className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">{item.tag}</div>
+                            <div className="text-[11px] text-amber-600 dark:text-amber-400 font-medium truncate">{item.tag}</div>
                           </div>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-right shrink-0 pl-2">
                           <div className="font-extrabold text-slate-900 dark:text-white text-sm font-tabular">{item.price}</div>
                           <span className="text-[11px] font-bold text-[#00E676] flex items-center justify-end gap-0.5">
                             <TrendingUp className="w-3 h-3" />

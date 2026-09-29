@@ -138,11 +138,11 @@ export default function BlogSection() {
           <Link
             key={post.id}
             to={`/blog/${post.id}`}
-            className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-3xl overflow-hidden hover:border-blue-500/50 hover:shadow-2xl transition-all cursor-pointer flex flex-col justify-between group shadow-lg backdrop-blur-2xl"
+            className="bg-white/80 dark:bg-[#0B0F19]/90 border border-slate-200/80 dark:border-white/[0.08] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-blue-500/50 hover:shadow-2xl transition-all cursor-pointer flex flex-col justify-between group shadow-lg backdrop-blur-2xl"
           >
             <div>
               {/* Thumbnail */}
-              <div className="w-full h-44 overflow-hidden relative border-b border-slate-200/80 dark:border-white/[0.06] bg-slate-100 dark:bg-[#070A12]">
+              <div className="w-full h-36 sm:h-44 overflow-hidden relative border-b border-slate-200/80 dark:border-white/[0.06] bg-slate-100 dark:bg-[#070A12]">
                 <img
                   src={post.image}
                   alt={post.title}
@@ -157,7 +157,7 @@ export default function BlogSection() {
               </div>
 
               {/* Body */}
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 <div className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-slate-400 mb-2 font-medium">
                   <span>{post.date}</span>
                   <span>•</span>
