@@ -10,7 +10,9 @@ import {
   Globe, 
   RefreshCw,
   ArrowRight,
-  Filter
+  Filter,
+  ChevronDown,
+  CheckCircle2
 } from 'lucide-react';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 
@@ -24,6 +26,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   const [sortField, setSortField] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
   const [highlightedAsset, setHighlightedAsset] = useState(null);
+  const [visibleCurrencyCount, setVisibleCurrencyCount] = useState(10);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -174,6 +177,38 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
     return result;
   }, [currencyRows, searchQuery, sortField, sortOrder]);
 
+  const isSearching = searchQuery.trim().length > 0;
+
+  // Search filters across full dataset instantly; progressive rendering when browsing
+  const displayedCurrencies = useMemo(() => {
+    if (isSearching) {
+      return filteredCurrencies;
+    }
+    return filteredCurrencies.slice(0, visibleCurrencyCount);
+  }, [filteredCurrencies, isSearching, visibleCurrencyCount]);
+
+  const hasMoreCurrencies = visibleCurrencyCount < filteredCurrencies.length;
+
+  const handleLoadMoreCurrencies = () => {
+    setVisibleCurrencyCount(prev => Math.min(prev + 20, filteredCurrencies.length));
+  };
+
+  const handleViewAllCurrencies = () => {
+    setVisibleCurrencyCount(filteredCurrencies.length);
+  };
+
+  // Expand visible range if deep-linked to a currency row below index 10
+  useEffect(() => {
+    const asset = searchParams.get('asset') || searchParams.get('search');
+    if (asset) {
+      const upper = asset.toUpperCase();
+      const targetIndex = filteredCurrencies.findIndex(c => c.code === upper);
+      if (targetIndex >= 0 && targetIndex >= visibleCurrencyCount) {
+        setVisibleCurrencyCount(Math.max(targetIndex + 5, 30));
+      }
+    }
+  }, [searchParams, filteredCurrencies, visibleCurrencyCount]);
+
   // Filtered Crypto
   const filteredCrypto = useMemo(() => {
     return cryptoRows.filter(c => 
@@ -283,13 +318,13 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                {filteredCurrencies.map((c) => {
+                {displayedCurrencies.map((c) => {
                   const isHighlighted = highlightedAsset === c.code.toUpperCase();
                   return (
                     <tr 
                       key={c.code} 
                       id={`rate-row-${c.code.toUpperCase()}`}
-                      className={`transition-all duration-300 ${
+                      className={`animate-fade-in transition-all duration-300 ${
                         isHighlighted 
                           ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
                           : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
@@ -336,6 +371,58 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
               </tbody>
             </table>
           </div>
+
+          {/* Action Container for Progressive Loading */}
+          {!isSearching && (
+            <div className="p-4 sm:p-5 bg-slate-50/70 dark:bg-[#06111F]/60 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
+                <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+                <span>
+                  Showing <span className="font-bold text-slate-900 dark:text-white font-tabular">{displayedCurrencies.length}</span> of <span className="font-bold text-slate-900 dark:text-white font-tabular">{filteredCurrencies.length}</span> international currencies
+                </span>
+              </div>
+
+              {hasMoreCurrencies ? (
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                  {visibleCurrencyCount >= 30 && (
+                    <button
+                      onClick={handleViewAllCurrencies}
+                      className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-white dark:bg-[#0D1B2A] hover:bg-slate-100 dark:hover:bg-[#132338] border border-slate-200 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 transition-all cursor-pointer shadow-xs hover:border-[#00E676]/30"
+                    >
+                      View All Currencies ({filteredCurrencies.length})
+                    </button>
+                  )}
+
+                  <button
+                    onClick={handleLoadMoreCurrencies}
+                    className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-black shadow-md shadow-[#00E676]/20 transition-all cursor-pointer hover:-translate-y-0.5"
+                  >
+                    <span>Load More (+20)</span>
+                    <ChevronDown className="w-3.5 h-3.5 stroke-[3]" />
+                  </button>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E676]/10 border border-[#00E676]/20 text-xs font-semibold text-[#00E676]">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Showing all {filteredCurrencies.length} currencies</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {isSearching && (
+            <div className="p-4 bg-slate-50/70 dark:bg-[#06111F]/60 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs text-slate-500 dark:text-[#A8B3C2]">
+              <span>
+                Found <strong className="text-slate-900 dark:text-white font-tabular">{filteredCurrencies.length}</strong> currencies matching <span className="text-[#00E676]">"{searchQuery}"</span>
+              </span>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-[#00E676] hover:underline font-bold cursor-pointer"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
         </div>
       )}
 

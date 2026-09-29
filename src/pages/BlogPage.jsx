@@ -11,7 +11,8 @@ import {
   Sparkles,
   ShieldCheck,
   TrendingUp,
-  Tag
+  Tag,
+  ChevronDown
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
@@ -21,6 +22,7 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [visibleArticleCount, setVisibleArticleCount] = useState(5);
 
   const [articles, setArticles] = useState(() => {
     try {
@@ -119,6 +121,19 @@ export default function BlogPage() {
       return matchCat && matchSearch;
     });
   }, [articles, selectedCategory, searchQuery]);
+
+  // Reset pagination back to initial 5 when category filter or search query changes
+  useEffect(() => {
+    setVisibleArticleCount(5);
+  }, [selectedCategory, searchQuery]);
+
+  const displayedPosts = useMemo(() => {
+    return filteredPosts.slice(0, visibleArticleCount);
+  }, [filteredPosts, visibleArticleCount]);
+
+  const handleLoadMoreArticles = () => {
+    setVisibleArticleCount(prev => prev + 10);
+  };
 
   const featuredPost = articles[0] || null;
 
@@ -234,7 +249,9 @@ export default function BlogPage() {
             <BookOpen className="w-4 h-4 text-[#00E676]" />
             <span>Latest Educational Articles &amp; Dispatches</span>
           </h2>
-          <span className="text-xs text-slate-500 dark:text-[#A8B3C2]">{filteredPosts.length} articles</span>
+          <span className="text-xs text-slate-500 dark:text-[#A8B3C2]">
+            Showing <strong className="text-slate-900 dark:text-white font-tabular">{displayedPosts.length}</strong> of <strong className="text-slate-900 dark:text-white font-tabular">{filteredPosts.length}</strong> articles
+          </span>
         </div>
 
         {filteredPosts.length === 0 ? (
@@ -244,52 +261,67 @@ export default function BlogPage() {
             <p className="text-xs text-slate-500 dark:text-[#A8B3C2]">No articles matching "{searchQuery}". Try a different keyword.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPosts.map((post) => (
-              <Link
-                key={post.id}
-                to={`/blog/${post.slug || post.id}`}
-                className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm dark:shadow-xl hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
-              >
-                <div className="space-y-4">
-                  {post.image && (
-                    <div className="w-full h-44 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative">
-                      <img 
-                        src={post.image} 
-                        alt={post.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                        loading="lazy"
-                      />
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayedPosts.map((post) => (
+                <Link
+                  key={post.id}
+                  to={`/blog/${post.slug || post.id}`}
+                  className="animate-fade-in rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm dark:shadow-xl hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
+                >
+                  <div className="space-y-4">
+                    {post.image && (
+                      <div className="w-full h-44 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative">
+                        <img 
+                          src={post.image} 
+                          alt={post.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
+                        {post.category}
+                      </span>
+                      <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium">
+                        <Clock className="w-3.5 h-3.5 text-[#00E676]" />
+                        <span>{post.readTime}</span>
+                      </span>
                     </div>
-                  )}
 
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
-                      {post.category}
-                    </span>
-                    <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium">
-                      <Clock className="w-3.5 h-3.5 text-[#00E676]" />
-                      <span>{post.readTime}</span>
-                    </span>
+                    <div className="space-y-2">
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
+                        {post.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 dark:text-[#A8B3C2] line-clamp-3 leading-relaxed">
+                        {post.summary || post.excerpt}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
-                      {post.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 dark:text-[#A8B3C2] line-clamp-3 leading-relaxed">
-                      {post.summary || post.excerpt}
-                    </p>
+                  <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-[#00E676]">
+                    <span>Read Article</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </div>
+                </Link>
+              ))}
+            </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-[#00E676]">
-                  <span>Read Article</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            ))}
-          </div>
+            {/* Progressive Load More Action Button */}
+            {displayedPosts.length < filteredPosts.length && (
+              <div className="pt-8 pb-2 flex justify-center">
+                <button
+                  onClick={handleLoadMoreArticles}
+                  className="flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/50 text-slate-900 dark:text-white font-bold text-xs sm:text-sm transition-all duration-300 shadow-sm dark:shadow-xl hover:shadow-lg hover:shadow-[#00E676]/15 hover:-translate-y-0.5 cursor-pointer group"
+                >
+                  <span>Load More Articles</span>
+                  <ChevronDown className="w-4 h-4 text-[#00E676] group-hover:translate-y-0.5 transition-transform stroke-[2.5]" />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
