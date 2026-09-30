@@ -1603,7 +1603,7 @@ export default function AdminPage() {
                     <img 
                       src={settingsForm.logoUrl || '/logo.png'} 
                       alt="Logo" 
-                      className="h-9 w-auto object-contain shrink-0 rounded-lg" 
+                      className="w-9 h-9 aspect-square object-contain shrink-0 rounded-xl" 
                     />
                     <div>
                       <div className="text-base font-extrabold text-slate-900 dark:text-white">

@@ -44,7 +44,7 @@ export default function Footer({ onSelectPair }) {
               <img 
                 src={siteSettings?.logoUrl || '/logo.png'} 
                 alt={siteSettings?.websiteName || 'FGC Spot'} 
-                className="h-8 w-auto md:h-10 object-contain shrink-0 block" 
+                className="w-9 h-9 md:w-10 md:h-10 aspect-square object-contain shrink-0 rounded-xl block transition-transform group-hover:scale-105" 
                 style={{ filter: 'none' }}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
