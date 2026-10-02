@@ -9,7 +9,7 @@ export const BLOG_POSTS = [
     author: 'Sufyan Saleem',
     excerpt: "If you've ever checked the dollar rate online and walked into an exchange shop only to be offered a completely different price, you're not alone. Here is the honest truth about interbank vs open market rates in Pakistan.",
     summary: "If you've ever checked the dollar rate online and walked into an exchange shop only to be offered a completely different price, you're not alone. Here is the honest truth about interbank vs open market rates in Pakistan.",
-    image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=80',
     tags: ['USDPKR', 'FOREX', 'INTERBANK', 'OPENMARKET', 'PERSONALFINANCE', 'PAKISTAN'],
     content: `
       If you have ever looked up the US Dollar rate on Google, headed straight to an exchange company, and walked away confused because they offered you 2 to 4 rupees less (or demanded more if you were buying), don't worry—you weren't necessarily getting scammed.
@@ -82,7 +82,7 @@ export const BLOG_POSTS = [
     author: 'Sufyan Saleem',
     excerpt: "Buying gold as an inflation hedge or for a wedding? Here is the unvarnished breakdown of how Sarafa Bazaar dealers calculate weight, why 22K jewelry loses value upon resale, and how to verify pure rates.",
     summary: "Buying gold as an inflation hedge or for a wedding? Here is the unvarnished breakdown of how Sarafa Bazaar dealers calculate weight, why 22K jewelry loses value upon resale, and how to verify pure rates.",
-    image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80',
     tags: ['Gold', 'Personal Finance', 'Bullion', 'Pakistan Sarafa'],
     content: `
       Walk into any Sarafa Bazaar in Lahore, Karachi, or Rawalpindi, and you will hear rapid talk of tolas, mashas, ratis, pure 24 Karat bars, and intricate jewelry deductions. 
@@ -166,7 +166,7 @@ export const BLOG_POSTS = [
     author: 'Sufyan Saleem',
     excerpt: "Leaving your cryptocurrency on an exchange might seem convenient, but history proves it is a dangerous gamble. Here is why 'not your keys, not your coins' is an iron rule, how exchange collapses happen, and the step-by-step blueprint to securing your Bitcoin and crypto.",
     summary: "Leaving your cryptocurrency on an exchange might seem convenient, but history proves it is a dangerous gamble. Here is why 'not your keys, not your coins' is an iron rule, how exchange collapses happen, and the step-by-step blueprint to securing your Bitcoin and crypto.",
-    image: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&fm=webp&q=80',
+    image: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80',
     tags: ['Crypto Security', 'Hardware Wallets', 'Bitcoin', 'Self-Custody', 'Personal Finance'],
     content: `
       Whenever someone buys their first Bitcoin or USDT on an exchange like Binance, Bybit, or KuCoin, the natural instinct is to leave the funds sitting right there in the exchange balance. After all, the app is fast, modern, and has two-factor authentication. You can buy, sell, and check your portfolio with a single tap.
