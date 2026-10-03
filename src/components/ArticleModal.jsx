@@ -50,9 +50,19 @@ export default function ArticleModal({ article, onClose }) {
 
         {/* Author info */}
         <div className="flex items-center gap-3 pb-6 border-b border-slate-800 mb-6">
-          <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
-            <User className="w-4 h-4" />
-          </div>
+          {article.author?.includes('Sufyan Saleem') ? (
+            <img
+              src="/sufyan-author.jpg"
+              alt="Sufyan Saleem - Financial Analyst"
+              className="w-10 h-10 rounded-full object-cover border-2 border-slate-700/80 shadow-xs shrink-0"
+              width="40"
+              height="40"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+              <User className="w-4 h-4" />
+            </div>
+          )}
           <div>
             <div className="text-xs font-semibold text-slate-200">{article.author}</div>
             <div className="text-[11px] text-slate-400">Market Research & Insights</div>
@@ -61,12 +71,13 @@ export default function ArticleModal({ article, onClose }) {
 
         {/* Featured Image */}
         {article.image && (
-          <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden mb-6 border border-slate-800 relative">
+          <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden mb-6 border border-slate-800 relative bg-slate-900">
             <img 
               src={article.image} 
               alt={article.title} 
               className="w-full h-full object-cover"
-              loading="lazy"
+              loading="eager"
+              decoding="async"
             />
           </div>
         )}

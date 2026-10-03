@@ -67,6 +67,41 @@ function formatInlineText(text) {
   return parts.length > 0 ? parts : text;
 }
 
+// Helper to synchronously find matching article from localStorage or bundled posts
+function findLocalArticle(target) {
+  if (!target) return null;
+  const clean = target.toLowerCase().trim();
+
+  // 1. Check cached articles in localStorage (contains all synced articles from Supabase)
+  try {
+    const saved = localStorage.getItem('fgc_portal_articles');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        const found = parsed.find(p => {
+          if (!p) return false;
+          const s = (p.slug || '').toLowerCase().trim();
+          const i = (p.id || '').toLowerCase().trim();
+          return s === clean || i === clean;
+        });
+        if (found) return normalizeArticle(found);
+      }
+    }
+  } catch {}
+
+  // 2. Check bundled BLOG_POSTS
+  const bundled = BLOG_POSTS.find(p => {
+    if (!p) return false;
+    const s = (p.slug || '').toLowerCase().trim();
+    const i = (p.id || '').toLowerCase().trim();
+    return s === clean || i === clean;
+  });
+  if (bundled) return normalizeArticle(bundled);
+
+  // Return null if not yet cached so a neutral skeleton placeholder is shown instead of flashing the wrong article
+  return null;
+}
+
 export default function BlogDetailPage() {
   const { slug, id } = useParams();
   const rawIdentifier = slug || id;
@@ -75,30 +110,31 @@ export default function BlogDetailPage() {
     ? 'usd-to-pkr-interbank-vs-open-market-guide'
     : rawIdentifier;
 
-  // Immediate fallback from bundled articles to ensure instantaneous initial paint
-  const defaultMatch = useMemo(() => {
-    if (!targetIdentifier) return normalizeArticle(BLOG_POSTS[0]);
-    const cleanTarget = targetIdentifier.toLowerCase().trim();
-    const found = BLOG_POSTS.find(p => {
-      const s = (p.slug || '').toLowerCase().trim();
-      const i = (p.id || '').toLowerCase().trim();
-      return s === cleanTarget || i === cleanTarget;
-    });
-    return found ? normalizeArticle(found) : normalizeArticle(BLOG_POSTS[0]);
-  }, [targetIdentifier]);
+  // Synchronously resolve local match without hardcoded fallback to article 0
+  const initialMatch = useMemo(() => findLocalArticle(targetIdentifier), [targetIdentifier]);
 
-  const [article, setArticle] = useState(defaultMatch);
-  const [allArticles, setAllArticles] = useState(BLOG_POSTS.map(normalizeArticle));
-  const [loading, setLoading] = useState(false);
+  const [article, setArticle] = useState(initialMatch);
+  const [allArticles, setAllArticles] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fgc_portal_articles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(normalizeArticle);
+        }
+      }
+    } catch {}
+    return BLOG_POSTS.map(normalizeArticle);
+  });
+  const [loading, setLoading] = useState(() => !initialMatch);
 
   const articleKey = article?.slug || article?.id || targetIdentifier;
   const likedStorageKey = `fgc_liked_article_${articleKey}`;
 
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(() => {
-    return typeof defaultMatch?.likes === 'number'
-      ? defaultMatch.likes
-      : getBaseLikes(defaultMatch?.slug || targetIdentifier);
+    if (typeof initialMatch?.likes === 'number') return initialMatch.likes;
+    return getBaseLikes(initialMatch?.slug || targetIdentifier);
   });
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -190,8 +226,21 @@ export default function BlogDetailPage() {
       if (!targetIdentifier) return;
       const cleanTarget = targetIdentifier.toLowerCase().trim();
 
+      // Check if we already have the article locally to prevent layout shifts
+      const local = findLocalArticle(cleanTarget);
+      if (local) {
+        if (isMounted) {
+          setArticle(local);
+          setLoading(false);
+        }
+      } else {
+        if (isMounted) {
+          setArticle(null);
+          setLoading(true);
+        }
+      }
+
       try {
-        setLoading(true);
         // Supabase query matching by slug
         const { data, error } = await supabase
           .from('articles')
@@ -200,8 +249,24 @@ export default function BlogDetailPage() {
           .maybeSingle();
 
         if (data && isMounted) {
-          setArticle(normalizeArticle(data));
+          const normalized = normalizeArticle(data);
+          setArticle(normalized);
           setLoading(false);
+
+          // Update local cache with newly resolved article
+          try {
+            const saved = localStorage.getItem('fgc_portal_articles');
+            let list = saved ? JSON.parse(saved) : [];
+            if (Array.isArray(list)) {
+              const idx = list.findIndex(a => (a.slug || a.id) === (normalized.slug || normalized.id));
+              if (idx >= 0) {
+                list[idx] = normalized;
+              } else {
+                list.push(normalized);
+              }
+              localStorage.setItem('fgc_portal_articles', JSON.stringify(list));
+            }
+          } catch {}
           return;
         }
 
@@ -213,32 +278,21 @@ export default function BlogDetailPage() {
           .maybeSingle();
 
         if (idQuery.data && isMounted) {
-          setArticle(normalizeArticle(idQuery.data));
+          const normalized = normalizeArticle(idQuery.data);
+          setArticle(normalized);
           setLoading(false);
           return;
         }
       } catch (err) {
-        console.warn('[BlogDetailPage] Supabase fetch error, checking default articles:', err);
+        console.warn('[BlogDetailPage] Supabase fetch error, checking local articles:', err);
       } finally {
         if (isMounted) setLoading(false);
       }
 
-      // If not found in Supabase, fallback check in default bundled articles and localStorage
+      // If not found in Supabase, fallback check in local/bundled
       if (isMounted) {
-        let localList = [];
-        try {
-          const saved = localStorage.getItem('fgc_portal_articles');
-          if (saved) localList = JSON.parse(saved);
-        } catch {}
-        const fallbackList = [...(Array.isArray(localList) ? localList : []), ...BLOG_POSTS];
-        const match = fallbackList.find(p => {
-          if (!p) return false;
-          const s = (p.slug || '').toLowerCase().trim();
-          const i = (p.id || '').toLowerCase().trim();
-          return s === cleanTarget || i === cleanTarget;
-        }) || defaultMatch;
-
-        setArticle(normalizeArticle(match));
+        const fallback = findLocalArticle(cleanTarget);
+        setArticle(fallback);
       }
     }
 
@@ -247,7 +301,7 @@ export default function BlogDetailPage() {
     return () => {
       isMounted = false;
     };
-  }, [targetIdentifier, defaultMatch]);
+  }, [targetIdentifier]);
 
   // Load all articles for related stories list
   useEffect(() => {
@@ -359,6 +413,72 @@ export default function BlogDetailPage() {
     }
   };
 
+  // Skeleton / Shimmer placeholder while resolving article to eliminate layout shifts and prevent wrong post flashing
+  if (loading && !article) {
+    return (
+      <div className="w-full max-w-4xl mx-auto space-y-8 animate-pulse pb-16 px-4 sm:px-6">
+        {/* Top Navigation & Action Skeleton */}
+        <div className="flex items-center justify-between pt-2">
+          <div className="h-4 w-36 bg-slate-200 dark:bg-white/10 rounded-lg" />
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-24 bg-slate-200 dark:bg-white/10 rounded-xl" />
+            <div className="h-8 w-20 bg-slate-200 dark:bg-white/10 rounded-xl" />
+          </div>
+        </div>
+
+        {/* Main Card Skeleton */}
+        <div className="bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-10 shadow-sm dark:shadow-2xl space-y-6">
+          {/* Category & Date Skeleton */}
+          <div className="flex items-center gap-3">
+            <div className="h-6 w-24 bg-slate-200 dark:bg-white/10 rounded-full" />
+            <div className="h-4 w-24 bg-slate-200 dark:bg-white/10 rounded-md" />
+            <div className="h-4 w-20 bg-slate-200 dark:bg-white/10 rounded-md" />
+          </div>
+
+          {/* Title Skeleton */}
+          <div className="space-y-3">
+            <div className="h-9 sm:h-11 w-11/12 bg-slate-200 dark:bg-white/10 rounded-xl" />
+            <div className="h-9 sm:h-11 w-3/5 bg-slate-200 dark:bg-white/10 rounded-xl" />
+          </div>
+
+          {/* Author Bar Skeleton */}
+          <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 shrink-0" />
+              <div className="space-y-1.5">
+                <div className="h-4 w-32 bg-slate-200 dark:bg-white/10 rounded-md" />
+                <div className="h-3 w-48 bg-slate-200 dark:bg-white/10 rounded-md" />
+              </div>
+            </div>
+            <div className="h-8 w-28 bg-slate-200 dark:bg-white/10 rounded-full hidden sm:block" />
+          </div>
+
+          {/* Featured Image Skeleton (exact match h-64 sm:h-96 rounded-2xl to prevent layout shift) */}
+          <div className="w-full h-64 sm:h-96 rounded-2xl bg-slate-200 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-slate-300/60 dark:bg-white/10 flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-slate-400 dark:text-slate-500" />
+            </div>
+          </div>
+
+          {/* Executive Summary Skeleton */}
+          <div className="p-6 rounded-2xl bg-slate-100 dark:bg-[#06111F] border-l-4 border-[#00E676]/40 space-y-2">
+            <div className="h-4 w-32 bg-slate-200 dark:bg-white/10 rounded-md" />
+            <div className="h-4 w-full bg-slate-200 dark:bg-white/10 rounded-md" />
+            <div className="h-4 w-4/5 bg-slate-200 dark:bg-white/10 rounded-md" />
+          </div>
+
+          {/* Content Body Paragraphs Skeleton */}
+          <div className="space-y-3 pt-2">
+            <div className="h-4 w-full bg-slate-200 dark:bg-white/10 rounded-md" />
+            <div className="h-4 w-11/12 bg-slate-200 dark:bg-white/10 rounded-md" />
+            <div className="h-4 w-full bg-slate-200 dark:bg-white/10 rounded-md" />
+            <div className="h-4 w-3/4 bg-slate-200 dark:bg-white/10 rounded-md" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!article) {
     return (
       <div className="w-full max-w-3xl mx-auto py-20 text-center space-y-4">
@@ -442,13 +562,23 @@ export default function BlogDetailPage() {
         {/* Author Bio Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 mb-8 gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold">
-              <User className="w-5 h-5" />
-            </div>
+            {article.author?.includes('Sufyan Saleem') ? (
+              <img
+                src="/sufyan-author.jpg"
+                alt="Sufyan Saleem - Financial Analyst"
+                className="w-10 h-10 rounded-full object-cover border-2 border-slate-200 dark:border-[#00E676]/40 shadow-xs shrink-0"
+                width="40"
+                height="40"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold shrink-0">
+                <User className="w-5 h-5" />
+              </div>
+            )}
             <div>
-              <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'FGC Spot Macro Research Desk'}</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'Sufyan Saleem'}</div>
               <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">
-                {article.author === 'Sufyan Saleem' 
+                {article.author?.includes('Sufyan Saleem') 
                   ? 'Contributing Financial Columnist & Forex Analyst' 
                   : 'FGC Spot Financial Research Desk • Independent Intelligence'}
               </div>
@@ -483,12 +613,13 @@ export default function BlogDetailPage() {
 
         {/* Featured Image */}
         {article.image && (
-          <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F]">
+          <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F] relative">
             <img 
               src={article.image} 
               alt={article.title} 
               className="w-full h-full object-cover"
-              loading="lazy"
+              loading="eager"
+              decoding="async"
             />
           </div>
         )}
