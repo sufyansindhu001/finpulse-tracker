@@ -15,7 +15,7 @@ import {
   ThumbsUp
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
-import { supabase, normalizeArticle } from '../lib/supabase';
+import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -400,6 +400,10 @@ export default function BlogDetailPage() {
     return allArticles.filter(p => p && p.id !== article?.id && p.slug !== article?.slug).slice(0, 3);
   }, [allArticles, article]);
 
+  const cleanTags = useMemo(() => {
+    return parseTags(article?.tags);
+  }, [article?.tags]);
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -759,29 +763,35 @@ export default function BlogDetailPage() {
         </div>
 
         {/* Helpful Reader Reaction & Share Banner */}
-        <div className="mt-10 p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#06111F]/70 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
+        <div 
+          className="mt-10 p-4 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#06111F]/70 border border-slate-200 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 w-full max-w-full box-border overflow-hidden"
+          style={{ boxSizing: 'border-box' }}
+        >
+          <div className="flex items-center gap-3.5 w-full md:w-auto min-w-0">
             <div className="w-10 h-10 rounded-xl bg-[#00E676]/10 border border-[#00E676]/20 flex items-center justify-center text-[#00E676] shrink-0">
               <ThumbsUp className="w-5 h-5" />
             </div>
-            <div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white">Did this analysis help you?</h4>
-              <p className="text-xs text-slate-500 dark:text-[#A8B3C2]">Your reaction supports our independent macroeconomic research desk.</p>
+            <div className="min-w-0 flex-1">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">Did this analysis help you?</h4>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">Your reaction supports our independent macroeconomic research desk.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+          <div 
+            className="flex flex-wrap items-center justify-start md:justify-end gap-3 w-full md:w-auto box-border"
+            style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', boxSizing: 'border-box' }}
+          >
             <button
               onClick={handleToggleLike}
-              className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border text-xs font-bold transition-all duration-300 cursor-pointer shadow-sm ${
+              className={`flex items-center justify-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl border text-xs font-bold transition-all duration-300 cursor-pointer shadow-sm box-border shrink-0 ${
                 isLiked
                   ? 'bg-[#00E676] text-[#06111F] border-[#00E676] shadow-md shadow-[#00E676]/25 font-black ring-2 ring-[#00E676]/30'
                   : 'bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-800 dark:text-white'
               } ${isAnimating ? 'scale-105' : 'hover:-translate-y-0.5'}`}
             >
-              <ThumbsUp className={`w-4 h-4 ${isLiked ? 'fill-[#06111F]' : 'text-[#00E676]'}`} />
+              <ThumbsUp className={`w-4 h-4 shrink-0 ${isLiked ? 'fill-[#06111F]' : 'text-[#00E676]'}`} />
               <span>{isLiked ? 'Marked as Helpful' : 'Helpful'}</span>
-              <span className={`px-2 py-0.5 rounded-lg text-xs font-tabular font-bold ${
+              <span className={`px-2 py-0.5 rounded-lg text-xs font-tabular font-bold shrink-0 ${
                 isLiked ? 'bg-[#06111F]/20 text-[#06111F]' : 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-[#00E676]'
               }`}>
                 {likesCount}
@@ -790,29 +800,31 @@ export default function BlogDetailPage() {
 
             <button
               onClick={handleShare}
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
+              className="flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white text-xs font-bold transition-all cursor-pointer shadow-xs box-border shrink-0"
             >
-              <Share2 className="w-3.5 h-3.5 text-[#00E676]" />
+              <Share2 className="w-3.5 h-3.5 text-[#00E676] shrink-0" />
               <span>Share</span>
             </button>
           </div>
         </div>
 
         {/* Market Tickers & Editorial Tags */}
-        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider flex items-center gap-1.5 mr-1">
-            <Tag className="w-3.5 h-3.5 text-[#00E676]" />
-            TAGS:
-          </span>
-          {(Array.isArray(article.tags) ? article.tags : (typeof article.tags === 'string' ? article.tags.split(',') : [])).map((tag, tIdx) => (
-            <span 
-              key={tIdx} 
-              className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] text-slate-600 dark:text-[#A8B3C2] border border-slate-200 dark:border-white/10"
-            >
-              #{tag.trim()}
+        {cleanTags.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center gap-2 w-full max-w-full box-border">
+            <span className="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2] uppercase tracking-wider flex items-center gap-1.5 mr-1 shrink-0">
+              <Tag className="w-3.5 h-3.5 text-[#00E676]" />
+              TAGS:
             </span>
-          ))}
-        </div>
+            {cleanTags.map((tag, tIdx) => (
+              <span 
+                key={tIdx} 
+                className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#06111F] text-slate-600 dark:text-[#A8B3C2] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-colors"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
 
       </div>
 

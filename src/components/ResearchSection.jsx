@@ -13,6 +13,7 @@ import {
   Share2,
   User
 } from 'lucide-react';
+import { parseTags } from '../lib/supabase';
 
 export default function ResearchSection({ limit, showViewAll = false }) {
   const { articles = [] } = useApp();
@@ -101,7 +102,7 @@ export default function ResearchSection({ limit, showViewAll = false }) {
         {/* Research Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayedPosts.map((post) => {
-            const tags = Array.isArray(post.tags) ? post.tags : (typeof post.tags === 'string' ? post.tags.split(',') : []);
+            const tags = parseTags(post.tags);
 
             return (
               <div

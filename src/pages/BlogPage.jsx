@@ -15,7 +15,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
-import { supabase, normalizeArticle } from '../lib/supabase';
+import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
 
 export default function BlogPage() {
   const { articles: contextArticles = [] } = useApp();
@@ -109,9 +109,7 @@ export default function BlogPage() {
     return articles.filter(post => {
       if (!post) return false;
       const matchCat = selectedCategory === 'All' || (post.category || '') === selectedCategory;
-      const tagsList = Array.isArray(post.tags) 
-        ? post.tags 
-        : (typeof post.tags === 'string' ? post.tags.split(',') : []);
+      const tagsList = parseTags(post.tags);
       const title = post.title || '';
       const summary = post.summary || post.excerpt || '';
       const matchSearch = 

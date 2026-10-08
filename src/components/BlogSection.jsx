@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Search, Calendar, Clock, ArrowRight, BookOpen } from 'lucide-react';
+import { parseTags } from '../lib/supabase';
 
 export default function BlogSection() {
   const { articles = [] } = useApp();
@@ -24,9 +25,7 @@ export default function BlogSection() {
     return safeArticles.filter(post => {
       if (!post) return false;
       const matchCat = selectedCategory === 'All' || (post?.category || '') === selectedCategory;
-      const tagsList = Array.isArray(post?.tags) 
-        ? post.tags 
-        : (typeof post?.tags === 'string' ? post.tags.split(',') : []);
+      const tagsList = parseTags(post?.tags);
       const title = post?.title || '';
       const summary = post?.summary || '';
       const matchSearch = 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Calendar, Clock, User, Tag, Share2, ArrowLeft } from 'lucide-react';
+import { parseTags } from '../lib/supabase';
 
 export default function ArticleModal({ article, onClose }) {
   if (!article) return null;
@@ -118,9 +119,9 @@ export default function ArticleModal({ article, onClose }) {
         {/* Tags */}
         <div className="mt-8 pt-6 border-t border-slate-800 flex flex-wrap items-center gap-2">
           <Tag className="w-4 h-4 text-slate-500 mr-1" />
-          {article.tags?.map((tag) => (
+          {parseTags(article.tags).map((tag, idx) => (
             <span 
-              key={tag} 
+              key={idx} 
               className="text-xs px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700 font-mono"
             >
               #{tag}
