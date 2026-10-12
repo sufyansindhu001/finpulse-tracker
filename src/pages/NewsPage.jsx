@@ -18,8 +18,15 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchLiveMarketNews, getLiveTimeAgo } from '../services/newsService';
+import { useSEO } from '../hooks/useSEO';
 
 export default function NewsPage() {
+  useSEO({
+    title: 'Live Financial News Wire & Market Intelligence | FGC Spot',
+    description: 'Breaking macroeconomic news, central bank policy updates, forex developments, and market intelligence on FGC Spot.',
+    canonical: '/news'
+  });
+
   const [newsItems, setNewsItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);

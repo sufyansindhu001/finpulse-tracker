@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useSEO } from '../hooks/useSEO';
 import { 
   FileText, 
   Globe, 
@@ -15,6 +16,12 @@ import {
 
 export default function AboutPage() {
   const { siteSettings } = useApp();
+
+  useSEO({
+    title: 'About Us — Institutional Market Analytics | FGC Spot',
+    description: 'Learn about FGC Spot, our mission to deliver real-time financial transparency, interbank currency rates, and market intelligence.',
+    canonical: '/about'
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

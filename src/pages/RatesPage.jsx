@@ -15,8 +15,15 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
+import { useSEO } from '../hooks/useSEO';
 
 export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRefreshing }) {
+  useSEO({
+    title: 'Live Currency Exchange Rates & Forex Terminal | FGC Spot',
+    description: 'Real-time interbank currency exchange rates, live FX spreads, and 160+ world currency market pricing on FGC Spot.',
+    canonical: '/rates'
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 

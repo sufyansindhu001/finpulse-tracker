@@ -1,10 +1,17 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useSEO } from '../hooks/useSEO';
 import { AlertTriangle, ChevronRight } from 'lucide-react';
 
 export default function DisclaimerPage() {
   const { siteSettings } = useApp();
+
+  useSEO({
+    title: 'Financial Disclaimer | FGC Spot',
+    description: 'FGC Spot financial disclaimer regarding market data feeds, real-time rates, and educational market analysis.',
+    canonical: '/disclaimer'
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

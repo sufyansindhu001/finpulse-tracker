@@ -22,12 +22,13 @@ const STATIC_PAGES = [
   { url: `${BASE_URL}/privacy-policy`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/terms`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/disclaimer`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
-  // Tools
+  // Tools & News
   { url: `${BASE_URL}/converter`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/rates`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/crypto`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/gold`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
-  { url: `${BASE_URL}/charts`, changefreq: 'daily', priority: '0.8', lastmod: TODAY }
+  { url: `${BASE_URL}/charts`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
+  { url: `${BASE_URL}/news`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY }
 ];
 
 async function fetchArticles() {

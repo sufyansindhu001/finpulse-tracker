@@ -1,10 +1,17 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useSEO } from '../hooks/useSEO';
 import { FileText, ChevronRight, ShieldCheck, Scale, CheckCircle2 } from 'lucide-react';
 
 export default function TermsPage() {
   const { siteSettings } = useApp();
+
+  useSEO({
+    title: 'Terms of Service | FGC Spot',
+    description: 'Terms of service and platform usage agreements governing the use of FGC Spot financial market data and tools.',
+    canonical: '/terms'
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

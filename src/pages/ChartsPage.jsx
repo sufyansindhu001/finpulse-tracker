@@ -13,8 +13,15 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 export default function ChartsPage({ rates = {}, cryptoList = [] }) {
+  useSEO({
+    title: 'Interactive Financial Market Charts & Technical Analytics | FGC Spot',
+    description: 'Interactive candlestick and line charts for Forex currency pairs, precious metals, and cryptocurrencies on FGC Spot.',
+    canonical: '/charts'
+  });
+
   const [searchParams] = useSearchParams();
   const initialAsset = searchParams.get('asset') || searchParams.get('pair')?.replace('-', '/') || 'USD/PKR';
 

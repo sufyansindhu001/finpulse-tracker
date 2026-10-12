@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
+import { updateSEO, updateCanonical } from '../utils/seo';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -335,66 +336,34 @@ export default function BlogDetailPage() {
     loadAllArticles();
   }, []);
 
-  // Scroll to top and set dynamic document title & meta description for SEO
+  // Scroll to top and set dynamic document title, meta description & self-referencing canonical for SEO
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (!article?.title) return;
 
-    // Document title: <Article Title> | FGC Spot
-    document.title = `${article.title} | FGC Spot`;
+    // Canonical slug prioritizes verified article.slug, then targetIdentifier
+    const activeSlug = article?.slug || targetIdentifier;
+    const canonicalPath = activeSlug ? `/blog/${activeSlug}` : '/blog';
 
-    // Dynamic meta description with article excerpt
-    const excerpt = article.excerpt || article.summary || '';
-    let metaDesc = document.querySelector('meta[name="description"]');
-    const prevDesc = metaDesc ? metaDesc.getAttribute('content') : '';
+    const title = article?.title
+      ? `${article.title} | FGC Spot`
+      : 'Market Analysis & Financial Blog | FGC Spot';
 
-    if (excerpt) {
-      if (!metaDesc) {
-        metaDesc = document.createElement('meta');
-        metaDesc.setAttribute('name', 'description');
-        document.head.appendChild(metaDesc);
-      }
-      metaDesc.setAttribute('content', excerpt);
-    }
+    const excerpt = article?.excerpt || article?.summary || '';
+    const image = article?.coverImage || article?.featuredImage || '';
 
-    // OpenGraph & Social Crawler Meta Tags
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    if (!ogTitle) {
-      ogTitle = document.createElement('meta');
-      ogTitle.setAttribute('property', 'og:title');
-      document.head.appendChild(ogTitle);
-    }
-    ogTitle.setAttribute('content', `${article.title} | FGC Spot`);
-
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    if (!ogDesc) {
-      ogDesc = document.createElement('meta');
-      ogDesc.setAttribute('property', 'og:description');
-      document.head.appendChild(ogDesc);
-    }
-    ogDesc.setAttribute('content', excerpt);
-
-    let ogUrl = document.querySelector('meta[property="og:url"]');
-    if (!ogUrl) {
-      ogUrl = document.createElement('meta');
-      ogUrl.setAttribute('property', 'og:url');
-      document.head.appendChild(ogUrl);
-    }
-    ogUrl.setAttribute('content', window.location.href);
-
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute('href', `https://www.fgcspot.com/blog/${article.slug || targetIdentifier}`);
+    // Immediately inject/update self-referencing canonical URL and meta tags
+    updateSEO({
+      title,
+      description: excerpt || 'Institutional market analysis, forex breakdown, and macroeconomic insights from FGC Spot.',
+      canonical: canonicalPath,
+      ogType: 'article',
+      ogImage: image
+    });
 
     return () => {
-      if (metaDesc && prevDesc) metaDesc.setAttribute('content', prevDesc);
       document.title = 'FGC Spot — Live Forex, Gold & Crypto Terminals';
     };
-  }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug]);
+  }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug, article?.coverImage, article?.featuredImage]);
 
   const relatedArticles = useMemo(() => {
     return allArticles.filter(p => p && p.id !== article?.id && p.slug !== article?.slug).slice(0, 3);

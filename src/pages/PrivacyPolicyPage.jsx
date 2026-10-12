@@ -1,10 +1,17 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useSEO } from '../hooks/useSEO';
 import { ShieldCheck, ChevronRight, Lock, Eye, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function PrivacyPolicyPage() {
   const { siteSettings } = useApp();
+
+  useSEO({
+    title: 'Privacy Policy | FGC Spot',
+    description: 'FGC Spot privacy policy: how we collect, handle, and protect user data and telemetry in compliance with privacy regulations.',
+    canonical: '/privacy-policy'
+  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

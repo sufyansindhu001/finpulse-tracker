@@ -12,8 +12,15 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 export default function GoldPage({ rates = {} }) {
+  useSEO({
+    title: 'Live Gold & Silver Bullion Rates Terminal | FGC Spot',
+    description: 'Real-time spot prices for Gold (XAU) and Silver (XAG) per ounce, gram, and tola in USD and local currencies on FGC Spot.',
+    canonical: '/gold'
+  });
+
   const [searchParams] = useSearchParams();
   const usdToPkr = rates.PKR || 277.10;
   const [selectedUnit, setSelectedUnit] = useState('tola'); // 'tola' | '10g' | 'gram' | 'oz'

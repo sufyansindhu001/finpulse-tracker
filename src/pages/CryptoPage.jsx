@@ -12,8 +12,15 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rates = {} }) {
+  useSEO({
+    title: 'Live Cryptocurrency Market Terminal & Prices | FGC Spot',
+    description: 'Real-time cryptocurrency tracking, market capitalizations, 24h volume, and instant conversions for top digital assets on FGC Spot.',
+    canonical: '/crypto'
+  });
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');

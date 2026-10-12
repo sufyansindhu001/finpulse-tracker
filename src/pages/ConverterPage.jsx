@@ -13,8 +13,15 @@ import {
 } from 'lucide-react';
 import CurrencySelect from '../components/CurrencySelect';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
+import { useSEO } from '../hooks/useSEO';
 
 export default function ConverterPage({ rates = {} }) {
+  useSEO({
+    title: 'Real-Time Currency & Crypto Converter | FGC Spot',
+    description: 'Instant currency converter with live mid-market exchange rates for 160+ global currencies, gold, and digital assets on FGC Spot.',
+    canonical: '/converter'
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [amount, setAmount] = useState(() => {

@@ -11,10 +11,17 @@ import {
 } from 'lucide-react';
 
 import { recordInquiry } from '../utils/telemetry';
+import { useSEO } from '../hooks/useSEO';
 
 export default function ContactPage() {
   const { siteSettings, addMessage } = useApp();
   const [submitted, setSubmitted] = useState(false);
+
+  useSEO({
+    title: 'Contact Us & Institutional Inquiries | FGC Spot',
+    description: 'Get in touch with the FGC Spot team for market data inquiries, institutional partnerships, and platform support.',
+    canonical: '/contact'
+  });
 
   const [formData, setFormData] = useState({
     name: '',

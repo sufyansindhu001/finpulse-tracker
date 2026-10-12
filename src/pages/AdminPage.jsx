@@ -46,8 +46,14 @@ import {
   getCorridorDistribution,
   fetchServerTelemetry
 } from '../utils/telemetry';
+import { useSEO } from '../hooks/useSEO';
 
 export default function AdminPage() {
+  useSEO({
+    title: 'Admin Control Portal | FGC Spot',
+    description: 'FGC Spot administrative control portal and management dashboard.',
+    canonical: '/admin'
+  });
   const { 
     siteSettings, 
     updateSiteSettings, 

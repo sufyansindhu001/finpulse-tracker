@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
+import { useSEO } from '../hooks/useSEO';
 
 export default function BlogPage() {
   const { articles: contextArticles = [] } = useApp();
@@ -23,6 +24,12 @@ export default function BlogPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [visibleArticleCount, setVisibleArticleCount] = useState(6);
+
+  useSEO({
+    title: 'Market Analysis & Financial Blog | FGC Spot',
+    description: 'In-depth economic research, currency market breakdowns, and financial intelligence articles by FGC Spot analysts.',
+    canonical: '/blog'
+  });
 
   const [articles, setArticles] = useState(() => {
     try {

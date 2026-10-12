@@ -35,6 +35,7 @@ const AdminPage = lazy(() => import('./pages/AdminPage'));
 
 import { CheckCircle } from 'lucide-react';
 import { recordPageView } from './utils/telemetry';
+import { updateCanonical, updateSEO } from './utils/seo';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
@@ -42,13 +43,23 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Scroll to top and record telemetry page view on every navigation
+  // Scroll to top, sync canonical URL, and record telemetry page view on every navigation
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     try {
       recordPageView(location.pathname);
     } catch (e) {
       console.warn('Telemetry error:', e);
+    }
+    updateCanonical(location.pathname);
+
+    if (location.pathname === '/') {
+      updateSEO({
+        title: 'FGC Spot — Live Forex, Gold & Crypto Terminals',
+        description: 'Institutional-grade real-time market rates, live analytics, and financial terminal tracking for Forex, Gold, and Digital Assets.',
+        canonical: '/',
+        ogType: 'website'
+      });
     }
   }, [location.pathname]);
 
