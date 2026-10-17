@@ -17,6 +17,7 @@ import {
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
 import { updateSEO, updateCanonical } from '../utils/seo';
+import { getRelatedArticles } from '../utils/relatedArticles';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -366,7 +367,7 @@ export default function BlogDetailPage() {
   }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug, article?.coverImage, article?.featuredImage]);
 
   const relatedArticles = useMemo(() => {
-    return allArticles.filter(p => p && p.id !== article?.id && p.slug !== article?.slug).slice(0, 3);
+    return getRelatedArticles(article, allArticles, 4);
   }, [allArticles, article]);
 
   const cleanTags = useMemo(() => {
@@ -797,43 +798,78 @@ export default function BlogDetailPage() {
 
       </div>
 
-      {/* Related Research Articles */}
+      {/* Related Institutional Research Section */}
       {relatedArticles.length > 0 && (
-        <div className="space-y-4 pt-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-[#00E676]" />
-              <span>Related Market Research</span>
-            </h3>
-            <Link to="/blog" className="text-xs text-[#00E676] hover:underline font-semibold flex items-center gap-1">
-              <span>View All</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+        <section aria-label="Related Institutional Research" className="space-y-4 pt-8">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-[#00E676]" />
+                <span>Related Institutional Research</span>
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
+                Authoritative market breakdowns, regulatory guides, and macroeconomic analysis
+              </p>
+            </div>
+            <Link 
+              to="/blog" 
+              className="text-xs text-[#00E676] hover:text-[#00E676]/80 font-bold flex items-center gap-1 group py-1"
+            >
+              <span>View All Research</span>
+              <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {relatedArticles.map((rel) => (
               <Link
-                key={rel.id}
+                key={rel.id || rel.slug}
                 to={`/blog/${rel.slug || rel.id}`}
-                className="p-4 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-all group flex flex-col justify-between shadow-xs hover:-translate-y-0.5"
+                className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-all duration-300 group flex flex-col justify-between shadow-xs hover:-translate-y-1 hover:shadow-lg hover:shadow-[#00E676]/5"
               >
-                <div className="space-y-2">
-                  <span className="text-[10px] uppercase font-bold text-[#00E676]">
-                    {rel.category}
-                  </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
+                <div className="space-y-3">
+                  {rel.image && (
+                    <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative border border-slate-200/50 dark:border-white/5">
+                      <img 
+                        src={rel.image} 
+                        alt={rel.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[10px] uppercase font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
+                      {rel.category || 'Market Research'}
+                    </span>
+                  </div>
+
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
                     {rel.title}
                   </h4>
+
+                  {(rel.excerpt || rel.summary) && (
+                    <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2] line-clamp-2 leading-relaxed">
+                      {rel.excerpt || rel.summary}
+                    </p>
+                  )}
                 </div>
+
                 <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px] text-slate-500 dark:text-[#A8B3C2]">
-                  <span>{rel.readTime}</span>
-                  <ArrowRight className="w-3 h-3 text-[#00E676] group-hover:translate-x-1 transition-transform" />
+                  <span className="flex items-center gap-1 font-medium">
+                    <Clock className="w-3.5 h-3.5 text-[#00E676]" />
+                    <span>{rel.readTime || rel.read_time || '5 min read'}</span>
+                  </span>
+                  <span className="text-[#00E676] font-bold flex items-center gap-1 text-[11px] group-hover:translate-x-0.5 transition-transform">
+                    <span>Read</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
     </article>
