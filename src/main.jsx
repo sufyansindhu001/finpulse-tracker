@@ -4,14 +4,18 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { AppProvider } from './context/AppContext'
+import GlobalErrorBoundary from './components/GlobalErrorBoundary'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <AppProvider>
-        <App />
-      </AppProvider>
-    </BrowserRouter>
+    <GlobalErrorBoundary>
+      <BrowserRouter>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </BrowserRouter>
+    </GlobalErrorBoundary>
   </StrictMode>,
 )
+
 

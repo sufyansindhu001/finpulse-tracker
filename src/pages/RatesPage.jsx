@@ -123,32 +123,36 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   };
 
   // Base currency rates calculations
-  const usdToPkr = rates.PKR || 277.10;
+  const usdToPkr = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 277.10;
 
   // Format currency list
   const currencyRows = useMemo(() => {
-    const list = Object.entries(rates).map(([code, val]) => {
-      // Calculate rate against USD and rate against PKR
-      const rateToPkr = code === 'USD' ? usdToPkr : (usdToPkr / val);
-      // Simulated 24h delta based on pseudo hash for stable display
-      const charCodeSum = code.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-      const pseudoDelta = (((charCodeSum % 30) - 14) / 10).toFixed(2);
-      const isPositive = parseFloat(pseudoDelta) >= 0;
+    const rawRates = (rates && typeof rates === 'object') ? rates : {};
+    const list = Object.entries(rawRates)
+      .filter(([code, val]) => typeof code === 'string' && code.length === 3 && typeof val === 'number' && !isNaN(val) && isFinite(val) && val > 0)
+      .map(([code, val]) => {
+        // Calculate rate against USD and rate against PKR
+        const rateToPkr = code === 'USD' ? usdToPkr : (usdToPkr / val);
+        // Simulated 24h delta based on pseudo hash for stable display
+        const charCodeSum = code.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+        const pseudoDelta = (((charCodeSum % 30) - 14) / 10).toFixed(2);
+        const isPositive = parseFloat(pseudoDelta) >= 0;
 
-      return {
-        code,
-        name: code === 'USD' ? 'US Dollar' : code === 'PKR' ? 'Pakistani Rupee' : code === 'EUR' ? 'Euro' : code === 'GBP' ? 'British Pound' : code === 'SAR' ? 'Saudi Riyal' : code === 'AED' ? 'UAE Dirham' : `${code} Currency`,
-        rateUsd: val,
-        ratePkr: rateToPkr,
-        change: `${isPositive ? '+' : ''}${pseudoDelta}%`,
-        isPositive,
-        lastUpdated: 'Live Feed',
-        flagUrl: getCurrencyFlagUrl(code)
-      };
-    });
+        return {
+          code,
+          name: code === 'USD' ? 'US Dollar' : code === 'PKR' ? 'Pakistani Rupee' : code === 'EUR' ? 'Euro' : code === 'GBP' ? 'British Pound' : code === 'SAR' ? 'Saudi Riyal' : code === 'AED' ? 'UAE Dirham' : `${code} Currency`,
+          rateUsd: val,
+          ratePkr: rateToPkr,
+          change: `${isPositive ? '+' : ''}${pseudoDelta}%`,
+          isPositive,
+          lastUpdated: 'Live Feed',
+          flagUrl: getCurrencyFlagUrl(code)
+        };
+      });
 
     return list.filter(item => item.code !== 'XAU' && item.code !== 'XAG');
   }, [rates, usdToPkr]);
+
 
   // Format crypto list
   const cryptoRows = useMemo(() => {

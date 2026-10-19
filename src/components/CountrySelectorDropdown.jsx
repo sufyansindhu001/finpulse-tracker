@@ -24,16 +24,22 @@ export default function CountrySelectorDropdown({
   }, []);
 
   const activeCountry = useMemo(() => {
-    return WORLD_COUNTRIES.find(c => c.id === selectedCountry) || WORLD_COUNTRIES[0];
+    const list = Array.isArray(WORLD_COUNTRIES) ? WORLD_COUNTRIES : [];
+    return list.find(c => c && c.id === selectedCountry) || list[0] || { id: 'pk', name: 'Pakistan', code: 'PK', symbol: '₨', flag: '🇵🇰', exchange: 'PSX (Karachi)' };
   }, [selectedCountry]);
 
   // Filter countries alphabetically
   const filteredCountries = useMemo(() => {
-    const q = searchQuery.toLowerCase().trim();
-    return WORLD_COUNTRIES.filter(c => {
+    const q = (searchQuery || '').toLowerCase().trim();
+    const list = Array.isArray(WORLD_COUNTRIES) ? WORLD_COUNTRIES : [];
+    return list.filter(c => {
+      if (!c) return false;
       if (!q) return true;
-      return c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || c.exchange.toLowerCase().includes(q);
-    }).sort((a, b) => a.name.localeCompare(b.name));
+      const name = String(c.name || '').toLowerCase();
+      const code = String(c.code || '').toLowerCase();
+      const exchange = String(c.exchange || '').toLowerCase();
+      return name.includes(q) || code.includes(q) || exchange.includes(q);
+    }).sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || '')));
   }, [searchQuery]);
 
   const getIso = (c) => {
@@ -43,6 +49,7 @@ export default function CountrySelectorDropdown({
   };
 
   const activeIso = getIso(activeCountry);
+
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>

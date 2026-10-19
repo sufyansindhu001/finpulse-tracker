@@ -41,8 +41,10 @@ import { recordPageView } from './utils/telemetry';
 import { updateCanonical, updateSEO } from './utils/seo';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 
 export default function App() {
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -156,7 +158,7 @@ export default function App() {
     // 1. Fetch Live Fiat Rates (low-latency interbank mid-market feeds)
     const forexPromise = fetchLiveExchangeRates(true)
       .then((res) => {
-        if (res && res.rates) {
+        if (res && res.rates && typeof res.rates === 'object' && Object.keys(res.rates).length > 0) {
           setRates(res.rates);
           setForexMeta({
             lastUpdated: res.lastUpdated || new Date().toLocaleTimeString(),
@@ -174,7 +176,7 @@ export default function App() {
     // 2. Fetch Live Crypto Markets
     const cryptoPromise = fetchLiveCryptoMarkets()
       .then((res) => {
-        if (res && res.data && res.data.length > 0) {
+        if (res && Array.isArray(res.data) && res.data.length > 0) {
           setCryptoList(res.data);
           setCryptoMeta({
             lastUpdated: res.lastUpdated || new Date().toLocaleTimeString(),
@@ -204,10 +206,11 @@ export default function App() {
 
     const interval = setInterval(() => {
       loadLiveData(false);
-    }, 25000);
+    }, 45000);
 
     return () => clearInterval(interval);
   }, [loadLiveData]);
+
 
   // Quick pair select handler
   const handleSelectPair = (base, target) => {
@@ -261,73 +264,79 @@ export default function App() {
           <Routes>
             {/* ROUTE 1: BESPOKE INSTITUTIONAL HOMEPAGE */}
             <Route path="/" element={
-              <div className="space-y-0 animate-in fade-in duration-300">
-                
-                {/* Hero Section (No phone mockup, Glassmorphic Live Market Terminal Card) */}
-                <HeroSection 
-                  rates={rates}
-                  cryptoList={cryptoList}
-                  onExploreMarkets={() => navigate('/rates')}
-                  onViewData={() => navigate('/converter')}
-                />
+              <GlobalErrorBoundary>
+                <div className="space-y-0 animate-in fade-in duration-300">
+                  
+                  {/* Hero Section (No phone mockup, Glassmorphic Live Market Terminal Card) */}
+                  <HeroSection 
+                    rates={rates || DEFAULT_RATES}
+                    cryptoList={Array.isArray(cryptoList) && cryptoList.length > 0 ? cryptoList : DEFAULT_CRYPTO_BENCHMARKS}
+                    onExploreMarkets={() => navigate('/rates')}
+                    onViewData={() => navigate('/converter')}
+                  />
 
-                {/* What We Offer Section with 5 hover glowing cards */}
-                <WhatWeOffer />
+                  {/* What We Offer Section with 5 hover glowing cards */}
+                  <WhatWeOffer />
 
-                {/* Summary Overview Matrix (Live Market Dashboard) */}
-                <MarketDashboard 
-                  rates={rates}
-                  cryptoList={cryptoList}
-                  onSelectAsset={handleSelectPair}
-                  onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
-                />
+                  {/* Summary Overview Matrix (Live Market Dashboard) */}
+                  <MarketDashboard 
+                    rates={rates || DEFAULT_RATES}
+                    cryptoList={Array.isArray(cryptoList) && cryptoList.length > 0 ? cryptoList : DEFAULT_CRYPTO_BENCHMARKS}
+                    onSelectAsset={handleSelectPair}
+                    onOpenCryptoConverter={(coin) => setSelectedCryptoForConvert(coin)}
+                  />
 
-                {/* Quick Currency Conversion Matrix */}
-                <section id="forex-corridors" className="py-12 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <QuickConversionMatrix
-                      rates={rates}
-                      onSelectPair={handleSelectPair}
-                    />
-                  </div>
-                </section>
+                  {/* Quick Currency Conversion Matrix */}
+                  <section id="forex-corridors" className="py-12 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                      <QuickConversionMatrix
+                        rates={rates || DEFAULT_RATES}
+                        onSelectPair={handleSelectPair}
+                      />
+                    </div>
+                  </section>
 
-                {/* Institutional Market Intelligence & Multi-Asset Research Methodology (600+ Words for AdSense Quality) */}
-                <MarketIntelligenceMethodology />
+                  {/* Institutional Market Intelligence & Multi-Asset Research Methodology (600+ Words for AdSense Quality) */}
+                  <MarketIntelligenceMethodology />
 
-                {/* Featured Institutional Research Block (Direct crawlable <a href="..."> links for Googlebot) */}
-                <FeaturedResearchSection />
+                  {/* Featured Institutional Research Block (Direct crawlable <a href="..."> links for Googlebot) */}
+                  <FeaturedResearchSection />
 
-                {/* Automated Real-Time Financial News Wire */}
-                <MarketNewsWire limit={6} />
+                  {/* Automated Real-Time Financial News Wire */}
+                  <MarketNewsWire limit={6} />
 
-                {/* Architectural Pillars & Platform Trust */}
-                <WhyFGCSpot 
-                  onExploreMarkets={() => navigate('/rates')}
-                  onLaunchConverter={() => navigate('/converter')}
-                />
+                  {/* Architectural Pillars & Platform Trust */}
+                  <WhyFGCSpot 
+                    onExploreMarkets={() => navigate('/rates')}
+                    onLaunchConverter={() => navigate('/converter')}
+                  />
 
-              </div>
+                </div>
+              </GlobalErrorBoundary>
             } />
 
             {/* ROUTE 1B: DEDICATED GLOBAL & PSX STOCKS TERMINAL (/stocks) */}
             <Route path="/stocks" element={
-              <div className="animate-in fade-in duration-300">
-                <StocksPage />
-              </div>
+              <GlobalErrorBoundary>
+                <div className="animate-in fade-in duration-300">
+                  <StocksPage />
+                </div>
+              </GlobalErrorBoundary>
             } />
             <Route path="/psx" element={<Navigate to="/stocks" replace />} />
             <Route path="/equities" element={<Navigate to="/stocks" replace />} />
 
             {/* ROUTE 2: DEDICATED LIVE RATES PAGE (/rates) */}
             <Route path="/rates" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-                <RatesPage 
-                  rates={rates}
-                  cryptoList={cryptoList}
-                  onRefresh={() => loadLiveData(true)}
-                />
-              </div>
+              <GlobalErrorBoundary>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                  <RatesPage 
+                    rates={rates || DEFAULT_RATES}
+                    cryptoList={Array.isArray(cryptoList) && cryptoList.length > 0 ? cryptoList : DEFAULT_CRYPTO_BENCHMARKS}
+                    onRefresh={() => loadLiveData(true)}
+                  />
+                </div>
+              </GlobalErrorBoundary>
             } />
             {/* Route Aliases */}
             <Route path="/forex" element={<Navigate to="/rates" replace />} />

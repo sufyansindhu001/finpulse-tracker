@@ -31,11 +31,14 @@ export default function ScreensModal({ isOpen, onClose, onApplyScreen, activeCou
   }, [isOpen]);
 
   const filteredScreens = useMemo(() => {
+    const screens = Array.isArray(PRE_BUILT_SCREENS) ? PRE_BUILT_SCREENS : [];
     if (activeCategory === 'Popular') {
-      return PRE_BUILT_SCREENS;
+      return screens;
     }
-    return PRE_BUILT_SCREENS.filter(s => s.category.toLowerCase() === activeCategory.toLowerCase());
+    const targetCat = (activeCategory || '').toLowerCase();
+    return screens.filter(s => s && String(s.category || '').toLowerCase() === targetCat);
   }, [activeCategory]);
+
 
   if (!isOpen) return null;
 

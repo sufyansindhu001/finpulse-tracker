@@ -59,23 +59,28 @@ export default function HeroSection({ rates, cryptoList }) {
     return () => clearInterval(interval);
   }, []);
 
-  const usdToPkr = rates?.PKR || 277.10;
-  const eurToPkr = ((rates?.PKR || 277.10) / (rates?.EUR || 0.92)).toFixed(2);
-  const gbpToPkr = ((rates?.PKR || 277.10) / (rates?.GBP || 0.79)).toFixed(2);
-  const sarToPkr = ((rates?.PKR || 277.10) / (rates?.SAR || 3.75)).toFixed(2);
-  const aedToPkr = ((rates?.PKR || 277.10) / (rates?.AED || 3.6725)).toFixed(2);
+  const usdToPkr = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 277.10;
+  const eurVal = (typeof rates?.EUR === 'number' && !isNaN(rates.EUR) && isFinite(rates.EUR) && rates.EUR > 0) ? rates.EUR : 0.92;
+  const gbpVal = (typeof rates?.GBP === 'number' && !isNaN(rates.GBP) && isFinite(rates.GBP) && rates.GBP > 0) ? rates.GBP : 0.79;
+  const sarVal = (typeof rates?.SAR === 'number' && !isNaN(rates.SAR) && isFinite(rates.SAR) && rates.SAR > 0) ? rates.SAR : 3.75;
+  const aedVal = (typeof rates?.AED === 'number' && !isNaN(rates.AED) && isFinite(rates.AED) && rates.AED > 0) ? rates.AED : 3.6725;
 
-  const goldPriceUsd = (rates?.XAU && rates.XAU > 0)
+  const eurToPkr = (usdToPkr / eurVal).toFixed(2);
+  const gbpToPkr = (usdToPkr / gbpVal).toFixed(2);
+  const sarToPkr = (usdToPkr / sarVal).toFixed(2);
+  const aedToPkr = (usdToPkr / aedVal).toFixed(2);
+
+  const goldPriceUsd = (typeof rates?.XAU === 'number' && !isNaN(rates.XAU) && isFinite(rates.XAU) && rates.XAU > 0)
     ? Number((1 / rates.XAU).toFixed(2))
     : (metalsData?.gold?.price || 2740.00);
 
-  const silverPriceUsd = (rates?.XAG && rates.XAG > 0)
+  const silverPriceUsd = (typeof rates?.XAG === 'number' && !isNaN(rates.XAG) && isFinite(rates.XAG) && rates.XAG > 0)
     ? Number((1 / rates.XAG).toFixed(2))
     : (metalsData?.silver?.price || 32.50);
 
   const goldMetrics = calculateGoldLocalMetrics(goldPriceUsd, usdToPkr, true);
-  const goldPkrPerTola = goldMetrics.pricePerTola24K;
-  const goldPkr22KTola = goldMetrics.pricePerTola22K;
+  const goldPkrPerTola = goldMetrics?.pricePerTola24K || 285000;
+  const goldPkr22KTola = goldMetrics?.pricePerTola22K || 261250;
   const goldChange = metalsData?.gold?.change ?? 0.45;
   const silverChange = metalsData?.silver?.change ?? 0.87;
 
@@ -96,10 +101,10 @@ export default function HeroSection({ rates, cryptoList }) {
   ];
 
   const goldItems = [
-    { title: 'Gold Spot / Troy Oz', tag: 'XAU/USD', price: `$${goldPriceUsd.toLocaleString()}`, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, up: goldChange >= 0 },
-    { title: 'Gold 24K / Tola', tag: 'Karachi Sarafa', price: `₨${goldPkrPerTola.toLocaleString()}`, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, up: goldChange >= 0 },
-    { title: 'Gold 22K / Tola', tag: 'PKR Jewelry', price: `₨${goldPkr22KTola.toLocaleString()}`, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, up: goldChange >= 0 },
-    { title: 'Silver Spot / Troy Oz', tag: 'XAG/USD', price: `$${silverPriceUsd.toFixed(2)}`, change: `${silverChange >= 0 ? '+' : ''}${silverChange}%`, up: silverChange >= 0 },
+    { title: 'Gold Spot / Troy Oz', tag: 'XAU/USD', price: `$${(goldPriceUsd || 2740).toLocaleString()}`, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, up: goldChange >= 0 },
+    { title: 'Gold 24K / Tola', tag: 'Karachi Sarafa', price: `₨${(goldPkrPerTola || 285000).toLocaleString()}`, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, up: goldChange >= 0 },
+    { title: 'Gold 22K / Tola', tag: 'PKR Jewelry', price: `₨${(goldPkr22KTola || 261250).toLocaleString()}`, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, up: goldChange >= 0 },
+    { title: 'Silver Spot / Troy Oz', tag: 'XAG/USD', price: `$${(silverPriceUsd || 32.50).toFixed(2)}`, change: `${silverChange >= 0 ? '+' : ''}${silverChange}%`, up: silverChange >= 0 },
   ];
 
   return (

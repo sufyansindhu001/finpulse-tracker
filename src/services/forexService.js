@@ -127,50 +127,52 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       ...(erData?.rates || {})
     };
 
-    // Enrich with 160+ currency feeds from jsdelivr if missing
+    // Enrich with 160+ fiat currency feeds from jsdelivr if missing (filtered strictly to 3-letter fiat codes)
     if (jsData?.usd && typeof jsData.usd === 'object') {
       Object.entries(jsData.usd).forEach(([code, val]) => {
-        const upper = code.toUpperCase();
-        if (typeof val === 'number' && val > 0 && !mergedRates[upper]) {
-          mergedRates[upper] = val;
+        if (typeof code === 'string' && code.length === 3 && /^[a-zA-Z]{3}$/.test(code)) {
+          const upper = code.toUpperCase();
+          if (typeof val === 'number' && !isNaN(val) && isFinite(val) && val > 0 && !mergedRates[upper]) {
+            mergedRates[upper] = val;
+          }
         }
       });
     }
 
     // Override with fresh, low-latency interbank mid-market quotes from floatrates
-    if (floatData) {
+    if (floatData && typeof floatData === 'object') {
       if (floatData.pkr?.rate) {
         const pkrVal = parseFloat(floatData.pkr.rate);
-        if (!isNaN(pkrVal) && pkrVal > 200) {
+        if (!isNaN(pkrVal) && isFinite(pkrVal) && pkrVal > 200) {
           mergedRates.PKR = pkrVal;
         }
       }
       if (floatData.eur?.rate) {
         const eurVal = parseFloat(floatData.eur.rate);
-        if (!isNaN(eurVal) && eurVal > 0) mergedRates.EUR = eurVal;
+        if (!isNaN(eurVal) && isFinite(eurVal) && eurVal > 0) mergedRates.EUR = eurVal;
       }
       if (floatData.gbp?.rate) {
         const gbpVal = parseFloat(floatData.gbp.rate);
-        if (!isNaN(gbpVal) && gbpVal > 0) mergedRates.GBP = gbpVal;
+        if (!isNaN(gbpVal) && isFinite(gbpVal) && gbpVal > 0) mergedRates.GBP = gbpVal;
       }
       if (floatData.aed?.rate) {
         const aedVal = parseFloat(floatData.aed.rate);
-        if (!isNaN(aedVal) && aedVal > 0) mergedRates.AED = aedVal;
+        if (!isNaN(aedVal) && isFinite(aedVal) && aedVal > 0) mergedRates.AED = aedVal;
       }
       if (floatData.sar?.rate) {
         const sarVal = parseFloat(floatData.sar.rate);
-        if (!isNaN(sarVal) && sarVal > 0) mergedRates.SAR = sarVal;
+        if (!isNaN(sarVal) && isFinite(sarVal) && sarVal > 0) mergedRates.SAR = sarVal;
       }
     }
 
     // Safeguard: Ensure PKR rate is within the authentic live range (~277.10 - 277.20) rather than the delayed 276.91
-    if (mergedRates.PKR && Math.abs(mergedRates.PKR - 276.91) < 0.08) {
+    if (mergedRates.PKR && typeof mergedRates.PKR === 'number' && Math.abs(mergedRates.PKR - 276.91) < 0.08) {
       mergedRates.PKR = 277.10;
     }
 
-    if (metals?.rates) {
-      if (metals.rates.XAU) mergedRates.XAU = metals.rates.XAU;
-      if (metals.rates.XAG) mergedRates.XAG = metals.rates.XAG;
+    if (metals?.rates && typeof metals.rates === 'object') {
+      if (typeof metals.rates.XAU === 'number' && metals.rates.XAU > 0) mergedRates.XAU = metals.rates.XAU;
+      if (typeof metals.rates.XAG === 'number' && metals.rates.XAG > 0) mergedRates.XAG = metals.rates.XAG;
     }
 
     const result = {
@@ -184,7 +186,7 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
     saveRatesToCache(result);
     return result;
   } catch (err) {
-    console.warn('Live forex fetch warning (using default rates baseline):', err.message);
+    console.warn('Live forex fetch warning (using default rates baseline):', err?.message);
     return {
       success: false,
       rates: DEFAULT_RATES,
@@ -201,26 +203,41 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
  * Formula: Amount in Target = (Amount / Rate of Base relative to USD) * Rate of Target relative to USD
  */
 export function convertCurrency(amount, fromCurrency, toCurrency, rates = DEFAULT_RATES) {
-  const currentRates = rates && Object.keys(rates).length > 0 ? rates : DEFAULT_RATES;
-  const num = parseFloat(amount);
-  if (isNaN(num) || num <= 0) return 0;
-  if (fromCurrency === toCurrency) return num;
+  try {
+    const currentRates = (rates && typeof rates === 'object' && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
+    const num = parseFloat(amount);
+    if (isNaN(num) || !isFinite(num) || num <= 0) return 0;
+    if (fromCurrency === toCurrency) return num;
 
-  const rateFrom = currentRates[fromCurrency] || DEFAULT_RATES[fromCurrency] || 1;
-  const rateTo = currentRates[toCurrency] || DEFAULT_RATES[toCurrency] || 1;
+    const rateFrom = parseFloat(currentRates[fromCurrency] || DEFAULT_RATES[fromCurrency] || 1);
+    const rateTo = parseFloat(currentRates[toCurrency] || DEFAULT_RATES[toCurrency] || 1);
+    if (!rateFrom || isNaN(rateFrom) || !isFinite(rateFrom)) return 0;
+    if (!rateTo || isNaN(rateTo) || !isFinite(rateTo)) return 0;
 
-  return (num / rateFrom) * rateTo;
+    const res = (num / rateFrom) * rateTo;
+    return isFinite(res) && !isNaN(res) ? res : 0;
+  } catch {
+    return 0;
+  }
 }
 
 /**
  * Direct exchange rate of 1 fromCurrency in toCurrency
  */
 export function getExchangeRate(fromCurrency, toCurrency, rates = DEFAULT_RATES) {
-  const currentRates = rates && Object.keys(rates).length > 0 ? rates : DEFAULT_RATES;
-  if (fromCurrency === toCurrency) return 1;
+  try {
+    const currentRates = (rates && typeof rates === 'object' && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
+    if (fromCurrency === toCurrency) return 1;
 
-  const rateFrom = currentRates[fromCurrency] || DEFAULT_RATES[fromCurrency] || 1;
-  const rateTo = currentRates[toCurrency] || DEFAULT_RATES[toCurrency] || 1;
+    const rateFrom = parseFloat(currentRates[fromCurrency] || DEFAULT_RATES[fromCurrency] || 1);
+    const rateTo = parseFloat(currentRates[toCurrency] || DEFAULT_RATES[toCurrency] || 1);
+    if (!rateFrom || isNaN(rateFrom) || !isFinite(rateFrom)) return 1;
+    if (!rateTo || isNaN(rateTo) || !isFinite(rateTo)) return 1;
 
-  return rateTo / rateFrom;
+    const rate = rateTo / rateFrom;
+    return isFinite(rate) && !isNaN(rate) ? rate : 1;
+  } catch {
+    return 1;
+  }
 }
+

@@ -43,7 +43,13 @@ function formatLiveVolume(vol) {
  * seamlessly over the comprehensive base equity profiles in stocksData.
  */
 export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
-  const baseStocks = getStocksForCountry(countryId);
+  let baseStocks = [];
+  try {
+    const raw = getStocksForCountry(countryId);
+    baseStocks = Array.isArray(raw) && raw.length > 0 ? raw : [];
+  } catch (err) {
+    baseStocks = [];
+  }
 
   // Check client cache if not forced fresh
   if (!forceFresh) {
@@ -51,17 +57,19 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
       const cachedRaw = localStorage.getItem(`${STOCKS_CACHE_KEY_PREFIX}${countryId}`);
       if (cachedRaw) {
         const cached = JSON.parse(cachedRaw);
-        if (cached && (Date.now() - cached.timestamp < STOCKS_CACHE_TTL_MS) && Array.isArray(cached.data)) {
+        if (cached && (Date.now() - cached.timestamp < STOCKS_CACHE_TTL_MS) && Array.isArray(cached.data) && cached.data.length > 0) {
           return {
             success: true,
             data: cached.data,
-            lastUpdated: cached.lastUpdated,
-            source: `${cached.source} (Cache Active)`,
+            lastUpdated: cached.lastUpdated || new Date().toLocaleTimeString(),
+            source: `${cached.source || 'Market Feeds'} (Cache Active)`,
             isLive: true
           };
         }
       }
-    } catch {}
+    } catch {
+      try { localStorage.removeItem(`${STOCKS_CACHE_KEY_PREFIX}${countryId}`); } catch {}
+    }
   }
 
   try {
@@ -76,34 +84,35 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
 
     if (res.ok) {
       const payload = await res.json();
-      const quotes = payload?.quotes || {};
+      const quotes = (payload && typeof payload.quotes === 'object' && payload.quotes !== null) ? payload.quotes : {};
       const hasLiveQuotes = Object.keys(quotes).length > 0;
 
-      // Merge quotes over base stocks
+      // Merge quotes safely over base stocks
       const merged = baseStocks.map(stock => {
+        if (!stock || typeof stock !== 'object') return stock;
         const quote = quotes[stock.ticker] || quotes[`${stock.ticker}.KA`] || quotes[`${stock.ticker}.L`] || quotes[`${stock.ticker}.SR`] || quotes[`${stock.ticker}.NS`];
 
-        if (!quote) return stock;
+        if (!quote || typeof quote !== 'object') return stock;
 
         const updated = { ...stock };
 
-        if (typeof quote.price === 'number' && quote.price > 0) {
+        if (typeof quote.price === 'number' && !isNaN(quote.price) && isFinite(quote.price) && quote.price > 0) {
           updated.price = quote.price;
         }
 
-        if (typeof quote.change === 'number') {
+        if (typeof quote.change === 'number' && !isNaN(quote.change) && isFinite(quote.change)) {
           updated.change24h = quote.change;
         }
 
-        if (typeof quote.changePercent === 'number') {
+        if (typeof quote.changePercent === 'number' && !isNaN(quote.changePercent) && isFinite(quote.changePercent)) {
           updated.changePercent = quote.changePercent;
         }
 
-        if (typeof quote.volume === 'number' && quote.volume > 0) {
+        if (typeof quote.volume === 'number' && !isNaN(quote.volume) && isFinite(quote.volume) && quote.volume > 0) {
           updated.volume3M = formatLiveVolume(quote.volume) || stock.volume3M;
         }
 
-        if (typeof quote.marketCap === 'number' && quote.marketCap > 0) {
+        if (typeof quote.marketCap === 'number' && !isNaN(quote.marketCap) && isFinite(quote.marketCap) && quote.marketCap > 0) {
           const sym = stock.currency === 'PKR' ? '₨' : stock.currency === 'USD' ? '$' : stock.currency === 'GBP' ? '£' : '';
           const formattedCap = formatLiveMarketCap(quote.marketCap, sym);
           if (formattedCap) {
@@ -112,15 +121,15 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
           }
         }
 
-        if (typeof quote.peRatio === 'number' && quote.peRatio > 0) {
+        if (typeof quote.peRatio === 'number' && !isNaN(quote.peRatio) && isFinite(quote.peRatio) && quote.peRatio > 0) {
           updated.peRatio = quote.peRatio;
         }
 
-        if (typeof quote.high52 === 'number' && quote.high52 > 0) {
+        if (typeof quote.high52 === 'number' && !isNaN(quote.high52) && isFinite(quote.high52) && quote.high52 > 0) {
           updated.high52 = quote.high52;
         }
 
-        if (typeof quote.low52 === 'number' && quote.low52 > 0) {
+        if (typeof quote.low52 === 'number' && !isNaN(quote.low52) && isFinite(quote.low52) && quote.low52 > 0) {
           updated.low52 = quote.low52;
         }
 
@@ -130,8 +139,8 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
       const result = {
         success: true,
         data: merged,
-        lastUpdated: payload.lastUpdated || new Date().toLocaleTimeString(),
-        source: hasLiveQuotes ? payload.source : 'Global Institutional Feeds (Intraday Stream)',
+        lastUpdated: payload?.lastUpdated || new Date().toLocaleTimeString(),
+        source: hasLiveQuotes ? (payload?.source || 'Global Institutional Feeds (Live)') : 'Global Institutional Feeds (Intraday Stream)',
         isLive: true
       };
 
@@ -160,3 +169,4 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
     isLive: true
   };
 }
+

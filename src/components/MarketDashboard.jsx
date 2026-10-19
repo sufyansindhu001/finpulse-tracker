@@ -65,53 +65,56 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
   };
 
   // Extract Live Assets
+  // Extract Live Assets
   const assets = useMemo(() => {
+    const list = Array.isArray(cryptoList) ? cryptoList : [];
     // 1. Cryptos from live list
-    const btc = cryptoList.find(c => c.symbol.toLowerCase() === 'btc') || {
+    const btc = list.find(c => c && c.symbol && String(c.symbol).toLowerCase() === 'btc') || {
       name: 'Bitcoin', symbol: 'BTC', current_price: 96850, price_change_percentage_24h: 2.14,
       high_24h: 97400, low_24h: 94800, sparkline: [94800, 95200, 95100, 96000, 95800, 96400, 96850]
     };
 
-    const eth = cryptoList.find(c => c.symbol.toLowerCase() === 'eth') || {
+    const eth = list.find(c => c && c.symbol && String(c.symbol).toLowerCase() === 'eth') || {
       name: 'Ethereum', symbol: 'ETH', current_price: 2780, price_change_percentage_24h: -0.85,
       high_24h: 2840, low_24h: 2750, sparkline: [2820, 2840, 2800, 2790, 2760, 2770, 2780]
     };
 
-    const sol = cryptoList.find(c => c.symbol.toLowerCase() === 'sol') || {
+    const sol = list.find(c => c && c.symbol && String(c.symbol).toLowerCase() === 'sol') || {
       name: 'Solana', symbol: 'SOL', current_price: 194.20, price_change_percentage_24h: 4.62,
       high_24h: 198.50, low_24h: 184.00, sparkline: [184, 186, 189, 192, 190, 193, 194.2]
     };
 
-    const bnb = cryptoList.find(c => c.symbol.toLowerCase() === 'bnb') || {
+    const bnb = list.find(c => c && c.symbol && String(c.symbol).toLowerCase() === 'bnb') || {
       name: 'BNB', symbol: 'BNB', current_price: 645.10, price_change_percentage_24h: 1.15,
       high_24h: 652.00, low_24h: 638.00, sparkline: [638, 641, 640, 644, 642, 646, 645.1]
     };
 
     // 2. Forex Corridors
-    const usdPkrRate = rates.PKR || 277.10;
-    const eurUsdRate = rates.EUR ? (1 / rates.EUR) : 1.0845;
-    const gbpUsdRate = rates.GBP ? (1 / rates.GBP) : 1.2890;
+    const usdPkrRate = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 277.10;
+    const eurUsdRate = (typeof rates?.EUR === 'number' && !isNaN(rates.EUR) && isFinite(rates.EUR) && rates.EUR > 0) ? (1 / rates.EUR) : 1.0845;
+    const gbpUsdRate = (typeof rates?.GBP === 'number' && !isNaN(rates.GBP) && isFinite(rates.GBP) && rates.GBP > 0) ? (1 / rates.GBP) : 1.2890;
 
     // 3. Live Precious Metals
-    const goldPriceUsd = (rates.XAU && rates.XAU > 0)
+    const goldPriceUsd = (typeof rates?.XAU === 'number' && !isNaN(rates.XAU) && isFinite(rates.XAU) && rates.XAU > 0)
       ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData.gold?.price || 2740.00);
+      : (metalsData?.gold?.price || 2740.00);
 
-    const silverPriceUsd = (rates.XAG && rates.XAG > 0)
+    const silverPriceUsd = (typeof rates?.XAG === 'number' && !isNaN(rates.XAG) && isFinite(rates.XAG) && rates.XAG > 0)
       ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData.silver?.price || 32.50);
+      : (metalsData?.silver?.price || 32.50);
 
-    const goldChange = metalsData.gold?.change ?? 0.45;
-    const silverChange = metalsData.silver?.change ?? 0.87;
+    const goldChange = metalsData?.gold?.change ?? 0.45;
+    const silverChange = metalsData?.silver?.change ?? 0.87;
 
-    const goldHigh = metalsData.gold?.high || (goldPriceUsd * 1.008);
-    const goldLow = metalsData.gold?.low || (goldPriceUsd * 0.992);
+    const goldHigh = metalsData?.gold?.high || (goldPriceUsd * 1.008);
+    const goldLow = metalsData?.gold?.low || (goldPriceUsd * 0.992);
 
-    const silverHigh = metalsData.silver?.high || (silverPriceUsd * 1.012);
-    const silverLow = metalsData.silver?.low || (silverPriceUsd * 0.988);
+    const silverHigh = metalsData?.silver?.high || (silverPriceUsd * 1.012);
+    const silverLow = metalsData?.silver?.low || (silverPriceUsd * 0.988);
 
     // Dynamic Local Benchmark (PKR per Tola & Gram)
     const pkrGold = calculateGoldLocalMetrics(goldPriceUsd, usdPkrRate);
+
 
     return [
       // Top 4 Cryptocurrencies

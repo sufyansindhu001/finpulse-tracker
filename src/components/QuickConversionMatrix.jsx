@@ -57,19 +57,20 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                 </div>
 
                 <div className="text-2xl font-black text-slate-900 dark:text-white mt-1 tabular-nums tracking-tight">
-                  {rate < 0.001 
-                    ? rate.toFixed(6) 
-                    : rate < 1 
-                      ? rate.toFixed(4) 
-                      : rate.toFixed(2)}
+                  {typeof rate === 'number' && !isNaN(rate) && isFinite(rate)
+                    ? (rate < 0.001 ? rate.toFixed(6) : rate < 1 ? rate.toFixed(4) : rate.toFixed(2))
+                    : '1.00'}
                 </div>
 
                 <div className="text-xs text-slate-600 dark:text-slate-400 mt-3 pt-2.5 border-t border-slate-200/80 dark:border-white/[0.06] flex justify-between tabular-nums font-medium">
                   <span>100 {pair.base} =</span>
                   <span className="text-slate-800 dark:text-slate-200 font-bold">
-                    {val100.toLocaleString(undefined, { maximumFractionDigits: 2 })} {pair.target}
+                    {typeof val100 === 'number' && !isNaN(val100) && isFinite(val100)
+                      ? val100.toLocaleString(undefined, { maximumFractionDigits: 2 })
+                      : '0.00'} {pair.target}
                   </span>
                 </div>
+
               </div>
             );
           })}
@@ -104,20 +105,23 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
                         <span className="text-slate-500 dark:text-slate-400 uppercase text-xs">({code})</span>
                       </td>
                       <td className="py-3 px-4 text-right text-emerald-600 dark:text-emerald-400 font-bold">
-                        {rate < 0.001 ? rate.toFixed(6) : rate.toFixed(2)}
+                        {typeof rate === 'number' && !isNaN(rate) && isFinite(rate)
+                          ? (rate < 0.001 ? rate.toFixed(6) : rate.toFixed(2))
+                          : '1.00'}
                       </td>
                       <td className="py-3 px-4 text-right text-slate-700 dark:text-slate-300">
-                        {(rate * 50).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {typeof rate === 'number' && !isNaN(rate) && isFinite(rate) ? (rate * 50).toLocaleString(undefined, { maximumFractionDigits: 2 }) : '50.00'}
                       </td>
                       <td className="py-3 px-4 text-right text-slate-700 dark:text-slate-300">
-                        {(rate * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {typeof rate === 'number' && !isNaN(rate) && isFinite(rate) ? (rate * 100).toLocaleString(undefined, { maximumFractionDigits: 2 }) : '100.00'}
                       </td>
                       <td className="py-3 px-4 text-right text-slate-700 dark:text-slate-300">
-                        {(rate * 500).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {typeof rate === 'number' && !isNaN(rate) && isFinite(rate) ? (rate * 500).toLocaleString(undefined, { maximumFractionDigits: 2 }) : '500.00'}
                       </td>
                       <td className="py-3 px-4 text-right text-slate-900 dark:text-white font-bold">
-                        {(rate * 1000).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {typeof rate === 'number' && !isNaN(rate) && isFinite(rate) ? (rate * 1000).toLocaleString(undefined, { maximumFractionDigits: 2 }) : '1,000.00'}
                       </td>
+
                     </tr>
                   );
                 })}

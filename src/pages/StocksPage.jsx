@@ -122,11 +122,14 @@ export default function StocksPage() {
 
   // Load raw stocks for active country (backed by live streaming data)
   const rawCountryStocks = useMemo(() => {
-    return liveStocks && liveStocks.length > 0 ? liveStocks : getStocksForCountry(selectedCountry);
+    if (Array.isArray(liveStocks) && liveStocks.length > 0) return liveStocks;
+    const base = getStocksForCountry(selectedCountry);
+    return Array.isArray(base) && base.length > 0 ? base : (PAKISTAN_PSX_DATASET || []);
   }, [liveStocks, selectedCountry]);
 
   const activeCountryObj = useMemo(() => {
-    return WORLD_COUNTRIES.find(c => c.id === selectedCountry) || WORLD_COUNTRIES[0];
+    const list = Array.isArray(WORLD_COUNTRIES) ? WORLD_COUNTRIES : [];
+    return list.find(c => c.id === selectedCountry) || list[0] || { id: 'pk', name: 'Pakistan', code: 'PK', symbol: '₨', flag: '🇵🇰', exchange: 'PSX (Karachi)' };
   }, [selectedCountry]);
 
   // Handle Filter Change
@@ -144,16 +147,19 @@ export default function StocksPage() {
   // Count active applied filters
   const appliedFiltersCount = useMemo(() => {
     let count = 0;
-    Object.values(filters).forEach(v => {
-      if (v && v !== 'Any') count++;
-    });
+    if (filters && typeof filters === 'object') {
+      Object.values(filters).forEach(v => {
+        if (v && v !== 'Any') count++;
+      });
+    }
     if (activeScreenTitle) count++;
     return count;
   }, [filters, activeScreenTitle]);
 
   // Pre-built screen apply handler
   const handleApplyScreen = (screen) => {
-    setActiveScreenTitle(screen.title);
+    if (!screen) return;
+    setActiveScreenTitle(screen.title || null);
     setCurrentPage(1);
 
     if (screen.filterType === 'near52w') {
@@ -178,63 +184,66 @@ export default function StocksPage() {
 
   // Comprehensive Real-Time Filtering Engine
   const filteredStocks = useMemo(() => {
-    return rawCountryStocks.filter(stock => {
+    const list = Array.isArray(rawCountryStocks) ? rawCountryStocks : [];
+    return list.filter(stock => {
+      if (!stock || typeof stock !== 'object') return false;
+
       // Sector filter
       if (filters.sector && filters.sector !== 'Any' && stock.sector !== filters.sector) return false;
       // Industry filter
       if (filters.industry && filters.industry !== 'Any' && stock.industry !== filters.industry) return false;
       // Exchange filter
-      if (filters.exchange && filters.exchange !== 'Any' && !stock.exchange.includes(filters.exchange)) return false;
+      if (filters.exchange && filters.exchange !== 'Any' && (!stock.exchange || !String(stock.exchange).includes(filters.exchange))) return false;
       // Equity Type
       if (filters.equityType && filters.equityType !== 'Any' && stock.equityType !== filters.equityType) return false;
 
       // Market Cap filter
-      const mcap = stock.marketCapNum || 0;
+      const mcap = Number(stock.marketCapNum) || 0;
       if (filters.marketCap === 'Mega' && mcap < 200) return false;
       if (filters.marketCap === 'Large' && (mcap < 100 || mcap >= 200)) return false;
       if (filters.marketCap === 'Mid' && (mcap < 20 || mcap >= 100)) return false;
       if (filters.marketCap === 'Small' && mcap >= 20) return false;
 
       // Last Price filter
-      const pr = stock.price || 0;
+      const pr = Number(stock.price) || 0;
       if (filters.lastPrice === 'under50' && pr >= 50) return false;
       if (filters.lastPrice === '50-200' && (pr < 50 || pr > 200)) return false;
       if (filters.lastPrice === '200-500' && (pr < 200 || pr > 500)) return false;
       if (filters.lastPrice === 'over500' && pr <= 500) return false;
 
       // P/E Ratio filter
-      const pe = stock.peRatio || 0;
+      const pe = Number(stock.peRatio) || 0;
       if (filters.peRatio === 'low5' && pe > 5.0) return false;
       if (filters.peRatio === 'value10' && pe > 10.0) return false;
       if (filters.peRatio === 'mod10-25' && (pe < 10.0 || pe > 25.0)) return false;
       if (filters.peRatio === 'high25' && pe <= 25.0) return false;
 
       // Dividend Yield filter
-      const div = stock.dividendYield || 0;
+      const div = Number(stock.dividendYield) || 0;
       if (filters.dividendYield === 'over5' && div < 5.0) return false;
       if (filters.dividendYield === 'over10' && div < 10.0) return false;
       if (filters.dividendYield === 'over14' && div < 14.0) return false;
 
       // Price / Book filter
-      const pb = stock.pbRatio || 0;
+      const pb = Number(stock.pbRatio) || 0;
       if (filters.pbRatio === 'below1' && pb >= 1.0) return false;
       if (filters.pbRatio === '1-3' && (pb < 1.0 || pb > 3.0)) return false;
       if (filters.pbRatio === 'above3' && pb <= 3.0) return false;
 
       // EV/EBITDA
-      const ev = stock.evEbitda || 5.0;
+      const ev = Number(stock.evEbitda) || 5.0;
       if (filters.evEbitda === 'low5' && ev >= 5.0) return false;
       if (filters.evEbitda === '5-10' && (ev < 5.0 || ev > 10.0)) return false;
       if (filters.evEbitda === 'over10' && ev <= 10.0) return false;
 
       // RSI filter
-      const rsi = stock.rsi14 || 55;
+      const rsi = Number(stock.rsi14) || 55;
       if (filters.rsi === 'oversold' && rsi >= 35) return false;
       if (filters.rsi === 'neutral' && (rsi < 35 || rsi > 70)) return false;
       if (filters.rsi === 'overbought' && rsi <= 70) return false;
 
       // Piotroski filter
-      const piot = stock.piotroski || 7;
+      const piot = Number(stock.piotroski) || 7;
       if (filters.piotroski === 'high7' && piot < 7) return false;
       if (filters.piotroski === 'moderate' && (piot < 5 || piot > 6)) return false;
 
@@ -264,17 +273,17 @@ export default function StocksPage() {
 
       // Technical Rating
       if (filters.technicalRating && filters.technicalRating !== 'Any') {
-        if (!stock.technicalRating || !stock.technicalRating.includes(filters.technicalRating)) return false;
+        if (!stock.technicalRating || !String(stock.technicalRating).includes(filters.technicalRating)) return false;
       }
 
       // Altman Z-Score
-      const az = stock.altmanZ || 3.2;
+      const az = Number(stock.altmanZ) || 3.2;
       if (filters.altmanZ === 'safe3' && az < 3.0) return false;
       if (filters.altmanZ === 'grey' && (az < 1.8 || az >= 3.0)) return false;
 
       // 52-Week Range Proximity
-      const low = stock.low52 || pr * 0.75;
-      const high = stock.high52 || pr * 1.35;
+      const low = Number(stock.low52) || (pr * 0.75);
+      const high = Number(stock.high52) || (pr * 1.35);
       const spread = high - low || 1;
       const prox = ((pr - low) / spread) * 100;
       if (filters.range52 === 'nearHigh' && prox < 80) return false;
@@ -282,20 +291,21 @@ export default function StocksPage() {
 
       return true;
     }).sort((a, b) => {
-      let valA = a[sortField];
-      let valB = b[sortField];
+      let valA = a ? a[sortField] : 0;
+      let valB = b ? b[sortField] : 0;
       if (typeof valA === 'number' && typeof valB === 'number') {
         return sortDirection === 'asc' ? valA - valB : valB - valA;
       }
-      valA = String(valA || '');
-      valB = String(valB || '');
+      valA = String(valA ?? '');
+      valB = String(valB ?? '');
       return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
     });
   }, [rawCountryStocks, filters, sortField, sortDirection]);
 
   // Paginated Slices
-  const totalPages = Math.ceil(filteredStocks.length / rowsPerPage) || 1;
+  const totalPages = Math.max(1, Math.ceil((Array.isArray(filteredStocks) ? filteredStocks.length : 0) / rowsPerPage));
   const paginatedStocks = useMemo(() => {
+    if (!Array.isArray(filteredStocks)) return [];
     const start = (currentPage - 1) * rowsPerPage;
     return filteredStocks.slice(start, start + rowsPerPage);
   }, [filteredStocks, currentPage, rowsPerPage]);
@@ -321,29 +331,33 @@ export default function StocksPage() {
 
   // CSV Export Function
   const handleExportCSV = () => {
-    const headers = ['Ticker', 'Name', 'Exchange', 'Sector', 'Industry', 'Price', 'Currency', '24h Change %', 'Market Cap', 'P/E', 'P/B', 'Dividend Yield %'];
-    const rows = filteredStocks.map(s => [
-      s.ticker,
-      `"${s.name.replace(/"/g, '""')}"`,
-      s.exchange,
-      `"${s.sector}"`,
-      `"${s.industry}"`,
-      s.price,
-      s.currency,
-      s.changePercent,
-      `"${s.marketCap}"`,
-      s.peRatio,
-      s.pbRatio,
-      s.dividendYield
-    ]);
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `${activeCountryObj.code}_stocks_screener.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      const headers = ['Ticker', 'Name', 'Exchange', 'Sector', 'Industry', 'Price', 'Currency', '24h Change %', 'Market Cap', 'P/E', 'P/B', 'Dividend Yield %'];
+      const rows = (Array.isArray(filteredStocks) ? filteredStocks : []).map(s => [
+        s?.ticker || '',
+        `"${String(s?.name || '').replace(/"/g, '""')}"`,
+        s?.exchange || '',
+        `"${s?.sector || ''}"`,
+        `"${s?.industry || ''}"`,
+        s?.price ?? '',
+        s?.currency || '',
+        s?.changePercent ?? '',
+        `"${s?.marketCap || ''}"`,
+        s?.peRatio ?? '',
+        s?.pbRatio ?? '',
+        s?.dividendYield ?? ''
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `${activeCountryObj?.code || 'stocks'}_screener.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.warn('CSV export error:', e);
+    }
   };
 
   // Dynamic Country Sectors Directory
@@ -363,11 +377,16 @@ export default function StocksPage() {
       ];
     }
     const counts = {};
-    rawCountryStocks.forEach(s => {
-      counts[s.sector] = (counts[s.sector] || 0) + 1;
-    });
+    if (Array.isArray(rawCountryStocks)) {
+      rawCountryStocks.forEach(s => {
+        if (s && s.sector) {
+          counts[s.sector] = (counts[s.sector] || 0) + 1;
+        }
+      });
+    }
     return Object.entries(counts).map(([name, count]) => ({ name, count }));
   }, [selectedCountry, rawCountryStocks]);
+
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-200">
@@ -676,26 +695,32 @@ export default function StocksPage() {
                       {/* P/E Ratio (Green for positive, red for negative) */}
                       <td className="py-3 px-3 text-right font-mono font-bold whitespace-nowrap">
                         <span className={isPositivePe ? 'text-[#00E676]' : 'text-rose-500'}>
-                          {stock.peRatio.toFixed(1)}x
+                          {typeof stock.peRatio === 'number' && !isNaN(stock.peRatio) ? `${stock.peRatio.toFixed(1)}x` : 'N/A'}
                         </span>
                       </td>
 
                       {/* Price / Book */}
                       <td className="py-3 px-3 text-right font-mono font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                        {stock.pbRatio.toFixed(2)}
+                        {typeof stock.pbRatio === 'number' && !isNaN(stock.pbRatio) ? stock.pbRatio.toFixed(2) : 'N/A'}
                       </td>
 
                       {/* Last Trade Price */}
                       <td className="py-3 px-4 text-right font-mono font-black text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                        {activeCountryObj.symbol}{stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {activeCountryObj?.symbol || ''}{typeof stock.price === 'number' && !isNaN(stock.price) ? stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (stock.price || '0.00')}
                       </td>
 
                       {/* 24h Change % */}
                       <td className="py-3 px-3 text-right font-mono font-bold whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-0.5 ${(stock.changePercent ?? 0) >= 0 ? 'text-[#00E676]' : 'text-rose-500'}`}>
-                          {(stock.changePercent ?? 0) >= 0 ? '+' : ''}{(stock.changePercent ?? 0).toFixed(2)}%
-                        </span>
+                        {(() => {
+                          const cp = typeof stock.changePercent === 'number' && !isNaN(stock.changePercent) ? stock.changePercent : 0;
+                          return (
+                            <span className={`inline-flex items-center gap-0.5 ${cp >= 0 ? 'text-[#00E676]' : 'text-rose-500'}`}>
+                              {cp >= 0 ? '+' : ''}{cp.toFixed(2)}%
+                            </span>
+                          );
+                        })()}
                       </td>
+
 
                       {/* Dynamic Columns based on active View Tab */}
                       {activeViewTab === 'Returns' && (
