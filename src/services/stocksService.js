@@ -2,7 +2,7 @@
 // Institutional Live Stock Screener Service (Global & PSX Equities)
 // Merges live market streaming quotes over institutional stock datasets.
 
-import { getStocksForCountry } from '../data/stocksData';
+import { getStocksForCountry } from '../data/stocksData.js';
 
 const STOCKS_CACHE_KEY_PREFIX = 'fgc_stocks_live_';
 const STOCKS_CACHE_TTL_MS = 30 * 1000; // 30 seconds
@@ -90,7 +90,16 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
       // Merge quotes safely over base stocks
       const merged = baseStocks.map(stock => {
         if (!stock || typeof stock !== 'object') return stock;
-        const quote = quotes[stock.ticker] || quotes[`${stock.ticker}.KA`] || quotes[`${stock.ticker}.L`] || quotes[`${stock.ticker}.SR`] || quotes[`${stock.ticker}.NS`];
+        const quote = quotes[stock.ticker] ||
+          quotes[`${stock.ticker}.KA`] ||
+          quotes[`${stock.ticker}.L`] ||
+          quotes[`${stock.ticker}.SR`] ||
+          quotes[`${stock.ticker}.NS`] ||
+          quotes[`${stock.ticker}.DE`] ||
+          quotes[`${stock.ticker}.PA`] ||
+          quotes[`${stock.ticker}.TO`] ||
+          quotes[`${stock.ticker}.T`] ||
+          quotes[`${stock.ticker}.AX`];
 
         if (!quote || typeof quote !== 'object') return stock;
 

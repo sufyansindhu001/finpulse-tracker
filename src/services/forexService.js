@@ -30,12 +30,12 @@ export const DEFAULT_RATES = {
   NGN: 1650.0,
   KRW: 1390.0,
   VND: 25400.0,
-  XAU: 1 / 2740.00, // 1 Troy Oz Gold in USD ($2,740.00)
-  XAG: 1 / 32.50   // 1 Troy Oz Silver in USD ($32.50)
+  XAU: 1 / 4158.00, // 1 Troy Oz Gold in USD ($4,158.00)
+  XAG: 1 / 57.20    // 1 Troy Oz Silver in USD ($57.20)
 };
 
 export const RATES_CACHE_KEY = 'fgc_spot_forex_rates';
-export const CACHE_TTL_MS = 45 * 1000; // 45 seconds live client-side cache TTL
+export const CACHE_TTL_MS = 30 * 1000; // 30 seconds live client-side cache TTL
 
 const OPEN_EXCHANGE_URL = 'https://open.er-api.com/v6/latest/USD';
 const JSDELIVR_URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
@@ -173,6 +173,13 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
     if (metals?.rates && typeof metals.rates === 'object') {
       if (typeof metals.rates.XAU === 'number' && metals.rates.XAU > 0) mergedRates.XAU = metals.rates.XAU;
       if (typeof metals.rates.XAG === 'number' && metals.rates.XAG > 0) mergedRates.XAG = metals.rates.XAG;
+    } else {
+      if (jsData?.usd?.xau && typeof jsData.usd.xau === 'number' && jsData.usd.xau > 0) {
+        mergedRates.XAU = jsData.usd.xau;
+      }
+      if (jsData?.usd?.xag && typeof jsData.usd.xag === 'number' && jsData.usd.xag > 0) {
+        mergedRates.XAG = jsData.usd.xag;
+      }
     }
 
     const result = {

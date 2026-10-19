@@ -185,10 +185,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   const goldRows = useMemo(() => {
     const goldOzUsd = (rates.XAU && rates.XAU > 0)
       ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData.gold?.price || 2740.00);
+      : (metalsData.gold?.price || 4158.00);
     const silverOzUsd = (rates.XAG && rates.XAG > 0)
       ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData.silver?.price || 32.50);
+      : (metalsData.silver?.price || 57.20);
 
     const goldMetrics = calculateGoldLocalMetrics(goldOzUsd, usdToPkr, true);
     const goldPerTola24K = goldMetrics.pricePerTola24K;
@@ -196,11 +196,11 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
     const goldPerGram24K = goldMetrics.pricePerGram24K;
     const goldPerTola22K = goldMetrics.pricePerTola22K;
     const goldPerGram22K = goldMetrics.pricePerGram22K;
-    const goldPerTola21K = Math.round(goldPerTola24K * (21 / 24));
-    const goldPerTola18K = Math.round(goldPerTola24K * (18 / 24));
+    const goldPerTola21K = goldMetrics.pricePerTola21K;
+    const goldPerTola18K = goldMetrics.pricePerTola18K;
 
-    const goldChange = (metalsData.gold?.change ?? 0.45);
-    const silverChange = (metalsData.silver?.change ?? 0.87);
+    const goldChange = (metalsData.gold?.change ?? -0.56);
+    const silverChange = (metalsData.silver?.change ?? -0.17);
 
     return [
       { purity: '24K Gold (Karachi Sarafa Bullion)', unit: 'Per Tola (11.66g)', ratePkr: goldPerTola24K, rateUsd: (goldPerTola24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },

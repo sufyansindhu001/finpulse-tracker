@@ -97,14 +97,14 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     // 3. Live Precious Metals
     const goldPriceUsd = (typeof rates?.XAU === 'number' && !isNaN(rates.XAU) && isFinite(rates.XAU) && rates.XAU > 0)
       ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData?.gold?.price || 2740.00);
+      : (metalsData?.gold?.price || 4158.00);
 
     const silverPriceUsd = (typeof rates?.XAG === 'number' && !isNaN(rates.XAG) && isFinite(rates.XAG) && rates.XAG > 0)
       ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData?.silver?.price || 32.50);
+      : (metalsData?.silver?.price || 57.20);
 
-    const goldChange = metalsData?.gold?.change ?? 0.45;
-    const silverChange = metalsData?.silver?.change ?? 0.87;
+    const goldChange = metalsData?.gold?.change ?? -0.56;
+    const silverChange = metalsData?.silver?.change ?? -0.17;
 
     const goldHigh = metalsData?.gold?.high || (goldPriceUsd * 1.008);
     const goldLow = metalsData?.gold?.low || (goldPriceUsd * 0.992);
@@ -113,7 +113,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     const silverLow = metalsData?.silver?.low || (silverPriceUsd * 0.988);
 
     // Dynamic Local Benchmark (PKR per Tola & Gram)
-    const pkrGold = calculateGoldLocalMetrics(goldPriceUsd, usdPkrRate);
+    const pkrGold = calculateGoldLocalMetrics(goldPriceUsd, usdPkrRate, true);
 
 
     return [

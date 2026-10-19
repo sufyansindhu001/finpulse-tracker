@@ -30,15 +30,15 @@ export default async function handler(req, res) {
     ]);
     clearTimeout(timeout);
 
-    let goldPrice = 2740.00;
-    let goldChange = 0.45;
-    let goldHigh = 2760.00;
-    let goldLow = 2725.00;
+    let goldPrice = 4158.00;
+    let goldChange = -0.56;
+    let goldHigh = 4211.20;
+    let goldLow = 4155.60;
 
-    let silverPrice = 32.50;
-    let silverChange = 0.87;
-    let silverHigh = 32.90;
-    let silverLow = 32.10;
+    let silverPrice = 57.20;
+    let silverChange = -0.17;
+    let silverHigh = 58.01;
+    let silverLow = 56.90;
 
     // Parse Gold
     if (goldRes?.chart?.result?.[0]?.meta) {
@@ -111,24 +111,24 @@ export default async function handler(req, res) {
       gold: {
         symbol: 'XAU/USD',
         name: 'Gold Spot (Troy Ounce)',
-        price: 2740.00,
-        change: 0.45,
-        high: 2760.00,
-        low: 2725.00,
+        price: 4158.00,
+        change: -0.56,
+        high: 4211.20,
+        low: 4155.60,
         unit: 'troy oz'
       },
       silver: {
         symbol: 'XAG/USD',
         name: 'Silver Spot (Troy Ounce)',
-        price: 32.50,
-        change: 0.87,
-        high: 32.90,
-        low: 32.10,
+        price: 57.20,
+        change: -0.17,
+        high: 58.01,
+        low: 56.90,
         unit: 'troy oz'
       },
       rates: {
-        XAU: 1 / 2740.00,
-        XAG: 1 / 32.50
+        XAU: 1 / 4158.00,
+        XAG: 1 / 57.20
       }
     });
   }

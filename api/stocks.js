@@ -23,6 +23,21 @@ const TICKER_MAP = {
   ],
   in: [
     'RELIANCE.NS', 'TCS.NS', 'HDFCBANK.NS', 'INFY.NS', 'ICICIBANK.NS', 'HINDUNILVR.NS', 'SBIN.NS'
+  ],
+  de: [
+    'SAP.DE', 'SIE.DE', 'ALV.DE', 'DTE.DE', 'AIR.DE', 'MBG.DE', 'BMW.DE'
+  ],
+  fr: [
+    'MC.PA', 'OR.PA', 'TTE.PA', 'RMS.PA', 'SAN.PA', 'SU.PA', 'AIR.PA'
+  ],
+  ca: [
+    'RY.TO', 'TD.TO', 'ENB.TO', 'CNR.TO', 'CP.TO', 'BMO.TO', 'BNS.TO'
+  ],
+  jp: [
+    '7203.T', '6758.T', '6861.T', '9984.T', '8306.T', '6501.T'
+  ],
+  au: [
+    'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 'ANZ.AX'
   ]
 };
 
@@ -40,7 +55,7 @@ export default async function handler(req, res) {
 
   const country = (req.query?.country || 'pk').toLowerCase();
   const customSymbols = req.query?.symbols ? req.query.symbols.split(',') : null;
-  const targetSymbols = (customSymbols || TICKER_MAP[country] || TICKER_MAP.pk).slice(0, 25);
+  const targetSymbols = (customSymbols || TICKER_MAP[country] || TICKER_MAP.pk).slice(0, 35);
 
   try {
     const controller = new AbortController();
