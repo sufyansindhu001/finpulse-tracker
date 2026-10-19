@@ -36,6 +36,14 @@ export default function CountrySelectorDropdown({
     }).sort((a, b) => a.name.localeCompare(b.name));
   }, [searchQuery]);
 
+  const getIso = (c) => {
+    if (!c) return 'pk';
+    const code = (c.code || c.id || 'pk').toLowerCase();
+    return code === 'uk' ? 'gb' : code;
+  };
+
+  const activeIso = getIso(activeCountry);
+
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
       {/* Trigger Button (Exact Investing.com Style: Flag + PK + Chevron) */}
@@ -45,8 +53,13 @@ export default function CountrySelectorDropdown({
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <span className="text-base leading-none">{activeCountry.flag}</span>
-        <span className="font-mono tracking-wider">{activeCountry.code}</span>
+        <img
+          src={`https://flagcdn.com/w40/${activeIso}.png`}
+          alt={activeCountry.name}
+          className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        />
+        <span className="font-mono tracking-wider font-bold">{activeCountry.code}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
@@ -76,7 +89,12 @@ export default function CountrySelectorDropdown({
               <div className="w-4 h-4 rounded-full border-2 border-blue-600 bg-white dark:bg-gray-900 flex items-center justify-center shrink-0">
                 <div className="w-2 h-2 rounded-full bg-blue-600" />
               </div>
-              <span className="text-base select-none">{activeCountry.flag}</span>
+              <img
+                src={`https://flagcdn.com/w40/${activeIso}.png`}
+                alt={activeCountry.name}
+                className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
               <span className="text-xs font-bold text-gray-900 dark:text-gray-100">
                 {activeCountry.name}
               </span>
@@ -105,6 +123,7 @@ export default function CountrySelectorDropdown({
           <div className="max-h-64 overflow-y-auto py-1 divide-y divide-gray-100 dark:divide-white/[0.03]">
             {filteredCountries.map((c) => {
               const isSelected = c.id === selectedCountry;
+              const cIso = getIso(c);
               return (
                 <button
                   key={c.id}
@@ -126,7 +145,12 @@ export default function CountrySelectorDropdown({
                     }`}>
                       {isSelected && <div className="w-2 h-2 rounded-full bg-blue-600" />}
                     </div>
-                    <span className="text-base select-none">{c.flag}</span>
+                    <img
+                      src={`https://flagcdn.com/w40/${cIso}.png`}
+                      alt={c.name}
+                      className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
                     <span className={`text-xs ${isSelected ? 'font-black text-blue-600 dark:text-blue-400' : 'font-semibold text-gray-800 dark:text-gray-200'}`}>
                       {c.name}
                     </span>

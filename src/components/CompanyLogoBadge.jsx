@@ -1,8 +1,114 @@
 import React, { useState } from 'react';
 
-// Institutional Corporate Branding Palette for Global & PSX Equities
+// Official Corporate Domain Mapping for High-Resolution Favicons & Clearbit Brand Logos
+const COMPANY_DOMAINS = {
+  // Pakistan Stock Exchange (PSX) Blue-Chips
+  'OGDC': 'ogdc.com',
+  'MEBL': 'meezanbank.com',
+  'UBL': 'ubldigital.com',
+  'MCB': 'mcb.com.pk',
+  'HBL': 'hbl.com',
+  'BAFL': 'bankalfalah.com',
+  'BAHL': 'bankalhabib.com',
+  'NBP': 'nbp.com.pk',
+  'LUCK': 'lucky-cement.com',
+  'ENGRO': 'engro.com',
+  'FFC': 'ffc.com.pk',
+  'EFERT': 'engrofertilizers.com',
+  'FATIMA': 'fatima-group.com',
+  'SYS': 'systemsltd.com',
+  'HUBC': 'hubpower.com',
+  'PPL': 'ppl.com.pk',
+  'MARI': 'marienergies.com.pk',
+  'PSO': 'psopk.com',
+  'DGKC': 'dgkcement.com',
+  'POL': 'papk.com',
+  'FCCL': 'fauji.org.pk',
+  'KAPCO': 'kapco.com.pk',
+  'KEL': 'ke.com.pk',
+  'TRG': 'trgpakistan.com',
+  'CHCC': 'cherat.com',
+  'MLCF': 'mapleleaf.com.pk',
+  'SEARL': 'searlecompany.com',
+  'ILP': 'interloop-pk.com',
+  'PIOC': 'pioneercement.com',
+  'INIL': 'iil.com.pk',
+  'ISL': 'isl.com.pk',
+  'ATRL': 'arl.com.pk',
+  'PRL': 'prl.com.pk',
+  'SNGP': 'sngpl.com.pk',
+  'SSGC': 'ssgc.com.pk',
+  'PAKT': 'bat.com',
+  'PSEL': 'pakistanservices.com',
+  'LOTCHEM': 'lottechem.pk',
+  'AGP': 'agp.com.pk',
+  'ABOT': 'abbott.com.pk',
+  'GLAXO': 'gsk.com',
+  'NESTLE': 'nestle.pk',
+  'FHAM': 'fauji.org.pk',
+  'UNITY': 'unityfoods.pk',
+  'GTYR': 'gtyre.com.pk',
+  'KML': 'kmlg.com',
+  'NATF': 'nationalfoods.org',
+  'TELE': 'telecard.com.pk',
+  'WTL': 'worldcall.net.pk',
+  'NETSOL': 'netsol.com',
+  'AIRLINK': 'airlinkcommunication.com',
+  'OCTOPUS': 'octopusdtx.com',
+  'AVN': 'avn.com.pk',
+
+  // Global Equities (US, UK, Saudi, Japan, Europe, Asia)
+  'AAPL': 'apple.com',
+  'MSFT': 'microsoft.com',
+  'NVDA': 'nvidia.com',
+  'GOOGL': 'google.com',
+  'AMZN': 'amazon.com',
+  'TSLA': 'tesla.com',
+  'META': 'meta.com',
+  'BRK.B': 'berkshirehathaway.com',
+  'BRKB': 'berkshirehathaway.com',
+  'JPM': 'jpmorganchase.com',
+  'V': 'visa.com',
+  'WMT': 'walmart.com',
+  'XOM': 'exxonmobil.com',
+  '2222.SR': 'aramco.com',
+  '2222': 'aramco.com',
+  '1120.SR': 'alrajhibank.com.sa',
+  '1120': 'alrajhibank.com.sa',
+  '2010.SR': 'sabic.com',
+  '2010': 'sabic.com',
+  '7203.T': 'toyota.com',
+  '7203': 'toyota.com',
+  '6758.T': 'sony.com',
+  '6758': 'sony.com',
+  '9984.T': 'group.softbank',
+  '9984': 'group.softbank',
+  'SHEL.L': 'shell.com',
+  'SHEL': 'shell.com',
+  'AZN.L': 'astrazeneca.com',
+  'AZN': 'astrazeneca.com',
+  'HSBA.L': 'hsbc.com',
+  'HSBA': 'hsbc.com',
+  '1398.HK': 'icbc.com.cn',
+  '1398': 'icbc.com.cn',
+  '0700.HK': 'tencent.com',
+  '0700': 'tencent.com',
+  '9988.HK': 'alibabagroup.com',
+  '9988': 'alibabagroup.com',
+  'RELIANCE': 'ril.com',
+  'TCS': 'tcs.com',
+  'INFY': 'infosys.com',
+  'HDFCBANK': 'hdfcbank.com',
+  'SAP': 'sap.com',
+  'ASML': 'asml.com',
+  'MC.PA': 'lvmh.com',
+  'OR.PA': 'loreal.com',
+  'NESN.SW': 'nestle.com',
+  'NOVN.SW': 'novartis.com'
+};
+
+// Institutional Corporate Branding Palette for Fallback Badges
 const CORPORATE_BRANDING = {
-  // Pakistan PSX Flagship Equities
   'OGDC': { abbr: 'OGD', bg: 'bg-gradient-to-br from-amber-500 via-orange-600 to-amber-700', text: 'text-white' },
   'MEBL': { abbr: 'MEB', bg: 'bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800', text: 'text-white' },
   'UBL':  { abbr: 'UBL', bg: 'bg-gradient-to-br from-blue-700 via-indigo-700 to-blue-900', text: 'text-white' },
@@ -25,61 +131,13 @@ const CORPORATE_BRANDING = {
   'KAPCO':{ abbr: 'KAP', bg: 'bg-gradient-to-br from-yellow-600 via-amber-700 to-orange-800', text: 'text-white' },
   'TRG':  { abbr: 'TRG', bg: 'bg-gradient-to-br from-purple-600 via-fuchsia-700 to-indigo-800', text: 'text-white' },
   'NBP':  { abbr: 'NBP', bg: 'bg-gradient-to-br from-green-800 via-emerald-900 to-green-950', text: 'text-white' },
-  'CHCC': { abbr: 'CHC', bg: 'bg-gradient-to-br from-zinc-600 via-stone-700 to-zinc-800', text: 'text-white' },
-  'MLCF': { abbr: 'MLC', bg: 'bg-gradient-to-br from-amber-700 via-yellow-800 to-amber-900', text: 'text-white' },
-  'SEARL':{ abbr: 'SRL', bg: 'bg-gradient-to-br from-teal-600 via-emerald-600 to-cyan-700', text: 'text-white' },
-  'ILP':  { abbr: 'ILP', bg: 'bg-gradient-to-br from-violet-600 via-indigo-700 to-blue-800', text: 'text-white' },
-  'PIOC': { abbr: 'PIO', bg: 'bg-gradient-to-br from-slate-700 via-zinc-800 to-neutral-900', text: 'text-white' },
-  'INIL': { abbr: 'INI', bg: 'bg-gradient-to-br from-blue-800 via-indigo-900 to-slate-900', text: 'text-white' },
-  'ISL':  { abbr: 'ISL', bg: 'bg-gradient-to-br from-sky-700 via-blue-800 to-slate-900', text: 'text-white' },
-  'ATRL': { abbr: 'ATR', bg: 'bg-gradient-to-br from-red-600 via-orange-700 to-amber-800', text: 'text-white' },
-  'PRL':  { abbr: 'PRL', bg: 'bg-gradient-to-br from-orange-600 via-amber-700 to-yellow-800', text: 'text-white' },
-  'SNGP': { abbr: 'SNG', bg: 'bg-gradient-to-br from-blue-600 via-teal-700 to-emerald-800', text: 'text-white' },
-  'SSGC': { abbr: 'SSG', bg: 'bg-gradient-to-br from-cyan-600 via-blue-700 to-indigo-800', text: 'text-white' },
-  'PAKT': { abbr: 'PAK', bg: 'bg-gradient-to-br from-red-700 via-rose-800 to-red-950', text: 'text-white' },
-  'PSEL': { abbr: 'PSE', bg: 'bg-gradient-to-br from-green-700 via-emerald-800 to-teal-900', text: 'text-white' },
-  'LOTCHEM':{ abbr: 'LOT', bg: 'bg-gradient-to-br from-rose-600 via-pink-700 to-purple-800', text: 'text-white' },
-  'AGP':  { abbr: 'AGP', bg: 'bg-gradient-to-br from-emerald-600 via-green-700 to-teal-800', text: 'text-white' },
-  'ABOT': { abbr: 'ABT', bg: 'bg-gradient-to-br from-blue-600 via-sky-600 to-indigo-700', text: 'text-white' },
-  'GLAXO':{ abbr: 'GSK', bg: 'bg-gradient-to-br from-orange-600 via-amber-700 to-red-700', text: 'text-white' },
-  'NESTLE':{ abbr: 'NES', bg: 'bg-gradient-to-br from-blue-700 via-indigo-800 to-blue-900', text: 'text-white' },
-  'FHAM': { abbr: 'HAM', bg: 'bg-gradient-to-br from-green-600 via-teal-700 to-emerald-800', text: 'text-white' },
-  'UNITY':{ abbr: 'UNI', bg: 'bg-gradient-to-br from-yellow-600 via-amber-700 to-orange-700', text: 'text-white' },
-  'GTYR': { abbr: 'GTY', bg: 'bg-gradient-to-br from-stone-700 via-zinc-800 to-neutral-900', text: 'text-white' },
-  'KML':  { abbr: 'KML', bg: 'bg-gradient-to-br from-indigo-700 via-purple-800 to-slate-900', text: 'text-white' },
-  'NATF': { abbr: 'NAT', bg: 'bg-gradient-to-br from-emerald-600 via-teal-700 to-green-800', text: 'text-white' },
-  'TELE': { abbr: 'TEL', bg: 'bg-gradient-to-br from-cyan-600 via-blue-700 to-indigo-800', text: 'text-white' },
-  'WTL':  { abbr: 'WTL', bg: 'bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800', text: 'text-white' },
-  'NETSOL':{ abbr: 'NET', bg: 'bg-gradient-to-br from-blue-600 via-indigo-700 to-violet-800', text: 'text-white' },
-  'AIRLINK':{ abbr: 'AIR', bg: 'bg-gradient-to-br from-sky-600 via-blue-700 to-indigo-800', text: 'text-white' },
-  'OCTOPUS':{ abbr: 'OCT', bg: 'bg-gradient-to-br from-teal-600 via-cyan-700 to-blue-800', text: 'text-white' },
-  'AVN':  { abbr: 'AVN', bg: 'bg-gradient-to-br from-emerald-600 via-teal-700 to-cyan-800', text: 'text-white' },
-
-  // Global Equities
   'AAPL': { abbr: 'AAP', bg: 'bg-gradient-to-br from-zinc-700 via-slate-800 to-black', text: 'text-white' },
   'MSFT': { abbr: 'MSF', bg: 'bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-700', text: 'text-white' },
   'NVDA': { abbr: 'NVD', bg: 'bg-gradient-to-br from-emerald-600 via-green-600 to-lime-700', text: 'text-white' },
   'GOOGL':{ abbr: 'GOO', bg: 'bg-gradient-to-br from-red-600 via-amber-500 to-blue-600', text: 'text-white' },
   'AMZN': { abbr: 'AMZ', bg: 'bg-gradient-to-br from-amber-600 via-orange-600 to-stone-900', text: 'text-white' },
   'TSLA': { abbr: 'TSL', bg: 'bg-gradient-to-br from-red-600 via-rose-700 to-red-900', text: 'text-white' },
-  'META': { abbr: 'MET', bg: 'bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800', text: 'text-white' },
-  'BRK.B':{ abbr: 'BRK', bg: 'bg-gradient-to-br from-blue-900 via-slate-900 to-black', text: 'text-white' },
-  'JPM':  { abbr: 'JPM', bg: 'bg-gradient-to-br from-blue-800 via-slate-800 to-blue-950', text: 'text-white' },
-  'V':    { abbr: 'VIS', bg: 'bg-gradient-to-br from-blue-600 via-indigo-700 to-amber-600', text: 'text-white' },
-  'WMT':  { abbr: 'WMT', bg: 'bg-gradient-to-br from-blue-600 via-yellow-500 to-blue-700', text: 'text-white' },
-  'XOM':  { abbr: 'XOM', bg: 'bg-gradient-to-br from-red-600 via-rose-700 to-red-900', text: 'text-white' },
-  '2222.SR': { abbr: 'ARM', bg: 'bg-gradient-to-br from-emerald-600 via-teal-700 to-green-800', text: 'text-white' },
-  '7203.T':  { abbr: 'TYO', bg: 'bg-gradient-to-br from-red-600 via-rose-700 to-red-900', text: 'text-white' },
-  '6758.T':  { abbr: 'SNY', bg: 'bg-gradient-to-br from-neutral-800 via-zinc-900 to-black', text: 'text-white' },
-  'SHEL.L':  { abbr: 'SHL', bg: 'bg-gradient-to-br from-yellow-500 via-amber-600 to-red-600', text: 'text-white' },
-  'AZN.L':   { abbr: 'AZN', bg: 'bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900', text: 'text-white' },
-  'HSBA.L':  { abbr: 'HSB', bg: 'bg-gradient-to-br from-red-600 via-slate-800 to-neutral-900', text: 'text-white' },
-  '1398.HK': { abbr: 'ICB', bg: 'bg-gradient-to-br from-red-700 via-rose-800 to-red-950', text: 'text-white' },
-  'RELIANCE':{ abbr: 'REL', bg: 'bg-gradient-to-br from-blue-700 via-indigo-800 to-blue-950', text: 'text-white' },
-  'TCS':     { abbr: 'TCS', bg: 'bg-gradient-to-br from-purple-700 via-indigo-800 to-purple-950', text: 'text-white' },
-  'SAP':     { abbr: 'SAP', bg: 'bg-gradient-to-br from-blue-600 via-sky-700 to-blue-900', text: 'text-white' },
-  'ASML':    { abbr: 'ASM', bg: 'bg-gradient-to-br from-blue-700 via-cyan-800 to-blue-950', text: 'text-white' },
-  'MC.PA':   { abbr: 'LVM', bg: 'bg-gradient-to-br from-neutral-900 via-stone-900 to-black', text: 'text-white' }
+  'META': { abbr: 'MET', bg: 'bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800', text: 'text-white' }
 };
 
 // Sector-based gradient fallback for unmapped equities
@@ -102,7 +160,13 @@ export default function CompanyLogoBadge({ stock, size = 'sm', className = '' })
 
   const ticker = stock.ticker || '';
   const cleanTicker = ticker.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-  const brand = CORPORATE_BRANDING[ticker] || CORPORATE_BRANDING[cleanTicker];
+  const rawTicker = ticker.toUpperCase();
+
+  // Find corporate domain
+  const domain = COMPANY_DOMAINS[rawTicker] || COMPANY_DOMAINS[cleanTicker];
+  const logoUrl = stock.logo || (domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null);
+
+  const brand = CORPORATE_BRANDING[rawTicker] || CORPORATE_BRANDING[cleanTicker];
   const sectorBrand = SECTOR_BRANDING[stock.sector] || {
     bg: 'bg-gradient-to-br from-slate-700 via-gray-800 to-neutral-900',
     text: 'text-white'
@@ -113,19 +177,28 @@ export default function CompanyLogoBadge({ stock, size = 'sm', className = '' })
   const monogram = brand?.abbr || (cleanTicker.slice(0, 3) || 'STK');
 
   const sizeClasses = {
-    sm: 'w-8 h-8 rounded-full text-[11px] font-black',
-    md: 'w-10 h-10 rounded-full text-xs font-black',
-    lg: 'w-12 h-12 rounded-xl text-sm font-black'
-  }[size] || 'w-8 h-8 rounded-full text-[11px] font-black';
+    sm: 'w-8 h-8 rounded-full',
+    md: 'w-10 h-10 rounded-full',
+    lg: 'w-12 h-12 rounded-xl'
+  }[size] || 'w-8 h-8 rounded-full';
 
-  // If an explicit corporate logo image exists and hasn't errored
-  if (stock.logo && !imgError) {
+  const textClasses = {
+    sm: 'text-[11px] font-black',
+    md: 'text-xs font-black',
+    lg: 'text-sm font-black'
+  }[size] || 'text-[11px] font-black';
+
+  // Render real corporate logo favicon image if available and healthy
+  if (logoUrl && !imgError) {
     return (
-      <div className={`relative shrink-0 overflow-hidden ${sizeClasses} bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs flex items-center justify-center ${className}`}>
+      <div 
+        className={`relative shrink-0 overflow-hidden ${sizeClasses} bg-white dark:bg-gray-800 p-1 border border-gray-200 dark:border-gray-700 shadow-xs flex items-center justify-center transition-transform duration-200 group-hover:scale-105 ${className}`}
+        title={`${stock.name} (${stock.ticker})`}
+      >
         <img
-          src={stock.logo}
-          alt={`${stock.name} logo`}
-          className="w-full h-full object-contain p-1"
+          src={logoUrl}
+          alt={`${stock.name} official logo`}
+          className="w-full h-full object-contain rounded-full"
           onError={() => setImgError(true)}
           loading="lazy"
         />
@@ -133,9 +206,10 @@ export default function CompanyLogoBadge({ stock, size = 'sm', className = '' })
     );
   }
 
+  // Graceful fallback to corporate monogram badge
   return (
     <div
-      className={`relative shrink-0 flex items-center justify-center font-mono tracking-tight uppercase shadow-xs border border-white/20 dark:border-white/10 ring-1 ring-black/5 ${sizeClasses} ${badgeBg} ${badgeText} transition-transform duration-200 group-hover:scale-105 ${className}`}
+      className={`relative shrink-0 flex items-center justify-center font-mono tracking-tight uppercase shadow-xs border border-white/20 dark:border-white/10 ring-1 ring-black/5 ${sizeClasses} ${textClasses} ${badgeBg} ${badgeText} transition-transform duration-200 group-hover:scale-105 ${className}`}
       title={`${stock.name} (${stock.ticker})`}
     >
       <span className="drop-shadow-xs select-none">

@@ -380,24 +380,31 @@ export default function StocksPage() {
           </div>
         </div>
 
-        {/* Horizontal Strategy Pills Bar */}
-        <div className="flex items-center justify-between gap-3 overflow-x-auto scrollbar-none py-1">
-          <div className="flex items-center gap-2 shrink-0">
+        {/* Horizontal Strategy Pills Slider (Investing.com Style) */}
+        <div className="relative flex items-center bg-gray-50/70 dark:bg-[#06111F]/70 border border-gray-200 dark:border-white/10 rounded-2xl p-1.5 overflow-hidden">
+          {/* Scrollable Pills Track (5-6 visible at once, scrollable horizontally) */}
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 px-1 flex-1 pr-3 scroll-smooth">
             {[
               { title: 'Near 52-Week High', ret: '+68.9%', type: 'near52w' },
               { title: 'Momentum Masters', ret: '+57.3%', type: 'momentum' },
               { title: "Piotroski's Picks", ret: '+38.6%', type: 'piotroski' },
-              { title: 'Small-Cap Growth Rockets', ret: '+7.9%', type: 'smallCap' }
+              { title: 'Small-Cap Growth Rockets', ret: '+7.9%', type: 'smallCap' },
+              { title: 'High ROE Compounders', ret: '+42.1%', type: 'roe' },
+              { title: 'Dividend Bulls', ret: '+18.2%', type: 'dividend' },
+              { title: 'Undervalued Cash Cows', ret: '+14.5%', type: 'value' },
+              { title: 'Export Revenue Leaders', ret: '+34.2%', type: 'export' },
+              { title: 'Free Cash Flow Champions', ret: '+21.3%', type: 'fcf' },
+              { title: 'Low Debt Defensives', ret: '+12.4%', type: 'lowDebt' }
             ].map(pill => {
               const isActive = activeScreenTitle === pill.title;
               return (
                 <button
                   key={pill.title}
                   onClick={() => handleApplyScreen({ title: pill.title, filterType: pill.type })}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shrink-0 border ${
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 border whitespace-nowrap shadow-2xs hover:scale-[1.02] ${
                     isActive
                       ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs'
-                      : 'bg-white dark:bg-[#0A1726] text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:border-blue-500'
+                      : 'bg-white dark:bg-[#0A1726] text-gray-800 dark:text-gray-200 border-gray-200 dark:border-white/10 hover:border-blue-500/50 hover:bg-gray-50 dark:hover:bg-white/5'
                   }`}
                 >
                   <span>{pill.title}</span>
@@ -409,12 +416,16 @@ export default function StocksPage() {
             })}
           </div>
 
-          <button
-            onClick={() => setScreensModalOpen(true)}
-            className="flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap shrink-0 cursor-pointer pl-2"
-          >
-            <span>Explore 20+ Screens &gt;</span>
-          </button>
+          {/* Pinned Right Action: "Explore 20+ Screens >" Button */}
+          <div className="relative shrink-0 flex items-center pl-3 pr-2 py-1 bg-gradient-to-l from-gray-50 via-gray-50 to-transparent dark:from-[#06111F] dark:via-[#06111F] dark:to-transparent z-10 border-l border-gray-200/80 dark:border-white/10">
+            <button
+              onClick={() => setScreensModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-[#00E676] dark:hover:text-emerald-300 bg-blue-50 dark:bg-[#00E676]/10 hover:bg-blue-100 dark:hover:bg-[#00E676]/20 border border-blue-200 dark:border-[#00E676]/30 whitespace-nowrap transition-all cursor-pointer shadow-xs"
+            >
+              <span>Explore 20+ Screens</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 
