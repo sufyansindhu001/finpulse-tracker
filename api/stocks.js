@@ -40,69 +40,72 @@ export default async function handler(req, res) {
 
   const country = (req.query?.country || 'pk').toLowerCase();
   const customSymbols = req.query?.symbols ? req.query.symbols.split(',') : null;
-  const targetSymbols = customSymbols || TICKER_MAP[country] || TICKER_MAP.pk;
+  const targetSymbols = (customSymbols || TICKER_MAP[country] || TICKER_MAP.pk).slice(0, 25);
 
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3800);
 
-    const queryUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(targetSymbols.join(','))}`;
-    const response = await fetch(queryUrl, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json'
-      }
-    });
-    clearTimeout(timeout);
+    const quotePromises = targetSymbols.map(async (sym) => {
+      try {
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=2d`;
+        const resp = await fetch(url, {
+          signal: controller.signal,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json'
+          }
+        });
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        const meta = data?.chart?.result?.[0]?.meta;
+        if (!meta || typeof meta.regularMarketPrice !== 'number') return null;
 
-    if (response.ok) {
-      const data = await response.json();
-      const quoteResults = data?.quoteResponse?.result || [];
-
-      const quotes = {};
-      quoteResults.forEach(q => {
-        // Strip exchange suffix if any (e.g. 'MEBL.KA' -> 'MEBL', '2222.SR' -> '2222')
-        const rawSym = q.symbol || '';
+        const rawSym = meta.symbol || sym;
         const cleanSym = rawSym.replace(/\.(KA|L|SR|NS|T|HK)$/i, '');
+        const price = Number(meta.regularMarketPrice.toFixed(2));
+        const prev = meta.chartPreviousClose || price;
+        const change = Number((price - prev).toFixed(2));
+        const changePercent = Number((((price - prev) / prev) * 100).toFixed(2));
 
-        const quoteObj = {
+        return {
           symbol: cleanSym,
           rawSymbol: rawSym,
-          price: q.regularMarketPrice ?? null,
-          change: q.regularMarketChange ?? null,
-          changePercent: q.regularMarketChangePercent ? Number(q.regularMarketChangePercent.toFixed(2)) : null,
-          volume: q.regularMarketVolume ?? null,
-          marketCap: q.marketCap ?? null,
-          peRatio: q.trailingPE ? Number(q.trailingPE.toFixed(1)) : null,
-          high52: q.fiftyTwoWeekHigh ?? null,
-          low52: q.fiftyTwoWeekLow ?? null,
-          currency: q.currency || 'USD',
-          exchange: q.fullExchangeName || q.exchange || ''
+          price,
+          change,
+          changePercent,
+          volume: meta.regularMarketVolume || null,
+          high52: meta.fiftyTwoWeekHigh ? Number(meta.fiftyTwoWeekHigh.toFixed(2)) : null,
+          low52: meta.fiftyTwoWeekLow ? Number(meta.fiftyTwoWeekLow.toFixed(2)) : null,
+          currency: meta.currency || (country === 'pk' ? 'PKR' : 'USD'),
+          exchange: meta.fullExchangeName || meta.exchangeName || ''
         };
+      } catch {
+        return null;
+      }
+    });
 
-        quotes[cleanSym] = quoteObj;
-        quotes[rawSym] = quoteObj;
-      });
+    const results = await Promise.allSettled(quotePromises);
+    clearTimeout(timeout);
 
-      return res.status(200).json({
-        success: true,
-        country,
-        source: 'Global Institutional Market Feeds (Live)',
-        lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        count: Object.keys(quotes).length,
-        quotes
-      });
-    }
+    const quotes = {};
+    results.forEach(r => {
+      if (r.status === 'fulfilled' && r.value) {
+        const q = r.value;
+        quotes[q.symbol] = q;
+        quotes[q.rawSymbol] = q;
+      }
+    });
 
-    // If Yahoo Finance returned non-200, return fallback response
+    const liveCount = Object.keys(quotes).length;
+
     return res.status(200).json({
       success: true,
       country,
-      source: 'Global Institutional Market Feeds (Intraday Baseline)',
+      source: liveCount > 0 ? 'Global Institutional Market Feeds (Live)' : 'Global Institutional Feeds (Baseline)',
       lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      count: 0,
-      quotes: {}
+      count: liveCount,
+      quotes
     });
 
   } catch (err) {
