@@ -56,17 +56,22 @@ export default function App() {
     } catch (e) {
       console.warn('Telemetry error:', e);
     }
-    updateCanonical(location.pathname);
+    try {
+      updateCanonical(location.pathname);
 
-    if (location.pathname === '/') {
-      updateSEO({
-        title: 'FGC Spot — Live Forex, Gold & Crypto Terminals',
-        description: 'Institutional-grade real-time market rates, live analytics, and financial terminal tracking for Forex, Gold, and Digital Assets.',
-        canonical: '/',
-        ogType: 'website'
-      });
+      if (location.pathname === '/') {
+        updateSEO({
+          title: 'FGC Spot — Live Forex, Gold & Crypto Terminals',
+          description: 'Institutional-grade real-time market rates, live analytics, and financial terminal tracking for Forex, Gold, and Digital Assets.',
+          canonical: '/',
+          ogType: 'website'
+        });
+      }
+    } catch (e) {
+      console.warn('SEO synchronization warning:', e);
     }
   }, [location.pathname]);
+
 
   // Theme state: initialized from localStorage (default 'dark')
   const [theme, setTheme] = useState(() => {

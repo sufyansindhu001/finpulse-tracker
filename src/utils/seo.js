@@ -78,121 +78,131 @@ export function updateCanonical(pathOrUrl) {
   return canonicalUrl;
 }
 
+export const DEFAULT_ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+
 /**
- * Updates dynamic SEO meta tags (title, description, canonical, OpenGraph, Twitter).
+ * Updates dynamic SEO meta tags (title, description, canonical, OpenGraph, Twitter, Robots).
  */
-export function updateSEO({ title, description, canonical, ogType = 'website', ogImage } = {}) {
+export function updateSEO({ title, description, canonical, ogType = 'website', ogImage, robots = DEFAULT_ROBOTS } = {}) {
   if (typeof document === 'undefined') return;
 
-  // Title
-  if (title) {
-    document.title = title;
+  try {
+    // Title
+    if (title) {
+      document.title = title;
 
-    let metaTitle = document.querySelector('meta[name="title"]');
-    if (metaTitle) metaTitle.setAttribute('content', title);
+      let metaTitle = document.querySelector('meta[name="title"]');
+      if (metaTitle) metaTitle.setAttribute('content', title);
 
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    if (!ogTitle) {
-      ogTitle = document.createElement('meta');
-      ogTitle.setAttribute('property', 'og:title');
-      document.head.appendChild(ogTitle);
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (!ogTitle) {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        document.head.appendChild(ogTitle);
+      }
+      ogTitle.setAttribute('content', title);
+
+      let twTitle = document.querySelector('meta[property="twitter:title"]');
+      if (!twTitle) {
+        twTitle = document.createElement('meta');
+        twTitle.setAttribute('property', 'twitter:title');
+        document.head.appendChild(twTitle);
+      }
+      twTitle.setAttribute('content', title);
     }
-    ogTitle.setAttribute('content', title);
 
-    let twTitle = document.querySelector('meta[property="twitter:title"]');
-    if (!twTitle) {
-      twTitle = document.createElement('meta');
-      twTitle.setAttribute('property', 'twitter:title');
-      document.head.appendChild(twTitle);
+    // Description
+    if (description) {
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', description);
+
+      let ogDesc = document.querySelector('meta[property="og:description"]');
+      if (!ogDesc) {
+        ogDesc = document.createElement('meta');
+        ogDesc.setAttribute('property', 'og:description');
+        document.head.appendChild(ogDesc);
+      }
+      ogDesc.setAttribute('content', description);
+
+      let twDesc = document.querySelector('meta[property="twitter:description"]');
+      if (!twDesc) {
+        twDesc = document.createElement('meta');
+        twDesc.setAttribute('property', 'twitter:description');
+        document.head.appendChild(twDesc);
+      }
+      twDesc.setAttribute('content', description);
     }
-    twTitle.setAttribute('content', title);
-  }
 
-  // Description
-  if (description) {
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
+    // Canonical URL
+    if (canonical) {
+      updateCanonical(canonical);
     }
-    metaDesc.setAttribute('content', description);
 
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    if (!ogDesc) {
-      ogDesc = document.createElement('meta');
-      ogDesc.setAttribute('property', 'og:description');
-      document.head.appendChild(ogDesc);
+    // OG Type
+    if (ogType) {
+      let ogTypeMeta = document.querySelector('meta[property="og:type"]');
+      if (!ogTypeMeta) {
+        ogTypeMeta = document.createElement('meta');
+        ogTypeMeta.setAttribute('property', 'og:type');
+        document.head.appendChild(ogTypeMeta);
+      }
+      ogTypeMeta.setAttribute('content', ogType);
     }
-    ogDesc.setAttribute('content', description);
 
-    let twDesc = document.querySelector('meta[property="twitter:description"]');
-    if (!twDesc) {
-      twDesc = document.createElement('meta');
-      twDesc.setAttribute('property', 'twitter:description');
-      document.head.appendChild(twDesc);
+    // OG Image
+    if (ogImage) {
+      let ogImgMeta = document.querySelector('meta[property="og:image"]');
+      if (!ogImgMeta) {
+        ogImgMeta = document.createElement('meta');
+        ogImgMeta.setAttribute('property', 'og:image');
+        document.head.appendChild(ogImgMeta);
+      }
+      ogImgMeta.setAttribute('content', ogImage);
+
+      let twImgMeta = document.querySelector('meta[property="twitter:image"]');
+      if (!twImgMeta) {
+        twImgMeta = document.createElement('meta');
+        twImgMeta.setAttribute('property', 'twitter:image');
+        document.head.appendChild(twImgMeta);
+      }
+      twImgMeta.setAttribute('content', ogImage);
     }
-    twDesc.setAttribute('content', description);
-  }
 
-  // Canonical URL
-  if (canonical) {
-    updateCanonical(canonical);
-  }
+    // Robots & Googlebot Priority
+    const robotsContent = (typeof robots === 'string' && robots.trim().length > 0)
+      ? robots
+      : DEFAULT_ROBOTS;
 
-  // OG Type
-  if (ogType) {
-    let ogTypeMeta = document.querySelector('meta[property="og:type"]');
-    if (!ogTypeMeta) {
-      ogTypeMeta = document.createElement('meta');
-      ogTypeMeta.setAttribute('property', 'og:type');
-      document.head.appendChild(ogTypeMeta);
+    let robotsMeta = document.querySelector('meta[name="robots"]');
+    if (!robotsMeta) {
+      robotsMeta = document.createElement('meta');
+      robotsMeta.setAttribute('name', 'robots');
+      document.head.appendChild(robotsMeta);
     }
-    ogTypeMeta.setAttribute('content', ogType);
-  }
+    robotsMeta.setAttribute('content', robotsContent);
 
-  // OG Image
-  if (ogImage) {
-    let ogImgMeta = document.querySelector('meta[property="og:image"]');
-    if (!ogImgMeta) {
-      ogImgMeta = document.createElement('meta');
-      ogImgMeta.setAttribute('property', 'og:image');
-      document.head.appendChild(ogImgMeta);
+    let googlebotMeta = document.querySelector('meta[name="googlebot"]');
+    if (!googlebotMeta) {
+      googlebotMeta = document.createElement('meta');
+      googlebotMeta.setAttribute('name', 'googlebot');
+      document.head.appendChild(googlebotMeta);
     }
-    ogImgMeta.setAttribute('content', ogImage);
+    googlebotMeta.setAttribute('content', robotsContent);
 
-    let twImgMeta = document.querySelector('meta[property="twitter:image"]');
-    if (!twImgMeta) {
-      twImgMeta = document.createElement('meta');
-      twImgMeta.setAttribute('property', 'twitter:image');
-      document.head.appendChild(twImgMeta);
+    let revisitMeta = document.querySelector('meta[name="revisit-after"]');
+    if (!revisitMeta) {
+      revisitMeta = document.createElement('meta');
+      revisitMeta.setAttribute('name', 'revisit-after');
+      document.head.appendChild(revisitMeta);
     }
-    twImgMeta.setAttribute('content', ogImage);
+    revisitMeta.setAttribute('content', '1 days');
+  } catch (err) {
+    console.warn('[SEO] Failed to update SEO meta tags:', err);
   }
-
-  // Robots & Googlebot Priority
-  const robotsContent = robots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
-  let robotsMeta = document.querySelector('meta[name="robots"]');
-  if (!robotsMeta) {
-    robotsMeta = document.createElement('meta');
-    robotsMeta.setAttribute('name', 'robots');
-    document.head.appendChild(robotsMeta);
-  }
-  robotsMeta.setAttribute('content', robotsContent);
-
-  let googlebotMeta = document.querySelector('meta[name="googlebot"]');
-  if (!googlebotMeta) {
-    googlebotMeta = document.createElement('meta');
-    googlebotMeta.setAttribute('name', 'googlebot');
-    document.head.appendChild(googlebotMeta);
-  }
-  googlebotMeta.setAttribute('content', robotsContent);
-
-  let revisitMeta = document.querySelector('meta[name="revisit-after"]');
-  if (!revisitMeta) {
-    revisitMeta = document.createElement('meta');
-    revisitMeta.setAttribute('name', 'revisit-after');
-    document.head.appendChild(revisitMeta);
-  }
-  revisitMeta.setAttribute('content', '1 days');
 }
+

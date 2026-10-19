@@ -4,11 +4,16 @@ import { updateSEO, updateCanonical } from '../utils/seo';
 /**
  * React hook to synchronize document title, description, canonical link tag, and OpenGraph metadata
  */
-export function useSEO({ title, description, canonical, ogType, ogImage } = {}) {
+export function useSEO({ title, description, canonical, ogType, ogImage, robots } = {}) {
   useEffect(() => {
-    updateSEO({ title, description, canonical, ogType, ogImage });
-  }, [title, description, canonical, ogType, ogImage]);
+    try {
+      updateSEO({ title, description, canonical, ogType, ogImage, robots });
+    } catch (e) {
+      console.warn('[useSEO] Hook warning:', e);
+    }
+  }, [title, description, canonical, ogType, ogImage, robots]);
 }
+
 
 export function useCanonical(pathOrUrl) {
   useEffect(() => {
