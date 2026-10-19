@@ -95,8 +95,8 @@ export default function FeaturedResearchSection() {
               {/* Card Body */}
               <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-[11px] font-mono text-gray-600 dark:text-gray-400">
-                    <span className="flex items-center gap-1">
+                  <div className="inline-flex items-center gap-3 text-[11px] font-mono text-gray-600 dark:text-gray-300 bg-slate-100 dark:bg-white/[0.04] p-1.5 px-2.5 rounded-lg border border-slate-200/60 dark:border-white/5">
+                    <span className="flex items-center gap-1 font-semibold">
                       <Calendar className="w-3.5 h-3.5 text-[#00E676]" />
                       <span>{article.date}</span>
                     </span>
@@ -107,7 +107,7 @@ export default function FeaturedResearchSection() {
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-[#00E676] transition-colors leading-snug">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#00E676] transition-colors leading-snug">
                     <a href={`/blog/${article.slug}`} className="block">
                       {article.title}
                     </a>
@@ -118,7 +118,7 @@ export default function FeaturedResearchSection() {
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 dark:border-white/5 flex items-center justify-between">
+                <div className="pt-3 border-t border-slate-200 dark:border-white/5 flex items-center justify-between p-2 rounded-xl bg-white dark:bg-white/[0.02] border border-slate-100 dark:border-white/5">
                   <div className="flex items-center gap-2">
                     <img 
                       src="/sufyan-author.jpg" 
@@ -129,7 +129,7 @@ export default function FeaturedResearchSection() {
                         e.currentTarget.src = '/favicon.png';
                       }}
                     />
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">
                       {article.author}
                     </span>
                   </div>

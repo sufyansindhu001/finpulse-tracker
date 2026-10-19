@@ -71,16 +71,12 @@ export default function CountrySelectorDropdown({
           </div>
 
           {/* Active Selected Country Radio Item at Top */}
-          <div className="px-3 py-2.5 bg-blue-50/60 dark:bg-blue-500/10 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+          <div className="px-3 py-2.5 bg-blue-50/70 dark:bg-blue-500/10 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <input
-                type="radio"
-                name="active-country-top"
-                checked
-                readOnly
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500"
-              />
-              <span className="text-base">{activeCountry.flag}</span>
+              <div className="w-4 h-4 rounded-full border-2 border-blue-600 bg-white dark:bg-gray-900 flex items-center justify-center shrink-0">
+                <div className="w-2 h-2 rounded-full bg-blue-600" />
+              </div>
+              <span className="text-base select-none">{activeCountry.flag}</span>
               <span className="text-xs font-bold text-gray-900 dark:text-gray-100">
                 {activeCountry.name}
               </span>
@@ -93,7 +89,7 @@ export default function CountrySelectorDropdown({
           {/* Type to search input box */}
           <div className="p-2 border-b border-gray-100 dark:border-white/10">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Type to search..."
@@ -112,24 +108,25 @@ export default function CountrySelectorDropdown({
               return (
                 <button
                   key={c.id}
+                  type="button"
                   onClick={() => {
                     onSelectCountry(c.id);
                     setIsOpen(false);
                     setSearchQuery('');
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group ${
                     isSelected ? 'bg-blue-50/40 dark:bg-blue-500/5' : ''
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <input
-                      type="radio"
-                      name="country-selection"
-                      checked={isSelected}
-                      onChange={() => {}}
-                      className="w-3.5 h-3.5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 cursor-pointer"
-                    />
-                    <span className="text-sm">{c.flag}</span>
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                      isSelected 
+                        ? 'border-blue-600 bg-white dark:bg-gray-900' 
+                        : 'border-gray-300 dark:border-gray-600 group-hover:border-gray-400'
+                    }`}>
+                      {isSelected && <div className="w-2 h-2 rounded-full bg-blue-600" />}
+                    </div>
+                    <span className="text-base select-none">{c.flag}</span>
                     <span className={`text-xs ${isSelected ? 'font-black text-blue-600 dark:text-blue-400' : 'font-semibold text-gray-800 dark:text-gray-200'}`}>
                       {c.name}
                     </span>

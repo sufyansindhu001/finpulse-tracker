@@ -16,6 +16,7 @@ import CountrySelectorDropdown from '../components/CountrySelectorDropdown';
 import ScreenerFilterSection from '../components/ScreenerFilterSection';
 import ScreenerFaqSection from '../components/ScreenerFaqSection';
 import CompanyModal from '../components/CompanyModal';
+import CompanyLogoBadge from '../components/CompanyLogoBadge';
 
 export default function StocksPage() {
   useSEO({
@@ -433,38 +434,42 @@ export default function StocksPage() {
       <div className="space-y-4">
         
         {/* Table Controls Top Bar */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2 relative z-30">
           
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
-            {/* Country Selector Dropdown with 50+ Countries */}
-            <CountrySelectorDropdown
-              selectedCountry={selectedCountry}
-              onSelectCountry={(cId) => {
-                setSelectedCountry(cId);
-                setCurrentPage(1);
-              }}
-              primaryListing={primaryListing}
-              onTogglePrimaryListing={setPrimaryListing}
-            />
+          <div className="flex items-center gap-2.5 flex-nowrap min-w-0">
+            {/* Country Selector Dropdown with 50+ Countries (outside horizontal scroll container) */}
+            <div className="relative shrink-0 z-40">
+              <CountrySelectorDropdown
+                selectedCountry={selectedCountry}
+                onSelectCountry={(cId) => {
+                  setSelectedCountry(cId);
+                  setCurrentPage(1);
+                }}
+                primaryListing={primaryListing}
+                onTogglePrimaryListing={setPrimaryListing}
+              />
+            </div>
 
             {/* 9 View Tabs */}
-            <div className="flex items-center bg-gray-100 dark:bg-[#06111F] p-1 rounded-lg border border-gray-200 dark:border-gray-800 shrink-0">
-              {viewTabs.map(tab => {
-                const isActive = activeViewTab === tab;
-                return (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveViewTab(tab)}
-                    className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                      isActive
-                        ? 'bg-white dark:bg-[#0A1726] text-blue-600 dark:text-[#00E676] shadow-xs'
-                        : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                );
-              })}
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
+              <div className="flex items-center bg-gray-100 dark:bg-[#06111F] p-1 rounded-lg border border-gray-200 dark:border-gray-800 shrink-0">
+                {viewTabs.map(tab => {
+                  const isActive = activeViewTab === tab;
+                  return (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveViewTab(tab)}
+                      className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? 'bg-white dark:bg-[#0A1726] text-blue-600 dark:text-[#00E676] shadow-xs'
+                          : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
@@ -558,12 +563,10 @@ export default function StocksPage() {
                         {rowNumber}
                       </td>
 
-                      {/* Circular Ticker Badge + Company Name */}
+                      {/* Circular Corporate Logo Badge + Company Name */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center font-mono font-bold text-gray-800 dark:text-gray-200 text-[11px] border border-gray-200 dark:border-gray-700 shrink-0 group-hover:border-blue-500 group-hover:text-blue-500 transition-colors">
-                            {stock.ticker.slice(0, 3)}
-                          </div>
+                          <CompanyLogoBadge stock={stock} size="sm" />
                           <div>
                             <span className="font-bold text-gray-900 dark:text-gray-100 block group-hover:text-blue-600 dark:group-hover:text-[#00E676] transition-colors">
                               {stock.name}

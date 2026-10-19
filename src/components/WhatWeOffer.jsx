@@ -6,10 +6,7 @@ import {
   Sparkles, 
   LineChart, 
   ArrowLeftRight, 
-  ArrowRight,
-  TrendingUp,
-  ShieldCheck,
-  Zap
+  ArrowRight
 } from 'lucide-react';
 
 export default function WhatWeOffer() {
@@ -108,7 +105,7 @@ export default function WhatWeOffer() {
                     <span className="text-[9px] sm:text-[11px] font-bold tracking-widest text-[#00E676] uppercase block">
                       {item.tag}
                     </span>
-                    <h3 className="text-sm sm:text-lg md:text-2xl font-black text-gray-900 dark:text-gray-100 group-hover:text-[#00E676] transition-colors leading-tight">
+                    <h3 className="text-sm sm:text-lg md:text-2xl font-bold text-gray-900 dark:text-white group-hover:text-[#00E676] transition-colors leading-tight">
                       {item.title}
                     </h3>
                     <p className="text-[11px] sm:text-xs md:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed line-clamp-2 sm:line-clamp-none">
@@ -117,10 +114,10 @@ export default function WhatWeOffer() {
                   </div>
                 </div>
 
-                {/* Bottom Action Link */}
-                <div className="pt-3 sm:pt-4 md:pt-6 mt-2 sm:mt-3 md:mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px] sm:text-xs font-bold text-gray-900 dark:text-gray-100 group-hover:text-[#00E676] transition-colors">
+                {/* Bottom Action Link Box */}
+                <div className="mt-3 sm:mt-4 p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 flex items-center justify-between text-[11px] sm:text-xs font-bold text-gray-900 dark:text-gray-100 group-hover:text-[#00E676] transition-colors">
                   <span className="truncate">Open {item.title}</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1 shrink-0 ml-1" />
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1 shrink-0 ml-1 text-[#00E676]" />
                 </div>
               </div>
             );

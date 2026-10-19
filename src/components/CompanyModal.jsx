@@ -11,6 +11,7 @@ import {
   Gauge
 } from 'lucide-react';
 import { WORLD_COUNTRIES } from '../data/stocksData';
+import CompanyLogoBadge from './CompanyLogoBadge';
 
 export default function CompanyModal({ stock, onClose }) {
   const [activeTab, setActiveTab] = useState('chart'); // 'chart' | 'thesis' | 'fundamentals' | 'financials'
@@ -179,9 +180,7 @@ export default function CompanyModal({ stock, onClose }) {
             ======================================================== */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-gray-800/40">
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-800 flex items-center justify-center font-black text-gray-900 dark:text-gray-100 text-base tracking-wider border border-gray-300 dark:border-gray-700 shrink-0">
-              {stock.ticker.slice(0, 4)}
-            </div>
+            <CompanyLogoBadge stock={stock} size="lg" />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-gray-100 tracking-tight">

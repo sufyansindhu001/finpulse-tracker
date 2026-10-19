@@ -2,7 +2,6 @@ import React from 'react';
 import { 
   Zap, 
   ShieldCheck, 
-  Cpu, 
   ArrowRight, 
   Sparkles,
   CheckCircle2,
@@ -69,7 +68,7 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border mb-5 ${pillar.color}`}>
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
                     {pillar.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed font-medium">
@@ -77,7 +76,7 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/[0.04] flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+                <div className="mt-6 p-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Technical Specification</span>
                 </div>

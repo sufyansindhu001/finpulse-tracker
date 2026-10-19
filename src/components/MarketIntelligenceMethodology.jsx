@@ -37,17 +37,17 @@ export default function MarketIntelligenceMethodology() {
           {/* Pillar 1: Foreign Exchange */}
           <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs hover:border-[#00E676]/40 transition-all space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold shrink-0">
                 <Globe2 className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
-                  1. Foreign Exchange & Sovereign Currency Corridors
-                </h3>
-                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                  Interbank Mid-Market • DXY Basket • SBP Reserves Parity
-                </span>
-              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                1. Foreign Exchange & Sovereign Currency Corridors
+              </h3>
+            </div>
+
+            {/* Subtext Line Box */}
+            <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
+              Interbank Mid-Market • DXY Basket • SBP Reserves Parity
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
@@ -57,9 +57,10 @@ export default function MarketIntelligenceMethodology() {
               In emerging economies characterized by two-tier currency markets (such as Pakistan and frontier South Asia), FGC Spot monitors both the formal Interbank Clearing Rate and the Open Market / Exchange Companies Association of Pakistan (ECAP) cash rate. By calculating the interbank-open market spread in real-time, our terminal equips treasurers, freelance earners, and remittance senders with transparent data to prevent predatory banking exchange fees and hidden corridor markups.
             </p>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-mono text-[#00E676]">
-              <span>Coverage: 160+ Sovereign Currencies</span>
-              <Link to="/rates" className="hover:underline flex items-center gap-1">
+            {/* Footer Action Box */}
+            <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono bg-gray-50/80 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+              <span className="font-semibold text-gray-700 dark:text-gray-300">Coverage: 160+ Sovereign Currencies</span>
+              <Link to="/rates" className="hover:underline flex items-center gap-1 font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-1 rounded-lg border border-[#00E676]/20 transition-all hover:bg-[#00E676]/20">
                 <span>View Rates</span> →
               </Link>
             </div>
@@ -68,17 +69,17 @@ export default function MarketIntelligenceMethodology() {
           {/* Pillar 2: Gold Bullion */}
           <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs hover:border-[#00E676]/40 transition-all space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold shrink-0">
                 <Coins className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
-                  2. Spot Gold (XAU/USD) & Domestic Tola Parity
-                </h3>
-                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                  LBMA Fixings • 11.6638g Karat Conversion • Sarafa Bazaar
-                </span>
-              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                2. Spot Gold (XAU/USD) & Domestic Tola Parity
+              </h3>
+            </div>
+
+            {/* Subtext Line Box */}
+            <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
+              LBMA Fixings • 11.6638g Karat Conversion • Sarafa Bazaar
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
@@ -88,9 +89,10 @@ export default function MarketIntelligenceMethodology() {
               Domestic gold rates—including the traditional Pakistani and Indian <strong>Tola (11.6638 grams)</strong> and 10-Gram denominations—are mathematically computed from spot dollar metal prices, real-time USD/PKR interbank rates, plus official Karachi Sarafa Association import customs duties, logistics premia, and assay margins across 24-Karat, 22-Karat, and 18-Karat purity tiers. This mathematical transparency protects bullion investors against arbitrary local over-invoicing.
             </p>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-mono text-amber-500">
-              <span>Standards: 24K, 22K, 21K, 18K Parity</span>
-              <Link to="/gold" className="hover:underline flex items-center gap-1">
+            {/* Footer Action Box */}
+            <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono bg-gray-50/80 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+              <span className="font-semibold text-gray-700 dark:text-gray-300">Standards: 24K, 22K, 21K, 18K Parity</span>
+              <Link to="/gold" className="hover:underline flex items-center gap-1 font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20 transition-all hover:bg-amber-500/20">
                 <span>Gold Terminal</span> →
               </Link>
             </div>
@@ -99,17 +101,17 @@ export default function MarketIntelligenceMethodology() {
           {/* Pillar 3: Digital Assets */}
           <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs hover:border-[#00E676]/40 transition-all space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold shrink-0">
                 <Zap className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
-                  3. Digital Assets & Multi-Exchange Liquidity
-                </h3>
-                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                  Volume-Weighted Price Index (VWAP) • Order Book Depth
-                </span>
-              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                3. Digital Assets & Multi-Exchange Liquidity
+              </h3>
+            </div>
+
+            {/* Subtext Line Box */}
+            <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
+              Volume-Weighted Price Index (VWAP) • Order Book Depth
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
@@ -119,9 +121,10 @@ export default function MarketIntelligenceMethodology() {
               Our terminal continuously monitors 24-hour liquidity depth, market capitalization dominance (BTC, ETH, SOL), circulating token supply metrics, and fiat on-ramp pricing parity (USDT/PKR and USDC/USD). Users can execute instant cross-asset evaluations between digital assets, sovereign fiat, and physical precious metals without leaving the analytics viewport.
             </p>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-mono text-purple-400">
-              <span>Real-Time Crypto Stream</span>
-              <Link to="/crypto" className="hover:underline flex items-center gap-1">
+            {/* Footer Action Box */}
+            <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono bg-gray-50/80 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+              <span className="font-semibold text-gray-700 dark:text-gray-300">Real-Time Crypto Stream</span>
+              <Link to="/crypto" className="hover:underline flex items-center gap-1 font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20 transition-all hover:bg-purple-500/20">
                 <span>Crypto Terminal</span> →
               </Link>
             </div>
@@ -130,17 +133,17 @@ export default function MarketIntelligenceMethodology() {
           {/* Pillar 4: Global & PSX Equities */}
           <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs hover:border-[#00E676]/40 transition-all space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold shrink-0">
                 <Building2 className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
-                  4. Global & PSX Equity Market Intelligence
-                </h3>
-                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                  PSX KSE-100 • S&P 500 • Valuation Ratios • Dividend Yields
-                </span>
-              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
+                4. Global & PSX Equity Market Intelligence
+              </h3>
+            </div>
+
+            {/* Subtext Line Box */}
+            <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
+              PSX KSE-100 • S&P 500 • Valuation Ratios • Dividend Yields
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
@@ -150,9 +153,10 @@ export default function MarketIntelligenceMethodology() {
               By pairing quantitative screener metrics with qualitative 150–250 word institutional company profiles and investment theses, FGC Spot highlights critical cross-border dynamics: such as deep frontier P/E multiple compression (sub-5.0x P/E on PSX vs 27x on S&P 500), sustainable double-digit dividend reinvestment yields (DRIP), and natural currency-hedging properties possessed by export-oriented and dollar-indexed natural resource concessionaires.
             </p>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-mono text-[#00E676]">
-              <span>Coverage: 28 Flagship Blue-Chips</span>
-              <Link to="/stocks" className="hover:underline flex items-center gap-1">
+            {/* Footer Action Box */}
+            <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono bg-gray-50/80 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+              <span className="font-semibold text-gray-700 dark:text-gray-300">Coverage: 28 Flagship Blue-Chips</span>
+              <Link to="/stocks" className="hover:underline flex items-center gap-1 font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-1 rounded-lg border border-[#00E676]/20 transition-all hover:bg-[#00E676]/20">
                 <span>Open Stocks Terminal</span> →
               </Link>
             </div>
