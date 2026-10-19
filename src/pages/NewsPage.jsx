@@ -30,18 +30,18 @@ export default function NewsPage() {
   const [newsItems, setNewsItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeArticle, setActiveArticle] = useState(null);
 
-  const loadNews = async (isManual = false) => {
+  const loadNews = async (cat = selectedCategory, isManual = false) => {
     if (isManual) {
       setIsRefreshing(true);
     } else {
       setIsLoading(true);
     }
     try {
-      const res = await fetchLiveMarketNews('all');
+      const res = await fetchLiveMarketNews(cat);
       const items = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
       setNewsItems(items);
     } catch (e) {
@@ -53,7 +53,7 @@ export default function NewsPage() {
   };
 
   useEffect(() => {
-    loadNews(false);
+    loadNews('all', false);
 
     // Re-evaluate timestamps every 60 seconds
     const timer = setInterval(() => {
@@ -63,35 +63,42 @@ export default function NewsPage() {
     return () => clearInterval(timer);
   }, []);
 
+  const handleCategoryChange = (catId) => {
+    setSelectedCategory(catId);
+    loadNews(catId, false);
+  };
+
   const categories = [
-    { id: 'All', label: 'All News' },
-    { id: 'Crypto', label: 'Cryptocurrency' },
-    { id: 'Markets', label: 'Markets & Forex' },
-    { id: 'Gold', label: 'Gold & Commodities' },
-    { id: 'Economy', label: 'Economy & Central Banks' },
+    { id: 'all', label: 'All Dispatches' },
+    { id: 'local-stocks', label: 'Local Stocks (PSX)' },
+    { id: 'international-stocks', label: 'International Stocks' },
+    { id: 'commodities-economy', label: 'Global Economy & Commodities' },
   ];
+
+  const getCategoryBadgeStyle = (cat = '') => {
+    const c = (cat || '').toLowerCase();
+    if (c.includes('local') || c.includes('psx')) {
+      return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+    }
+    if (c.includes('international') || c.includes('wall street') || c.includes('stocks')) {
+      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+    }
+    return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+  };
 
   const filteredNews = useMemo(() => {
     return newsItems.filter(item => {
-      const matchCat = selectedCategory === 'All' 
-        ? true 
-        : selectedCategory === 'Markets' 
-          ? (item.category === 'Forex' || item.category === 'Macro' || item.category === 'Markets')
-          : selectedCategory === 'Crypto'
-            ? (item.category === 'Crypto' || item.category === 'Digital Assets' || item.headline?.toLowerCase().includes('bitcoin') || item.headline?.toLowerCase().includes('crypto') || item.headline?.toLowerCase().includes('ethereum'))
-            : selectedCategory === 'Gold'
-              ? (item.category === 'Commodities' || item.headline?.toLowerCase().includes('gold') || item.headline?.toLowerCase().includes('silver') || item.headline?.toLowerCase().includes('oil'))
-              : (item.category === 'Economy' || item.category === 'Macro' || item.category === 'Central Bank');
-
-      const matchQuery = searchQuery.trim() === ''
-        ? true
-        : (item.headline?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-           item.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           item.source?.toLowerCase().includes(searchQuery.toLowerCase()));
-
-      return matchCat && matchQuery;
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return true;
+      return (
+        item.headline?.toLowerCase().includes(q) || 
+        item.summary?.toLowerCase().includes(q) ||
+        item.source?.toLowerCase().includes(q) ||
+        item.author?.toLowerCase().includes(q) ||
+        item.category?.toLowerCase().includes(q)
+      );
     });
-  }, [newsItems, selectedCategory, searchQuery]);
+  }, [newsItems, searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
@@ -128,7 +135,7 @@ export default function NewsPage() {
           </div>
 
           <button
-            onClick={() => loadNews(true)}
+            onClick={() => loadNews(selectedCategory, true)}
             disabled={isRefreshing || isLoading}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#0A1726] hover:bg-slate-100 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-xs disabled:opacity-50"
             title="Refresh News Feed"
@@ -146,7 +153,7 @@ export default function NewsPage() {
           {categories.map((c) => (
             <button
               key={c.id}
-              onClick={() => setSelectedCategory(c.id)}
+              onClick={() => handleCategoryChange(c.id)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 selectedCategory === c.id
                   ? 'bg-[#00E676] text-slate-950 shadow-sm'
@@ -211,27 +218,42 @@ export default function NewsPage() {
                   </div>
                 )}
 
-                {/* Source & Time */}
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20 truncate max-w-[150px]">
-                    {item.source || 'Wire Feed'}
-                  </span>
-                  <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium shrink-0">
-                    <Clock className="w-3.5 h-3.5 text-[#00E676]" />
-                    <span>{getLiveTimeAgo(item.datetime || item.pubDate)}</span>
-                  </span>
+                {/* Source, Category & Time */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs gap-2">
+                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                      <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20 truncate max-w-[140px]">
+                        {item.source || 'Wire Feed'}
+                      </span>
+                      {item.category && (
+                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(item.category)} truncate max-w-[150px]`}>
+                          {item.category}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium shrink-0">
+                      <Clock className="w-3.5 h-3.5 text-[#00E676]" />
+                      <span>{getLiveTimeAgo(item.datetime || item.pubDate)}</span>
+                    </span>
+                  </div>
+
+                  {item.author && item.author !== item.source && (
+                    <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                      Reported by <span className="text-slate-900 dark:text-white font-bold">{item.author}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Headline & Summary */}
                 <div className="space-y-2">
                   <h3 
                     onClick={() => setActiveArticle(item)}
-                    className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug cursor-pointer"
+                    className="text-base sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug cursor-pointer"
                   >
                     {item.headline}
                   </h3>
                   {item.summary && (
-                    <p className="text-xs text-slate-600 dark:text-[#A8B3C2] line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-3 leading-relaxed font-medium">
                       {item.summary}
                     </p>
                   )}
@@ -280,12 +302,22 @@ export default function NewsPage() {
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-xs uppercase px-2.5 py-1 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20">
                   {activeArticle.source}
                 </span>
+                {activeArticle.category && (
+                  <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(activeArticle.category)}`}>
+                    {activeArticle.category}
+                  </span>
+                )}
+                {activeArticle.author && (
+                  <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
+                    by {activeArticle.author}
+                  </span>
+                )}
                 <span className="text-xs text-slate-500 dark:text-[#A8B3C2]">
-                  {getLiveTimeAgo(activeArticle.datetime || activeArticle.pubDate)}
+                  &bull; {getLiveTimeAgo(activeArticle.datetime || activeArticle.pubDate)}
                 </span>
               </div>
               <button
@@ -310,7 +342,7 @@ export default function NewsPage() {
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
                 {activeArticle.headline}
               </h2>
-              <p className="text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed whitespace-pre-line">
+              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line font-medium">
                 {activeArticle.summary}
               </p>
             </div>

@@ -71,10 +71,10 @@ export default function MarketNewsWire({ limit = 6 }) {
   };
 
   const categories = [
-    { key: 'all', label: 'All Market Wire' },
-    { key: 'crypto', label: 'Cryptocurrency' },
-    { key: 'forex', label: 'Forex & Corridors' },
-    { key: 'economy', label: 'Economy & Central Banks' },
+    { key: 'all', label: 'All Dispatches' },
+    { key: 'local-stocks', label: 'Local Stocks (PSX)' },
+    { key: 'international-stocks', label: 'International Stocks' },
+    { key: 'commodities-economy', label: 'Global Economy & Commodities' },
   ];
 
   // Limit display if specified, or display up to 6 items by default
@@ -96,6 +96,18 @@ export default function MarketNewsWire({ limit = 6 }) {
       return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
     }
     return 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#A8B3C2] border-slate-200 dark:border-white/10';
+  };
+
+  // Category badge styling generator
+  const getCategoryBadgeStyle = (cat = '') => {
+    const c = (cat || '').toLowerCase();
+    if (c.includes('local') || c.includes('psx')) {
+      return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+    }
+    if (c.includes('international') || c.includes('wall street') || c.includes('stocks')) {
+      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+    }
+    return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
   };
 
   return (
@@ -180,28 +192,40 @@ export default function MarketNewsWire({ limit = 6 }) {
                 className="bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between group shadow-sm dark:shadow-xl hover:shadow-md dark:hover:shadow-2xl transition-all duration-200 overflow-hidden"
               >
                 <div>
-                  {/* Top Metadata Row: Publisher Pill Badge + Timestamp + Subtle Link Arrow */}
+                  {/* Top Metadata Row: Publisher Pill Badge + Category Badge + Author + Timestamp + Subtle Link Arrow */}
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className={`text-[11px] uppercase px-2 py-0.5 rounded-full font-bold border ${getSourceBadgeStyle(item.source)} truncate max-w-[130px]`}>
+                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                      <span className={`text-[10px] sm:text-[11px] uppercase px-2 py-0.5 rounded-full font-bold border ${getSourceBadgeStyle(item.source)} truncate max-w-[120px]`}>
                         {item.source}
                       </span>
-                      <span className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium flex items-center gap-1 shrink-0">
+                      {item.category && (
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold border ${getCategoryBadgeStyle(item.category)} truncate max-w-[130px]`}>
+                          {item.category}
+                        </span>
+                      )}
+                      {item.author && item.author !== item.source && (
+                        <span className="text-[10px] text-slate-500 dark:text-[#A8B3C2] font-semibold hidden sm:inline truncate max-w-[110px]">
+                          by {item.author}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {getLiveTimeAgo(item.datetime || item.pubDate)}
                       </span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2] group-hover:text-[#00E676] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                     </div>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2] group-hover:text-[#00E676] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                   </div>
 
                   {/* Terminal News Body: Side-by-side Headline and Compact Thumbnail */}
                   <div className="flex items-start gap-3 mt-1.5">
                     <div className="flex-1 min-w-0 pr-1">
-                      <h3 className="text-sm font-semibold leading-snug text-gray-900 dark:text-gray-100 group-hover:text-[#00E676] transition-colors line-clamp-2">
+                      <h3 className="text-sm font-bold leading-snug text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
                         {item.headline}
                       </h3>
                       {item.summary && (
-                        <p className="text-xs text-gray-700 dark:text-gray-300 mt-1.5 line-clamp-2 leading-relaxed font-medium">
+                        <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 line-clamp-2 leading-relaxed font-medium">
                           {item.summary}
                         </p>
                       )}

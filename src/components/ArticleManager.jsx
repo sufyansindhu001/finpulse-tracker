@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   PlusCircle, 
@@ -6,10 +6,7 @@ import {
   Trash2, 
   Edit3, 
   ExternalLink, 
-  FileText, 
   BookOpen, 
-  Clock, 
-  User, 
   Image as ImageIcon 
 } from 'lucide-react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
@@ -20,12 +17,12 @@ const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
 
 const INITIAL_FORM_STATE = {
   title: '',
-  category: 'Market Updates',
+  category: 'Stocks & Equities',
   image: '',
   author: 'Sufyan Saleem (Financial Research Desk)',
   summary: '',
   content: '',
-  tags: 'Forex, Crypto, Market'
+  tags: 'Stocks, Equities, Market'
 };
 
 export default function ArticleManager() {
@@ -34,6 +31,7 @@ export default function ArticleManager() {
   const [editingArticleId, setEditingArticleId] = useState(null);
   const [articleSaved, setArticleSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tableCategoryFilter, setTableCategoryFilter] = useState('ALL');
 
   // Local storage fallback loader
   const loadArticlesFromStorage = useCallback(() => {
@@ -153,7 +151,7 @@ export default function ArticleManager() {
     const author = articleForm.author || 'Sufyan Saleem (Financial Research Desk)';
     const excerpt = articleForm.summary || articleForm.excerpt || '';
     const image = articleForm.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75';
-    const category = articleForm.category || 'Market Updates';
+    const category = articleForm.category || 'Stocks & Equities';
 
     if (editingArticleId) {
       const updatePayload = {
@@ -229,7 +227,7 @@ export default function ArticleManager() {
     setEditingArticleId(art.id || art.slug || null);
     setArticleForm({
       title: art.title || '',
-      category: art.category || 'Market Updates',
+      category: art.category || 'Stocks & Equities',
       image: art.image || '',
       author: art.author || 'Sufyan Saleem (Financial Research Desk)',
       summary: art.summary || art.excerpt || '',
@@ -280,6 +278,29 @@ export default function ArticleManager() {
       reader.readAsDataURL(file);
     }
   };
+
+  const getCategoryBadgeClass = (category = '') => {
+    const c = (category || '').toLowerCase();
+    if (c.includes('stock') || c.includes('equit')) {
+      return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+    }
+    if (c.includes('gold') || c.includes('commodit') || c.includes('metal')) {
+      return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    }
+    if (c.includes('forex') || c.includes('currenc')) {
+      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+    }
+    return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
+  };
+
+  const filteredArticles = useMemo(() => {
+    if (tableCategoryFilter === 'ALL') return articles;
+    return articles.filter(a => {
+      const cat = (a.category || '').toLowerCase();
+      const target = tableCategoryFilter.toLowerCase();
+      return cat.includes(target) || target.includes(cat);
+    });
+  }, [articles, tableCategoryFilter]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -341,12 +362,10 @@ export default function ArticleManager() {
                 onChange={(e) => setArticleForm(prev => ({ ...prev, category: e.target.value }))}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 cursor-pointer"
               >
-                <option value="Market Updates">Market Updates</option>
-                <option value="Personal Finance & Currency">Personal Finance & Currency</option>
-                <option value="Precious Metals & Wealth">Precious Metals & Wealth</option>
-                <option value="Forex News">Forex News</option>
-                <option value="Crypto Guides">Crypto Guides</option>
-                <option value="Macro Analysis">Macro Analysis</option>
+                <option value="Stocks & Equities">Stocks & Equities (Company Deep-Dives, Market Analysis)</option>
+                <option value="Gold & Commodities">Gold & Commodities (Bullion, Precious Metals, Oil)</option>
+                <option value="Forex & Currencies">Forex & Currencies (Exchange Rates, Central Banks)</option>
+                <option value="Economy & Markets">Economy & Markets (Macroeconomics, Financial Guides)</option>
               </select>
             </div>
           </div>
@@ -462,14 +481,35 @@ export default function ArticleManager() {
 
       {/* Published Articles Table */}
       <div className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-blue-500" />
-            <span>Published Financial Articles ({articles.length})</span>
-          </h3>
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-            Key: fgc_portal_articles
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-3">
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-blue-500" />
+              <span>Published Financial Articles ({filteredArticles.length})</span>
+              {loading && <span className="text-xs text-blue-500 font-semibold animate-pulse">• Syncing...</span>}
+            </h3>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+              Key: fgc_portal_articles
+            </span>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {['ALL', 'Stocks & Equities', 'Gold & Commodities', 'Forex & Currencies', 'Economy & Markets'].map(f => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setTableCategoryFilter(f)}
+                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  tableCategoryFilter === f
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -483,14 +523,14 @@ export default function ArticleManager() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-              {articles.length === 0 ? (
+              {filteredArticles.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="py-8 text-center text-slate-400">
-                    No articles found in storage. Use the form above to publish your first article.
+                    No articles found for selected category. Use the form above to publish your first article.
                   </td>
                 </tr>
               ) : (
-                articles.map((art, idx) => (
+                filteredArticles.map((art, idx) => (
                   <tr key={art.id || `post-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                     
                     <td className="py-3 px-3">
@@ -517,8 +557,10 @@ export default function ArticleManager() {
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
-                      {art.category || 'Market Updates'}
+                    <td className="py-3 px-3 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider ${getCategoryBadgeClass(art.category)}`}>
+                        {art.category || 'Stocks & Equities'}
+                      </span>
                     </td>
 
                     <td className="py-3 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">

@@ -1,38 +1,43 @@
 /**
  * FGC Spot Financial News Wire Service
  * Fetches 100% genuine live real-time financial dispatches from public live feeds
- * via RSS-to-JSON endpoints (CoinDesk, Cointelegraph, Yahoo Finance, NYT Business).
- * ZERO mock data or static placeholder articles.
+ * via RSS-to-JSON endpoints (CNBC, MarketWatch, Yahoo Finance, Business Recorder, Profit Pakistan).
+ * Structured for: Local Stocks (PSX), International Stocks, and Global Economy & Commodities.
  */
 
-// Live Free Public Financial & Crypto RSS Feeds
+// Live Free Public Financial & Equity RSS Feeds
 const LIVE_FEEDS = {
   all: [
-    { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', defaultCategory: 'Crypto' },
-    { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk', defaultCategory: 'Markets' },
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance', defaultCategory: 'Economy' },
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'International Stocks' },
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC Markets', defaultCategory: 'International Stocks' },
+    { url: 'https://www.brecorder.com/feeds/latest-news/', source: 'Business Recorder', defaultCategory: 'Local Stocks' },
+    { url: 'https://profit.pakistantoday.com.pk/feed/', source: 'Profit Pakistan', defaultCategory: 'Local Stocks' },
+    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance Commodities', defaultCategory: 'Global Economy & Commodities' }
   ],
-  crypto: [
-    { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', defaultCategory: 'Crypto' },
-    { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk', defaultCategory: 'Crypto' },
+  'local-stocks': [
+    { url: 'https://www.brecorder.com/feeds/latest-news/', source: 'Business Recorder', defaultCategory: 'Local Stocks' },
+    { url: 'https://profit.pakistantoday.com.pk/feed/', source: 'Profit Pakistan', defaultCategory: 'Local Stocks' }
   ],
-  forex: [
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance', defaultCategory: 'Forex' },
-    { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk Markets', defaultCategory: 'Forex' },
+  'international-stocks': [
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC', defaultCategory: 'International Stocks' },
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'International Stocks' },
+    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance', defaultCategory: 'International Stocks' }
   ],
-  markets: [
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance', defaultCategory: 'Markets' },
-    { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', defaultCategory: 'Markets' },
-  ],
-  gold: [
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance Commodities', defaultCategory: 'Commodities' },
-    { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk', defaultCategory: 'Commodities' },
-  ],
-  economy: [
-    { url: 'https://rss.nytimes.com/services/xml/rss/nyt/Economy.xml', source: 'New York Times', defaultCategory: 'Economy' },
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance', defaultCategory: 'Economy' },
+  'commodities-economy': [
+    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance Commodities', defaultCategory: 'Global Economy & Commodities' },
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch Macro', defaultCategory: 'Global Economy & Commodities' },
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC Economy', defaultCategory: 'Global Economy & Commodities' }
   ]
 };
+
+// Aliases for incoming category parameters
+LIVE_FEEDS.local = LIVE_FEEDS['local-stocks'];
+LIVE_FEEDS.international = LIVE_FEEDS['international-stocks'];
+LIVE_FEEDS.commodities = LIVE_FEEDS['commodities-economy'];
+LIVE_FEEDS.economy = LIVE_FEEDS['commodities-economy'];
+LIVE_FEEDS.markets = LIVE_FEEDS['international-stocks'];
+LIVE_FEEDS.forex = LIVE_FEEDS['commodities-economy'];
+LIVE_FEEDS.gold = LIVE_FEEDS['commodities-economy'];
 
 // In-memory cache to prevent spamming endpoints and ensure instant client-side rendering
 let newsCache = {
@@ -140,7 +145,7 @@ async function fetchRssFeed(feedConfig) {
       let category = feedConfig.defaultCategory;
       if (Array.isArray(item.categories) && item.categories.length > 0) {
         const cat = item.categories[0];
-        if (typeof cat === 'string' && cat.length > 1 && cat.length < 20) {
+        if (typeof cat === 'string' && cat.length > 1 && cat.length < 35) {
           category = cat;
         }
       }
@@ -149,6 +154,7 @@ async function fetchRssFeed(feedConfig) {
         id: item.guid || `${feedConfig.source}-${idx}-${unixSec}`,
         headline: decodeHTMLEntities(item.title),
         source: item.author ? `${feedConfig.source} (${decodeHTMLEntities(item.author)})` : feedConfig.source,
+        author: item.author ? decodeHTMLEntities(item.author) : feedConfig.source,
         category: category,
         summary: decodeHTMLEntities(item.description || item.content || '').slice(0, 240) + '...',
         url: item.link,
@@ -164,14 +170,14 @@ async function fetchRssFeed(feedConfig) {
 
 /**
  * Fetch live real-time financial market news
- * @param {string} category - 'all', 'forex', 'crypto', 'gold', 'economy', 'markets'
+ * @param {string} category - 'all', 'local-stocks', 'international-stocks', 'commodities-economy'
  */
 export async function fetchLiveMarketNews(category = 'all') {
-  const normCat = (category || 'all').toLowerCase();
+  const normCat = (category || 'all').toLowerCase().replace(/[\s_]+/g, '-');
   
-  // Return cached result if fresh within 45 seconds
+  // Return cached result if fresh within 30 seconds
   const now = Date.now();
-  if (newsCache.data.length > 0 && newsCache.category === normCat && (now - newsCache.timestamp < 45000)) {
+  if (newsCache.data.length > 0 && newsCache.category === normCat && (now - newsCache.timestamp < 30000)) {
     return {
       success: true,
       data: newsCache.data,
@@ -181,9 +187,38 @@ export async function fetchLiveMarketNews(category = 'all') {
     };
   }
 
-  // Determine which feeds to fetch
-  const targetFeeds = LIVE_FEEDS[normCat] || LIVE_FEEDS.all;
+  // 1. Try serverless /api/news route first
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const apiRes = await fetch(`/api/news?category=${encodeURIComponent(normCat)}&_t=${Date.now()}`, {
+      signal: controller.signal,
+      headers: { 'Accept': 'application/json' }
+    });
+    clearTimeout(timeout);
+    if (apiRes.ok) {
+      const payload = await apiRes.json();
+      if (payload && Array.isArray(payload.data) && payload.data.length > 0) {
+        newsCache = {
+          data: payload.data,
+          timestamp: Date.now(),
+          category: normCat
+        };
+        return {
+          success: true,
+          data: payload.data,
+          source: payload.source || 'Live Financial News Wire',
+          lastUpdated: payload.lastUpdated || new Date().toLocaleTimeString(),
+          isLive: true
+        };
+      }
+    }
+  } catch {
+    // Continue to client-side RSS aggregation
+  }
 
+  // 2. Direct client RSS fetch fallback
+  const targetFeeds = LIVE_FEEDS[normCat] || LIVE_FEEDS.all;
   try {
     const feedPromises = targetFeeds.map(feed => fetchRssFeed(feed));
     const results = await Promise.allSettled(feedPromises);
@@ -228,7 +263,7 @@ export async function fetchLiveMarketNews(category = 'all') {
     console.warn('Live news aggregation error:', err);
   }
 
-  // Fallback to cached items if available
+  // 3. Fallback to cached items if available
   if (newsCache.data.length > 0) {
     return {
       success: true,
@@ -239,7 +274,6 @@ export async function fetchLiveMarketNews(category = 'all') {
     };
   }
 
-  // If initial load encounters network issues, return empty array with graceful notice
   return {
     success: false,
     data: [],

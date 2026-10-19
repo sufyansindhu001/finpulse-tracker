@@ -258,12 +258,12 @@ export default function AdminPage() {
   // --- Article Manager Form State ---
   const INITIAL_ARTICLE_FORM = {
     title: '',
-    category: 'Market Updates',
+    category: 'Stocks & Equities',
     image: '',
     author: 'FGC Spot Research Lead',
     summary: '',
     content: '',
-    tags: 'Forex, Crypto, Market'
+    tags: 'Stocks, Equities, Market'
   };
 
   const [articleForm, setArticleForm] = useState(INITIAL_ARTICLE_FORM);
@@ -364,7 +364,7 @@ export default function AdminPage() {
     if (editingArticleId) {
       updateArticle(editingArticleId, {
         title: safeTitle,
-        category: articleForm?.category || 'Market Updates',
+        category: articleForm?.category || 'Stocks & Equities',
         image: articleForm?.image || '',
         author: articleForm?.author || 'FGC Spot Research Lead',
         summary: articleForm?.summary || '',
@@ -375,7 +375,7 @@ export default function AdminPage() {
     } else {
       addArticle({
         title: safeTitle,
-        category: articleForm?.category || 'Market Updates',
+        category: articleForm?.category || 'Stocks & Equities',
         image: articleForm?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
         author: articleForm?.author || 'FGC Spot Research Lead',
         summary: articleForm?.summary || '',
@@ -399,7 +399,7 @@ export default function AdminPage() {
     setEditingArticleId(art.id || art.slug || null);
     setArticleForm({
       title: art?.title || '',
-      category: art?.category || 'Market Updates',
+      category: art?.category || 'Stocks & Equities',
       image: art?.image || '',
       author: art?.author || 'FGC Spot Research Lead',
       summary: art?.summary || art?.excerpt || '',
@@ -1784,7 +1784,7 @@ export default function AdminPage() {
             <ArticleManager />
           </AdminErrorBoundary>
         )}
-        {false && activeTab === 'articles' && (
+        {activeTab === '__legacy_articles__' && (
           <AdminErrorBoundary 
             title="Blog / Article Manager Error"
             onSwitchTab={setActiveTab}
@@ -1848,14 +1848,14 @@ export default function AdminPage() {
                         Category *
                       </label>
                       <select
-                        value={articleForm?.category || 'Market Updates'}
+                        value={articleForm?.category || 'Stocks & Equities'}
                         onChange={(e) => setArticleForm(prev => ({ ...prev, category: e.target.value }))}
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 cursor-pointer"
                       >
-                        <option value="Market Updates">Market Updates</option>
-                        <option value="Forex News">Forex News</option>
-                        <option value="Crypto Guides">Crypto Guides</option>
-                        <option value="Macro Analysis">Macro Analysis</option>
+                        <option value="Stocks & Equities">Stocks & Equities (Company Deep-Dives, Market Analysis)</option>
+                        <option value="Gold & Commodities">Gold & Commodities (Bullion, Precious Metals, Oil)</option>
+                        <option value="Forex & Currencies">Forex & Currencies (Exchange Rates, Central Banks)</option>
+                        <option value="Economy & Markets">Economy & Markets (Macroeconomics, Financial Guides)</option>
                       </select>
                     </div>
                   </div>
@@ -2025,7 +2025,7 @@ export default function AdminPage() {
                             </td>
 
                             <td className="py-3 px-3 font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
-                              {art?.category || 'Market Updates'}
+                              {art?.category || 'Stocks & Equities'}
                             </td>
 
                             <td className="py-3 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">
