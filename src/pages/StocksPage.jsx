@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
   Building2, 
   Info, 
@@ -7,10 +7,12 @@ import {
   FolderHeart, 
   ChevronRight, 
   Download, 
-  ChevronLeft
+  ChevronLeft,
+  RefreshCw
 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { WORLD_COUNTRIES, getStocksForCountry } from '../data/stocksData';
+import { fetchLiveStocks } from '../services/stocksService';
 import ScreensModal from '../components/ScreensModal';
 import CountrySelectorDropdown from '../components/CountrySelectorDropdown';
 import ScreenerFilterSection from '../components/ScreenerFilterSection';
@@ -85,10 +87,43 @@ export default function StocksPage() {
   const [sortField, setSortField] = useState('marketCapNum');
   const [sortDirection, setSortDirection] = useState('desc');
 
-  // Load raw stocks for active country
+  // Live stock data stream state
+  const [liveStocks, setLiveStocks] = useState(() => getStocksForCountry(selectedCountry));
+  const [isLiveLoading, setIsLiveLoading] = useState(false);
+  const [lastMarketUpdate, setLastMarketUpdate] = useState(() => new Date().toLocaleTimeString());
+  const [liveDataSource, setLiveDataSource] = useState('Global Market Feeds (Live)');
+
+  const loadStocks = useCallback(async (country, force = false) => {
+    setIsLiveLoading(true);
+    try {
+      const res = await fetchLiveStocks(country, force);
+      if (res && res.data && res.data.length > 0) {
+        setLiveStocks(res.data);
+        if (res.lastUpdated) setLastMarketUpdate(res.lastUpdated);
+        if (res.source) setLiveDataSource(res.source);
+      }
+    } catch (e) {
+      console.warn('Failed loading live stocks:', e);
+    } finally {
+      setIsLiveLoading(false);
+    }
+  }, []);
+
+  // Fetch when selectedCountry changes & auto refresh every 30s
+  useEffect(() => {
+    loadStocks(selectedCountry, false);
+
+    const interval = setInterval(() => {
+      loadStocks(selectedCountry, true);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [selectedCountry, loadStocks]);
+
+  // Load raw stocks for active country (backed by live streaming data)
   const rawCountryStocks = useMemo(() => {
-    return getStocksForCountry(selectedCountry);
-  }, [selectedCountry]);
+    return liveStocks && liveStocks.length > 0 ? liveStocks : getStocksForCountry(selectedCountry);
+  }, [liveStocks, selectedCountry]);
 
   const activeCountryObj = useMemo(() => {
     return WORLD_COUNTRIES.find(c => c.id === selectedCountry) || WORLD_COUNTRIES[0];
@@ -343,19 +378,43 @@ export default function StocksPage() {
       <div className="space-y-4">
         {/* Top Header Row */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-200 dark:border-gray-800">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
-              Stock Screener
-            </h1>
-            <button 
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
-              title="Stock Screener: Quantitative multi-metric equity filtering engine"
-            >
-              <Info className="w-4 h-4" />
-            </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+                Stock Screener
+              </h1>
+              <button 
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                title="Stock Screener: Quantitative multi-metric equity filtering engine"
+              >
+                <Info className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Live Streaming Badge */}
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="uppercase tracking-wider">Live Feeds</span>
+              <span className="text-gray-300 dark:text-gray-600 font-normal">|</span>
+              <span className="font-mono text-[10px] text-gray-600 dark:text-gray-300 font-normal">{lastMarketUpdate}</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
+            {/* Live Sync Button */}
+            <button
+              onClick={() => loadStocks(selectedCountry, true)}
+              disabled={isLiveLoading}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold transition-colors cursor-pointer border border-gray-200 dark:border-gray-700 disabled:opacity-50"
+              title="Force refresh live quotes"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-emerald-500 ${isLiveLoading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Sync Live</span>
+            </button>
+
             <button 
               onClick={() => handleResetFilters()}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
@@ -533,6 +592,9 @@ export default function StocksPage() {
                   <th className="py-3 px-4 font-bold text-right cursor-pointer hover:text-blue-600 dark:hover:text-[#00E676]" onClick={() => { setSortField('price'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
                     Last Price
                   </th>
+                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-blue-600 dark:hover:text-[#00E676]" onClick={() => { setSortField('changePercent'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
+                    24h Change
+                  </th>
                   {activeViewTab === 'Returns' && (
                     <th className="py-3 px-3 font-bold text-right">1-Year Change</th>
                   )}
@@ -626,6 +688,13 @@ export default function StocksPage() {
                       {/* Last Trade Price */}
                       <td className="py-3 px-4 text-right font-mono font-black text-gray-900 dark:text-gray-100 whitespace-nowrap">
                         {activeCountryObj.symbol}{stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </td>
+
+                      {/* 24h Change % */}
+                      <td className="py-3 px-3 text-right font-mono font-bold whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-0.5 ${(stock.changePercent ?? 0) >= 0 ? 'text-[#00E676]' : 'text-rose-500'}`}>
+                          {(stock.changePercent ?? 0) >= 0 ? '+' : ''}{(stock.changePercent ?? 0).toFixed(2)}%
+                        </span>
                       </td>
 
                       {/* Dynamic Columns based on active View Tab */}

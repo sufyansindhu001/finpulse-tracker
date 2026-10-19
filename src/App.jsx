@@ -204,7 +204,7 @@ export default function App() {
 
     const interval = setInterval(() => {
       loadLiveData(false);
-    }, 45000);
+    }, 25000);
 
     return () => clearInterval(interval);
   }, [loadLiveData]);

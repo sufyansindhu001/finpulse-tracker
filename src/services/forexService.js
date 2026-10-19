@@ -30,14 +30,15 @@ export const DEFAULT_RATES = {
   NGN: 1650.0,
   KRW: 1390.0,
   VND: 25400.0,
-  XAU: 1 / 4321.20, // 1 Troy Oz Gold in USD ($4,321.20)
-  XAG: 1 / 64.80   // 1 Troy Oz Silver in USD ($64.80)
+  XAU: 1 / 2740.00, // 1 Troy Oz Gold in USD ($2,740.00)
+  XAG: 1 / 32.50   // 1 Troy Oz Silver in USD ($32.50)
 };
 
 export const RATES_CACHE_KEY = 'fgc_spot_forex_rates';
-export const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes maximum client-side cache TTL
+export const CACHE_TTL_MS = 45 * 1000; // 45 seconds live client-side cache TTL
 
 const OPEN_EXCHANGE_URL = 'https://open.er-api.com/v6/latest/USD';
+const JSDELIVR_URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
 const FLOATRATES_URL = 'https://www.floatrates.com/daily/usd.json';
 
 /**
@@ -109,13 +110,15 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
   }
 
   try {
-    const [forexRes, floatRes, metalsRes] = await Promise.allSettled([
+    const [forexRes, jsDelivrRes, floatRes, metalsRes] = await Promise.allSettled([
       fetch(`${OPEN_EXCHANGE_URL}?_t=${Date.now()}`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null),
+      fetch(`${JSDELIVR_URL}?_t=${Date.now()}`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null),
       fetch(`${FLOATRATES_URL}?_t=${Date.now()}`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null),
       fetch('/api/metals', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
     ]);
 
     const erData = forexRes.status === 'fulfilled' ? forexRes.value : null;
+    const jsData = jsDelivrRes.status === 'fulfilled' ? jsDelivrRes.value : null;
     const floatData = floatRes.status === 'fulfilled' ? floatRes.value : null;
     const metals = metalsRes.status === 'fulfilled' ? metalsRes.value : null;
 
@@ -123,6 +126,16 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       ...DEFAULT_RATES,
       ...(erData?.rates || {})
     };
+
+    // Enrich with 160+ currency feeds from jsdelivr if missing
+    if (jsData?.usd && typeof jsData.usd === 'object') {
+      Object.entries(jsData.usd).forEach(([code, val]) => {
+        const upper = code.toUpperCase();
+        if (typeof val === 'number' && val > 0 && !mergedRates[upper]) {
+          mergedRates[upper] = val;
+        }
+      });
+    }
 
     // Override with fresh, low-latency interbank mid-market quotes from floatrates
     if (floatData) {
