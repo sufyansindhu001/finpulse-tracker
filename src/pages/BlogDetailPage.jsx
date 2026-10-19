@@ -72,7 +72,10 @@ function formatInlineText(text) {
 // Helper to synchronously find matching article from localStorage or bundled posts
 function findLocalArticle(target) {
   if (!target) return null;
-  const clean = target.toLowerCase().trim();
+  let clean = target.toLowerCase().trim();
+  if (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
+    clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+  }
 
   // 1. Check cached articles in localStorage (contains all synced articles from Supabase)
   try {
@@ -84,7 +87,8 @@ function findLocalArticle(target) {
           if (!p) return false;
           const s = (p.slug || '').toLowerCase().trim();
           const i = (p.id || '').toLowerCase().trim();
-          return s === clean || i === clean;
+          return s === clean || i === clean || 
+            (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide' && s.includes('pakistan-stock-exchange-psx'));
         });
         if (found) return normalizeArticle(found);
       }
@@ -96,7 +100,8 @@ function findLocalArticle(target) {
     if (!p) return false;
     const s = (p.slug || '').toLowerCase().trim();
     const i = (p.id || '').toLowerCase().trim();
-    return s === clean || i === clean;
+    return s === clean || i === clean || 
+      (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide' && s.includes('pakistan-stock-exchange-psx'));
   });
   if (bundled) return normalizeArticle(bundled);
 
@@ -107,10 +112,13 @@ function findLocalArticle(target) {
 export default function BlogDetailPage() {
   const { slug, id } = useParams();
   const rawIdentifier = slug || id;
-  // Gracefully map legacy AI slug to the approved authentic guide to prevent 404s
-  const targetIdentifier = rawIdentifier === 'usd-pkr-interbank-vs-open-market-guide'
-    ? 'usd-to-pkr-interbank-vs-open-market-guide'
-    : rawIdentifier;
+  // Gracefully map legacy or alternative slugs to prevent 404s
+  let targetIdentifier = rawIdentifier;
+  if (rawIdentifier === 'usd-pkr-interbank-vs-open-market-guide') {
+    targetIdentifier = 'usd-to-pkr-interbank-vs-open-market-guide';
+  } else if (rawIdentifier === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
+    targetIdentifier = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+  }
 
   // Synchronously resolve local match without hardcoded fallback to article 0
   const initialMatch = useMemo(() => findLocalArticle(targetIdentifier), [targetIdentifier]);

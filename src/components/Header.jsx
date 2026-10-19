@@ -13,7 +13,8 @@ import {
   Home,
   Sun,
   Moon,
-  BookOpen
+  BookOpen,
+  Building2
 } from 'lucide-react';
 
 export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }) {
@@ -50,9 +51,10 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
     };
   }, [mobileMenuOpen]);
 
-  // Clean navigation links (About removed per policy update)
+  // Clean navigation links with Stocks & PSX
   const navLinks = [
     { label: 'Home', path: '/', icon: Home, match: (p) => p === '/' },
+    { label: 'Stocks & PSX', path: '/stocks', icon: Building2, match: (p) => p.startsWith('/stocks') || p === '/psx' || p === '/equities' },
     { label: 'Rates', path: '/rates', icon: TrendingUp, match: (p) => p === '/rates' || p === '/forex' },
     { label: 'Charts', path: '/charts', icon: LineChart, match: (p) => p === '/charts' },
     { label: 'Converter', path: '/converter', icon: ArrowLeftRight, match: (p) => p === '/converter' || p === '/tools' },

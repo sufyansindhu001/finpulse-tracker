@@ -22,7 +22,8 @@ const STATIC_PAGES = [
   { url: `${BASE_URL}/privacy-policy`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/terms`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/disclaimer`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
-  // Tools & News
+  // Tools, Stocks & News
+  { url: `${BASE_URL}/stocks`, changefreq: 'hourly', priority: '0.9', lastmod: TODAY },
   { url: `${BASE_URL}/converter`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/rates`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/crypto`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
@@ -32,6 +33,7 @@ const STATIC_PAGES = [
 ];
 
 async function fetchArticles() {
+  let supabaseArticles = [];
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { data, error } = await supabase
@@ -39,21 +41,33 @@ async function fetchArticles() {
       .select('slug, created_at, title')
       .order('created_at', { ascending: false });
 
-    if (!error && Array.isArray(data) && data.length > 0) {
-      return data;
+    if (!error && Array.isArray(data)) {
+      supabaseArticles = data;
     }
   } catch (err) {
-    console.warn('[sitemap-generator] Supabase query failed, using static fallback:', err.message);
+    console.warn('[sitemap-generator] Supabase query failed:', err.message);
   }
 
-  // Fallback to local blogPosts.js
+  let localArticles = [];
   try {
     const blogPostsModule = await import('../src/data/blogPosts.js');
-    return blogPostsModule.BLOG_POSTS || [];
+    localArticles = blogPostsModule.BLOG_POSTS || [];
   } catch (err) {
     console.error('[sitemap-generator] Could not read static fallback:', err.message);
-    return [];
   }
+
+  const seenSlugs = new Set();
+  const merged = [];
+
+  [...supabaseArticles, ...localArticles].forEach(art => {
+    const s = art.slug || art.id;
+    if (s && !seenSlugs.has(s)) {
+      seenSlugs.add(s);
+      merged.push(art);
+    }
+  });
+
+  return merged;
 }
 
 async function generateSitemap() {

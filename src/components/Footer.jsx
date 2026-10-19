@@ -135,6 +135,12 @@ export default function Footer({ onSelectPair }) {
             </h3>
             <ul className="space-y-2.5 text-xs font-medium text-slate-600 dark:text-[#A8B3C2]">
               <li>
+                <Link to="/stocks" className="hover:text-[#00E676] cursor-pointer transition-colors flex items-center justify-between">
+                  <span>Stocks & PSX Terminal</span>
+                  <span className="text-[10px] uppercase bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20 px-1.5 py-0.5 rounded font-bold">New</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/rates" className="hover:text-[#00E676] cursor-pointer transition-colors block">
                   Live Exchange Rates
                 </Link>

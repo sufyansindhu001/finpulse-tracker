@@ -14,9 +14,12 @@ import MarketNewsWire from './components/MarketNewsWire';
 import WhyFGCSpot from './components/WhyFGCSpot';
 import SearchModal from './components/SearchModal';
 import CryptoConverterModal from './components/CryptoConverterModal';
+import MarketIntelligenceMethodology from './components/MarketIntelligenceMethodology';
+import FeaturedResearchSection from './components/FeaturedResearchSection';
 import Footer from './components/Footer';
 
 // Standalone dedicated pages & terminal views
+const StocksPage = lazy(() => import('./pages/StocksPage'));
 const RatesPage = lazy(() => import('./pages/RatesPage'));
 const CryptoPage = lazy(() => import('./pages/CryptoPage'));
 const GoldPage = lazy(() => import('./pages/GoldPage'));
@@ -289,6 +292,12 @@ export default function App() {
                   </div>
                 </section>
 
+                {/* Institutional Market Intelligence & Multi-Asset Research Methodology (600+ Words for AdSense Quality) */}
+                <MarketIntelligenceMethodology />
+
+                {/* Featured Institutional Research Block (Direct crawlable <a href="..."> links for Googlebot) */}
+                <FeaturedResearchSection />
+
                 {/* Automated Real-Time Financial News Wire */}
                 <MarketNewsWire limit={6} />
 
@@ -300,6 +309,15 @@ export default function App() {
 
               </div>
             } />
+
+            {/* ROUTE 1B: DEDICATED GLOBAL & PSX STOCKS TERMINAL (/stocks) */}
+            <Route path="/stocks" element={
+              <div className="animate-in fade-in duration-300">
+                <StocksPage />
+              </div>
+            } />
+            <Route path="/psx" element={<Navigate to="/stocks" replace />} />
+            <Route path="/equities" element={<Navigate to="/stocks" replace />} />
 
             {/* ROUTE 2: DEDICATED LIVE RATES PAGE (/rates) */}
             <Route path="/rates" element={
