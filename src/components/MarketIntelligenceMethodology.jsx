@@ -20,13 +20,13 @@ export default function MarketIntelligenceMethodology() {
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Institutional Data Quality Framework</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
             Institutional Market Intelligence & <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00E676] to-emerald-400">
               Multi-Asset Research Methodology
             </span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
             How FGC Spot aggregates, verifies, and normalizes low-latency market data across Foreign Exchange corridors, physical gold bullion benchmarks, decentralized digital assets, and cross-border equity exchanges.
           </p>
         </div>
@@ -41,7 +41,7 @@ export default function MarketIntelligenceMethodology() {
                 <Globe2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                   1. Foreign Exchange & Sovereign Currency Corridors
                 </h3>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
@@ -50,10 +50,10 @@ export default function MarketIntelligenceMethodology() {
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               Foreign exchange rates on FGC Spot are derived from tier-one institutional interbank liquidity feeds, tracking over 160 sovereign currencies continuously. Our pricing engine cross-checks live quotes against the US Dollar Index (DXY), European Central Bank (ECB) fixings, and central bank clearing networks—including the State Bank of Pakistan (SBP) interbank settlement windows.
             </p>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               In emerging economies characterized by two-tier currency markets (such as Pakistan and frontier South Asia), FGC Spot monitors both the formal Interbank Clearing Rate and the Open Market / Exchange Companies Association of Pakistan (ECAP) cash rate. By calculating the interbank-open market spread in real-time, our terminal equips treasurers, freelance earners, and remittance senders with transparent data to prevent predatory banking exchange fees and hidden corridor markups.
             </p>
 
@@ -72,7 +72,7 @@ export default function MarketIntelligenceMethodology() {
                 <Coins className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                   2. Spot Gold (XAU/USD) & Domestic Tola Parity
                 </h3>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
@@ -81,10 +81,10 @@ export default function MarketIntelligenceMethodology() {
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               Physical bullion and precious metals tracking on FGC Spot utilizes the international London Bullion Market Association (LBMA) spot gold benchmark (XAU/USD), quoted per fine troy ounce (31.1034768 grams). To bridge global commodity derivatives with local consumer and jeweler retail markets in South Asia and the GCC, our computational architecture applies dynamic unit conversion formulas.
             </p>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               Domestic gold rates—including the traditional Pakistani and Indian <strong>Tola (11.6638 grams)</strong> and 10-Gram denominations—are mathematically computed from spot dollar metal prices, real-time USD/PKR interbank rates, plus official Karachi Sarafa Association import customs duties, logistics premia, and assay margins across 24-Karat, 22-Karat, and 18-Karat purity tiers. This mathematical transparency protects bullion investors against arbitrary local over-invoicing.
             </p>
 
@@ -103,7 +103,7 @@ export default function MarketIntelligenceMethodology() {
                 <Zap className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                   3. Digital Assets & Multi-Exchange Liquidity
                 </h3>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
@@ -112,10 +112,10 @@ export default function MarketIntelligenceMethodology() {
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               Cryptocurrency valuations on FGC Spot are aggregated from premier spot exchanges (Binance, Coinbase, Kraken, OKX) through high-frequency WebSockets and REST APIs. Instead of relying on a single centralized order book, our analytics pipeline applies a Volume-Weighted Average Price (VWAP) algorithm to filter out localized slippage, flash-wick anomalies, and illiquid regional exchange premiums.
             </p>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               Our terminal continuously monitors 24-hour liquidity depth, market capitalization dominance (BTC, ETH, SOL), circulating token supply metrics, and fiat on-ramp pricing parity (USDT/PKR and USDC/USD). Users can execute instant cross-asset evaluations between digital assets, sovereign fiat, and physical precious metals without leaving the analytics viewport.
             </p>
 
@@ -134,7 +134,7 @@ export default function MarketIntelligenceMethodology() {
                 <Building2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                   4. Global & PSX Equity Market Intelligence
                 </h3>
                 <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
@@ -143,10 +143,10 @@ export default function MarketIntelligenceMethodology() {
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               FGC Spot’s Equity Intelligence Terminal tracks flagship blue-chip enterprises across the Pakistan Stock Exchange (PSX), Wall Street (NYSE/NASDAQ), London Stock Exchange (LSE), Saudi Tadawul, and Tokyo (TSE). We compile comprehensive corporate fundamentals—including Trailing Twelve Month (TTM) Price-to-Earnings (P/E), Return on Equity (ROE), Price-to-Book (P/B), and Debt-to-Equity ratios.
             </p>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#CBD5E1] leading-relaxed text-justify">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               By pairing quantitative screener metrics with qualitative 150–250 word institutional company profiles and investment theses, FGC Spot highlights critical cross-border dynamics: such as deep frontier P/E multiple compression (sub-5.0x P/E on PSX vs 27x on S&P 500), sustainable double-digit dividend reinvestment yields (DRIP), and natural currency-hedging properties possessed by export-oriented and dollar-indexed natural resource concessionaires.
             </p>
 

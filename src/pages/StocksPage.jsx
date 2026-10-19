@@ -37,7 +37,7 @@ export default function StocksPage() {
   const [selectedStockForModal, setSelectedStockForModal] = useState(null);
   const [activeScreenTitle, setActiveScreenTitle] = useState(null);
 
-  // Filters State (19 dropdowns)
+  // Complete Filters State supporting all 12 Tabs
   const initialFilters = {
     marketCap: 'Any',
     lastPrice: 'Any',
@@ -45,19 +45,35 @@ export default function StocksPage() {
     change1Y: 'Any',
     fairValue: 'Any',
     analystUpside: 'Any',
+    analystRating: 'Any',
     peRatio: 'Any',
     pbRatio: 'Any',
+    forwardPe: 'Any',
+    evEbitda: 'Any',
+    dividendYield: 'Any',
+    payoutRatio: 'Any',
+    divGrowth: 'Any',
+    range52: 'Any',
+    change24hPct: 'Any',
     rsi: 'Any',
+    technicalRating: 'Any',
     piotroski: 'Any',
     altmanZ: 'Any',
-    evEbitda: 'Any',
-    index: 'Any',
-    dividendYield: 'Any',
-    range52: 'Any',
+    salesLevel: 'Any',
+    netProfit: 'Any',
+    debtEquity: 'Any',
+    epsGrowth: 'Any',
+    revenueGrowth: 'Any',
+    ytdChange: 'Any',
+    return3M: 'Any',
+    beta: 'Any',
+    roe: 'Any',
+    roic: 'Any',
     exchange: 'Any',
     sector: 'Any',
     industry: 'Any',
-    equityType: 'Any'
+    equityType: 'Any',
+    nextEarnings: 'Any'
   };
   const [filters, setFilters] = useState(initialFilters);
 
@@ -124,38 +140,109 @@ export default function StocksPage() {
     }
   };
 
-  // Apply All Filtering Logic
+  // Comprehensive Real-Time Filtering Engine
   const filteredStocks = useMemo(() => {
     return rawCountryStocks.filter(stock => {
       // Sector filter
-      if (filters.sector !== 'Any' && stock.sector !== filters.sector) return false;
+      if (filters.sector && filters.sector !== 'Any' && stock.sector !== filters.sector) return false;
       // Industry filter
-      if (filters.industry !== 'Any' && stock.industry !== filters.industry) return false;
+      if (filters.industry && filters.industry !== 'Any' && stock.industry !== filters.industry) return false;
+      // Exchange filter
+      if (filters.exchange && filters.exchange !== 'Any' && !stock.exchange.includes(filters.exchange)) return false;
       // Equity Type
-      if (filters.equityType !== 'Any' && stock.equityType !== filters.equityType) return false;
+      if (filters.equityType && filters.equityType !== 'Any' && stock.equityType !== filters.equityType) return false;
+
       // Market Cap filter
-      if (filters.marketCap === 'Mega' && (stock.marketCapNum || 0) < 200) return false;
-      if (filters.marketCap === 'Large' && ((stock.marketCapNum || 0) < 100 || (stock.marketCapNum || 0) >= 200)) return false;
-      if (filters.marketCap === 'Mid' && ((stock.marketCapNum || 0) < 20 || (stock.marketCapNum || 0) >= 100)) return false;
-      if (filters.marketCap === 'Small' && (stock.marketCapNum || 0) >= 20) return false;
+      const mcap = stock.marketCapNum || 0;
+      if (filters.marketCap === 'Mega' && mcap < 200) return false;
+      if (filters.marketCap === 'Large' && (mcap < 100 || mcap >= 200)) return false;
+      if (filters.marketCap === 'Mid' && (mcap < 20 || mcap >= 100)) return false;
+      if (filters.marketCap === 'Small' && mcap >= 20) return false;
+
+      // Last Price filter
+      const pr = stock.price || 0;
+      if (filters.lastPrice === 'under50' && pr >= 50) return false;
+      if (filters.lastPrice === '50-200' && (pr < 50 || pr > 200)) return false;
+      if (filters.lastPrice === '200-500' && (pr < 200 || pr > 500)) return false;
+      if (filters.lastPrice === 'over500' && pr <= 500) return false;
+
       // P/E Ratio filter
-      if (filters.peRatio === 'low5' && stock.peRatio > 5.0) return false;
-      if (filters.peRatio === 'value10' && stock.peRatio > 10.0) return false;
-      if (filters.peRatio === 'mod10-25' && (stock.peRatio < 10.0 || stock.peRatio > 25.0)) return false;
-      if (filters.peRatio === 'high25' && stock.peRatio <= 25.0) return false;
+      const pe = stock.peRatio || 0;
+      if (filters.peRatio === 'low5' && pe > 5.0) return false;
+      if (filters.peRatio === 'value10' && pe > 10.0) return false;
+      if (filters.peRatio === 'mod10-25' && (pe < 10.0 || pe > 25.0)) return false;
+      if (filters.peRatio === 'high25' && pe <= 25.0) return false;
+
       // Dividend Yield filter
-      if (filters.dividendYield === 'over5' && stock.dividendYield < 5.0) return false;
-      if (filters.dividendYield === 'over10' && stock.dividendYield < 10.0) return false;
-      if (filters.dividendYield === 'over14' && stock.dividendYield < 14.0) return false;
+      const div = stock.dividendYield || 0;
+      if (filters.dividendYield === 'over5' && div < 5.0) return false;
+      if (filters.dividendYield === 'over10' && div < 10.0) return false;
+      if (filters.dividendYield === 'over14' && div < 14.0) return false;
+
       // Price / Book filter
-      if (filters.pbRatio === 'below1' && stock.pbRatio >= 1.0) return false;
-      if (filters.pbRatio === '1-3' && (stock.pbRatio < 1.0 || stock.pbRatio > 3.0)) return false;
-      if (filters.pbRatio === 'above3' && stock.pbRatio <= 3.0) return false;
+      const pb = stock.pbRatio || 0;
+      if (filters.pbRatio === 'below1' && pb >= 1.0) return false;
+      if (filters.pbRatio === '1-3' && (pb < 1.0 || pb > 3.0)) return false;
+      if (filters.pbRatio === 'above3' && pb <= 3.0) return false;
+
+      // EV/EBITDA
+      const ev = stock.evEbitda || 5.0;
+      if (filters.evEbitda === 'low5' && ev >= 5.0) return false;
+      if (filters.evEbitda === '5-10' && (ev < 5.0 || ev > 10.0)) return false;
+      if (filters.evEbitda === 'over10' && ev <= 10.0) return false;
+
       // RSI filter
-      if (filters.rsi === 'oversold' && stock.rsi14 >= 35) return false;
-      if (filters.rsi === 'overbought' && stock.rsi14 <= 70) return false;
+      const rsi = stock.rsi14 || 55;
+      if (filters.rsi === 'oversold' && rsi >= 35) return false;
+      if (filters.rsi === 'neutral' && (rsi < 35 || rsi > 70)) return false;
+      if (filters.rsi === 'overbought' && rsi <= 70) return false;
+
       // Piotroski filter
-      if (filters.piotroski === 'high7' && stock.piotroski < 7) return false;
+      const piot = stock.piotroski || 7;
+      if (filters.piotroski === 'high7' && piot < 7) return false;
+      if (filters.piotroski === 'moderate' && (piot < 5 || piot > 6)) return false;
+
+      // 1-Year Price Change
+      const ch1y = parseFloat(stock.change1Y) || 0;
+      if (filters.change1Y === 'positive' && ch1y <= 0) return false;
+      if (filters.change1Y === 'over20' && ch1y < 20) return false;
+      if (filters.change1Y === 'over50' && ch1y < 50) return false;
+
+      // Volume
+      const vol = parseFloat(stock.volume3M) || 1.5;
+      if (filters.volume === 'over1m' && vol < 1.0) return false;
+      if (filters.volume === 'over3m' && vol < 3.0) return false;
+      if (filters.volume === 'over5m' && vol < 5.0) return false;
+
+      // Fair Value Upside
+      const fv = parseFloat(stock.fairValueUpside) || 15;
+      if (filters.fairValue === 'over10' && fv < 10) return false;
+      if (filters.fairValue === 'over20' && fv < 20) return false;
+      if (filters.fairValue === 'over30' && fv < 30) return false;
+
+      // Analyst Upside
+      const au = parseFloat(stock.analystUpside) || 12;
+      if (filters.analystUpside === 'over10' && au < 10) return false;
+      if (filters.analystUpside === 'over20' && au < 20) return false;
+      if (filters.analystUpside === 'over30' && au < 30) return false;
+
+      // Technical Rating
+      if (filters.technicalRating && filters.technicalRating !== 'Any') {
+        if (!stock.technicalRating || !stock.technicalRating.includes(filters.technicalRating)) return false;
+      }
+
+      // Altman Z-Score
+      const az = stock.altmanZ || 3.2;
+      if (filters.altmanZ === 'safe3' && az < 3.0) return false;
+      if (filters.altmanZ === 'grey' && (az < 1.8 || az >= 3.0)) return false;
+
+      // 52-Week Range Proximity
+      const low = stock.low52 || pr * 0.75;
+      const high = stock.high52 || pr * 1.35;
+      const spread = high - low || 1;
+      const prox = ((pr - low) / spread) * 100;
+      if (filters.range52 === 'nearHigh' && prox < 80) return false;
+      if (filters.range52 === 'nearLow' && prox > 25) return false;
 
       return true;
     }).sort((a, b) => {
@@ -223,19 +310,28 @@ export default function StocksPage() {
     document.body.removeChild(link);
   };
 
-  // Dynamic Sectors Directory for active country
-  const dynamicSectors = [
-    { name: 'Consumer Non-Cyclicals', count: 40 },
-    { name: 'Basic Materials', count: 64 },
-    { name: 'Consumer Cyclicals', count: 132 },
-    { name: 'Energy', count: 30 },
-    { name: 'Financials', count: 119 },
-    { name: 'Healthcare', count: 24 },
-    { name: 'Industrials', count: 75 },
-    { name: 'Real Estate', count: 12 },
-    { name: 'Technology', count: 18 },
-    { name: 'Utilities', count: 20 },
-  ];
+  // Dynamic Country Sectors Directory
+  const dynamicSectors = useMemo(() => {
+    if (selectedCountry === 'pk') {
+      return [
+        { name: 'Consumer Cyclicals', count: 132 },
+        { name: 'Financials', count: 119 },
+        { name: 'Industrials', count: 75 },
+        { name: 'Basic Materials', count: 64 },
+        { name: 'Consumer Non-Cyclicals', count: 40 },
+        { name: 'Energy', count: 30 },
+        { name: 'Healthcare', count: 24 },
+        { name: 'Utilities', count: 20 },
+        { name: 'Technology', count: 18 },
+        { name: 'Real Estate', count: 12 }
+      ];
+    }
+    const counts = {};
+    rawCountryStocks.forEach(s => {
+      counts[s.sector] = (counts[s.sector] || 0) + 1;
+    });
+    return Object.entries(counts).map(([name, count]) => ({ name, count }));
+  }, [selectedCountry, rawCountryStocks]);
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-200">
@@ -245,13 +341,13 @@ export default function StocksPage() {
           ======================================================== */}
       <div className="space-y-4">
         {/* Top Header Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
               Stock Screener
             </h1>
             <button 
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
               title="Stock Screener: Quantitative multi-metric equity filtering engine"
             >
               <Info className="w-4 h-4" />
@@ -268,14 +364,14 @@ export default function StocksPage() {
             </button>
             <button 
               onClick={() => alert('Current screening criteria saved to your workspace session.')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold transition-colors cursor-pointer border border-slate-200 dark:border-white/10"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold transition-colors cursor-pointer border border-gray-200 dark:border-gray-700"
             >
               <Bookmark className="w-3.5 h-3.5 text-blue-500" />
               <span>Save</span>
             </button>
             <button 
               onClick={() => setScreensModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold transition-colors cursor-pointer border border-slate-200 dark:border-white/10"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold transition-colors cursor-pointer border border-gray-200 dark:border-gray-700"
             >
               <FolderHeart className="w-3.5 h-3.5 text-emerald-500" />
               <span>My Screens</span>
@@ -300,7 +396,7 @@ export default function StocksPage() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shrink-0 border ${
                     isActive
                       ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs'
-                      : 'bg-white dark:bg-[#0A1726] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:border-blue-500'
+                      : 'bg-white dark:bg-[#0A1726] text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:border-blue-500'
                   }`}
                 >
                   <span>{pill.title}</span>
@@ -322,7 +418,7 @@ export default function StocksPage() {
       </div>
 
       {/* ========================================================
-          MODULE 2: FULL 13-TAB FILTER SECTION & 19 DROPDOWNS GRID
+          MODULE 2: 12-TAB CATEGORY FILTER SECTION
           ======================================================== */}
       <ScreenerFilterSection
         filters={filters}
@@ -332,7 +428,7 @@ export default function StocksPage() {
       />
 
       {/* ========================================================
-          MODULE 3 & 5: ALL-WORLD COUNTRY SELECTOR + MULTI-TAB DATA TABLE
+          MODULE 3 & 5: COUNTRY SELECTOR + MULTI-TAB DATA TABLE
           ======================================================== */}
       <div className="space-y-4">
         
@@ -352,7 +448,7 @@ export default function StocksPage() {
             />
 
             {/* 9 View Tabs */}
-            <div className="flex items-center bg-slate-100 dark:bg-[#06111F] p-1 rounded-lg border border-slate-200 dark:border-white/10 shrink-0">
+            <div className="flex items-center bg-gray-100 dark:bg-[#06111F] p-1 rounded-lg border border-gray-200 dark:border-gray-800 shrink-0">
               {viewTabs.map(tab => {
                 const isActive = activeViewTab === tab;
                 return (
@@ -362,7 +458,7 @@ export default function StocksPage() {
                     className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       isActive
                         ? 'bg-white dark:bg-[#0A1726] text-blue-600 dark:text-[#00E676] shadow-xs'
-                        : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                        : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                     }`}
                   >
                     {tab}
@@ -373,14 +469,14 @@ export default function StocksPage() {
           </div>
 
           {/* Right Action Tools: Results Count & CSV Export */}
-          <div className="flex items-center gap-3 self-end lg:self-auto text-xs font-mono text-slate-500">
+          <div className="flex items-center gap-3 self-end lg:self-auto text-xs font-mono text-gray-500">
             <span>
-              Showing <strong className="text-slate-900 dark:text-white">{filteredStocks.length}</strong> Results
+              Showing <strong className="text-gray-900 dark:text-gray-100">{filteredStocks.length}</strong> Results
             </span>
 
             <button
               onClick={handleExportCSV}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white font-bold transition-colors cursor-pointer border border-slate-200 dark:border-white/10"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold transition-colors cursor-pointer border border-gray-300 dark:border-gray-700"
               title="Download CSV Table"
             >
               <Download className="w-3.5 h-3.5" />
@@ -391,11 +487,11 @@ export default function StocksPage() {
         </div>
 
         {/* Data Table */}
-        <div className="w-full bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden">
+        <div className="w-full bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-50 dark:bg-[#06111F] border-b border-slate-200 dark:border-white/10 text-slate-500 uppercase font-mono text-[11px]">
+                <tr className="bg-gray-50 dark:bg-[#06111F] border-b border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 uppercase font-mono text-[11px]">
                   <th className="py-3 px-3 w-8 text-center">
                     <input
                       type="checkbox"
@@ -405,20 +501,20 @@ export default function StocksPage() {
                     />
                   </th>
                   <th className="py-3 px-2 w-8 text-center">#</th>
-                  <th className="py-3 px-4 font-bold">Company</th>
-                  <th className="py-3 px-3 font-bold">Exchange</th>
-                  <th className="py-3 px-3 font-bold">Sector</th>
-                  <th className="py-3 px-3 font-bold">Industry</th>
-                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-slate-900 dark:hover:text-white" onClick={() => { setSortField('marketCapNum'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
+                  <th className="py-3 px-4 font-bold text-gray-900 dark:text-gray-100">Company</th>
+                  <th className="py-3 px-3 font-bold text-gray-900 dark:text-gray-100">Exchange</th>
+                  <th className="py-3 px-3 font-bold text-gray-900 dark:text-gray-100">Sector</th>
+                  <th className="py-3 px-3 font-bold text-gray-900 dark:text-gray-100">Industry</th>
+                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-blue-600 dark:hover:text-[#00E676]" onClick={() => { setSortField('marketCapNum'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
                     Market Cap
                   </th>
-                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-slate-900 dark:hover:text-white" onClick={() => { setSortField('peRatio'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
+                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-blue-600 dark:hover:text-[#00E676]" onClick={() => { setSortField('peRatio'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
                     P/E Ratio
                   </th>
-                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-slate-900 dark:hover:text-white" onClick={() => { setSortField('pbRatio'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
+                  <th className="py-3 px-3 font-bold text-right cursor-pointer hover:text-blue-600 dark:hover:text-[#00E676]" onClick={() => { setSortField('pbRatio'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
                     P/B Ratio
                   </th>
-                  <th className="py-3 px-4 font-bold text-right cursor-pointer hover:text-slate-900 dark:hover:text-white" onClick={() => { setSortField('price'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
+                  <th className="py-3 px-4 font-bold text-right cursor-pointer hover:text-blue-600 dark:hover:text-[#00E676]" onClick={() => { setSortField('price'); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }}>
                     Last Price
                   </th>
                   {activeViewTab === 'Returns' && (
@@ -433,7 +529,7 @@ export default function StocksPage() {
                   <th className="py-3 px-3 font-bold text-center">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-sans">
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-sans">
                 {paginatedStocks.map((stock, idx) => {
                   const isSelected = selectedRowIds.has(stock.id);
                   const isPositivePe = stock.peRatio > 0;
@@ -443,8 +539,8 @@ export default function StocksPage() {
                     <tr
                       key={stock.id}
                       onClick={() => setSelectedStockForModal(stock)}
-                      className={`hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer group ${
-                        isSelected ? 'bg-blue-50/30 dark:bg-blue-500/5' : ''
+                      className={`hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer group ${
+                        isSelected ? 'bg-blue-50/40 dark:bg-blue-500/5' : ''
                       }`}
                     >
                       {/* Checkbox */}
@@ -458,21 +554,21 @@ export default function StocksPage() {
                       </td>
 
                       {/* Row # */}
-                      <td className="py-3 px-2 text-center font-mono text-slate-400 text-[11px]">
+                      <td className="py-3 px-2 text-center font-mono text-gray-400 text-[11px]">
                         {rowNumber}
                       </td>
 
                       {/* Circular Ticker Badge + Company Name */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-slate-800 dark:text-white text-[11px] border border-slate-200 dark:border-white/10 shrink-0 group-hover:border-blue-500 group-hover:text-blue-500 transition-colors">
+                          <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center font-mono font-bold text-gray-800 dark:text-gray-200 text-[11px] border border-gray-200 dark:border-gray-700 shrink-0 group-hover:border-blue-500 group-hover:text-blue-500 transition-colors">
                             {stock.ticker.slice(0, 3)}
                           </div>
                           <div>
-                            <span className="font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 dark:group-hover:text-[#00E676] transition-colors">
+                            <span className="font-bold text-gray-900 dark:text-gray-100 block group-hover:text-blue-600 dark:group-hover:text-[#00E676] transition-colors">
                               {stock.name}
                             </span>
-                            <span className="text-[11px] font-mono font-semibold text-slate-400">
+                            <span className="text-[11px] font-mono font-semibold text-gray-500 dark:text-gray-400">
                               {stock.ticker}
                             </span>
                           </div>
@@ -480,24 +576,24 @@ export default function StocksPage() {
                       </td>
 
                       {/* Exchange */}
-                      <td className="py-3 px-3 whitespace-nowrap font-medium text-slate-600 dark:text-slate-300">
+                      <td className="py-3 px-3 whitespace-nowrap font-medium text-gray-700 dark:text-gray-300">
                         {stock.exchange}
                       </td>
 
                       {/* Sector */}
                       <td className="py-3 px-3 whitespace-nowrap">
-                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10">
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-white/5 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
                           {stock.sector}
                         </span>
                       </td>
 
                       {/* Industry */}
-                      <td className="py-3 px-3 whitespace-nowrap text-slate-600 dark:text-slate-400 text-[11px]">
+                      <td className="py-3 px-3 whitespace-nowrap text-gray-600 dark:text-gray-400 text-[11px] font-medium">
                         {stock.industry}
                       </td>
 
                       {/* Market Cap */}
-                      <td className="py-3 px-3 text-right font-mono font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                      <td className="py-3 px-3 text-right font-mono font-bold text-gray-800 dark:text-gray-200 whitespace-nowrap">
                         {stock.marketCap}
                       </td>
 
@@ -509,12 +605,12 @@ export default function StocksPage() {
                       </td>
 
                       {/* Price / Book */}
-                      <td className="py-3 px-3 text-right font-mono text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                      <td className="py-3 px-3 text-right font-mono font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
                         {stock.pbRatio.toFixed(2)}
                       </td>
 
                       {/* Last Trade Price */}
-                      <td className="py-3 px-4 text-right font-mono font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                      <td className="py-3 px-4 text-right font-mono font-black text-gray-900 dark:text-gray-100 whitespace-nowrap">
                         {activeCountryObj.symbol}{stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
 
@@ -531,7 +627,7 @@ export default function StocksPage() {
                       )}
                       {activeViewTab === 'Technical' && (
                         <td className="py-3 px-3 text-center font-mono whitespace-nowrap">
-                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 font-bold">
+                          <span className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 font-bold text-gray-800 dark:text-gray-200">
                             {stock.rsi14}
                           </span>
                         </td>
@@ -544,7 +640,7 @@ export default function StocksPage() {
                             e.stopPropagation();
                             setSelectedStockForModal(stock);
                           }}
-                          className="px-2.5 py-1 rounded bg-slate-100 hover:bg-blue-600 hover:text-white dark:bg-white/5 dark:hover:bg-[#00E676] dark:hover:text-[#06111F] text-slate-700 dark:text-slate-300 font-bold text-[11px] transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded bg-gray-100 hover:bg-blue-600 hover:text-white dark:bg-white/5 dark:hover:bg-[#00E676] dark:hover:text-[#06111F] text-gray-800 dark:text-gray-200 font-bold text-[11px] transition-colors cursor-pointer"
                         >
                           Deep-Dive
                         </button>
@@ -555,7 +651,7 @@ export default function StocksPage() {
 
                 {paginatedStocks.length === 0 && (
                   <tr>
-                    <td colSpan={12} className="py-12 text-center text-slate-400 text-sm">
+                    <td colSpan={12} className="py-12 text-center text-gray-500 dark:text-gray-400 text-sm font-medium">
                       No companies match the active screening criteria. Try adjusting or resetting your filters.
                     </td>
                   </tr>
@@ -565,13 +661,13 @@ export default function StocksPage() {
           </div>
 
           {/* Working Pagination Bar */}
-          <div className="px-4 sm:px-6 py-3 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#06111F] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="px-4 sm:px-6 py-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-[#06111F]/70 flex flex-col sm:flex-row items-center justify-between gap-3">
             
             <div className="flex items-center gap-2">
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                className="flex items-center gap-1 px-3 py-1 rounded bg-white dark:bg-white/10 border border-slate-200 dark:border-white/15 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                className="flex items-center gap-1 px-3 py-1 rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>Previous</span>
@@ -585,7 +681,7 @@ export default function StocksPage() {
                     className={`w-7 h-7 rounded flex items-center justify-center font-bold transition-colors cursor-pointer ${
                       currentPage === p
                         ? 'bg-blue-600 text-white dark:bg-[#00E676] dark:text-[#06111F]'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                     }`}
                   >
                     {p}
@@ -596,14 +692,14 @@ export default function StocksPage() {
               <button
                 disabled={currentPage >= totalPages}
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                className="flex items-center gap-1 px-3 py-1 rounded bg-white dark:bg-white/10 border border-slate-200 dark:border-white/15 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                className="flex items-center gap-1 px-3 py-1 rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 <span>Next</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
+            <div className="flex items-center gap-2 text-xs font-mono text-gray-500">
               <span>Rows per page:</span>
               <select
                 value={rowsPerPage}
@@ -611,7 +707,7 @@ export default function StocksPage() {
                   setRowsPerPage(Number(e.target.value));
                   setCurrentPage(1);
                 }}
-                className="px-2 py-1 bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/15 rounded text-xs font-bold text-slate-800 dark:text-white cursor-pointer"
+                className="px-2 py-1 bg-white dark:bg-[#0A1726] border border-gray-300 dark:border-gray-700 rounded text-xs font-bold text-gray-800 dark:text-gray-200 cursor-pointer"
               >
                 <option value={25}>25 Rows</option>
                 <option value={50}>50 Rows</option>
@@ -627,13 +723,13 @@ export default function StocksPage() {
       {/* ========================================================
           MODULE 6A: DYNAMIC [SELECTED COUNTRY] SECTORS DIRECTORY
           ======================================================== */}
-      <section className="bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
-          <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+      <section className="bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
+          <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <span>{activeCountryObj.flag}</span>
             <span>{activeCountryObj.name} Sectors Directory</span>
           </h2>
-          <span className="text-xs font-mono text-slate-500">
+          <span className="text-xs font-mono text-gray-500 dark:text-gray-400 font-medium">
             {dynamicSectors.length} Primary Industry Divisions
           </span>
         </div>
@@ -643,12 +739,12 @@ export default function StocksPage() {
             <button
               key={sec.name}
               onClick={() => handleChangeFilter('sector', sec.name)}
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/60 dark:bg-[#06111F] dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 text-left transition-all cursor-pointer group"
+              className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-blue-50/60 dark:bg-[#06111F] dark:hover:bg-white/5 border border-gray-200 dark:border-gray-800 text-left transition-all cursor-pointer group"
             >
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-[#00E676] transition-colors">
+              <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-[#00E676] transition-colors">
                 {sec.name}
               </span>
-              <span className="text-[11px] font-mono text-slate-400 group-hover:text-blue-500 font-semibold flex items-center gap-0.5">
+              <span className="text-[11px] font-mono text-gray-500 group-hover:text-blue-500 font-semibold flex items-center gap-0.5">
                 <span>({sec.count})</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </span>
@@ -665,22 +761,22 @@ export default function StocksPage() {
       {/* ========================================================
           PERMANENT 800+ WORD VALUATION COMPENDIUM (SEO / ADSENSE)
           ======================================================== */}
-      <section className="p-6 sm:p-10 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs space-y-8">
-        <div className="space-y-2 border-b border-slate-200 dark:border-white/10 pb-6">
+      <section className="p-6 sm:p-10 rounded-2xl bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 shadow-xs space-y-8">
+        <div className="space-y-2 border-b border-gray-200 dark:border-gray-800 pb-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 text-xs font-bold uppercase tracking-wider">
             <Building2 className="w-3.5 h-3.5" />
             <span>Institutional Research &amp; Valuation Compendium</span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
             Valuation Architecture: Analyzing P/E Compression, Dividend Reinvestment, and Currency-Adjusted Returns
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-[#A8B3C2] font-mono">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-mono">
             Authored by Sufyan Saleem (Senior Financial Analyst, FGC Spot) • Updated Institutional Edition
           </p>
         </div>
 
-        <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-[#CBD5E1] leading-relaxed">
-          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+        <div className="space-y-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
             1. Emerging Market Multiples vs Developed Tech: Understanding P/E Compression
           </h3>
           <p>
@@ -691,8 +787,8 @@ export default function StocksPage() {
           </p>
         </div>
 
-        <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-[#CBD5E1] leading-relaxed border-t border-slate-200 dark:border-white/10 pt-6">
-          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+        <div className="space-y-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-6">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
             2. The Mechanics of Dividend Reinvestment (DRIP) in High-Yield Regimes
           </h3>
           <p>
@@ -703,8 +799,8 @@ export default function StocksPage() {
           </p>
         </div>
 
-        <div className="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-[#CBD5E1] leading-relaxed border-t border-slate-200 dark:border-white/10 pt-6">
-          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+        <div className="space-y-4 text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed border-t border-gray-200 dark:border-gray-800 pt-6">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
             3. Currency-Adjusted Equity Returns: Real Purchasing Power Parity (PKR vs USD)
           </h3>
           <p>

@@ -120,7 +120,7 @@ export default function MarketNewsWire({ limit = 6 }) {
               </span>
             </div>
 
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] mt-2 max-w-2xl font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-2 max-w-2xl font-medium leading-relaxed">
               Automated high-frequency intelligence, macroeconomic indicators, and central bank developments curated directly from global financial wires.
             </p>
           </div>
@@ -197,11 +197,11 @@ export default function MarketNewsWire({ limit = 6 }) {
                   {/* Terminal News Body: Side-by-side Headline and Compact Thumbnail */}
                   <div className="flex items-start gap-3 mt-1.5">
                     <div className="flex-1 min-w-0 pr-1">
-                      <h3 className="text-sm font-semibold leading-snug text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
+                      <h3 className="text-sm font-semibold leading-snug text-gray-900 dark:text-gray-100 group-hover:text-[#00E676] transition-colors line-clamp-2">
                         {item.headline}
                       </h3>
                       {item.summary && (
-                        <p className="text-xs text-slate-600 dark:text-[#A8B3C2] mt-1.5 line-clamp-2 leading-relaxed font-normal">
+                        <p className="text-xs text-gray-700 dark:text-gray-300 mt-1.5 line-clamp-2 leading-relaxed font-medium">
                           {item.summary}
                         </p>
                       )}

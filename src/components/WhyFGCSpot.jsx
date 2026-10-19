@@ -48,10 +48,10 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Technical Capabilities</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
             Institutional Platform Architecture
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-2 font-medium leading-relaxed">
+          <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mt-2 font-medium leading-relaxed">
             Engineered from first principles for computational rigor, transparent pricing, and verifiable cross-market feeds.
           </p>
         </div>
@@ -69,10 +69,10 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border mb-5 ${pillar.color}`}>
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
                     {pillar.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed font-medium">
                     {pillar.description}
                   </p>
                 </div>
@@ -92,10 +92,10 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
           <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
               Institutional Precision for Global Markets
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto font-medium leading-relaxed">
+            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 max-w-xl mx-auto font-medium leading-relaxed">
               Open financial infrastructure engineered for cross-border traders, corporate treasury analysts, and global researchers.
             </p>
 

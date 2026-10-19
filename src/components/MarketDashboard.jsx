@@ -320,10 +320,10 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
               <Sparkles className="w-3.5 h-3.5" />
               <span>Multi-Asset Market Matrix</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
               Live Market Dashboard
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl font-medium">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-1 max-w-xl font-medium">
               High-frequency multi-asset terminal monitoring leading cryptocurrencies, global forex corridors, and spot commodities.
             </p>
           </div>

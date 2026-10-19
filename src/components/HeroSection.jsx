@@ -86,7 +86,7 @@ export default function HeroSection({ rates, cryptoList }) {
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] break-words">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-[1.15] break-words">
               Your Trusted Source for{' '}
               <span className="text-[#00E676] bg-gradient-to-r from-[#00E676] to-[#00FF88] bg-clip-text text-transparent">
                 Live
@@ -95,7 +95,7 @@ export default function HeroSection({ rates, cryptoList }) {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 font-medium max-w-xl leading-relaxed">
               Get real-time exchange rates, cryptocurrency prices, gold rates and more — all in one place.
             </p>
 

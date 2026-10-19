@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, RotateCcw, SlidersHorizontal, Check } from 'lucide-react';
 
 export default function ScreenerFilterSection({
   filters,
@@ -10,388 +10,578 @@ export default function ScreenerFilterSection({
   const [activeCategoryTab, setActiveCategoryTab] = useState('Popular');
   const [metricsSearch, setMetricsSearch] = useState('');
 
+  // Exact 12 Tabs matching Investing.com
   const categoryTabs = [
     'Popular',
     'Price',
     'Valuation',
-    'Growth',
-    'Efficiency',
+    'Insights',
+    'Financials',
     'Dividends',
-    'Financial',
-    'Technical',
-    'Performance',
+    'Growth',
+    'Returns',
     'Risk',
-    'Forecasts',
-    'Profile',
-    'Insiders'
+    'Technical',
+    'Efficiency',
+    'Profile'
   ];
 
+  // All Dropdowns with Tab Association
+  const allMetricFilters = useMemo(() => [
+    // POPULAR
+    {
+      id: 'marketCap',
+      label: 'Market Cap',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any Market Cap' },
+        { value: 'Mega', label: 'Mega-Cap (>200B)' },
+        { value: 'Large', label: 'Large-Cap (100B - 200B)' },
+        { value: 'Mid', label: 'Mid-Cap (20B - 100B)' },
+        { value: 'Small', label: 'Small-Cap (<20B)' }
+      ]
+    },
+    {
+      id: 'peRatio',
+      label: 'P/E Ratio (TTM)',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any P/E Multiple' },
+        { value: 'low5', label: 'Deep Value (< 5.0x)' },
+        { value: 'value10', label: 'Attractive (< 10.0x)' },
+        { value: 'mod10-25', label: 'Moderate (10.0x - 25.0x)' },
+        { value: 'high25', label: 'Growth (> 25.0x)' }
+      ]
+    },
+    {
+      id: 'dividendYield',
+      label: 'Dividend Yield (%)',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any Dividend Yield' },
+        { value: 'over5', label: 'Above 5.0%' },
+        { value: 'over10', label: 'Above 10.0% (High Cash)' },
+        { value: 'over14', label: 'Super Yield (> 14.0%)' }
+      ]
+    },
+    {
+      id: 'lastPrice',
+      label: 'Last Price',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any Price' },
+        { value: 'under50', label: 'Under 50' },
+        { value: '50-200', label: '50 - 200' },
+        { value: '200-500', label: '200 - 500' },
+        { value: 'over500', label: 'Over 500' }
+      ]
+    },
+    {
+      id: 'volume',
+      label: 'Volume (3M Avg)',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any Volume' },
+        { value: 'over1m', label: 'Liquid (> 1.0M shares)' },
+        { value: 'over3m', label: 'High Liquidity (> 3.0M)' },
+        { value: 'over5m', label: 'Institutional (> 5.0M)' }
+      ]
+    },
+    {
+      id: 'change1Y',
+      label: '1-Year Price Change',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any 1Y Performance' },
+        { value: 'positive', label: 'Positive (> 0%)' },
+        { value: 'over20', label: 'Outperform (> +20%)' },
+        { value: 'over50', label: 'High Momentum (> +50%)' }
+      ]
+    },
+    {
+      id: 'piotroski',
+      label: 'Piotroski F-Score',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'Any Piotroski Score' },
+        { value: 'high7', label: 'High Quality (>= 7)' },
+        { value: 'moderate', label: 'Moderate Quality (5 - 6)' }
+      ]
+    },
+    {
+      id: 'sector',
+      label: 'Sector',
+      tab: 'Popular',
+      options: [
+        { value: 'Any', label: 'All Sectors' },
+        { value: 'Financials', label: 'Financials' },
+        { value: 'Energy', label: 'Energy' },
+        { value: 'Basic Materials', label: 'Basic Materials' },
+        { value: 'Industrials', label: 'Industrials' },
+        { value: 'Consumer Cyclicals', label: 'Consumer Cyclicals' },
+        { value: 'Consumer Non-Cyclicals', label: 'Consumer Non-Cyclicals' },
+        { value: 'Technology', label: 'Technology' },
+        { value: 'Utilities', label: 'Utilities' },
+        { value: 'Healthcare', label: 'Healthcare' },
+        { value: 'Real Estate', label: 'Real Estate' }
+      ]
+    },
+
+    // PRICE TAB
+    {
+      id: 'range52',
+      label: '52-Week Range Proximity',
+      tab: 'Price',
+      options: [
+        { value: 'Any', label: 'Any 52W Proximity' },
+        { value: 'nearHigh', label: 'Near 52W High (< 10% below peak)' },
+        { value: 'nearLow', label: 'Near 52W Low (< 15% above trough)' }
+      ]
+    },
+    {
+      id: 'change24hPct',
+      label: '24h Change (%)',
+      tab: 'Price',
+      options: [
+        { value: 'Any', label: 'Any Daily Change' },
+        { value: 'gainers', label: 'Top Gainers (> +1.5%)' },
+        { value: 'losers', label: 'Pullbacks (< 0%)' }
+      ]
+    },
+
+    // VALUATION TAB
+    {
+      id: 'pbRatio',
+      label: 'Price to Book (P/B)',
+      tab: 'Valuation',
+      options: [
+        { value: 'Any', label: 'Any P/B Ratio' },
+        { value: 'below1', label: 'Discount to Book (< 1.0x)' },
+        { value: '1-3', label: 'Fair Book (1.0x - 3.0x)' },
+        { value: 'above3', label: 'Premium (> 3.0x)' }
+      ]
+    },
+    {
+      id: 'evEbitda',
+      label: 'EV / EBITDA',
+      tab: 'Valuation',
+      options: [
+        { value: 'Any', label: 'Any EV/EBITDA' },
+        { value: 'low5', label: 'Deep Value (< 5.0x)' },
+        { value: '5-10', label: 'Moderate (5.0x - 10.0x)' },
+        { value: 'over10', label: 'Growth (> 10.0x)' }
+      ]
+    },
+    {
+      id: 'forwardPe',
+      label: 'Forward P/E Ratio',
+      tab: 'Valuation',
+      options: [
+        { value: 'Any', label: 'Any Forward P/E' },
+        { value: 'low6', label: 'Attractive (< 6.0x)' },
+        { value: '6-12', label: 'Fair (6.0x - 12.0x)' },
+        { value: 'over12', label: 'Premium (> 12.0x)' }
+      ]
+    },
+
+    // INSIGHTS TAB
+    {
+      id: 'fairValue',
+      label: 'Fair Value Upside',
+      tab: 'Insights',
+      options: [
+        { value: 'Any', label: 'Any Upside' },
+        { value: 'over10', label: 'Upside > 10%' },
+        { value: 'over20', label: 'Upside > 20%' },
+        { value: 'over30', label: 'High Discount (> 30%)' }
+      ]
+    },
+    {
+      id: 'analystUpside',
+      label: 'Analyst Target Upside',
+      tab: 'Insights',
+      options: [
+        { value: 'Any', label: 'Any Target Upside' },
+        { value: 'over10', label: 'Target Upside > 10%' },
+        { value: 'over20', label: 'Target Upside > 20%' },
+        { value: 'over30', label: 'Strong Target (> 30%)' }
+      ]
+    },
+    {
+      id: 'analystRating',
+      label: 'Analyst Consensus',
+      tab: 'Insights',
+      options: [
+        { value: 'Any', label: 'Any Consensus' },
+        { value: 'Strong Buy', label: 'Strong Buy' },
+        { value: 'Buy', label: 'Buy' },
+        { value: 'Hold', label: 'Hold' }
+      ]
+    },
+
+    // FINANCIALS TAB
+    {
+      id: 'salesLevel',
+      label: 'Sales / Revenue Level',
+      tab: 'Financials',
+      options: [
+        { value: 'Any', label: 'Any Revenue' },
+        { value: 'over100b', label: 'Mega Sales (> 100B)' },
+        { value: '20-100b', label: 'Mid-Scale (20B - 100B)' },
+        { value: 'under20b', label: 'Emerging (< 20B)' }
+      ]
+    },
+    {
+      id: 'netProfit',
+      label: 'Net Profit Margin',
+      tab: 'Financials',
+      options: [
+        { value: 'Any', label: 'Any Margin' },
+        { value: 'over20pct', label: 'High Margin (> 20%)' },
+        { value: '10-20pct', label: 'Stable Margin (10% - 20%)' }
+      ]
+    },
+    {
+      id: 'debtEquity',
+      label: 'Debt-to-Equity Ratio',
+      tab: 'Financials',
+      options: [
+        { value: 'Any', label: 'Any Leverage' },
+        { value: 'zeroDebt', label: 'Virtually Debt-Free (< 0.10)' },
+        { value: 'lowDebt', label: 'Conservative (< 0.50)' },
+        { value: 'modDebt', label: 'Moderate Leverage (< 1.00)' }
+      ]
+    },
+
+    // DIVIDENDS TAB
+    {
+      id: 'payoutRatio',
+      label: 'Dividend Payout Ratio',
+      tab: 'Dividends',
+      options: [
+        { value: 'Any', label: 'Any Payout Ratio' },
+        { value: 'sustainable', label: 'Sustainable (< 60%)' },
+        { value: 'highPayout', label: 'Generous (> 60%)' }
+      ]
+    },
+    {
+      id: 'divGrowth',
+      label: '5-Year Dividend Growth',
+      tab: 'Dividends',
+      options: [
+        { value: 'Any', label: 'Any Dividend Growth' },
+        { value: 'growing', label: 'Positive CAGR (> 5%)' },
+        { value: 'highGrowth', label: 'Rapid CAGR (> 15%)' }
+      ]
+    },
+
+    // GROWTH TAB
+    {
+      id: 'epsGrowth',
+      label: 'EPS Growth YoY',
+      tab: 'Growth',
+      options: [
+        { value: 'Any', label: 'Any EPS Growth' },
+        { value: 'over25', label: 'High Velocity (> +25%)' },
+        { value: '10-25', label: 'Solid (+10% to +25%)' },
+        { value: 'positive', label: 'Positive Growth (> 0%)' }
+      ]
+    },
+    {
+      id: 'revenueGrowth',
+      label: 'Revenue Growth YoY',
+      tab: 'Growth',
+      options: [
+        { value: 'Any', label: 'Any Revenue Growth' },
+        { value: 'over20', label: 'Rapid (> +20%)' },
+        { value: '10-20', label: 'Expansion (+10% to +20%)' }
+      ]
+    },
+
+    // RETURNS TAB
+    {
+      id: 'ytdChange',
+      label: 'YTD Price Change',
+      tab: 'Returns',
+      options: [
+        { value: 'Any', label: 'Any YTD Return' },
+        { value: 'over20', label: 'Outperform (> +20%)' },
+        { value: 'over50', label: 'Super Outperform (> +50%)' },
+        { value: 'positive', label: 'Positive (> 0%)' }
+      ]
+    },
+    {
+      id: 'return3M',
+      label: '3-Month Performance',
+      tab: 'Returns',
+      options: [
+        { value: 'Any', label: 'Any 3M Return' },
+        { value: 'over10', label: 'Strong (+10% or higher)' },
+        { value: 'positive', label: 'Positive (> 0%)' }
+      ]
+    },
+
+    // RISK TAB
+    {
+      id: 'beta',
+      label: 'Beta (5Y Monthly)',
+      tab: 'Risk',
+      options: [
+        { value: 'Any', label: 'Any Beta' },
+        { value: 'lowBeta', label: 'Low Volatility (< 0.80)' },
+        { value: 'marketBeta', label: 'Market Tracking (0.80 - 1.20)' },
+        { value: 'highBeta', label: 'High Volatility (> 1.20)' }
+      ]
+    },
+    {
+      id: 'altmanZ',
+      label: 'Altman Z-Score',
+      tab: 'Risk',
+      options: [
+        { value: 'Any', label: 'Any Z-Score' },
+        { value: 'safe3', label: 'Safe Balance Sheet (>= 3.0)' },
+        { value: 'grey', label: 'Grey Zone (1.8 - 2.9)' }
+      ]
+    },
+
+    // TECHNICAL TAB
+    {
+      id: 'rsi',
+      label: 'RSI (14-Day)',
+      tab: 'Technical',
+      options: [
+        { value: 'Any', label: 'Any RSI Level' },
+        { value: 'oversold', label: 'Oversold (< 35)' },
+        { value: 'neutral', label: 'Neutral Zone (35 - 70)' },
+        { value: 'overbought', label: 'Overbought (> 70)' }
+      ]
+    },
+    {
+      id: 'technicalRating',
+      label: 'Technical Rating',
+      tab: 'Technical',
+      options: [
+        { value: 'Any', label: 'Any Technical Signal' },
+        { value: 'Strong Buy', label: 'Strong Buy Setup' },
+        { value: 'Buy', label: 'Buy Trend' },
+        { value: 'Hold', label: 'Hold / Consolidation' }
+      ]
+    },
+
+    // EFFICIENCY TAB
+    {
+      id: 'roe',
+      label: 'Return on Equity (ROE)',
+      tab: 'Efficiency',
+      options: [
+        { value: 'Any', label: 'Any ROE' },
+        { value: 'over25', label: 'High Efficiency (> 25%)' },
+        { value: '15-25', label: 'Strong Capital (15% - 25%)' }
+      ]
+    },
+    {
+      id: 'roic',
+      label: 'Return on Invested Capital (ROIC)',
+      tab: 'Efficiency',
+      options: [
+        { value: 'Any', label: 'Any ROIC' },
+        { value: 'over20pct', label: 'Peerless Compounding (> 20%)' },
+        { value: '10-20pct', label: 'Quality Capital (10% - 20%)' }
+      ]
+    },
+
+    // PROFILE TAB
+    {
+      id: 'exchange',
+      label: 'Primary Exchange',
+      tab: 'Profile',
+      options: [
+        { value: 'Any', label: 'All Exchanges' },
+        { value: 'Karachi', label: 'PSX Karachi' },
+        { value: 'NASDAQ', label: 'NASDAQ' },
+        { value: 'NYSE', label: 'NYSE' },
+        { value: 'LSE', label: 'London (LSE)' },
+        { value: 'Tadawul', label: 'Saudi Tadawul' },
+        { value: 'Tokyo', label: 'Tokyo (TSE)' }
+      ]
+    },
+    {
+      id: 'industry',
+      label: 'Industry Classification',
+      tab: 'Profile',
+      options: [
+        { value: 'Any', label: 'Any Industry' },
+        { value: 'Oil & Gas', label: 'Oil & Gas' },
+        { value: 'Banking Services', label: 'Banking Services' },
+        { value: 'Chemicals', label: 'Chemicals' },
+        { value: 'Construction Materials', label: 'Construction Materials' },
+        { value: 'Textiles & Apparel', label: 'Textiles & Apparel' },
+        { value: 'Automobiles & Auto Parts', label: 'Automobiles & Auto Parts' },
+        { value: 'Food & Tobacco', label: 'Food & Tobacco' },
+        { value: 'Software & IT Services', label: 'Software & IT Services' },
+        { value: 'Telecommunications', label: 'Telecommunications' },
+        { value: 'Pharmaceuticals', label: 'Pharmaceuticals' }
+      ]
+    },
+    {
+      id: 'equityType',
+      label: 'Equity Type',
+      tab: 'Profile',
+      options: [
+        { value: 'Any', label: 'Any Equity Type' },
+        { value: 'Common Stock', label: 'Common Stock' },
+        { value: 'Preferred Stock', label: 'Preferred Stock' },
+        { value: 'ADR', label: 'ADR / GDR' },
+        { value: 'REIT', label: 'REIT' }
+      ]
+    },
+    {
+      id: 'nextEarnings',
+      label: 'Next Earnings Date',
+      tab: 'Profile',
+      options: [
+        { value: 'Any', label: 'Any Earnings Horizon' },
+        { value: 'thisMonth', label: 'Reporting This Month' },
+        { value: 'nextMonth', label: 'Reporting Next Month' },
+        { value: 'q4', label: 'Q4 Fiscal Close' }
+      ]
+    }
+  ], []);
+
+  // Filter dropdowns by active tab OR search query
+  const displayedFilters = useMemo(() => {
+    const q = metricsSearch.toLowerCase().trim();
+    if (q) {
+      return allMetricFilters.filter(f => 
+        f.label.toLowerCase().includes(q) || f.tab.toLowerCase().includes(q)
+      );
+    }
+    return allMetricFilters.filter(f => f.tab === activeCategoryTab);
+  }, [allMetricFilters, activeCategoryTab, metricsSearch]);
+
   return (
-    <div className="w-full bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden transition-colors">
+    <div className="w-full bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
       
       {/* 1. Header Bar: Filters Label + Applied Count + Metric Search */}
-      <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50/70 dark:bg-[#06111F]/70">
+      <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-gray-800 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-50/70 dark:bg-[#06111F]/70">
         <div className="flex items-center gap-2.5">
-          <SlidersHorizontal className="w-4 h-4 text-[#00E676]" />
-          <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white uppercase tracking-wider">
+          <div className="w-7 h-7 rounded-lg bg-[#00E676]/10 flex items-center justify-center border border-[#00E676]/20">
+            <SlidersHorizontal className="w-3.5 h-3.5 text-[#00E676]" />
+          </div>
+          <h2 className="text-sm sm:text-base font-black text-gray-900 dark:text-gray-100 uppercase tracking-wider">
             Filters
           </h2>
-          <span className="px-2 py-0.5 rounded-full text-xs font-bold font-mono bg-blue-600/10 text-blue-600 dark:bg-[#00E676]/20 dark:text-[#00E676] border border-blue-600/20 dark:border-[#00E676]/30">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-blue-600/10 text-blue-600 dark:bg-[#00E676]/20 dark:text-[#00E676] border border-blue-600/20 dark:border-[#00E676]/30">
             Applied Filters {appliedCount}
           </span>
         </div>
 
         {/* Search for 100+ metrics input */}
         <div className="relative w-full md:w-80">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search for 100+ metrics..."
             value={metricsSearch}
             onChange={(e) => setMetricsSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/15 rounded-lg text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full pl-8 pr-3 py-1.5 bg-white dark:bg-[#0A1726] border border-gray-300 dark:border-gray-700 rounded-lg text-xs text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors font-medium"
           />
         </div>
       </div>
 
-      {/* 2. 13 Filter Category Tabs */}
-      <div className="flex items-center gap-1 px-4 sm:px-6 py-2.5 border-b border-slate-200 dark:border-white/10 overflow-x-auto scrollbar-none bg-slate-50/30 dark:bg-[#0A1726]">
+      {/* 2. 12 Filter Category Tabs Bar */}
+      <div className="flex items-center gap-1 px-4 sm:px-6 py-2.5 border-b border-gray-200 dark:border-gray-800 overflow-x-auto scrollbar-none bg-gray-50/40 dark:bg-[#0A1726]">
         {categoryTabs.map((tab) => {
-          const isActive = activeCategoryTab === tab;
+          const isActive = activeCategoryTab === tab && !metricsSearch;
+          // Count active filters in this tab
+          const tabFilterIds = allMetricFilters.filter(f => f.tab === tab).map(f => f.id);
+          const activeInTab = tabFilterIds.filter(id => filters[id] && filters[id] !== 'Any').length;
+
           return (
             <button
               key={tab}
-              onClick={() => setActiveCategoryTab(tab)}
-              className={`px-3 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+              onClick={() => {
+                setActiveCategoryTab(tab);
+                setMetricsSearch('');
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-slate-200 dark:bg-white/15 text-slate-900 dark:text-white font-bold'
-                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                  ? 'bg-blue-600 text-white dark:bg-[#00E676] dark:text-[#06111F] shadow-xs'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
               }`}
             >
-              {tab}
+              <span>{tab}</span>
+              {activeInTab > 0 && (
+                <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
+                  isActive ? 'bg-white text-blue-600 dark:bg-[#06111F] dark:text-[#00E676]' : 'bg-blue-600 text-white dark:bg-[#00E676] dark:text-[#06111F]'
+                }`}>
+                  {activeInTab}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* 3. 19 Filter Dropdowns in a 4-Column Grid */}
+      {/* 3. Filter Dropdowns Grid */}
       <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        {/* 1. Market Cap */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Market Cap</label>
-          <select
-            value={filters.marketCap || 'Any'}
-            onChange={(e) => onChangeFilter('marketCap', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Market Cap</option>
-            <option value="Mega">Mega-Cap (&gt;200B)</option>
-            <option value="Large">Large-Cap (100B - 200B)</option>
-            <option value="Mid">Mid-Cap (20B - 100B)</option>
-            <option value="Small">Small-Cap (&lt;20B)</option>
-          </select>
-        </div>
+        {displayedFilters.map((metric) => {
+          const isFilterActive = filters[metric.id] && filters[metric.id] !== 'Any';
 
-        {/* 2. Last Price */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Last Price</label>
-          <select
-            value={filters.lastPrice || 'Any'}
-            onChange={(e) => onChangeFilter('lastPrice', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Price</option>
-            <option value="under50">Under 50</option>
-            <option value="50-200">50 - 200</option>
-            <option value="200-500">200 - 500</option>
-            <option value="over500">Over 500</option>
-          </select>
-        </div>
+          return (
+            <div key={metric.id} className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1">
+                  <span>{metric.label}</span>
+                  {metricsSearch && (
+                    <span className="text-[10px] px-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 font-normal">
+                      {metric.tab}
+                    </span>
+                  )}
+                </label>
+                {isFilterActive && (
+                  <span className="flex items-center gap-0.5 text-[10px] text-blue-600 dark:text-[#00E676] font-bold">
+                    <Check className="w-3 h-3" />
+                    <span>Active</span>
+                  </span>
+                )}
+              </div>
 
-        {/* 3. Volume (3M Avg) */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Volume (3M Avg)</label>
-          <select
-            value={filters.volume || 'Any'}
-            onChange={(e) => onChangeFilter('volume', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Volume</option>
-            <option value="over500k">Over 500K</option>
-            <option value="over1m">Over 1M</option>
-            <option value="over5m">Over 5M</option>
-          </select>
-        </div>
+              <select
+                value={filters[metric.id] || 'Any'}
+                onChange={(e) => onChangeFilter(metric.id, e.target.value)}
+                className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors ${
+                  isFilterActive
+                    ? 'bg-blue-50 dark:bg-blue-950/40 border border-blue-400 dark:border-blue-500 text-blue-900 dark:text-blue-200'
+                    : 'bg-gray-50 dark:bg-[#06111F] border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100'
+                }`}
+              >
+                {metric.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        })}
 
-        {/* 4. 1-Year Change (%) */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">1-Year Change (%)</label>
-          <select
-            value={filters.change1Y || 'Any'}
-            onChange={(e) => onChangeFilter('change1Y', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any 1Y Change</option>
-            <option value="positive">Positive (&gt; 0%)</option>
-            <option value="over20">Over +20%</option>
-            <option value="over50">Over +50%</option>
-            <option value="negative">Negative (&lt; 0%)</option>
-          </select>
-        </div>
-
-        {/* 5. Fair Value Upside */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Fair Value Upside</label>
-          <select
-            value={filters.fairValue || 'Any'}
-            onChange={(e) => onChangeFilter('fairValue', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Fair Value</option>
-            <option value="over10">Over +10% Upside</option>
-            <option value="over25">Over +25% Upside</option>
-            <option value="over50">Over +50% Upside</option>
-          </select>
-        </div>
-
-        {/* 6. Analyst Target Upside */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Analyst Target Upside</label>
-          <select
-            value={filters.analystUpside || 'Any'}
-            onChange={(e) => onChangeFilter('analystUpside', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Target Upside</option>
-            <option value="over10">Over +10%</option>
-            <option value="over20">Over +20%</option>
-            <option value="over30">Over +30%</option>
-          </select>
-        </div>
-
-        {/* 7. P/E Ratio */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">P/E Ratio</label>
-          <select
-            value={filters.peRatio || 'Any'}
-            onChange={(e) => onChangeFilter('peRatio', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any P/E</option>
-            <option value="low5">Frontier Deep Value (&lt; 5.0x)</option>
-            <option value="value10">Value (&lt; 10.0x)</option>
-            <option value="mod10-25">Moderate (10x - 25x)</option>
-            <option value="high25">High Growth (&gt; 25x)</option>
-          </select>
-        </div>
-
-        {/* 8. Price / Book (P/B) */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Price / Book (P/B)</label>
-          <select
-            value={filters.pbRatio || 'Any'}
-            onChange={(e) => onChangeFilter('pbRatio', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any P/B</option>
-            <option value="below1">Below Book Value (&lt; 1.0x)</option>
-            <option value="1-3">Fair (1.0x - 3.0x)</option>
-            <option value="above3">Premium (&gt; 3.0x)</option>
-          </select>
-        </div>
-
-        {/* 9. Relative Strength Index (RSI 14d) */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">RSI (14d)</label>
-          <select
-            value={filters.rsi || 'Any'}
-            onChange={(e) => onChangeFilter('rsi', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any RSI</option>
-            <option value="oversold">Oversold (&lt; 35)</option>
-            <option value="neutral">Neutral (35 - 70)</option>
-            <option value="overbought">Overbought (&gt; 70)</option>
-          </select>
-        </div>
-
-        {/* 10. Piotroski F-Score */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Piotroski F-Score</label>
-          <select
-            value={filters.piotroski || 'Any'}
-            onChange={(e) => onChangeFilter('piotroski', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any F-Score</option>
-            <option value="high7">Strong Quality (7 - 9)</option>
-            <option value="mid5">Average (5 - 6)</option>
-            <option value="low4">Low (&lt;= 4)</option>
-          </select>
-        </div>
-
-        {/* 11. Altman Z-Score */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Altman Z-Score</label>
-          <select
-            value={filters.altmanZ || 'Any'}
-            onChange={(e) => onChangeFilter('altmanZ', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Z-Score</option>
-            <option value="safe3">Safe Zone (&gt; 3.0)</option>
-            <option value="grey">Grey Zone (1.8 - 3.0)</option>
-            <option value="distress">Distress (&lt; 1.8)</option>
-          </select>
-        </div>
-
-        {/* 12. EV / EBITDA */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">EV / EBITDA</label>
-          <select
-            value={filters.evEbitda || 'Any'}
-            onChange={(e) => onChangeFilter('evEbitda', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any EV/EBITDA</option>
-            <option value="under5">Under 5.0x</option>
-            <option value="5-10">5.0x - 10.0x</option>
-            <option value="over10">Over 10.0x</option>
-          </select>
-        </div>
-
-        {/* 13. Index */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Index</label>
-          <select
-            value={filters.index || 'Any'}
-            onChange={(e) => onChangeFilter('index', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Benchmark Index</option>
-            <option value="primary">Benchmark Top Index</option>
-            <option value="islamic">Islamic Shariah Compliant</option>
-            <option value="all">All Share Index</option>
-          </select>
-        </div>
-
-        {/* 14. Dividend Yield (%) */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Dividend Yield (%)</label>
-          <select
-            value={filters.dividendYield || 'Any'}
-            onChange={(e) => onChangeFilter('dividendYield', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Dividend Yield</option>
-            <option value="over5">Over 5% Yield</option>
-            <option value="over10">Over 10% Yield</option>
-            <option value="over14">Over 14% Super Yield</option>
-          </select>
-        </div>
-
-        {/* 15. 52-Week Range (%) */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">52-Week Range (%)</label>
-          <select
-            value={filters.range52 || 'Any'}
-            onChange={(e) => onChangeFilter('range52', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Range Position</option>
-            <option value="nearHigh">Near 52W High (&gt;80%)</option>
-            <option value="nearLow">Near 52W Low (&lt;25%)</option>
-            <option value="mid">Mid-Range (25% - 80%)</option>
-          </select>
-        </div>
-
-        {/* 16. Exchange */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Exchange</label>
-          <select
-            value={filters.exchange || 'Any'}
-            onChange={(e) => onChangeFilter('exchange', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Exchange</option>
-            <option value="Karachi">Karachi (PSX)</option>
-            <option value="NASDAQ">NASDAQ</option>
-            <option value="NYSE">NYSE</option>
-            <option value="LSE">London Stock Exchange</option>
-          </select>
-        </div>
-
-        {/* 17. Sector */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Sector</label>
-          <select
-            value={filters.sector || 'Any'}
-            onChange={(e) => onChangeFilter('sector', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Sector</option>
-            <option value="Financials">Financials</option>
-            <option value="Energy">Energy</option>
-            <option value="Basic Materials">Basic Materials</option>
-            <option value="Consumer Cyclicals">Consumer Cyclicals</option>
-            <option value="Consumer Non-Cyclicals">Consumer Non-Cyclicals</option>
-            <option value="Technology">Technology</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Industrials">Industrials</option>
-            <option value="Healthcare">Healthcare</option>
-          </select>
-        </div>
-
-        {/* 18. Industry */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Industry</label>
-          <select
-            value={filters.industry || 'Any'}
-            onChange={(e) => onChangeFilter('industry', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Industry</option>
-            <option value="Oil & Gas">Oil & Gas</option>
-            <option value="Banking Services">Banking Services</option>
-            <option value="Chemicals">Chemicals</option>
-            <option value="Construction Materials">Construction Materials</option>
-            <option value="Textiles & Apparel">Textiles & Apparel</option>
-            <option value="Automobiles & Auto Parts">Automobiles & Auto Parts</option>
-            <option value="Food & Tobacco">Food & Tobacco</option>
-            <option value="Software & IT Services">Software & IT Services</option>
-            <option value="Telecommunications">Telecommunications</option>
-            <option value="Pharmaceuticals">Pharmaceuticals</option>
-          </select>
-        </div>
-
-        {/* 19. Equity Type */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300">Equity Type</label>
-          <select
-            value={filters.equityType || 'Any'}
-            onChange={(e) => onChangeFilter('equityType', e.target.value)}
-            className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 rounded-lg text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="Any">Any Equity Type</option>
-            <option value="Common Stock">Common Stock</option>
-            <option value="Preferred Stock">Preferred Stock</option>
-            <option value="ADR">ADR</option>
-            <option value="REIT">REIT</option>
-          </select>
-        </div>
-
+        {displayedFilters.length === 0 && (
+          <div className="col-span-full py-8 text-center text-xs text-gray-500 dark:text-gray-400 font-medium">
+            No screening metrics match "{metricsSearch}". Try browsing the category tabs above.
+          </div>
+        )}
       </div>
 
       {/* 4. Bottom Action Bar: Reset Filters */}
-      <div className="px-6 py-3 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#06111F] flex items-center justify-between">
-        <span className="text-[11px] text-slate-500">
-          *All filters apply in real-time across active exchange listings.
+      <div className="px-6 py-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-[#06111F]/70 flex items-center justify-between">
+        <span className="text-xs text-gray-700 dark:text-gray-300 font-medium">
+          Showing filters for <strong className="text-gray-900 dark:text-gray-100">{metricsSearch ? `Search "${metricsSearch}"` : activeCategoryTab}</strong> • Changes apply in real-time.
         </span>
 
         <button
           onClick={onResetFilters}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold transition-colors cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Reset Filters</span>
