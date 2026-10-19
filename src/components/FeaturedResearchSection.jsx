@@ -19,7 +19,7 @@ const FEATURED_ARTICLES = [
     excerpt: 'Everything you need to know about purchasing physical gold bullion in Pakistan: 24K vs 22K karat testing, Tola (11.66g) vs 10-gram weight pricing, avoiding unfair jeweler making charges, and hallmarking standards.',
     category: 'Precious Metals',
     readTime: '5 min read',
-    date: 'October 10, 2026',
+    date: 'October 20, 2026',
     author: 'Sufyan Saleem',
     image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80',
     tags: ['Gold Bullion', 'Tola', 'Karat', 'Sarafa Bazaar', 'Hedging']
@@ -30,7 +30,7 @@ const FEATURED_ARTICLES = [
     excerpt: 'Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, PRC certificate issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.',
     category: 'Banking & Remittances',
     readTime: '5 min read',
-    date: 'October 08, 2026',
+    date: 'October 20, 2026',
     author: 'Sufyan Saleem',
     image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
     tags: ['Freelance Banking', 'FBR Tax', 'PSEB', 'Remittances', 'Forex']

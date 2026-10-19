@@ -12,7 +12,7 @@ const sitemapPath = path.join(publicDir, 'sitemap.xml');
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
 const BASE_URL = 'https://www.fgcspot.com';
-const TODAY = new Date().toISOString().split('T')[0];
+const TODAY = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi' }).format(new Date());
 
 const STATIC_PAGES = [
   { url: `${BASE_URL}/`, changefreq: 'daily', priority: '1.0', lastmod: TODAY },
@@ -89,15 +89,24 @@ async function generateSitemap() {
   });
 
   // 2. Dynamic Articles
+  const PRIORITY_SLUGS = new Set([
+    'buying-gold-in-pakistan-tola-karat-making-charges-guide',
+    'freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained'
+  ]);
+
   articles.forEach(art => {
     const slug = art.slug || art.id;
     if (!slug) return;
-    const dateStr = art.created_at ? new Date(art.created_at).toISOString().split('T')[0] : TODAY;
+    const isPriority = PRIORITY_SLUGS.has(slug);
+    const dateStr = isPriority ? TODAY : (art.created_at ? new Date(art.created_at).toISOString().split('T')[0] : TODAY);
+    const changefreq = isPriority ? 'daily' : 'weekly';
+    const priority = isPriority ? '1.0' : '0.8';
+
     xml += `  <url>\n`;
     xml += `    <loc>${BASE_URL}/blog/${slug}</loc>\n`;
     xml += `    <lastmod>${dateStr}</lastmod>\n`;
-    xml += `    <changefreq>weekly</changefreq>\n`;
-    xml += `    <priority>0.8</priority>\n`;
+    xml += `    <changefreq>${changefreq}</changefreq>\n`;
+    xml += `    <priority>${priority}</priority>\n`;
     xml += `  </url>\n`;
   });
 

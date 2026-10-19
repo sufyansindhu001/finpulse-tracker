@@ -169,4 +169,30 @@ export function updateSEO({ title, description, canonical, ogType = 'website', o
     }
     twImgMeta.setAttribute('content', ogImage);
   }
+
+  // Robots & Googlebot Priority
+  const robotsContent = robots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+  let robotsMeta = document.querySelector('meta[name="robots"]');
+  if (!robotsMeta) {
+    robotsMeta = document.createElement('meta');
+    robotsMeta.setAttribute('name', 'robots');
+    document.head.appendChild(robotsMeta);
+  }
+  robotsMeta.setAttribute('content', robotsContent);
+
+  let googlebotMeta = document.querySelector('meta[name="googlebot"]');
+  if (!googlebotMeta) {
+    googlebotMeta = document.createElement('meta');
+    googlebotMeta.setAttribute('name', 'googlebot');
+    document.head.appendChild(googlebotMeta);
+  }
+  googlebotMeta.setAttribute('content', robotsContent);
+
+  let revisitMeta = document.querySelector('meta[name="revisit-after"]');
+  if (!revisitMeta) {
+    revisitMeta = document.createElement('meta');
+    revisitMeta.setAttribute('name', 'revisit-after');
+    document.head.appendChild(revisitMeta);
+  }
+  revisitMeta.setAttribute('content', '1 days');
 }

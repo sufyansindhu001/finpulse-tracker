@@ -95,11 +95,11 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     // 3. Live Precious Metals
     const goldPriceUsd = (rates.XAU && rates.XAU > 0)
       ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData.gold?.price || 4321.20);
+      : (metalsData.gold?.price || 2740.00);
 
     const silverPriceUsd = (rates.XAG && rates.XAG > 0)
       ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData.silver?.price || 64.80);
+      : (metalsData.silver?.price || 32.50);
 
     const goldChange = metalsData.gold?.change ?? 0.45;
     const silverChange = metalsData.silver?.change ?? 0.87;

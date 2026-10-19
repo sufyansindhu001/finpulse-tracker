@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 import { useSEO } from '../hooks/useSEO';
+import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
 
 export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRefreshing }) {
   useSEO({
@@ -34,6 +35,39 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   const [sortOrder, setSortOrder] = useState('asc');
   const [highlightedAsset, setHighlightedAsset] = useState(null);
   const [visibleCurrencyCount, setVisibleCurrencyCount] = useState(10);
+
+  // Live Metals State
+  const [metalsData, setMetalsData] = useState(() => ({
+    gold: DEFAULT_METALS.gold,
+    silver: DEFAULT_METALS.silver,
+    lastUpdated: DEFAULT_METALS.lastUpdated,
+    source: DEFAULT_METALS.source
+  }));
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadMetals = async () => {
+      try {
+        const res = await fetchLiveMetals();
+        if (isMounted && res && res.gold && res.silver) {
+          setMetalsData({
+            gold: res.gold,
+            silver: res.silver,
+            lastUpdated: res.lastUpdated,
+            source: res.source
+          });
+        }
+      } catch (err) {
+        console.warn('RatesPage metals fetch warning:', err);
+      }
+    };
+    loadMetals();
+    const interval = setInterval(loadMetals, 45000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -145,29 +179,37 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
   // Gold benchmarks
   const goldRows = useMemo(() => {
-    const goldOzUsd = 2684.50;
-    const silverOzUsd = 31.85;
+    const goldOzUsd = (rates.XAU && rates.XAU > 0)
+      ? Number((1 / rates.XAU).toFixed(2))
+      : (metalsData.gold?.price || 2740.00);
+    const silverOzUsd = (rates.XAG && rates.XAG > 0)
+      ? Number((1 / rates.XAG).toFixed(2))
+      : (metalsData.silver?.price || 32.50);
 
-    const goldPerGram24K = (goldOzUsd * usdToPkr) / 31.1035;
-    const goldPerTola24K = goldPerGram24K * 11.6638;
-    const goldPer10g24K = goldPerGram24K * 10;
-    const goldPerTola22K = goldPerTola24K * (22 / 24);
-    const goldPerGram22K = goldPerGram24K * (22 / 24);
-    const goldPerTola21K = goldPerTola24K * (21 / 24);
-    const goldPerTola18K = goldPerTola24K * (18 / 24);
+    const goldMetrics = calculateGoldLocalMetrics(goldOzUsd, usdToPkr, true);
+    const goldPerTola24K = goldMetrics.pricePerTola24K;
+    const goldPer10g24K = goldMetrics.pricePer10Gram24K;
+    const goldPerGram24K = goldMetrics.pricePerGram24K;
+    const goldPerTola22K = goldMetrics.pricePerTola22K;
+    const goldPerGram22K = goldMetrics.pricePerGram22K;
+    const goldPerTola21K = Math.round(goldPerTola24K * (21 / 24));
+    const goldPerTola18K = Math.round(goldPerTola24K * (18 / 24));
+
+    const goldChange = (metalsData.gold?.change ?? 0.45);
+    const silverChange = (metalsData.silver?.change ?? 0.87);
 
     return [
-      { purity: '24K Gold (Pure Bullion)', unit: 'Per Tola (11.66g)', ratePkr: goldPerTola24K, rateUsd: (goldPerTola24K / usdToPkr), change: '+0.38%', isPositive: true },
-      { purity: '24K Gold (Pure Bullion)', unit: 'Per 10 Grams', ratePkr: goldPer10g24K, rateUsd: (goldPer10g24K / usdToPkr), change: '+0.38%', isPositive: true },
-      { purity: '24K Gold (Pure Bullion)', unit: 'Per 1 Gram', ratePkr: goldPerGram24K, rateUsd: (goldPerGram24K / usdToPkr), change: '+0.38%', isPositive: true },
-      { purity: '24K Gold Spot (International)', unit: '1 Troy Ounce (oz)', ratePkr: goldOzUsd * usdToPkr, rateUsd: goldOzUsd, change: '+0.45%', isPositive: true },
-      { purity: '22K Gold (Jewelry Standard)', unit: 'Per Tola', ratePkr: goldPerTola22K, rateUsd: (goldPerTola22K / usdToPkr), change: '+0.38%', isPositive: true },
-      { purity: '22K Gold (Jewelry Standard)', unit: 'Per Gram', ratePkr: goldPerGram22K, rateUsd: (goldPerGram22K / usdToPkr), change: '+0.38%', isPositive: true },
-      { purity: '21K Gold (Middle East Purity)', unit: 'Per Tola', ratePkr: goldPerTola21K, rateUsd: (goldPerTola21K / usdToPkr), change: '+0.35%', isPositive: true },
-      { purity: '18K Gold (Italian Standard)', unit: 'Per Tola', ratePkr: goldPerTola18K, rateUsd: (goldPerTola18K / usdToPkr), change: '+0.30%', isPositive: true },
-      { purity: 'Silver Spot (XAG/USD)', unit: '1 Troy Ounce (oz)', ratePkr: silverOzUsd * usdToPkr, rateUsd: silverOzUsd, change: '+1.12%', isPositive: true },
+      { purity: '24K Gold (Karachi Sarafa Bullion)', unit: 'Per Tola (11.66g)', ratePkr: goldPerTola24K, rateUsd: (goldPerTola24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '24K Gold (Pure Bullion 99.9%)', unit: 'Per 10 Grams', ratePkr: goldPer10g24K, rateUsd: (goldPer10g24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '24K Gold (Pure Bullion 99.9%)', unit: 'Per 1 Gram', ratePkr: goldPerGram24K, rateUsd: (goldPerGram24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '24K Gold Spot (LBMA International)', unit: '1 Troy Ounce (oz)', ratePkr: Math.round(goldOzUsd * usdToPkr), rateUsd: goldOzUsd, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '22K Gold (Jewelry Standard 91.6%)', unit: 'Per Tola', ratePkr: goldPerTola22K, rateUsd: (goldPerTola22K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '22K Gold (Jewelry Standard 91.6%)', unit: 'Per Gram', ratePkr: goldPerGram22K, rateUsd: (goldPerGram22K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '21K Gold (Middle East Purity 87.5%)', unit: 'Per Tola', ratePkr: goldPerTola21K, rateUsd: (goldPerTola21K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: '18K Gold (Italian Standard 75.0%)', unit: 'Per Tola', ratePkr: goldPerTola18K, rateUsd: (goldPerTola18K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+      { purity: 'Silver Spot (XAG/USD International)', unit: '1 Troy Ounce (oz)', ratePkr: Math.round(silverOzUsd * usdToPkr), rateUsd: silverOzUsd, change: `${silverChange >= 0 ? '+' : ''}${silverChange}%`, isPositive: silverChange >= 0 },
     ];
-  }, [usdToPkr]);
+  }, [rates.XAU, rates.XAG, metalsData, usdToPkr]);
 
   // Filtered Currencies
   const filteredCurrencies = useMemo(() => {

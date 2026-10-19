@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
+import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
 
 export default function GoldPage({ rates = {} }) {
   useSEO({
@@ -28,6 +29,40 @@ export default function GoldPage({ rates = {} }) {
   const [calcWeight, setCalcWeight] = useState(1);
   const [calcUnit, setCalcUnit] = useState('tola');
   const [highlightedPurity, setHighlightedPurity] = useState(null);
+
+  // Live Precious Metals State
+  const [metalsData, setMetalsData] = useState(() => ({
+    gold: DEFAULT_METALS.gold,
+    silver: DEFAULT_METALS.silver,
+    lastUpdated: DEFAULT_METALS.lastUpdated,
+    source: DEFAULT_METALS.source
+  }));
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadMetals = async () => {
+      try {
+        const res = await fetchLiveMetals();
+        if (isMounted && res && res.gold && res.silver) {
+          setMetalsData({
+            gold: res.gold,
+            silver: res.silver,
+            lastUpdated: res.lastUpdated,
+            source: res.source
+          });
+        }
+      } catch (err) {
+        console.warn('Gold page metals fetch warning:', err);
+      }
+    };
+
+    loadMetals();
+    const interval = setInterval(loadMetals, 45000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const purity = searchParams.get('purity');
@@ -53,15 +88,24 @@ export default function GoldPage({ rates = {} }) {
     }
   }, [searchParams]);
 
-  // Benchmark spot prices
-  const goldSpotOzUsd = 2684.50;
-  const silverSpotOzUsd = 31.85;
+  // Live Benchmark spot prices (fallback to metalsData)
+  const goldSpotOzUsd = (rates.XAU && rates.XAU > 0)
+    ? Number((1 / rates.XAU).toFixed(2))
+    : (metalsData.gold?.price || 2740.00);
 
-  // Base calculations: 1 Troy Oz = 31.1035 grams, 1 Tola = 11.6638 grams
-  const goldGram24K_Pkr = (goldSpotOzUsd * usdToPkr) / 31.1035;
-  const goldTola24K_Pkr = goldGram24K_Pkr * 11.6638;
-  const gold10g24K_Pkr = goldGram24K_Pkr * 10;
-  const goldOz24K_Pkr = goldSpotOzUsd * usdToPkr;
+  const silverSpotOzUsd = (rates.XAG && rates.XAG > 0)
+    ? Number((1 / rates.XAG).toFixed(2))
+    : (metalsData.silver?.price || 32.50);
+
+  // Base calculations with official Karachi Sarafa Association +6.5% parity adjustment
+  const goldMetrics = useMemo(() => {
+    return calculateGoldLocalMetrics(goldSpotOzUsd, usdToPkr, true);
+  }, [goldSpotOzUsd, usdToPkr]);
+
+  const goldGram24K_Pkr = goldMetrics.pricePerGram24K;
+  const goldTola24K_Pkr = goldMetrics.pricePerTola24K;
+  const gold10g24K_Pkr = goldMetrics.pricePer10Gram24K;
+  const goldOz24K_Pkr = goldMetrics.pricePerOunceLocal;
 
   const purities = [
     {
@@ -103,24 +147,66 @@ export default function GoldPage({ rates = {} }) {
   ];
 
   // Helper to get price based on active unit
-  const getPriceForPurity = (factor) => {
+  const getPriceForPurity = (factor, karat) => {
     switch (selectedUnit) {
       case 'tola':
+        if (karat === '24K') {
+          return {
+            pkr: goldMetrics.pricePerTola24K,
+            usd: Math.round(goldMetrics.pricePerTola24K / usdToPkr),
+            label: 'Per Tola (11.66g)'
+          };
+        }
+        if (karat === '22K') {
+          return {
+            pkr: goldMetrics.pricePerTola22K,
+            usd: Math.round(goldMetrics.pricePerTola22K / usdToPkr),
+            label: 'Per Tola (11.66g)'
+          };
+        }
         return {
-          pkr: Math.round(goldTola24K_Pkr * factor),
-          usd: Math.round((goldTola24K_Pkr * factor) / usdToPkr),
+          pkr: Math.round(goldMetrics.pricePerTola24K * factor),
+          usd: Math.round((goldMetrics.pricePerTola24K * factor) / usdToPkr),
           label: 'Per Tola (11.66g)'
         };
       case '10g':
+        if (karat === '24K') {
+          return {
+            pkr: goldMetrics.pricePer10Gram24K,
+            usd: Math.round(goldMetrics.pricePer10Gram24K / usdToPkr),
+            label: 'Per 10 Grams'
+          };
+        }
+        if (karat === '22K') {
+          return {
+            pkr: goldMetrics.pricePer10Gram22K,
+            usd: Math.round(goldMetrics.pricePer10Gram22K / usdToPkr),
+            label: 'Per 10 Grams'
+          };
+        }
         return {
-          pkr: Math.round(gold10g24K_Pkr * factor),
-          usd: Math.round((gold10g24K_Pkr * factor) / usdToPkr),
+          pkr: Math.round(goldMetrics.pricePer10Gram24K * factor),
+          usd: Math.round((goldMetrics.pricePer10Gram24K * factor) / usdToPkr),
           label: 'Per 10 Grams'
         };
       case 'gram':
+        if (karat === '24K') {
+          return {
+            pkr: goldMetrics.pricePerGram24K,
+            usd: (goldMetrics.pricePerGram24K / usdToPkr).toFixed(2),
+            label: 'Per 1 Gram'
+          };
+        }
+        if (karat === '22K') {
+          return {
+            pkr: goldMetrics.pricePerGram22K,
+            usd: (goldMetrics.pricePerGram22K / usdToPkr).toFixed(2),
+            label: 'Per 1 Gram'
+          };
+        }
         return {
-          pkr: Math.round(goldGram24K_Pkr * factor),
-          usd: ((goldGram24K_Pkr * factor) / usdToPkr).toFixed(2),
+          pkr: Math.round(goldMetrics.pricePerGram24K * factor),
+          usd: ((goldMetrics.pricePerGram24K * factor) / usdToPkr).toFixed(2),
           label: 'Per 1 Gram'
         };
       case 'oz':
@@ -174,7 +260,7 @@ export default function GoldPage({ rates = {} }) {
             Certified Live Gold Rates
           </h1>
           <p className="text-sm text-slate-600 dark:text-[#A8B3C2] mt-2 max-w-2xl leading-relaxed">
-            Real-time bullion benchmark prices for 24K, 22K, 21K, and 18K purity grades calculated dynamically from London Bullion Market (LBMA) spot quotes and live USD/PKR interbank parity.
+            Real-time bullion benchmark prices for 24K, 22K, 21K, and 18K purity grades calculated dynamically from London Bullion Market (LBMA) spot quotes, live USD/PKR interbank parity, and Karachi Sarafa Association official import tariff adjustments.
           </p>
         </div>
 
@@ -185,7 +271,7 @@ export default function GoldPage({ rates = {} }) {
             <div className="text-lg font-black text-slate-900 dark:text-white font-tabular">${goldSpotOzUsd.toLocaleString()}</div>
             <div className="text-[10px] text-[#00E676] font-semibold flex items-center justify-end gap-0.5">
               <TrendingUp className="w-3 h-3" />
-              <span>+0.45% 24h</span>
+              <span>{(metalsData.gold?.change ?? 0.45) >= 0 ? '+' : ''}{metalsData.gold?.change ?? 0.45}% 24h</span>
             </div>
           </div>
 
@@ -194,7 +280,7 @@ export default function GoldPage({ rates = {} }) {
             <div className="text-lg font-black text-slate-900 dark:text-white font-tabular">${silverSpotOzUsd.toFixed(2)}</div>
             <div className="text-[10px] text-[#00E676] font-semibold flex items-center justify-end gap-0.5">
               <TrendingUp className="w-3 h-3" />
-              <span>+1.12% 24h</span>
+              <span>{(metalsData.silver?.change ?? 0.87) >= 0 ? '+' : ''}{metalsData.silver?.change ?? 0.87}% 24h</span>
             </div>
           </div>
         </div>
@@ -232,7 +318,7 @@ export default function GoldPage({ rates = {} }) {
       {/* 4 Karat Purity Cards Grid */}
       <div id="gold-purity-cards" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {purities.map((item) => {
-          const price = getPriceForPurity(item.factor);
+          const price = getPriceForPurity(item.factor, item.karat);
           const isHighlighted = highlightedPurity === item.karat;
           return (
             <div

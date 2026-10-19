@@ -30,15 +30,15 @@ export default async function handler(req, res) {
     ]);
     clearTimeout(timeout);
 
-    let goldPrice = 4321.20;
+    let goldPrice = 2740.00;
     let goldChange = 0.45;
-    let goldHigh = 4348.00;
-    let goldLow = 4296.50;
+    let goldHigh = 2760.00;
+    let goldLow = 2725.00;
 
-    let silverPrice = 64.80;
+    let silverPrice = 32.50;
     let silverChange = 0.87;
-    let silverHigh = 65.50;
-    let silverLow = 63.90;
+    let silverHigh = 32.90;
+    let silverLow = 32.10;
 
     // Parse Gold
     if (goldRes?.chart?.result?.[0]?.meta) {
@@ -50,6 +50,16 @@ export default async function handler(req, res) {
         goldHigh = meta.regularMarketDayHigh || goldPrice * 1.008;
         goldLow = meta.regularMarketDayLow || goldPrice * 0.992;
       }
+    } else {
+      // Fast fallback to Binance PAXG (Paxos Gold spot 1 oz)
+      try {
+        const paxgRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT').then(r => r.json());
+        if (paxgRes?.price) {
+          goldPrice = Number(parseFloat(paxgRes.price).toFixed(2));
+          goldHigh = Number((goldPrice * 1.006).toFixed(2));
+          goldLow = Number((goldPrice * 0.994).toFixed(2));
+        }
+      } catch {}
     }
 
     // Parse Silver
@@ -101,24 +111,24 @@ export default async function handler(req, res) {
       gold: {
         symbol: 'XAU/USD',
         name: 'Gold Spot (Troy Ounce)',
-        price: 4321.20,
+        price: 2740.00,
         change: 0.45,
-        high: 4348.00,
-        low: 4296.50,
+        high: 2760.00,
+        low: 2725.00,
         unit: 'troy oz'
       },
       silver: {
         symbol: 'XAG/USD',
         name: 'Silver Spot (Troy Ounce)',
-        price: 64.80,
+        price: 32.50,
         change: 0.87,
-        high: 65.50,
-        low: 63.90,
+        high: 32.90,
+        low: 32.10,
         unit: 'troy oz'
       },
       rates: {
-        XAU: 1 / 4321.20,
-        XAG: 1 / 64.80
+        XAU: 1 / 2740.00,
+        XAG: 1 / 32.50
       }
     });
   }
