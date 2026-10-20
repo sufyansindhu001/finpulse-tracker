@@ -227,10 +227,13 @@ export default function NewsPage() {
               >
                 <div className="space-y-4">
                   {/* Top Thumbnail Image - 100% Guaranteed Image with Fallback */}
-                  <div className="w-full h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative">
+                  <div className="w-full h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative aspect-[16/9]">
                     <img 
                       src={imageSrc} 
                       alt={headline} 
+                      width="400"
+                      height="225"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       loading="lazy"
                       onError={(e) => {
@@ -358,15 +361,27 @@ export default function NewsPage() {
             </div>
 
             {/* Modal Image */}
-            <img 
-              src={activeArticle.image || getCategoryFallbackImage(activeArticle.category, 0)} 
-              alt={decodeHtmlEntities(activeArticle.headline)} 
-              className="w-full h-56 sm:h-64 object-cover rounded-2xl bg-slate-100 dark:bg-[#06111F]"
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = getCategoryFallbackImage(activeArticle.category, 0);
-              }}
-            />
+            <div className="w-full h-56 sm:h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative aspect-[16/9]">
+              <img 
+                src={activeArticle.image || getCategoryFallbackImage(activeArticle.category, 0)} 
+                alt={decodeHtmlEntities(activeArticle.headline)} 
+                width="800"
+                height="450"
+                decoding="async"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const fallback = getCategoryFallbackImage(activeArticle.category, 0);
+                  if (target.src !== fallback && !target.src.startsWith('data:image/svg')) {
+                    target.src = fallback;
+                  } else if (!target.src.startsWith('data:image/svg')) {
+                    target.src = getCategoryFallbackSvg(activeArticle.category);
+                  } else {
+                    target.onerror = null;
+                  }
+                }}
+              />
+            </div>
 
             {/* Modal Headline & Content */}
             <div className="space-y-4">

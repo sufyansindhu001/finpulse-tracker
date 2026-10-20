@@ -219,10 +219,13 @@ export default function MarketNewsWire({ limit = 6 }) {
                 >
                   <div>
                     {/* Top High-Resolution Thumbnail Container */}
-                    <div className="w-full h-40 sm:h-44 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative mb-3">
+                    <div className="w-full h-40 sm:h-44 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative mb-3 aspect-[16/9]">
                       <img
                         src={imageSrc}
                         alt={headline}
+                        width="400"
+                        height="225"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         onError={(e) => {

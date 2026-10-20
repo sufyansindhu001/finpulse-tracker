@@ -137,7 +137,7 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   {coin.image ? (
-                    <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full" />
+                    <img src={coin.image} alt={coin.name} width="32" height="32" decoding="async" loading="lazy" className="w-8 h-8 rounded-full" />
                   ) : (
                     <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center font-bold text-xs text-[#00E676]">
                       {coin.symbol.slice(0, 2).toUpperCase()}
@@ -226,17 +226,17 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
 
         {/* Table Container */}
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
-                  <th className="py-4 px-6">Asset Name</th>
-                  <th className="py-4 px-6">Price (USD)</th>
-                  <th className="py-4 px-6">PKR Equiv.</th>
-                  <th className="py-4 px-6">24h Change</th>
-                  <th className="py-4 px-6">24h High / Low</th>
-                  <th className="py-4 px-6">Market Cap</th>
-                  <th className="py-4 px-6 text-right">Action</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Asset Name</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Price (USD)</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">PKR Equiv.</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">24h Change</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">24h High / Low</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Market Cap</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -253,10 +253,10 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
                           : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           {coin.image ? (
-                            <img src={coin.image} alt={coin.name} className="w-7 h-7 rounded-full" />
+                            <img src={coin.image} alt={coin.name} width="28" height="28" decoding="async" loading="lazy" className="w-7 h-7 rounded-full" />
                           ) : (
                             <div className="w-7 h-7 rounded-full bg-[#00E676]/10 text-[#00E676] font-black flex items-center justify-center text-xs">
                               {coin.symbol.slice(0, 2).toUpperCase()}
@@ -268,13 +268,13 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular whitespace-nowrap">
                         ${coin.current_price.toLocaleString(undefined, { minimumFractionDigits: coin.current_price < 1 ? 4 : 2 })}
                       </td>
-                      <td className="py-4 px-6 text-[#00E676] font-bold font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-[#00E676] font-bold font-tabular whitespace-nowrap">
                         ₨ {(coin.current_price * usdToPkr).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
                           isUp ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
                         }`}>
@@ -282,23 +282,23 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
                           <span>{Math.abs(coin.price_change_percentage_24h || 0).toFixed(2)}%</span>
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular whitespace-nowrap">
                         ${coin.high_24h ? coin.high_24h.toLocaleString() : '-'} / ${coin.low_24h ? coin.low_24h.toLocaleString() : '-'}
                       </td>
-                      <td className="py-4 px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular whitespace-nowrap">
                         ${(coin.market_cap / 1e9).toFixed(2)}B
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => onOpenCryptoConverter && onOpenCryptoConverter(coin)}
-                            className="px-3 py-1.5 rounded-lg bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer touch-manipulation select-none"
                           >
                             Convert
                           </button>
                           <button
                             onClick={() => navigate(`/charts?asset=${coin.symbol.toUpperCase()}`)}
-                            className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer touch-manipulation select-none"
                           >
                             Chart
                           </button>

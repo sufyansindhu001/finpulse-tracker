@@ -17,7 +17,6 @@ export default function CompanyModal({ stock, onClose }) {
   const [activeTab, setActiveTab] = useState('chart'); // 'chart' | 'thesis' | 'fundamentals' | 'financials'
   const [chartTimeframe, setChartTimeframe] = useState('1M');
   const [hoverIndex, setHoverIndex] = useState(null);
-  const [chartMode, setChartMode] = useState('heartbeat'); // 'heartbeat' | 'tradingview'
 
   // Prevent background body scrolling when modal is open
   useEffect(() => {
@@ -58,21 +57,6 @@ export default function CompanyModal({ stock, onClose }) {
   const ma200Val = stock?.technicalIndicators?.ma200 || (stock ? Number((stock.price * 0.88).toFixed(2)) : 0);
   const macdVal = stock?.technicalIndicators?.macdSignal || (isPositive ? 'Bullish Expansion' : 'Neutral Range');
   const techRating = stock?.technicalRating || (isPositive ? 'Strong Buy' : 'Neutral');
-
-  // TradingView symbol map
-  const getTradingViewSymbol = (s) => {
-    if (!s) return '';
-    if (s.country === 'us') return `NASDAQ:${s.ticker}`;
-    if (s.ticker === 'JPM' || s.ticker === 'BRK.B') return `NYSE:${s.ticker.replace('.', '')}`;
-    if (s.country === 'uk') return `LSE:${s.ticker}`;
-    if (s.country === 'sa') return `TADAWUL:${s.ticker.replace('.SR', '')}`;
-    if (s.ticker === 'TM') return `NYSE:TM`;
-    if (s.ticker === 'SONY') return `NYSE:SONY`;
-    if (s.ticker === 'TSM') return `NYSE:TSM`;
-    return `NASDAQ:${s.ticker}`;
-  };
-
-  const tvSymbol = stock ? getTradingViewSymbol(stock) : '';
 
   // Dynamic, organic heartbeat price action series generator (Universal for all countries & stocks)
   const chartData = useMemo(() => {
@@ -417,7 +401,7 @@ export default function CompanyModal({ stock, onClose }) {
                       </div>
                     </div>
 
-                    {/* Timeframe Selectors & View Mode */}
+                    {/* Timeframe Selectors */}
                     <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
                       <div className="flex items-center gap-1 bg-black/60 p-1 rounded-xl border border-white/10">
                         {['1W', '1M', '6M', '1Y'].map(tf => (
@@ -427,7 +411,7 @@ export default function CompanyModal({ stock, onClose }) {
                               setChartTimeframe(tf);
                               setHoverIndex(null);
                             }}
-                            className={`px-3 py-1.5 text-xs font-mono font-bold rounded-lg cursor-pointer transition-all ${
+                            className={`px-3 py-1.5 text-xs font-mono font-bold rounded-lg cursor-pointer transition-all touch-manipulation select-none ${
                               chartTimeframe === tf 
                                 ? 'bg-[#00E676] text-slate-950 shadow-sm' 
                                 : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -437,24 +421,12 @@ export default function CompanyModal({ stock, onClose }) {
                           </button>
                         ))}
                       </div>
-
-                      {/* TradingView Toggle (if symbol available) */}
-                      {tvSymbol && (
-                        <button
-                          onClick={() => setChartMode(prev => prev === 'heartbeat' ? 'tradingview' : 'heartbeat')}
-                          className="px-2.5 py-1.5 text-xs font-mono font-semibold rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 cursor-pointer transition-colors"
-                          title="Toggle between Organic Heartbeat and TradingView Candlesticks"
-                        >
-                          {chartMode === 'heartbeat' ? 'Candles' : 'Heartbeat'}
-                        </button>
-                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Main Visual Surface: Heartbeat Canvas/SVG OR TradingView */}
-                {chartMode === 'heartbeat' || !tvSymbol ? (
-                  <div className="p-4 sm:p-6 bg-gradient-to-b from-[#06111F] to-[#040C16] relative select-none">
+                {/* Main Visual Surface: Dynamic Heartbeat Volatility Engine */}
+                <div className="p-4 sm:p-6 bg-gradient-to-b from-[#06111F] to-[#040C16] relative select-none">
                     <div 
                       className="w-full h-48 sm:h-56 relative cursor-crosshair touch-manipulation"
                       onMouseMove={(e) => {
@@ -605,18 +577,7 @@ export default function CompanyModal({ stock, onClose }) {
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="w-full h-[360px] relative">
-                    <iframe
-                      title={`TradingView Chart ${tvSymbol}`}
-                      src={`https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=${encodeURIComponent(tvSymbol)}&interval=D&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=06111f&studies=[]&theme=dark&style=1&timezone=Etc/UTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=fgcspot.com&utm_medium=widget&utm_campaign=chart&utm_term=${encodeURIComponent(tvSymbol)}`}
-                      className="w-full h-full border-0"
-                      allowTransparency="true"
-                      scrolling="no"
-                    />
-                  </div>
-                )}
-              </div>
+                </div>
 
               {/* Technical Signal Speedometer & Moving Averages */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -284,7 +284,11 @@ export default function HeroSection({ rates, cryptoList }) {
                           <img 
                             src={getCurrencyFlagUrl(item.code)} 
                             alt={item.code} 
+                            width="24"
+                            height="18"
+                            decoding="async"
                             className="w-6 h-4.5 rounded object-cover shadow-xs shrink-0" 
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
                           />
                           <div className="truncate">
                             <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight">{item.pair}</div>

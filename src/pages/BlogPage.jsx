@@ -17,6 +17,7 @@ import {
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
 import { useSEO } from '../hooks/useSEO';
+import { getCategoryFallbackImage } from '../services/newsService';
 
 export default function BlogPage() {
   const { articles: contextArticles = [] } = useApp();
@@ -243,12 +244,19 @@ export default function BlogPage() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative">
+              <div className="h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative aspect-[16/9]">
                 <img 
                   src={featuredPost.image} 
                   alt={featuredPost.title}
+                  width="600"
+                  height="338"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = getCategoryFallbackImage(featuredPost.category, 0);
+                  }}
                 />
               </div>
             </div>
@@ -285,12 +293,19 @@ export default function BlogPage() {
                 >
                   <div className="space-y-3 sm:space-y-4">
                     {post.image && (
-                      <div className="w-full h-36 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative">
+                      <div className="w-full h-36 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
                         <img 
                           src={post.image} 
                           alt={post.title} 
+                          width="400"
+                          height="225"
+                          decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                           loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = getCategoryFallbackImage(post.category, 0);
+                          }}
                         />
                       </div>
                     )}

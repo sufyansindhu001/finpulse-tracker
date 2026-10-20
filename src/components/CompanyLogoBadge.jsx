@@ -208,6 +208,8 @@ export default function CompanyLogoBadge({ stock, size = 'sm', className = '' })
     lg: 'text-sm font-black'
   }[size] || 'text-[11px] font-black';
 
+  const pxSize = size === 'lg' ? 48 : size === 'md' ? 40 : 32;
+
   // Render authentic corporate logo favicon image if verified and healthy
   if (logoUrl && !imgError) {
     return (
@@ -219,6 +221,9 @@ export default function CompanyLogoBadge({ stock, size = 'sm', className = '' })
           key={logoUrl}
           src={logoUrl}
           alt={`${stock.name} official logo`}
+          width={pxSize}
+          height={pxSize}
+          decoding="async"
           className="w-full h-full object-contain rounded-full"
           referrerPolicy="no-referrer"
           onError={() => setImgError(true)}

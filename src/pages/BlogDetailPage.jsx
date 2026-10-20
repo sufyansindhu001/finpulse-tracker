@@ -18,6 +18,7 @@ import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
 import { updateSEO, updateCanonical } from '../utils/seo';
 import { getRelatedArticles } from '../utils/relatedArticles';
+import { getCategoryFallbackImage } from '../services/newsService';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -595,13 +596,19 @@ export default function BlogDetailPage() {
 
         {/* Featured Image */}
         {article.image && (
-          <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F] relative">
+          <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
             <img 
               src={article.image} 
               alt={article.title} 
+              width="1000"
+              height="562"
               className="w-full h-full object-cover"
               loading="eager"
               decoding="async"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = getCategoryFallbackImage(article.category, 0);
+              }}
             />
           </div>
         )}
@@ -837,12 +844,19 @@ export default function BlogDetailPage() {
               >
                 <div className="space-y-3">
                   {rel.image && (
-                    <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative border border-slate-200/50 dark:border-white/5">
+                    <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative border border-slate-200/50 dark:border-white/5 aspect-[16/9]">
                       <img 
                         src={rel.image} 
                         alt={rel.title} 
+                        width="300"
+                        height="169"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                         loading="lazy"
+                        decoding="async"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = getCategoryFallbackImage(rel.category, 0);
+                        }}
                       />
                     </div>
                   )}

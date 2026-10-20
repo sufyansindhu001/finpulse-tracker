@@ -12,11 +12,13 @@ import MarketDashboard from './components/MarketDashboard';
 import QuickConversionMatrix from './components/QuickConversionMatrix';
 import MarketNewsWire from './components/MarketNewsWire';
 import WhyFGCSpot from './components/WhyFGCSpot';
-import SearchModal from './components/SearchModal';
-import CryptoConverterModal from './components/CryptoConverterModal';
 import MarketIntelligenceMethodology from './components/MarketIntelligenceMethodology';
 import FeaturedResearchSection from './components/FeaturedResearchSection';
 import Footer from './components/Footer';
+
+// Modals lazy-loaded on user action for zero initial bundle overhead
+const SearchModal = lazy(() => import('./components/SearchModal'));
+const CryptoConverterModal = lazy(() => import('./components/CryptoConverterModal'));
 
 // Standalone dedicated pages & terminal views
 const StocksPage = lazy(() => import('./pages/StocksPage'));
@@ -465,19 +467,25 @@ export default function App() {
 
       {/* Quick Crypto-to-Fiat Calculation Modal */}
       {selectedCryptoForConvert && (
-        <CryptoConverterModal
-          coin={selectedCryptoForConvert}
-          rates={rates}
-          onClose={() => setSelectedCryptoForConvert(null)}
-        />
+        <Suspense fallback={null}>
+          <CryptoConverterModal
+            coin={selectedCryptoForConvert}
+            rates={rates}
+            onClose={() => setSelectedCryptoForConvert(null)}
+          />
+        </Suspense>
       )}
 
       {/* Quick Command Palette Search Modal */}
-      <SearchModal 
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-        cryptoList={cryptoList}
-      />
+      {searchModalOpen && (
+        <Suspense fallback={null}>
+          <SearchModal 
+            isOpen={searchModalOpen}
+            onClose={() => setSearchModalOpen(false)}
+            cryptoList={cryptoList}
+          />
+        </Suspense>
+      )}
 
       {/* Footer with Unified FGC Spot Theme & Standalone Router Links */}
       <Footer onSelectPair={handleSelectPair} />

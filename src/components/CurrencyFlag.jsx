@@ -53,6 +53,9 @@ export default function CurrencyFlag({
     <img 
       src={flagUrl} 
       alt={alt || `${code} flag`} 
+      width="20"
+      height="20"
+      decoding="async"
       className={`${className} rounded-full object-cover shrink-0 border border-slate-200 dark:border-white/10 shadow-xs`}
       onError={() => setHasError(true)}
       loading="lazy"

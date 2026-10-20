@@ -439,6 +439,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                               <img 
                                 src={c.flagUrl} 
                                 alt={c.code} 
+                                width="24"
+                                height="18"
+                                decoding="async"
+                                loading="lazy"
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
                                   e.currentTarget.style.display = 'none';
@@ -574,7 +578,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                       <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           {c.image ? (
-                            <img src={c.image} alt={c.name} className="w-7 h-7 rounded-full" />
+                            <img src={c.image} alt={c.name} width="28" height="28" decoding="async" loading="lazy" className="w-7 h-7 rounded-full" />
                           ) : (
                             <div className="w-7 h-7 rounded-full bg-[#00E676]/10 text-[#00E676] font-black flex items-center justify-center text-xs">
                               {c.symbol.slice(0, 2)}

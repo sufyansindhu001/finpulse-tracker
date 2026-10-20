@@ -46,7 +46,16 @@ export default function CryptoTickerBar({ cryptoList = [], onSelectCoin }) {
               title={`Click to convert ${coin.name} in fiat`}
             >
               {coin.image && (
-                <img src={coin.image} alt={coin.name} className="w-3.5 h-3.5 rounded-full" width="14" height="14" loading="lazy" />
+                <img 
+                  src={coin.image} 
+                  alt={coin.name} 
+                  className="w-3.5 h-3.5 rounded-full" 
+                  width="14" 
+                  height="14" 
+                  loading="lazy" 
+                  decoding="async"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
               )}
               <span className="font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-tight text-[11px]">{coin.symbol}</span>
               <span className="text-slate-600 dark:text-slate-300 font-mono font-medium text-[11px] tabular-nums">

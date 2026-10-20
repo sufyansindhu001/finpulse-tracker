@@ -63,6 +63,9 @@ export default function CountrySelectorDropdown({
         <img
           src={`https://flagcdn.com/w40/${activeIso}.png`}
           alt={activeCountry.name}
+          width="20"
+          height="14"
+          decoding="async"
           className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
           onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
@@ -99,6 +102,9 @@ export default function CountrySelectorDropdown({
               <img
                 src={`https://flagcdn.com/w40/${activeIso}.png`}
                 alt={activeCountry.name}
+                width="20"
+                height="14"
+                decoding="async"
                 className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
@@ -155,6 +161,9 @@ export default function CountrySelectorDropdown({
                     <img
                       src={`https://flagcdn.com/w40/${cIso}.png`}
                       alt={c.name}
+                      width="20"
+                      height="14"
+                      decoding="async"
                       className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
