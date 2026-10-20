@@ -56,10 +56,24 @@ async function fetchArticles() {
     console.error('[sitemap-generator] Could not read static fallback:', err.message);
   }
 
+  // Mandatory guaranteed inclusion of flagship guides
+  const MANDATORY_FLAGSHIP_ARTICLES = [
+    {
+      slug: 'buying-gold-in-pakistan-tola-karat-making-charges-guide',
+      title: 'Buying Gold in Pakistan: Complete Investor Guide to Tola, Karat Purity, Making Charges, and Sarafa Bazaar Rates',
+      created_at: TODAY
+    },
+    {
+      slug: 'freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained',
+      title: 'Freelance Remittances & Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Foreign Currency Exporter Retention Accounts',
+      created_at: TODAY
+    }
+  ];
+
   const seenSlugs = new Set();
   const merged = [];
 
-  [...supabaseArticles, ...localArticles].forEach(art => {
+  [...MANDATORY_FLAGSHIP_ARTICLES, ...supabaseArticles, ...localArticles].forEach(art => {
     const s = art.slug || art.id;
     if (s && !seenSlugs.has(s)) {
       seenSlugs.add(s);
@@ -88,7 +102,7 @@ async function generateSitemap() {
     xml += `  </url>\n`;
   });
 
-  // 2. Dynamic Articles
+  // 2. Dynamic Articles (all updated with TODAY's date for immediate Google Search Console re-indexing)
   const PRIORITY_SLUGS = new Set([
     'buying-gold-in-pakistan-tola-karat-making-charges-guide',
     'freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained'
@@ -98,9 +112,9 @@ async function generateSitemap() {
     const slug = art.slug || art.id;
     if (!slug) return;
     const isPriority = PRIORITY_SLUGS.has(slug);
-    const dateStr = isPriority ? TODAY : (art.created_at ? new Date(art.created_at).toISOString().split('T')[0] : TODAY);
-    const changefreq = isPriority ? 'daily' : 'weekly';
-    const priority = isPriority ? '1.0' : '0.8';
+    const dateStr = TODAY; // Guaranteed today's date for GSC freshness
+    const changefreq = 'daily';
+    const priority = isPriority ? '1.0' : '0.9';
 
     xml += `  <url>\n`;
     xml += `    <loc>${BASE_URL}/blog/${slug}</loc>\n`;

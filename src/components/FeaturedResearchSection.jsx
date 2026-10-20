@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { BookOpen, ArrowUpRight, Calendar, Clock } from 'lucide-react';
 import { getCategoryFallbackImage } from '../services/newsService';
 
@@ -61,16 +62,16 @@ export default function FeaturedResearchSection() {
             </p>
           </div>
 
-          <a
-            href="/blog"
+          <Link
+            to="/blog"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-[#00E676] hover:text-[#06111F] text-gray-900 dark:text-gray-100 font-bold text-xs transition-all cursor-pointer border border-slate-200 dark:border-white/10 shrink-0 self-start md:self-auto"
           >
             <span>Browse All Research Articles</span>
             <ArrowUpRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
 
-        {/* 3 Featured Articles Grid with Direct Crawlable <a href="..."> links */}
+        {/* 3 Featured Articles Grid with Direct Crawlable Link Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {FEATURED_ARTICLES.map((article) => (
             <article 
@@ -78,8 +79,8 @@ export default function FeaturedResearchSection() {
               className="group rounded-2xl bg-slate-50 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/50 transition-all duration-300 flex flex-col overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1"
             >
               {/* Direct Crawlable Anchor around Image */}
-              <a 
-                href={`/blog/${article.slug}`}
+              <Link 
+                to={`/blog/${article.slug}`}
                 className="relative aspect-video w-full overflow-hidden block bg-slate-200 dark:bg-white/5"
               >
                 <img
@@ -98,7 +99,7 @@ export default function FeaturedResearchSection() {
                 <div className="absolute top-3 left-3 bg-[#06111F]/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold text-[#00E676] border border-[#00E676]/30">
                   {article.category}
                 </div>
-              </a>
+              </Link>
 
               {/* Card Body */}
               <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -116,9 +117,9 @@ export default function FeaturedResearchSection() {
                   </div>
 
                   <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white group-hover:text-[#00E676] transition-colors leading-snug">
-                    <a href={`/blog/${article.slug}`} className="block">
+                    <Link to={`/blog/${article.slug}`} className="block">
                       {article.title}
-                    </a>
+                    </Link>
                   </h3>
 
                   <p className="text-xs text-gray-700 dark:text-gray-300 font-medium leading-relaxed line-clamp-3">
@@ -146,13 +147,13 @@ export default function FeaturedResearchSection() {
                     </span>
                   </div>
 
-                  <a 
-                    href={`/blog/${article.slug}`}
+                  <Link 
+                    to={`/blog/${article.slug}`}
                     className="inline-flex items-center gap-1 text-xs font-bold text-[#00E676] hover:underline"
                   >
                     <span>Read Full Guide</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
+                  </Link>
                 </div>
 
               </div>

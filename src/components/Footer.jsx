@@ -248,6 +248,65 @@ export default function Footer({ onSelectPair }) {
 
         </div>
 
+        {/* Featured Editorial & Investor Guides (Passes High Authority to Key Pillar Pages) */}
+        <div className="py-6 border-b border-slate-200 dark:border-white/10 space-y-3">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-[#00E676]" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+              Featured Financial &amp; Remittance Guides
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <Link 
+              to="/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide"
+              className="p-3 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-amber-500/50 transition-all group block shadow-xs"
+            >
+              <div className="flex items-center justify-between text-[10px] font-mono text-amber-500 font-bold mb-1">
+                <span>GOLD INVESTOR GUIDE</span>
+                <span className="text-slate-400">5 min</span>
+              </div>
+              <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors line-clamp-1">
+                Buying Gold in Pakistan: Tola, Karat &amp; Making Charges
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2] line-clamp-1 mt-0.5">
+                Complete walkthrough of 24K vs 22K karat testing, Tola weight pricing, and Sarafa bazaar rates.
+              </p>
+            </Link>
+
+            <Link 
+              to="/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained"
+              className="p-3 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-[#00E676]/50 transition-all group block shadow-xs"
+            >
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#00E676] font-bold mb-1">
+                <span>BANKING &amp; REMITTANCES</span>
+                <span className="text-slate-400">5 min</span>
+              </div>
+              <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-1">
+                Freelance Remittances &amp; Banking in Pakistan: FBR Tax Regimes
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2] line-clamp-1 mt-0.5">
+                Guide to 50% retention foreign currency accounts, e-PRC issuance, and 0.25% PSEB tax exemptions.
+              </p>
+            </Link>
+
+            <Link 
+              to="/blog/pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide"
+              className="p-3 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 hover:border-blue-500/50 transition-all group block shadow-xs md:col-span-2 lg:col-span-1"
+            >
+              <div className="flex items-center justify-between text-[10px] font-mono text-blue-500 font-bold mb-1">
+                <span>EQUITY RESEARCH</span>
+                <span className="text-slate-400">6 min</span>
+              </div>
+              <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors line-clamp-1">
+                PSX vs Global Equities: KSE-100 Valuation &amp; Dividends
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2] line-clamp-1 mt-0.5">
+                Comparative analysis of KSE-100 sub-5.0x P/E multiples and double-digit dividend reinvestment.
+              </p>
+            </Link>
+          </div>
+        </div>
+
         {/* Financial & AdSense Compliance Banner */}
         <div className="py-6 border-b border-slate-200 dark:border-white/10 text-xs leading-relaxed text-slate-600 dark:text-[#A8B3C2] font-medium">
           <p>

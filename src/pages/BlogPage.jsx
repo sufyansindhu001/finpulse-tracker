@@ -345,7 +345,7 @@ export default function BlogPage() {
                   onClick={handleLoadMoreArticles}
                   className="flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-white dark:bg-[#0A1726] hover:bg-slate-50 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/50 text-slate-900 dark:text-white font-bold text-xs sm:text-sm transition-all duration-300 shadow-sm dark:shadow-xl hover:shadow-lg hover:shadow-[#00E676]/15 hover:-translate-y-0.5 cursor-pointer group"
                 >
-                  <span>Load More Articles</span>
+                  <span>Load More Articles ({gridPosts.length - displayedPosts.length} remaining)</span>
                   <ChevronDown className="w-4 h-4 text-[#00E676] group-hover:translate-y-0.5 transition-transform stroke-[2.5]" />
                 </button>
               </div>
@@ -353,6 +353,121 @@ export default function BlogPage() {
           </>
         )}
       </div>
+
+      {/* ========================================================
+          CRAWLABLE ALL-ARTICLES DIRECTORY & FLAGSHIP RESEARCH GUIDES
+          (Guarantees Googlebot 100% Internal Links to Every Single Article)
+          ======================================================== */}
+      <section id="research-directory" className="pt-12 border-t border-slate-200 dark:border-white/10 space-y-8">
+        
+        {/* Flagship Guides Highlight Cards */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-ping" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">
+              Essential Reading • Flagship Editorial Guides
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Guide 1: Buying Gold in Pakistan */}
+            <Link
+              to="/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide"
+              className="p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 hover:border-amber-500 transition-all duration-300 group shadow-sm flex flex-col justify-between space-y-4 hover:-translate-y-1"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                    Physical Bullion Guide
+                  </span>
+                  <span className="text-slate-500 dark:text-[#A8B3C2] font-mono text-[11px]">5 min read</span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors leading-snug">
+                  Buying Gold in Pakistan: Complete Investor Guide to Tola, Karat Purity, Making Charges, and Sarafa Bazaar Rates
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed line-clamp-2">
+                  Everything you need to know about purchasing physical gold bullion in Pakistan: 24K vs 22K karat testing, Tola (11.66g) vs 10-gram weight pricing, avoiding unfair jeweler making charges, and hallmarking standards.
+                </p>
+              </div>
+              <div className="flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400 pt-2 border-t border-amber-500/20">
+                <span>Read Full Gold Guide</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* Guide 2: Freelance Remittances & Banking */}
+            <Link
+              to="/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained"
+              className="p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#00E676]/10 via-[#00E676]/5 to-transparent border border-[#00E676]/30 hover:border-[#00E676] transition-all duration-300 group shadow-sm flex flex-col justify-between space-y-4 hover:-translate-y-1"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#00E676]/20 text-[#00E676] border border-[#00E676]/30">
+                    Banking & Tax Exemption
+                  </span>
+                  <span className="text-slate-500 dark:text-[#A8B3C2] font-mono text-[11px]">5 min read</span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors leading-snug">
+                  Freelance Remittances & Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Retention Accounts Explained
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed line-clamp-2">
+                  Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.
+                </p>
+              </div>
+              <div className="flex items-center justify-between text-xs font-bold text-[#00E676] pt-2 border-t border-[#00E676]/20">
+                <span>Read Full Banking Guide</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Complete Research Index Table / Grid */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-[#0A1726]/60 border border-slate-200 dark:border-white/10 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-[#00E676]" />
+                <span>Complete Research & Editorial Archives Directory</span>
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
+                Direct permanent links to all published analytical guides, macro research papers, and financial tutorials.
+              </p>
+            </div>
+            <span className="text-xs font-mono font-bold text-[#00E676] self-start sm:self-auto bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20">
+              {articles.length} Articles Total
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {articles.map((art) => {
+              const slug = art.slug || art.id;
+              return (
+                <Link
+                  key={art.id || slug}
+                  to={`/blog/${slug}`}
+                  className="p-3.5 rounded-xl bg-white dark:bg-[#0D1B2A] border border-slate-200/70 dark:border-white/5 hover:border-[#00E676]/50 transition-all group flex flex-col justify-between space-y-2 hover:shadow-md"
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-[#A8B3C2]">
+                      <span className="text-[#00E676] font-semibold">{art.category || 'Analysis'}</span>
+                      <span>{art.readTime || art.read_time || '5 min'}</span>
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
+                      {art.title}
+                    </h3>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-medium text-slate-400 group-hover:text-[#00E676] pt-1">
+                    <span>{art.date || (art.created_at ? new Date(art.created_at).toLocaleDateString() : 'October 2026')}</span>
+                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+      </section>
 
     </div>
   );

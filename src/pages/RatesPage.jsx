@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { 
   Search, 
   ArrowUpDown, 
@@ -743,6 +743,74 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
             <p>
               Under SBP Foreign Exchange Manual guidelines, all foreign currency inflows into Pakistan must comply with stringent Anti-Money Laundering (AML) and Countering Financing of Terrorism (CFT) frameworks. For freelance technology professionals, exporters, and overseas Pakistani workers, routing earnings through official banking channels guarantees receipt of an <em>Electronic Proceeds Realisation Certificate (e-PRC)</em>, which serves as statutory proof of untaxed foreign exchange income for Federal Board of Revenue (FBR) income tax filings.
             </p>
+          </div>
+        </div>
+
+        {/* Featured Analytical Guides Related to Currency & Forex Markets */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00E676] animate-ping" />
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">
+                Recommended Market &amp; Remittance Guides
+              </span>
+            </div>
+            <Link to="/blog" className="text-xs font-bold text-slate-500 hover:text-[#00E676] transition-colors flex items-center gap-1">
+              <span>View All 30+ Guides</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Guide 1: Freelance Remittances */}
+            <Link
+              to="/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained"
+              className="p-6 rounded-3xl bg-white dark:bg-[#0A1726]/90 border border-slate-200 dark:border-white/10 hover:border-[#00E676]/60 transition-all duration-300 group shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4 hover:-translate-y-1"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20">
+                    Remittances &amp; Banking
+                  </span>
+                  <span className="text-slate-400 font-mono text-[11px]">5 min read</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors leading-snug">
+                  Freelance Remittances &amp; Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Foreign Currency Exporter Retention Accounts
+                </h3>
+                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
+                  Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC certificate issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.
+                </p>
+              </div>
+              <div className="flex items-center justify-between text-xs font-bold text-[#00E676] pt-3 border-t border-slate-100 dark:border-white/5">
+                <span>Read Full Remittance Guide</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            {/* Guide 2: Buying Gold in Pakistan */}
+            <Link
+              to="/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide"
+              className="p-6 rounded-3xl bg-white dark:bg-[#0A1726]/90 border border-slate-200 dark:border-white/10 hover:border-amber-500/60 transition-all duration-300 group shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4 hover:-translate-y-1"
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    Physical Bullion Guide
+                  </span>
+                  <span className="text-slate-400 font-mono text-[11px]">5 min read</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors leading-snug">
+                  Buying Gold in Pakistan: Complete Investor Guide to Tola, Karat Purity, Making Charges, and Sarafa Bazaar Rates
+                </h3>
+                <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
+                  Everything you need to know about purchasing physical gold bullion in Pakistan: 24K vs 22K karat testing, Tola (11.66g) vs 10-gram weight pricing, avoiding unfair jeweler making charges, and hallmarking standards.
+                </p>
+              </div>
+              <div className="flex items-center justify-between text-xs font-bold text-amber-500 pt-3 border-t border-slate-100 dark:border-white/5">
+                <span>Read Full Gold Guide</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
           </div>
         </div>
 
