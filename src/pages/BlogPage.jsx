@@ -132,15 +132,24 @@ export default function BlogPage() {
     setVisibleArticleCount(6);
   }, [selectedCategory, searchQuery]);
 
+  const featuredPost = articles[0] || null;
+  const isShowingFeatured = selectedCategory === 'All' && !searchQuery && Boolean(featuredPost);
+
+  // De-duplicate featured post from the grid below when featured block is actively rendered
+  const gridPosts = useMemo(() => {
+    if (isShowingFeatured && featuredPost) {
+      return filteredPosts.filter(p => p.id !== featuredPost.id && (p.slug ? p.slug !== featuredPost.slug : true));
+    }
+    return filteredPosts;
+  }, [filteredPosts, isShowingFeatured, featuredPost]);
+
   const displayedPosts = useMemo(() => {
-    return filteredPosts.slice(0, visibleArticleCount);
-  }, [filteredPosts, visibleArticleCount]);
+    return gridPosts.slice(0, visibleArticleCount);
+  }, [gridPosts, visibleArticleCount]);
 
   const handleLoadMoreArticles = () => {
     setVisibleArticleCount(prev => prev + 6);
   };
-
-  const featuredPost = articles[0] || null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 animate-in fade-in duration-300">
@@ -255,7 +264,7 @@ export default function BlogPage() {
             <span>Latest Educational Articles &amp; Dispatches</span>
           </h2>
           <span className="text-xs text-slate-500 dark:text-[#A8B3C2]">
-            Showing <strong className="text-slate-900 dark:text-white font-tabular">{displayedPosts.length}</strong> of <strong className="text-slate-900 dark:text-white font-tabular">{filteredPosts.length}</strong> articles
+            Showing <strong className="text-slate-900 dark:text-white font-tabular">{displayedPosts.length}</strong> of <strong className="text-slate-900 dark:text-white font-tabular">{gridPosts.length}</strong> articles
           </span>
         </div>
 
@@ -315,7 +324,7 @@ export default function BlogPage() {
             </div>
 
             {/* Progressive Load More Action Button */}
-            {displayedPosts.length < filteredPosts.length && (
+            {displayedPosts.length < gridPosts.length && (
               <div className="pt-8 pb-2 flex justify-center">
                 <button
                   onClick={handleLoadMoreArticles}

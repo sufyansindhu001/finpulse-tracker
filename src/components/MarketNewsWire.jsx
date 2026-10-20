@@ -8,7 +8,7 @@ import {
   ShieldCheck, 
   Newspaper 
 } from 'lucide-react';
-import { fetchLiveMarketNews, getLiveTimeAgo } from '../services/newsService';
+import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, decodeHtmlEntities } from '../services/newsService';
 
 export default function MarketNewsWire({ limit = 6 }) {
   const [news, setNews] = useState([]);
@@ -71,10 +71,13 @@ export default function MarketNewsWire({ limit = 6 }) {
   };
 
   const categories = [
-    { key: 'all', label: 'All Dispatches' },
+    { key: 'all', label: 'All News' },
     { key: 'local-stocks', label: 'Local Stocks (PSX)' },
-    { key: 'international-stocks', label: 'International Stocks' },
-    { key: 'commodities-economy', label: 'Global Economy & Commodities' },
+    { key: 'global-stocks', label: 'Global Stocks' },
+    { key: 'crypto', label: 'Cryptocurrency' },
+    { key: 'forex', label: 'Markets & Forex' },
+    { key: 'commodities', label: 'Gold & Commodities' },
+    { key: 'economy', label: 'Economy & Central Banks' },
   ];
 
   // Limit display if specified, or display up to 6 items by default
@@ -84,18 +87,21 @@ export default function MarketNewsWire({ limit = 6 }) {
   const getSourceBadgeStyle = (source = '') => {
     const s = source.toLowerCase();
     if (s.includes('cointelegraph')) {
-      return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+      return 'bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/20';
     }
     if (s.includes('coindesk')) {
-      return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+      return 'bg-blue-500/10 text-blue-500 dark:text-blue-400 border-blue-500/20';
     }
     if (s.includes('yahoo')) {
-      return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+      return 'bg-purple-500/10 text-purple-500 dark:text-purple-400 border-purple-500/20';
     }
-    if (s.includes('times') || s.includes('nyt')) {
-      return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+    if (s.includes('business recorder') || s.includes('psx')) {
+      return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
     }
-    return 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#A8B3C2] border-slate-200 dark:border-white/10';
+    if (s.includes('times') || s.includes('nyt') || s.includes('cnbc')) {
+      return 'bg-rose-500/10 text-rose-500 dark:text-rose-400 border-rose-500/20';
+    }
+    return 'bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#A8B3C2] border-slate-200 dark:border-white/10';
   };
 
   // Category badge styling generator
@@ -104,10 +110,22 @@ export default function MarketNewsWire({ limit = 6 }) {
     if (c.includes('local') || c.includes('psx')) {
       return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
     }
-    if (c.includes('international') || c.includes('wall street') || c.includes('stocks')) {
+    if (c.includes('global') || c.includes('international') || c.includes('wall street') || c.includes('stock')) {
       return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
     }
-    return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    if (c.includes('crypto') || c.includes('bitcoin')) {
+      return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
+    }
+    if (c.includes('forex') || c.includes('currency') || c.includes('market')) {
+      return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20';
+    }
+    if (c.includes('gold') || c.includes('commodit') || c.includes('oil') || c.includes('bullion')) {
+      return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    }
+    if (c.includes('econom') || c.includes('central bank') || c.includes('macro')) {
+      return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+    }
+    return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20';
   };
 
   return (
@@ -183,85 +201,88 @@ export default function MarketNewsWire({ limit = 6 }) {
         ) : (
           /* Responsive 3-column grid on desktop and clean vertical stack on mobile */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            {displayItems.map((item) => (
-              <a
-                key={item.id}
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between group shadow-sm dark:shadow-xl hover:shadow-md dark:hover:shadow-2xl transition-all duration-200 overflow-hidden"
-              >
-                <div>
-                  {/* Top Metadata Row: Publisher Pill Badge + Category Badge + Author + Timestamp + Subtle Link Arrow */}
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                      <span className={`text-[10px] sm:text-[11px] uppercase px-2 py-0.5 rounded-full font-bold border ${getSourceBadgeStyle(item.source)} truncate max-w-[120px]`}>
-                        {item.source}
-                      </span>
-                      {item.category && (
-                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold border ${getCategoryBadgeStyle(item.category)} truncate max-w-[130px]`}>
-                          {item.category}
-                        </span>
-                      )}
-                      {item.author && item.author !== item.source && (
-                        <span className="text-[10px] text-slate-500 dark:text-[#A8B3C2] font-semibold hidden sm:inline truncate max-w-[110px]">
-                          by {item.author}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {getLiveTimeAgo(item.datetime || item.pubDate)}
-                      </span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2] group-hover:text-[#00E676] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
-                    </div>
-                  </div>
+            {displayItems.map((item, idx) => {
+              const headline = decodeHtmlEntities(item.headline);
+              const summary = decodeHtmlEntities(item.summary);
+              const author = decodeHtmlEntities(item.author || item.source);
+              const fallbackImg = getCategoryFallbackImage(item.category, idx);
+              const imageSrc = item.image || fallbackImg;
 
-                  {/* Terminal News Body: Side-by-side Headline and Compact Thumbnail */}
-                  <div className="flex items-start gap-3 mt-1.5">
-                    <div className="flex-1 min-w-0 pr-1">
-                      <h3 className="text-sm font-bold leading-snug text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
-                        {item.headline}
+              return (
+                <a
+                  key={item.id || idx}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 rounded-2xl p-4 flex flex-col justify-between group shadow-sm dark:shadow-xl hover:shadow-md dark:hover:shadow-2xl transition-all duration-200 overflow-hidden"
+                >
+                  <div>
+                    {/* Top High-Resolution Thumbnail Container */}
+                    <div className="w-full h-40 sm:h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative mb-3">
+                      <img
+                        src={imageSrc}
+                        alt={headline}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = fallbackImg;
+                        }}
+                      />
+                      <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold border backdrop-blur-md shadow-xs ${getSourceBadgeStyle(item.source)}`}>
+                          {item.source}
+                        </span>
+                        {item.category && (
+                          <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full font-bold border backdrop-blur-md shadow-xs ${getCategoryBadgeStyle(item.category)}`}>
+                            {item.category}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Meta Row: Author & Time */}
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-[#A8B3C2] min-w-0">
+                        {author && author !== item.source && (
+                          <span className="font-semibold truncate max-w-[140px]">
+                            by {author}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0 text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">
+                        <Clock className="w-3 h-3 text-[#00E676]" />
+                        <span>{getLiveTimeAgo(item.datetime || item.pubDate)}</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2] group-hover:text-[#00E676] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 ml-0.5" />
+                      </div>
+                    </div>
+
+                    {/* Headline and Summary */}
+                    <div>
+                      <h3 className="text-sm sm:text-base font-bold leading-snug text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2">
+                        {headline}
                       </h3>
-                      {item.summary && (
-                        <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 line-clamp-2 leading-relaxed font-medium">
-                          {item.summary}
+                      {summary && (
+                        <p className="text-xs text-gray-700 dark:text-gray-300 mt-2 line-clamp-2 leading-relaxed font-medium">
+                          {summary}
                         </p>
                       )}
                     </div>
-
-                    {/* Uncompressed Thumbnail Container */}
-                    {item.image && (
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden shrink-0 bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative">
-                        <img
-                          src={item.image}
-                          alt={item.headline}
-                          className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                          width="96"
-                          height="96"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    )}
                   </div>
-                </div>
 
-                {/* Bottom Terminal Status Bar */}
-                <div className="pt-2.5 mt-2.5 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs text-slate-500 dark:text-[#A8B3C2]">
-                  <span className="text-[#00E676] flex items-center gap-1 font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-pulse"></span>
-                    Live Wire
-                  </span>
-                  <span className="text-[#00E676] group-hover:underline flex items-center gap-0.5 font-sans font-medium">
-                    Read article &rarr;
-                  </span>
-                </div>
-              </a>
-            ))}
+                  {/* Bottom Terminal Status Bar */}
+                  <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs text-slate-500 dark:text-[#A8B3C2]">
+                    <span className="text-[#00E676] flex items-center gap-1.5 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-pulse"></span>
+                      Live Wire
+                    </span>
+                    <span className="text-[#00E676] group-hover:underline flex items-center gap-0.5 font-sans font-medium">
+                      Read dispatch &rarr;
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
           </div>
         )}
 

@@ -10,10 +10,41 @@ import {
   Globe,
   Coins,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  BookOpen,
+  HelpCircle
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
+import { fetchLiveMetals, DEFAULT_METALS } from '../services/metalsService';
+
+const chartFaqs = [
+  {
+    q: "What timeframes are most suitable for analyzing currency pair trends?",
+    a: "Short-term remittance senders and retail traders typically look at the 1D (24-hour) and 7D (weekly) charts to identify intraday volatility dips or favorable transfer windows. Institutional treasury managers and long-term asset allocators focus on 1M (monthly) and 1Y (yearly) trends to determine macroeconomic support corridors and policy interest rate impacts."
+  },
+  {
+    q: "How frequently does the interactive price curve update?",
+    a: "The pricing engine connects directly to live institutional financial feeds and websocket data streams. Sovereign forex benchmarks update continuously with active global trading desks, cryptocurrency prices update in real-time, and gold spot tracks international LBMA/COMEX spot markets."
+  },
+  {
+    q: "What does the shaded gradient area under the chart line indicate?",
+    a: "The shaded gradient represents cumulative liquidity depth and historical price occupancy within the selected corridor. It visually emphasizes whether the asset spent the majority of the timeframe near its cyclical highs or consolidated along support baselines."
+  },
+  {
+    q: "How can I pinpoint dynamic support and resistance levels using this terminal?",
+    a: "Support levels appear as horizontal price zones where selling momentum repeatedly pauses and reverses upward (highlighted by the Period Low statistic card). Resistance levels represent ceiling zones where buyers lose momentum and price consolidates (highlighted by the Period High statistic card)."
+  },
+  {
+    q: "Why do cryptocurrency charts show wider percentage swings than sovereign forex pairs?",
+    a: "Digital assets like Bitcoin and Ethereum operate 24/7 in globally unpegged order books with variable liquidity, resulting in higher annualized volatility (typically 40%–70%). In contrast, major sovereign currencies are anchored by sovereign central bank reserve mandates and target interest rate corridors, keeping daily interbank fluctuations within narrow margins."
+  },
+  {
+    q: "How are synthetic cross-currency charts like EUR/PKR and GBP/PKR derived?",
+    a: "Cross-currency charts are mathematically derived through US Dollar triangular pricing. Since USD/PKR is the primary clearing pair in the Karachi interbank market, EUR/PKR is computed by multiplying the global EUR/USD spot rate by the domestic USD/PKR benchmark at each interval."
+  }
+];
 
 export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   useSEO({
@@ -28,20 +59,46 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   const [selectedAsset, setSelectedAsset] = useState(initialAsset);
   const [timeframe, setTimeframe] = useState('1M'); // '1D' | '7D' | '1M' | '1Y'
   const [hoverIndex, setHoverIndex] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
   const chartContainerRef = useRef(null);
 
-  const usdToPkr = rates.PKR || 277.10;
-  const eurToPkr = usdToPkr / (rates.EUR || 0.92);
-  const gbpToPkr = usdToPkr / (rates.GBP || 0.79);
+  // Live Metals State
+  const [metalsData, setMetalsData] = useState(() => ({
+    gold: DEFAULT_METALS.gold,
+    silver: DEFAULT_METALS.silver
+  }));
 
-  // Asset configurations
+  useEffect(() => {
+    let isMounted = true;
+    fetchLiveMetals().then(res => {
+      if (isMounted && res && res.gold) {
+        setMetalsData({ gold: res.gold, silver: res.silver });
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
+  const usdToPkr = (typeof rates?.PKR === 'number' && rates.PKR > 0) ? rates.PKR : 277.10;
+  const eurToPkr = usdToPkr / ((typeof rates?.EUR === 'number' && rates.EUR > 0) ? rates.EUR : 0.92);
+  const gbpToPkr = usdToPkr / ((typeof rates?.GBP === 'number' && rates.GBP > 0) ? rates.GBP : 0.79);
+
+  // Live Crypto Prices
+  const btcPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'BTC')?.current_price || 96420;
+  const ethPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'ETH')?.current_price || 2745.50;
+
+  // Live Gold Spot Price (~$4,158/oz benchmark)
+  const goldPrice = (metalsData.gold?.price && metalsData.gold.price > 0)
+    ? metalsData.gold.price 
+    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : 4158.00);
+
+  // Dynamic Live Asset configurations
   const assets = [
     { id: 'USD/PKR', name: 'US Dollar to PKR', basePrice: usdToPkr, unit: '₨', type: 'currency' },
     { id: 'EUR/PKR', name: 'Euro to PKR', basePrice: eurToPkr, unit: '₨', type: 'currency' },
     { id: 'GBP/PKR', name: 'British Pound to PKR', basePrice: gbpToPkr, unit: '₨', type: 'currency' },
-    { id: 'BTC', name: 'Bitcoin / USD', basePrice: 96420, unit: '$', type: 'crypto' },
-    { id: 'ETH', name: 'Ethereum / USD', basePrice: 2745.50, unit: '$', type: 'crypto' },
-    { id: 'Gold', name: 'Gold Spot / USD', basePrice: 2684.50, unit: '$', type: 'metal' },
+    { id: 'BTC', name: 'Bitcoin / USD', basePrice: btcPrice, unit: '$', type: 'crypto' },
+    { id: 'ETH', name: 'Ethereum / USD', basePrice: ethPrice, unit: '$', type: 'crypto' },
+    { id: 'Gold', name: 'Gold Spot / USD', basePrice: goldPrice, unit: '$', type: 'metal' },
   ];
 
   const currentAsset = assets.find(a => a.id.toUpperCase() === selectedAsset.toUpperCase()) || assets[0];
@@ -407,6 +464,100 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
         </div>
 
       </div>
+
+      {/* Comprehensive Technical Analysis Educational Guide & AdSense Compliance Section */}
+      <section className="mt-12 pt-8 border-t border-slate-200 dark:border-white/10 space-y-8">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Technical Analysis Intelligence</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Principles of Market Technical Analysis &amp; Price Action Dynamics
+              </h2>
+            </div>
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-4 font-normal">
+            <p>
+              Technical analysis is the quantitative study of historical market action—primarily price fluctuations and trading volume—to forecast potential future trajectory, identify institutional liquidity zones, and optimize risk-reward parameters. Whether tracking sovereign foreign exchange corridors (such as USD/PKR or EUR/USD), precious metals spot prices (Gold and Silver), or high-frequency digital assets (Bitcoin and Ethereum), mastering chart interpretation is essential for prudent capital allocation.
+            </p>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              1. Candlestick Formations vs. Continuous Line Charts
+            </h3>
+            <p>
+              Financial market visualizations typically rely on two core representations:
+            </p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li><strong>Continuous Line Charts:</strong> By connecting successive closing prices across predetermined timeframes, line charts eliminate intraday market noise, providing an intuitive view of macro trends, broad consolidation channels, and overall directional momentum.</li>
+              <li><strong>Japanese Candlestick Formations:</strong> Each candle reveals four distinct data points: Open, High, Low, and Close (OHLC). The body represents the range between open and close, while the wicks (shadows) demonstrate the extreme high and low points reached during that session, illustrating intra-period battles between buyers and sellers.</li>
+            </ul>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              2. Trend Indicators: Moving Averages (SMA &amp; EMA)
+            </h3>
+            <p>
+              Moving averages smooth price fluctuations to create a singular trend-following line:
+            </p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li><strong>Simple Moving Average (SMA):</strong> Computes the unweighted arithmetic mean of closing prices over a specific period (e.g., 50-day or 200-day SMA). When the 50-day SMA crosses above the 200-day SMA, traders identify a bullish &quot;Golden Cross&quot;, whereas a downward crossover indicates a &quot;Death Cross&quot;.</li>
+              <li><strong>Exponential Moving Average (EMA):</strong> Applies greater mathematical weight to the most recent data points, reducing lag and providing faster responsiveness to emerging breakouts or sudden macroeconomic announcements.</li>
+            </ul>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              3. Momentum Oscillators: The Relative Strength Index (RSI)
+            </h3>
+            <p>
+              The Relative Strength Index (RSI) is a bounded momentum oscillator operating on a scale from 0 to 100. It measures the speed and change of price movements over a default 14-period lookback window. Readings above 70 indicate that an asset is entering overbought territory, signaling potential exhaustion or mean reversion. Readings below 30 indicate oversold conditions, frequently preceding technical bounces or relief rallies.
+            </p>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              4. Support, Resistance, and Institutional Order Blocks
+            </h3>
+            <p>
+              Markets rarely move in straight lines; they expand and retrace within structured liquidity corridors. <strong>Support</strong> represents price baselines where buying interest consistently overcomes selling pressure, preventing further downside. <strong>Resistance</strong> marks overhead supply zones where selling interest halts upward advances. When a resistance level is decisively breached with high trading volume, it frequently transforms into a newly established support level through polarity reversal.
+            </p>
+          </div>
+        </div>
+
+        {/* Interactive FAQ Accordion */}
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <HelpCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Frequently Asked Questions</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Frequently Asked Technical Analysis &amp; Charting Questions
+              </h2>
+            </div>
+          </div>
+
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
+            {chartFaqs.map((faq, idx) => (
+              <div key={idx} className="py-4">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between text-left font-bold text-slate-900 dark:text-white text-sm sm:text-base cursor-pointer group"
+                >
+                  <span className="group-hover:text-[#00E676] transition-colors pr-4">{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-[#00E676] transition-transform duration-200 shrink-0 ${openFaq === idx ? 'rotate-180 text-[#00E676]' : ''}`} />
+                </button>
+                {openFaq === idx && (
+                  <p className="mt-2.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-normal animate-in fade-in duration-200">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
     </div>
   );

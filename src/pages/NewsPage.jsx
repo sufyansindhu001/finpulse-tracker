@@ -17,7 +17,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { fetchLiveMarketNews, getLiveTimeAgo } from '../services/newsService';
+import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, decodeHtmlEntities } from '../services/newsService';
 import { useSEO } from '../hooks/useSEO';
 
 export default function NewsPage() {
@@ -69,10 +69,13 @@ export default function NewsPage() {
   };
 
   const categories = [
-    { id: 'all', label: 'All Dispatches' },
+    { id: 'all', label: 'All News' },
     { id: 'local-stocks', label: 'Local Stocks (PSX)' },
-    { id: 'international-stocks', label: 'International Stocks' },
-    { id: 'commodities-economy', label: 'Global Economy & Commodities' },
+    { id: 'global-stocks', label: 'Global Stocks' },
+    { id: 'crypto', label: 'Cryptocurrency' },
+    { id: 'forex', label: 'Markets & Forex' },
+    { id: 'commodities', label: 'Gold & Commodities' },
+    { id: 'economy', label: 'Economy & Central Banks' },
   ];
 
   const getCategoryBadgeStyle = (cat = '') => {
@@ -80,10 +83,22 @@ export default function NewsPage() {
     if (c.includes('local') || c.includes('psx')) {
       return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
     }
-    if (c.includes('international') || c.includes('wall street') || c.includes('stocks')) {
+    if (c.includes('global') || c.includes('international') || c.includes('wall street') || c.includes('stock')) {
       return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
     }
-    return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    if (c.includes('crypto') || c.includes('bitcoin')) {
+      return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
+    }
+    if (c.includes('forex') || c.includes('currency') || c.includes('market')) {
+      return 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20';
+    }
+    if (c.includes('gold') || c.includes('commodit') || c.includes('oil') || c.includes('bullion')) {
+      return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+    }
+    if (c.includes('econom') || c.includes('central bank') || c.includes('macro')) {
+      return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+    }
+    return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20';
   };
 
   const filteredNews = useMemo(() => {
@@ -197,95 +212,102 @@ export default function NewsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNews.map((item, idx) => (
-            <div
-              key={item.id || idx}
-              className="rounded-3xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-50 dark:hover:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-6 transition-all duration-300 shadow-sm dark:shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
-            >
-              <div className="space-y-4">
-                {/* Image if available */}
-                {item.image && (
+          {filteredNews.map((item, idx) => {
+            const headline = decodeHtmlEntities(item.headline);
+            const summary = decodeHtmlEntities(item.summary);
+            const author = decodeHtmlEntities(item.author || item.source);
+            const fallbackImg = getCategoryFallbackImage(item.category, idx);
+            const imageSrc = item.image || fallbackImg;
+
+            return (
+              <div
+                key={item.id || idx}
+                className="rounded-3xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-50 dark:hover:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-6 transition-all duration-300 shadow-sm dark:shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
+              >
+                <div className="space-y-4">
+                  {/* Top Thumbnail Image - 100% Guaranteed Image with Fallback */}
                   <div className="w-full h-44 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative">
                     <img 
-                      src={item.image} 
-                      alt={item.headline} 
+                      src={imageSrc} 
+                      alt={headline} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       loading="lazy"
                       onError={(e) => {
-                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = fallbackImg;
                       }}
                     />
                   </div>
-                )}
 
-                {/* Source, Category & Time */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-xs gap-2">
-                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                      <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20 truncate max-w-[140px]">
-                        {item.source || 'Wire Feed'}
-                      </span>
-                      {item.category && (
-                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(item.category)} truncate max-w-[150px]`}>
-                          {item.category}
+                  {/* Source, Category & Time */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                        <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20 truncate max-w-[140px]">
+                          {item.source || 'Wire Feed'}
                         </span>
-                      )}
+                        {item.category && (
+                          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(item.category)} truncate max-w-[150px]`}>
+                            {item.category}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium shrink-0">
+                        <Clock className="w-3.5 h-3.5 text-[#00E676]" />
+                        <span>{getLiveTimeAgo(item.datetime || item.pubDate)}</span>
+                      </span>
                     </div>
-                    <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium shrink-0">
-                      <Clock className="w-3.5 h-3.5 text-[#00E676]" />
-                      <span>{getLiveTimeAgo(item.datetime || item.pubDate)}</span>
-                    </span>
+
+                    {author && author !== item.source && (
+                      <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+                        Reported by <span className="text-slate-900 dark:text-white font-bold">{author}</span>
+                      </div>
+                    )}
                   </div>
 
-                  {item.author && item.author !== item.source && (
-                    <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                      Reported by <span className="text-slate-900 dark:text-white font-bold">{item.author}</span>
-                    </div>
-                  )}
+                  {/* Headline & Summary */}
+                  <div className="space-y-2">
+                    <h3 
+                      onClick={() => setActiveArticle(item)}
+                      className="text-base sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug cursor-pointer"
+                    >
+                      {headline}
+                    </h3>
+                    {summary && (
+                      <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-3 leading-relaxed font-medium">
+                        {summary}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                {/* Headline & Summary */}
-                <div className="space-y-2">
-                  <h3 
+                {/* Bottom Actions: Read Modal and Direct Source Link */}
+                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold">
+                  <button
+                    type="button"
                     onClick={() => setActiveArticle(item)}
-                    className="text-base sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug cursor-pointer"
+                    className="flex items-center gap-1 text-slate-500 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                   >
-                    {item.headline}
-                  </h3>
-                  {item.summary && (
-                    <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-3 leading-relaxed font-medium">
-                      {item.summary}
-                    </p>
+                    <BookOpen className="w-3.5 h-3.5 text-[#00E676]" />
+                    <span>Quick Read</span>
+                  </button>
+
+                  {item.url && (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-[#00E676] hover:underline transition-colors"
+                      title="Open external source article"
+                    >
+                      <span>Source</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
                   )}
                 </div>
               </div>
-
-              {/* Bottom Actions: Read Modal and Direct Source Link */}
-              <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold">
-                <button
-                  type="button"
-                  onClick={() => setActiveArticle(item)}
-                  className="flex items-center gap-1 text-slate-500 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-[#00E676]" />
-                  <span>Quick Read</span>
-                </button>
-
-                {item.url && (
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-[#00E676] hover:underline transition-colors"
-                    title="Open external source article"
-                  >
-                    <span>Source</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -313,7 +335,7 @@ export default function NewsPage() {
                 )}
                 {activeArticle.author && (
                   <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
-                    by {activeArticle.author}
+                    by {decodeHtmlEntities(activeArticle.author)}
                   </span>
                 )}
                 <span className="text-xs text-slate-500 dark:text-[#A8B3C2]">
@@ -329,21 +351,23 @@ export default function NewsPage() {
             </div>
 
             {/* Modal Image */}
-            {activeArticle.image && (
-              <img 
-                src={activeArticle.image} 
-                alt={activeArticle.headline} 
-                className="w-full h-56 sm:h-64 object-cover rounded-2xl bg-slate-100 dark:bg-[#06111F]"
-              />
-            )}
+            <img 
+              src={activeArticle.image || getCategoryFallbackImage(activeArticle.category, 0)} 
+              alt={decodeHtmlEntities(activeArticle.headline)} 
+              className="w-full h-56 sm:h-64 object-cover rounded-2xl bg-slate-100 dark:bg-[#06111F]"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = getCategoryFallbackImage(activeArticle.category, 0);
+              }}
+            />
 
             {/* Modal Headline & Content */}
             <div className="space-y-4">
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
-                {activeArticle.headline}
+                {decodeHtmlEntities(activeArticle.headline)}
               </h2>
               <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line font-medium">
-                {activeArticle.summary}
+                {decodeHtmlEntities(activeArticle.summary)}
               </p>
             </div>
 

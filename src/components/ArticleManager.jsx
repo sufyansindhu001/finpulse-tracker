@@ -284,13 +284,19 @@ export default function ArticleManager() {
     if (c.includes('stock') || c.includes('equit')) {
       return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
     }
+    if (c.includes('crypto') || c.includes('bitcoin')) {
+      return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
+    }
+    if (c.includes('forex') || c.includes('currenc') || c.includes('market')) {
+      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+    }
     if (c.includes('gold') || c.includes('commodit') || c.includes('metal')) {
       return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
     }
-    if (c.includes('forex') || c.includes('currenc')) {
-      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+    if (c.includes('econom') || c.includes('central bank')) {
+      return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
     }
-    return 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20';
+    return 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20';
   };
 
   const filteredArticles = useMemo(() => {
@@ -363,9 +369,11 @@ export default function ArticleManager() {
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 cursor-pointer"
               >
                 <option value="Stocks & Equities">Stocks & Equities (Company Deep-Dives, Market Analysis)</option>
+                <option value="Cryptocurrency">Cryptocurrency (Bitcoin, Altcoins, Digital Assets)</option>
+                <option value="Markets & Forex">Markets & Forex (Exchange Rates, FX Corridors)</option>
                 <option value="Gold & Commodities">Gold & Commodities (Bullion, Precious Metals, Oil)</option>
-                <option value="Forex & Currencies">Forex & Currencies (Exchange Rates, Central Banks)</option>
-                <option value="Economy & Markets">Economy & Markets (Macroeconomics, Financial Guides)</option>
+                <option value="Economy & Central Banks">Economy & Central Banks (SBP, Fed, Macro Policy)</option>
+                <option value="Macro Analysis">Macro Analysis (Long-term Economic Research)</option>
               </select>
             </div>
           </div>
@@ -495,7 +503,7 @@ export default function ArticleManager() {
 
           {/* Category Filter Pills */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {['ALL', 'Stocks & Equities', 'Gold & Commodities', 'Forex & Currencies', 'Economy & Markets'].map(f => (
+            {['ALL', 'Stocks & Equities', 'Cryptocurrency', 'Markets & Forex', 'Gold & Commodities', 'Economy & Central Banks', 'Macro Analysis'].map(f => (
               <button
                 key={f}
                 type="button"

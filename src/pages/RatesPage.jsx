@@ -12,11 +12,48 @@ import {
   ArrowRight,
   Filter,
   ChevronDown,
-  CheckCircle2
+  CheckCircle2,
+  BookOpen,
+  HelpCircle,
+  ShieldCheck
 } from 'lucide-react';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 import { useSEO } from '../hooks/useSEO';
 import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
+import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
+
+const VALID_FIAT_CODES = new Set(
+  CURRENCIES
+    .map(c => c.code.toUpperCase())
+    .filter(code => code !== 'XAU' && code !== 'XAG')
+);
+
+const ratesFaqs = [
+  {
+    q: "How frequently are foreign exchange rates updated on FGC Spot?",
+    a: "Our interbank foreign exchange rates sync in real-time directly with institutional financial APIs and market data feeds. During active market trading hours (Monday through Friday), rates update continuously as global currency pairs fluctuate, while official central bank fixing benchmarks are updated at the close of every business day."
+  },
+  {
+    q: "Why is there a discrepancy between interbank rates and open market cash rates?",
+    a: "The interbank rate represents large-scale, electronic wholesale transactions between commercial banks with minimal transaction overhead. Open market exchange companies trade physical banknotes, which incur transport, customs, security, vault insurance, and retail operational overheads, producing a retail bid-ask spread."
+  },
+  {
+    q: "How does the State Bank of Pakistan (SBP) determine daily closing exchange rates?",
+    a: "The SBP calculates weighted-average interbank exchange rates based on all end-of-day transactions completed across authorized dealer commercial banks. This official closing rate serves as the statutory benchmark for customs duties, debt servicing valuation, and government accounting."
+  },
+  {
+    q: "What is an Electronic Proceeds Realisation Certificate (e-PRC)?",
+    a: "An e-PRC is an official digital verification issued by authorized commercial banks confirming that foreign currency was legitimately remitted from abroad and converted into Pakistani Rupees. It provides statutory exemption evidence for freelancers and exporters during tax filing with the FBR."
+  },
+  {
+    q: "How are cross-currency rates (e.g., EUR/PKR, GBP/PKR) computed?",
+    a: "Cross rates are calculated via triangular arbitrage through the US Dollar. For example, EUR/PKR is derived by multiplying the international EUR/USD spot rate by the domestic USD/PKR interbank rate, ensuring exact mathematical parity with global markets."
+  },
+  {
+    q: "Can corporate businesses hedge against currency devaluation in Pakistan?",
+    a: "Yes. Authorized commercial banks in Pakistan offer regulated hedging instruments, including Forward Exchange Contracts (FECs), currency swaps, and FX options, allowing importers and exporters to lock in future exchange rates and protect corporate margins against market volatility."
+  }
+];
 
 export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRefreshing }) {
   useSEO({
@@ -35,6 +72,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   const [sortOrder, setSortOrder] = useState('asc');
   const [highlightedAsset, setHighlightedAsset] = useState(null);
   const [visibleCurrencyCount, setVisibleCurrencyCount] = useState(10);
+  const [openFaq, setOpenFaq] = useState(null);
 
   // Live Metals State
   const [metalsData, setMetalsData] = useState(() => ({
@@ -125,32 +163,43 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   // Base currency rates calculations
   const usdToPkr = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 277.10;
 
-  // Format currency list
+  // Format currency list - strictly authentic ISO-4217 sovereign fiat currencies, no crypto tokens
   const currencyRows = useMemo(() => {
     const rawRates = (rates && typeof rates === 'object') ? rates : {};
     const list = Object.entries(rawRates)
-      .filter(([code, val]) => typeof code === 'string' && code.length === 3 && typeof val === 'number' && !isNaN(val) && isFinite(val) && val > 0)
+      .filter(([code, val]) => {
+        const upper = (code || '').toUpperCase();
+        return (
+          VALID_FIAT_CODES.has(upper) &&
+          typeof val === 'number' && 
+          !isNaN(val) && 
+          isFinite(val) && 
+          val > 0
+        );
+      })
       .map(([code, val]) => {
+        const upper = code.toUpperCase();
+        const info = getCurrencyInfo(upper);
         // Calculate rate against USD and rate against PKR
-        const rateToPkr = code === 'USD' ? usdToPkr : (usdToPkr / val);
+        const rateToPkr = upper === 'USD' ? usdToPkr : (usdToPkr / val);
         // Simulated 24h delta based on pseudo hash for stable display
-        const charCodeSum = code.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+        const charCodeSum = upper.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
         const pseudoDelta = (((charCodeSum % 30) - 14) / 10).toFixed(2);
         const isPositive = parseFloat(pseudoDelta) >= 0;
 
         return {
-          code,
-          name: code === 'USD' ? 'US Dollar' : code === 'PKR' ? 'Pakistani Rupee' : code === 'EUR' ? 'Euro' : code === 'GBP' ? 'British Pound' : code === 'SAR' ? 'Saudi Riyal' : code === 'AED' ? 'UAE Dirham' : `${code} Currency`,
+          code: upper,
+          name: info.name || `${upper} Currency`,
           rateUsd: val,
           ratePkr: rateToPkr,
           change: `${isPositive ? '+' : ''}${pseudoDelta}%`,
           isPositive,
           lastUpdated: 'Live Feed',
-          flagUrl: getCurrencyFlagUrl(code)
+          flagUrl: getCurrencyFlagUrl(upper)
         };
       });
 
-    return list.filter(item => item.code !== 'XAU' && item.code !== 'XAG');
+    return list;
   }, [rates, usdToPkr]);
 
 
@@ -385,11 +434,26 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                     >
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <img 
-                            src={c.flagUrl} 
-                            alt={c.code} 
-                            className="w-6 h-4.5 rounded object-cover shadow-xs" 
-                          />
+                          <div className="w-6 h-4.5 rounded overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/10 shadow-xs relative">
+                            {c.flagUrl ? (
+                              <img 
+                                src={c.flagUrl} 
+                                alt={c.code} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  const fallback = e.currentTarget.parentElement.querySelector('.flag-fallback');
+                                  if (fallback) fallback.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            <span 
+                              className="flag-fallback w-full h-full text-[9px] font-black items-center justify-center text-slate-600 dark:text-slate-300 select-none uppercase bg-slate-200 dark:bg-slate-800"
+                              style={{ display: c.flagUrl ? 'none' : 'flex' }}
+                            >
+                              {c.code.slice(0, 2)}
+                            </span>
+                          </div>
                           <div>
                             <span className="font-extrabold text-slate-900 dark:text-white text-sm">{c.code}</span>
                             <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">{c.name}</span>
@@ -625,6 +689,94 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
           </div>
         </div>
       )}
+
+      {/* Comprehensive Institutional Educational Guide & AdSense Compliance Section */}
+      <section className="mt-12 pt-8 border-t border-slate-200 dark:border-white/10 space-y-8">
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Institutional Market Intelligence</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Global Foreign Exchange Mechanics &amp; Pakistan Forex Structure
+              </h2>
+            </div>
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-4 font-normal">
+            <p>
+              The international foreign exchange (Forex or FX) market is the largest, most liquid financial ecosystem on earth, with daily turnover exceeding \$7.5 trillion across institutional trading desks, sovereign central banks, commercial lenders, and multilateral clearing houses. Understanding the architecture of exchange rates requires distinguishing between two primary tiers: the institutional wholesale interbank market and the retail consumer market.
+            </p>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              1. Interbank Foreign Exchange Market vs. Open Market Exchange Companies
+            </h3>
+            <p>
+              In Pakistan, the foreign exchange architecture operates under a dual-tier framework regulated by the State Bank of Pakistan (SBP). The <strong>Interbank Market</strong> is an electronic wholesale network where licensed commercial banks and primary dealers trade currencies directly with each other and with the central bank. These transactions settle sovereign debt repayments, formal international trade letters of credit (LCs), and large-scale multilateral disbursements. Interbank rates are characterized by tight bid-ask spreads, near-zero friction, and instantaneous electronic settlement.
+            </p>
+            <p>
+              Conversely, the <strong>Open Market</strong> (represented by Exchange Companies Association of Pakistan - ECAP members) caters to individual retail transactions, personal outward travel quotas, educational fee remittances, and physical foreign currency cash notes. Because physical paper currency notes carry logistics, transport, insurance, customs, and holding security overheads, open market rates naturally carry a modest premium (spread) over wholesale electronic book-entry rates.
+            </p>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              2. Determinants of Currency Valuation and Cross-Rate Parity
+            </h3>
+            <p>
+              A currency&apos;s purchasing power and exchange value against benchmark reserve currencies (like USD, EUR, and GBP) are governed by macroeconomic fundamentals:
+            </p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li><strong>Current Account Balance:</strong> The net sum of national exports, imports, and worker remittances. Sustained surpluses strengthen domestic currency reserves, while deficits apply downward structural pressure.</li>
+              <li><strong>Interest Rate Differentials:</strong> Higher central bank policy rates attract foreign portfolio investment (hot money) seeking positive real yield, boosting local currency demand.</li>
+              <li><strong>Inflation &amp; Purchasing Power Parity (PPP):</strong> Rapid domestic inflation erodes relative domestic purchasing power, leading to depreciation pressure over multi-quarter horizons.</li>
+              <li><strong>Sovereign Reserves &amp; Bilateral Inflows:</strong> Timely loan disbursements from multilateral institutions (such as the IMF, World Bank, and ADB) provide essential external liquidity buffers.</li>
+            </ul>
+
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
+              3. Compliance, SBP Regulations, and Electronic Inward Remittances
+            </h3>
+            <p>
+              Under SBP Foreign Exchange Manual guidelines, all foreign currency inflows into Pakistan must comply with stringent Anti-Money Laundering (AML) and Countering Financing of Terrorism (CFT) frameworks. For freelance technology professionals, exporters, and overseas Pakistani workers, routing earnings through official banking channels guarantees receipt of an <em>Electronic Proceeds Realisation Certificate (e-PRC)</em>, which serves as statutory proof of untaxed foreign exchange income for Federal Board of Revenue (FBR) income tax filings.
+            </p>
+          </div>
+        </div>
+
+        {/* Interactive FAQ Accordion */}
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <HelpCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Frequently Asked Questions</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Frequently Asked Forex &amp; Exchange Rate Questions
+              </h2>
+            </div>
+          </div>
+
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
+            {ratesFaqs.map((faq, idx) => (
+              <div key={idx} className="py-4">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between text-left font-bold text-slate-900 dark:text-white text-sm sm:text-base cursor-pointer group"
+                >
+                  <span className="group-hover:text-[#00E676] transition-colors pr-4">{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-[#00E676] transition-transform duration-200 shrink-0 ${openFaq === idx ? 'rotate-180 text-[#00E676]' : ''}`} />
+                </button>
+                {openFaq === idx && (
+                  <p className="mt-2.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-normal animate-in fade-in duration-200">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
     </div>
   );

@@ -1853,9 +1853,11 @@ export default function AdminPage() {
                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 cursor-pointer"
                       >
                         <option value="Stocks & Equities">Stocks & Equities (Company Deep-Dives, Market Analysis)</option>
+                        <option value="Cryptocurrency">Cryptocurrency (Bitcoin, Altcoins, Digital Assets)</option>
+                        <option value="Markets & Forex">Markets & Forex (Exchange Rates, FX Corridors)</option>
                         <option value="Gold & Commodities">Gold & Commodities (Bullion, Precious Metals, Oil)</option>
-                        <option value="Forex & Currencies">Forex & Currencies (Exchange Rates, Central Banks)</option>
-                        <option value="Economy & Markets">Economy & Markets (Macroeconomics, Financial Guides)</option>
+                        <option value="Economy & Central Banks">Economy & Central Banks (SBP, Fed, Macro Policy)</option>
+                        <option value="Macro Analysis">Macro Analysis (Long-term Economic Research)</option>
                       </select>
                     </div>
                   </div>
