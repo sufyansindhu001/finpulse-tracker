@@ -477,7 +477,7 @@ export default function StocksPage() {
         {/* Horizontal Strategy Pills Slider (Investing.com Style) */}
         <div className="relative flex items-center bg-gray-50/70 dark:bg-[#06111F]/70 border border-gray-200 dark:border-white/10 rounded-2xl p-1.5 overflow-hidden">
           {/* Scrollable Pills Track (5-6 visible at once, scrollable horizontally) */}
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 px-1 flex-1 pr-3 scroll-smooth">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 px-1 flex-1 pr-3 scroll-smooth touch-pan-x">
             {[
               { title: 'Near 52-Week High', ret: '+68.9%', type: 'near52w' },
               { title: 'Momentum Masters', ret: '+57.3%', type: 'momentum' },
@@ -495,7 +495,7 @@ export default function StocksPage() {
                 <button
                   key={pill.title}
                   onClick={() => handleApplyScreen({ title: pill.title, filterType: pill.type })}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 border whitespace-nowrap shadow-2xs hover:scale-[1.02] ${
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shrink-0 border whitespace-nowrap shadow-2xs hover:scale-[1.02] touch-manipulation select-none ${
                     isActive
                       ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs'
                       : 'bg-white dark:bg-[#0A1726] text-gray-800 dark:text-gray-200 border-gray-200 dark:border-white/10 hover:border-blue-500/50 hover:bg-gray-50 dark:hover:bg-white/5'
@@ -579,7 +579,7 @@ export default function StocksPage() {
             </div>
 
             {/* 9 View Tabs */}
-            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
+            <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5 touch-pan-x">
               <div className="flex items-center bg-gray-100 dark:bg-[#06111F] p-1 rounded-lg border border-gray-200 dark:border-gray-800 shrink-0">
                 {viewTabs.map(tab => {
                   const isActive = activeViewTab === tab;
@@ -587,7 +587,7 @@ export default function StocksPage() {
                     <button
                       key={tab}
                       onClick={() => setActiveViewTab(tab)}
-                      className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer whitespace-nowrap touch-manipulation select-none ${
                         isActive
                           ? 'bg-white dark:bg-[#0A1726] text-blue-600 dark:text-[#00E676] shadow-xs'
                           : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -609,7 +609,7 @@ export default function StocksPage() {
 
             <button
               onClick={handleExportCSV}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold transition-colors cursor-pointer border border-gray-300 dark:border-gray-700"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold transition-colors cursor-pointer border border-gray-300 dark:border-gray-700 touch-manipulation"
               title="Download CSV Table"
             >
               <Download className="w-3.5 h-3.5" />
@@ -621,7 +621,7 @@ export default function StocksPage() {
 
         {/* Data Table */}
         <div className="w-full bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="bg-gray-50 dark:bg-[#06111F] border-b border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 uppercase font-mono text-[11px]">

@@ -177,7 +177,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               {/* Mobile Hamburger Toggle Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0"
+                className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -247,7 +247,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                     <button
                       key={item.label}
                       onClick={() => handleNavClick(item.path)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer touch-manipulation select-none ${
                         isActive
                           ? 'bg-[#00E676] text-[#06111F] font-bold'
                           : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-[#A8B3C2] dark:hover:text-white dark:hover:bg-white/[0.04]'

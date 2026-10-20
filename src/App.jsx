@@ -334,7 +334,7 @@ export default function App() {
             {/* ROUTE 2: DEDICATED LIVE RATES PAGE (/rates) */}
             <Route path="/rates" element={
               <GlobalErrorBoundary>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+                <div className="w-full animate-in fade-in duration-300">
                   <RatesPage 
                     rates={rates || DEFAULT_RATES}
                     cryptoList={Array.isArray(cryptoList) && cryptoList.length > 0 ? cryptoList : DEFAULT_CRYPTO_BENCHMARKS}
@@ -349,7 +349,7 @@ export default function App() {
 
             {/* ROUTE 3: DEDICATED CRYPTO TERMINAL PAGE (/crypto) */}
             <Route path="/crypto" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <CryptoPage 
                   cryptoList={cryptoList}
                   isLoading={isCryptoLoading}
@@ -362,21 +362,21 @@ export default function App() {
 
             {/* ROUTE 4: DEDICATED GOLD & PRECIOUS METALS PAGE (/gold) */}
             <Route path="/gold" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <GoldPage rates={rates} />
               </div>
             } />
 
             {/* ROUTE 5: INTERACTIVE FINANCIAL CHARTS PAGE (/charts) */}
             <Route path="/charts" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <ChartsPage rates={rates} cryptoList={cryptoList} />
               </div>
             } />
 
             {/* ROUTE 6: STANDALONE CURRENCY CONVERTER PAGE (/converter) */}
             <Route path="/converter" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <ConverterPage rates={rates} />
               </div>
             } />
@@ -384,51 +384,51 @@ export default function App() {
 
             {/* ROUTE 7: DEDICATED REAL-TIME FINANCIAL NEWS WIRE (/news) */}
             <Route path="/news" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <NewsPage />
               </div>
             } />
 
             {/* ROUTE 7B: DEDICATED BLOG & FINANCIAL ANALYSIS (/blog) */}
             <Route path="/blog" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <BlogPage />
               </div>
             } />
             <Route path="/blog/:slug" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <BlogDetailPage />
               </div>
             } />
             <Route path="/blog/id/:id" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <BlogDetailPage />
               </div>
             } />
             <Route path="/research" element={<Navigate to="/blog" replace />} />
             <Route path="/research/:id" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <BlogDetailPage />
               </div>
             } />
 
             {/* ROUTE 8: ABOUT US PAGE (/about) */}
             <Route path="/about" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <AboutPage />
               </div>
             } />
 
             {/* ROUTE 9: CONTACT US PAGE (/contact) */}
             <Route path="/contact" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <ContactPage />
               </div>
             } />
 
             {/* ROUTE 10: PRIVACY POLICY PAGE (/privacy-policy) */}
             <Route path="/privacy-policy" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <PrivacyPolicyPage />
               </div>
             } />
@@ -436,7 +436,7 @@ export default function App() {
 
             {/* ROUTE 11: TERMS OF SERVICE PAGE (/terms) */}
             <Route path="/terms" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <TermsPage />
               </div>
             } />
@@ -444,14 +444,14 @@ export default function App() {
 
             {/* ROUTE 12: FINANCIAL DISCLAIMER PAGE (/disclaimer) */}
             <Route path="/disclaimer" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <DisclaimerPage />
               </div>
             } />
 
             {/* ROUTE 13: ADMIN CONTROL PORTAL (/admin) */}
             <Route path="/admin" element={
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+              <div className="w-full animate-in fade-in duration-300">
                 <AdminPage />
               </div>
             } />

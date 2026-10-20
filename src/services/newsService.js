@@ -78,6 +78,124 @@ export function getCategoryFallbackImage(category = '', index = 0) {
 }
 
 /**
+ * Guaranteed Zero-Network SVG Data URI Cover Generator
+ * Produces crisp, beautiful high-contrast institutional graphic covers
+ * ensuring 0 broken images or grey placeholder boxes under any network condition.
+ */
+export function getCategoryFallbackSvg(category = '') {
+  const cat = (category || '').toLowerCase();
+  
+  let label = 'FINANCIAL INTELLIGENCE';
+  let sub = 'Global Market Intelligence Wire';
+  let gradStart = '#06111F';
+  let gradEnd = '#0B1E36';
+  let strokeColor = '#00E676';
+  let badgeBg = 'rgba(0, 230, 118, 0.15)';
+  let badgeBorder = 'rgba(0, 230, 118, 0.4)';
+  let badgeText = '#00E676';
+  let pathD = 'M 40 280 Q 180 230 300 250 T 500 160 T 700 90 L 760 110';
+  let areaD = 'M 40 280 Q 180 230 300 250 T 500 160 T 700 90 L 760 110 L 760 380 L 40 380 Z';
+
+  if (cat.includes('local') || cat.includes('psx')) {
+    label = 'LOCAL EQUITIES & PSX';
+    sub = 'Pakistan Stock Exchange Terminal';
+    gradStart = '#031F14';
+    gradEnd = '#063B26';
+    strokeColor = '#00E676';
+    badgeBg = 'rgba(0, 230, 118, 0.2)';
+    badgeBorder = 'rgba(0, 230, 118, 0.5)';
+    badgeText = '#00E676';
+    pathD = 'M 40 300 Q 160 210 280 230 T 480 140 T 640 160 T 760 80';
+    areaD = 'M 40 300 Q 160 210 280 230 T 480 140 T 640 160 T 760 80 L 760 380 L 40 380 Z';
+  } else if (cat.includes('global') || cat.includes('international') || cat.includes('wall street') || cat.includes('stock')) {
+    label = 'GLOBAL EQUITIES';
+    sub = 'Wall Street & International Equities';
+    gradStart = '#0A1726';
+    gradEnd = '#132A4A';
+    strokeColor = '#3B82F6';
+    badgeBg = 'rgba(59, 130, 246, 0.2)';
+    badgeBorder = 'rgba(59, 130, 246, 0.5)';
+    badgeText = '#60A5FA';
+    pathD = 'M 40 290 Q 200 260 360 180 T 560 170 T 760 90';
+    areaD = 'M 40 290 Q 200 260 360 180 T 560 170 T 760 90 L 760 380 L 40 380 Z';
+  } else if (cat.includes('crypto') || cat.includes('bitcoin') || cat.includes('digital asset')) {
+    label = 'DIGITAL ASSETS & CRYPTO';
+    sub = 'Blockchain Liquidity & Spot Feeds';
+    gradStart = '#1A0B2E';
+    gradEnd = '#2B134E';
+    strokeColor = '#A855F7';
+    badgeBg = 'rgba(168, 85, 247, 0.2)';
+    badgeBorder = 'rgba(168, 85, 247, 0.5)';
+    badgeText = '#C084FC';
+    pathD = 'M 40 310 Q 140 200 260 240 T 440 120 T 600 200 T 760 70';
+    areaD = 'M 40 310 Q 140 200 260 240 T 440 120 T 600 200 T 760 70 L 760 380 L 40 380 Z';
+  } else if (cat.includes('forex') || cat.includes('currency') || cat.includes('fx')) {
+    label = 'FOREX & CURRENCIES';
+    sub = 'Interbank FX Rates & Corridor Liquidity';
+    gradStart = '#041E28';
+    gradEnd = '#073646';
+    strokeColor = '#06B6D4';
+    badgeBg = 'rgba(6, 182, 212, 0.2)';
+    badgeBorder = 'rgba(6, 182, 212, 0.5)';
+    badgeText = '#22D3EE';
+    pathD = 'M 40 270 Q 180 290 320 200 T 520 210 T 760 100';
+    areaD = 'M 40 270 Q 180 290 320 200 T 520 210 T 760 100 L 760 380 L 40 380 Z';
+  } else if (cat.includes('gold') || cat.includes('commodit') || cat.includes('bullion') || cat.includes('oil')) {
+    label = 'GOLD & COMMODITIES';
+    sub = 'LBMA Spot Bullion & Crude Benchmarks';
+    gradStart = '#241703';
+    gradEnd = '#422806';
+    strokeColor = '#F59E0B';
+    badgeBg = 'rgba(245, 158, 11, 0.2)';
+    badgeBorder = 'rgba(245, 158, 11, 0.5)';
+    badgeText = '#FBBF24';
+    pathD = 'M 40 280 Q 200 220 340 230 T 540 140 T 760 85';
+    areaD = 'M 40 280 Q 200 220 340 230 T 540 140 T 760 85 L 760 380 L 40 380 Z';
+  } else if (cat.includes('econom') || cat.includes('central bank') || cat.includes('macro')) {
+    label = 'MACRO ECONOMY';
+    sub = 'Global Central Banks & Policy Decisions';
+    gradStart = '#240810';
+    gradEnd = '#420F1D';
+    strokeColor = '#F43F5E';
+    badgeBg = 'rgba(244, 63, 94, 0.2)';
+    badgeBorder = 'rgba(244, 63, 94, 0.5)';
+    badgeText = '#FB7185';
+    pathD = 'M 40 290 Q 220 230 380 240 T 580 150 T 760 110';
+    areaD = 'M 40 290 Q 220 230 380 240 T 580 150 T 760 110 L 760 380 L 40 380 Z';
+  }
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+    <defs>
+      <linearGradient id="g_bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${gradStart}"/>
+        <stop offset="100%" stop-color="${gradEnd}"/>
+      </linearGradient>
+      <linearGradient id="g_curve" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="${strokeColor}" stop-opacity="0.32"/>
+        <stop offset="100%" stop-color="${strokeColor}" stop-opacity="0.0"/>
+      </linearGradient>
+      <pattern id="g_grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="800" height="450" fill="url(#g_bg)"/>
+    <rect width="800" height="450" fill="url(#g_grid)"/>
+    <path d="${areaD}" fill="url(#g_curve)"/>
+    <path d="${pathD}" fill="none" stroke="${strokeColor}" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="760" cy="85" r="8" fill="${strokeColor}" opacity="0.7"/>
+    <circle cx="760" cy="85" r="3.5" fill="#FFFFFF"/>
+    <rect x="40" y="38" width="110" height="26" rx="6" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)"/>
+    <text x="52" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" letter-spacing="1">FGC SPOT</text>
+    <rect x="160" y="38" width="220" height="26" rx="6" fill="${badgeBg}" stroke="${badgeBorder}"/>
+    <text x="172" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10.5" font-weight="700" fill="${badgeText}" letter-spacing="0.5">${label}</text>
+    <text x="40" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="900" fill="#FFFFFF">${label}</text>
+    <text x="40" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="500" fill="rgba(255,255,255,0.65)">${sub}</text>
+  </svg>`;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+/**
  * Strict HTML Entity Decoder
  * Converts all decimal (&#8217;), hex (&#x2018;), and named entities (&quot;, &apos;, &amp;, etc.)
  * so no raw unparsed entity codes ever appear in titles or snippets.

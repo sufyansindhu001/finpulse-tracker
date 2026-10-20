@@ -354,10 +354,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       {/* Tabs & Controls */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Tab Buttons */}
-        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 overflow-x-auto scrollbar-none touch-pan-x">
           <button
             onClick={() => handleTabChange('currencies')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer touch-manipulation whitespace-nowrap ${
               activeTab === 'currencies'
                 ? 'bg-[#00E676] text-[#06111F] shadow-md shadow-[#00E676]/20'
                 : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
@@ -369,7 +369,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
           <button
             onClick={() => handleTabChange('crypto')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer touch-manipulation whitespace-nowrap ${
               activeTab === 'crypto'
                 ? 'bg-[#00E676] text-[#06111F] shadow-md shadow-[#00E676]/20'
                 : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
@@ -381,7 +381,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
           <button
             onClick={() => handleTabChange('gold')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer touch-manipulation whitespace-nowrap ${
               activeTab === 'gold'
                 ? 'bg-[#00E676] text-[#06111F] shadow-md shadow-[#00E676]/20'
                 : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white/40 dark:hover:bg-white/5'
@@ -393,8 +393,8 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
         </div>
 
         {/* Search Field */}
-        <div className="relative min-w-[260px]">
-          <Search className="w-4 h-4 text-[#00E676] absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <div className="relative w-full sm:w-auto sm:min-w-[260px]">
+          <Search className="w-4 h-4 text-[#00E676] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
@@ -408,15 +408,15 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       {/* TAB 1: CURRENCIES TABLE */}
       {activeTab === 'currencies' && (
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
-                  <th className="py-4 px-6">Asset / Currency</th>
-                  <th className="py-4 px-6">Rate (PKR Benchmark)</th>
-                  <th className="py-4 px-6">Rate (vs USD)</th>
-                  <th className="py-4 px-6">24h Change</th>
-                  <th className="py-4 px-6 text-right">Quick Action</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Asset / Currency</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Rate (PKR Benchmark)</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Rate (vs USD)</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">24h Change</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">Quick Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -432,7 +432,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <div className="w-6 h-4.5 rounded overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/10 shadow-xs relative">
                             {c.flagUrl ? (
@@ -460,13 +460,13 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6 font-bold text-slate-900 dark:text-white text-sm font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 font-bold text-slate-900 dark:text-white text-sm font-tabular whitespace-nowrap">
                         ₨ {c.ratePkr.toFixed(2)}
                       </td>
-                      <td className="py-4 px-6 text-slate-600 dark:text-[#A8B3C2] font-semibold font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-semibold font-tabular whitespace-nowrap">
                         ${c.rateUsd.toFixed(4)}
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
                           c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
                         }`}>
@@ -474,10 +474,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           <span>{c.change}</span>
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
                         <button
                           onClick={() => navigate(`/converter?from=${c.code}&to=PKR`)}
-                          className="px-3.5 py-1.5 rounded-lg bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-colors cursor-pointer touch-manipulation"
                         >
                           Convert
                         </button>
@@ -546,16 +546,16 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       {/* TAB 2: CRYPTO TABLE */}
       {activeTab === 'crypto' && (
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
-                  <th className="py-4 px-6">Asset</th>
-                  <th className="py-4 px-6">Price (USD)</th>
-                  <th className="py-4 px-6">Price in PKR</th>
-                  <th className="py-4 px-6">24h Change</th>
-                  <th className="py-4 px-6">24h Volume</th>
-                  <th className="py-4 px-6 text-right">Action</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Asset</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Price (USD)</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Price in PKR</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">24h Change</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">24h Volume</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -571,7 +571,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           {c.image ? (
                             <img src={c.image} alt={c.name} className="w-7 h-7 rounded-full" />
@@ -586,13 +586,13 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular whitespace-nowrap">
                         ${c.price.toLocaleString()}
                       </td>
-                      <td className="py-4 px-6 text-[#00E676] font-bold font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-[#00E676] font-bold font-tabular whitespace-nowrap">
                         ₨ {(c.price * usdToPkr).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
                           c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
                         }`}>
@@ -600,13 +600,13 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           <span>{c.change.toFixed(2)}%</span>
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular whitespace-nowrap">
                         ${(c.volume / 1e9).toFixed(2)}B
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
                         <button
                           onClick={() => navigate(`/charts?asset=${c.symbol}`)}
-                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer touch-manipulation"
                         >
                           Chart
                         </button>
@@ -623,16 +623,16 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       {/* TAB 3: GOLD TABLE */}
       {activeTab === 'gold' && (
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-[#06111F]/70 text-slate-600 dark:text-[#A8B3C2] uppercase font-bold tracking-wider text-[11px]">
-                  <th className="py-4 px-6">Grade / Benchmark</th>
-                  <th className="py-4 px-6">Unit</th>
-                  <th className="py-4 px-6">PKR Price</th>
-                  <th className="py-4 px-6">USD Value</th>
-                  <th className="py-4 px-6">24h Trend</th>
-                  <th className="py-4 px-6 text-right">Action</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Grade / Benchmark</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">Unit</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">PKR Price</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">USD Value</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">24h Trend</th>
+                  <th className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/5">
@@ -652,31 +652,31 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                           : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
                       }`}
                     >
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <div className="flex items-center gap-2.5">
                           <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" />
                           <span className="font-extrabold text-slate-900 dark:text-white text-sm">{g.purity}</span>
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-amber-600 dark:text-amber-300 font-semibold">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-amber-600 dark:text-amber-300 font-semibold whitespace-nowrap">
                         {g.unit}
                       </td>
-                      <td className="py-4 px-6 font-extrabold text-[#00E676] text-sm font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 font-extrabold text-[#00E676] text-sm font-tabular whitespace-nowrap">
                         ₨ {Math.round(g.ratePkr).toLocaleString()}
                       </td>
-                      <td className="py-4 px-6 text-slate-700 dark:text-white font-tabular">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-slate-700 dark:text-white font-tabular whitespace-nowrap">
                         ${g.rateUsd.toFixed(2)}
                       </td>
-                      <td className="py-4 px-6">
+                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[#00E676]/10 text-[#00E676]">
                           <TrendingUp className="w-3 h-3" />
                           <span>{g.change}</span>
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
                         <button
                           onClick={() => navigate('/gold')}
-                          className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-500 dark:text-amber-400 hover:text-slate-950 font-bold text-xs transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-500 dark:text-amber-400 hover:text-slate-950 font-bold text-xs transition-colors cursor-pointer touch-manipulation"
                         >
                           Details
                         </button>

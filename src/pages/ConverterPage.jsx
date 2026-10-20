@@ -164,7 +164,7 @@ export default function ConverterPage({ rates = {} }) {
               <button
                 key={c.label}
                 onClick={() => handleSelectCorridor(c.from, c.to)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 touch-manipulation select-none ${
                   isMatch
                     ? 'bg-[#00E676] text-slate-950 shadow-sm'
                     : 'bg-white dark:bg-[#0A1726] hover:bg-slate-100 dark:hover:bg-[#0D1B2A] text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 hover:border-[#00E676]/30 shadow-sm'

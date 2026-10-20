@@ -8,7 +8,7 @@ import {
   ShieldCheck, 
   Newspaper 
 } from 'lucide-react';
-import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, decodeHtmlEntities } from '../services/newsService';
+import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
 
 export default function MarketNewsWire({ limit = 6 }) {
   const [news, setNews] = useState([]);
@@ -175,12 +175,12 @@ export default function MarketNewsWire({ limit = 6 }) {
         </div>
 
         {/* Category Filters Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 border-b border-slate-200 dark:border-white/10 text-xs scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 border-b border-slate-200 dark:border-white/10 text-xs scrollbar-none touch-pan-x">
           {categories.map((cat) => (
             <button
               key={cat.key}
               onClick={() => handleCategoryChange(cat.key)}
-              className={`px-3.5 py-1.5 rounded-full font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full font-semibold whitespace-nowrap transition-all cursor-pointer touch-manipulation ${
                 activeCategory === cat.key
                   ? 'bg-[#00E676] text-[#06111F] shadow-xs font-bold'
                   : 'bg-white dark:bg-[#0A1726] text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
@@ -206,6 +206,7 @@ export default function MarketNewsWire({ limit = 6 }) {
               const summary = decodeHtmlEntities(item.summary);
               const author = decodeHtmlEntities(item.author || item.source);
               const fallbackImg = getCategoryFallbackImage(item.category, idx);
+              const svgFallback = getCategoryFallbackSvg(item.category);
               const imageSrc = item.image || fallbackImg;
 
               return (
@@ -218,15 +219,21 @@ export default function MarketNewsWire({ limit = 6 }) {
                 >
                   <div>
                     {/* Top High-Resolution Thumbnail Container */}
-                    <div className="w-full h-40 sm:h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative mb-3">
+                    <div className="w-full h-40 sm:h-44 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative mb-3">
                       <img
                         src={imageSrc}
                         alt={headline}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                         onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = fallbackImg;
+                          const target = e.currentTarget;
+                          if (target.src !== fallbackImg && !target.src.startsWith('data:image/svg')) {
+                            target.src = fallbackImg;
+                          } else if (!target.src.startsWith('data:image/svg')) {
+                            target.src = svgFallback;
+                          } else {
+                            target.onerror = null;
+                          }
                         }}
                       />
                       <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">

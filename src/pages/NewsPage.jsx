@@ -17,7 +17,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, decodeHtmlEntities } from '../services/newsService';
+import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
 import { useSEO } from '../hooks/useSEO';
 
 export default function NewsPage() {
@@ -164,12 +164,12 @@ export default function NewsPage() {
       {/* Controls & Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 overflow-x-auto scrollbar-none touch-pan-x">
           {categories.map((c) => (
             <button
               key={c.id}
               onClick={() => handleCategoryChange(c.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer touch-manipulation ${
                 selectedCategory === c.id
                   ? 'bg-[#00E676] text-slate-950 shadow-sm'
                   : 'text-slate-600 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-white/5'
@@ -181,7 +181,7 @@ export default function NewsPage() {
         </div>
 
         {/* Search Field */}
-        <div className="relative min-w-[280px]">
+        <div className="relative w-full sm:w-auto sm:min-w-[280px]">
           <Search className="w-4 h-4 text-[#00E676] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
@@ -217,24 +217,31 @@ export default function NewsPage() {
             const summary = decodeHtmlEntities(item.summary);
             const author = decodeHtmlEntities(item.author || item.source);
             const fallbackImg = getCategoryFallbackImage(item.category, idx);
+            const svgFallback = getCategoryFallbackSvg(item.category);
             const imageSrc = item.image || fallbackImg;
 
             return (
               <div
                 key={item.id || idx}
-                className="rounded-3xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-50 dark:hover:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-6 transition-all duration-300 shadow-sm dark:shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
+                className="rounded-3xl bg-white dark:bg-[#0A1726]/80 hover:bg-slate-50 dark:hover:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-5 sm:p-6 transition-all duration-300 shadow-sm dark:shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
               >
                 <div className="space-y-4">
                   {/* Top Thumbnail Image - 100% Guaranteed Image with Fallback */}
-                  <div className="w-full h-44 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative">
+                  <div className="w-full h-44 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 relative">
                     <img 
                       src={imageSrc} 
                       alt={headline} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                       loading="lazy"
                       onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = fallbackImg;
+                        const target = e.currentTarget;
+                        if (target.src !== fallbackImg && !target.src.startsWith('data:image/svg')) {
+                          target.src = fallbackImg;
+                        } else if (!target.src.startsWith('data:image/svg')) {
+                          target.src = svgFallback;
+                        } else {
+                          target.onerror = null;
+                        }
                       }}
                     />
                   </div>
