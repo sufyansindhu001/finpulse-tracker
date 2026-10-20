@@ -69,16 +69,27 @@ export default async function handler(req, res) {
 
     const quotePromises = targetSymbols.map(async (sym) => {
       try {
-        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=2d`;
-        const resp = await fetch(url, {
-          signal: controller.signal,
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'application/json'
-          }
-        });
-        if (!resp.ok) return null;
-        const data = await resp.json();
+        const headers = {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'application/json',
+          'Referer': 'https://finance.yahoo.com'
+        };
+
+        let data = null;
+        for (const host of ['https://query1.finance.yahoo.com', 'https://query2.finance.yahoo.com']) {
+          try {
+            const url = `${host}/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=2d`;
+            const resp = await fetch(url, { signal: controller.signal, headers });
+            if (resp.ok) {
+              const j = await resp.json();
+              if (j?.chart?.result?.[0]?.meta) {
+                data = j;
+                break;
+              }
+            }
+          } catch {}
+        }
+        if (!data) return null;
         const meta = data?.chart?.result?.[0]?.meta;
         if (!meta || typeof meta.regularMarketPrice !== 'number') return null;
 

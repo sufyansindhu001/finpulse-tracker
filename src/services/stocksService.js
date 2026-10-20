@@ -181,3 +181,65 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
   };
 }
 
+const HISTORY_CACHE_PREFIX = 'fgc_stock_hist_';
+const HISTORY_CACHE_TTL_MS = 60 * 1000; // 60 seconds
+const memoryHistoryCache = new Map();
+
+/**
+ * Fetches real-time historical market price action candles and metrics
+ * for any global stock across all countries and timeframes ('1W', '1M', '6M', '1Y').
+ */
+export async function fetchStockHistory(stock, timeframe = '1M', forceFresh = false) {
+  if (!stock || !stock.ticker) {
+    return { success: false, points: [], isLive: false };
+  }
+
+  const country = (stock.country || 'pk').toLowerCase();
+  const ticker = stock.ticker;
+  const tf = (timeframe || '1M').toUpperCase();
+  const cacheKey = `${HISTORY_CACHE_PREFIX}${country}_${ticker}_${tf}`;
+
+  // 1. Fast in-memory client cache
+  if (!forceFresh && memoryHistoryCache.has(cacheKey)) {
+    const cached = memoryHistoryCache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp < HISTORY_CACHE_TTL_MS)) {
+      return cached.data;
+    }
+  }
+
+  // 2. Query /api/stock-history serverless endpoint
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
+
+    const url = `/api/stock-history?symbol=${encodeURIComponent(ticker)}&country=${encodeURIComponent(country)}&timeframe=${encodeURIComponent(tf)}&_t=${Date.now()}`;
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'Accept': 'application/json' }
+    });
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.points) && data.points.length > 0) {
+        memoryHistoryCache.set(cacheKey, {
+          data,
+          timestamp: Date.now()
+        });
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn(`Live historical feed notice for ${ticker}:`, err?.message);
+  }
+
+  return {
+    success: false,
+    symbol: ticker,
+    country,
+    timeframe: tf,
+    points: [],
+    isLive: false
+  };
+}
+
