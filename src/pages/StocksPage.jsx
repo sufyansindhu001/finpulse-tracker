@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { 
   Building2, 
   Info, 
@@ -132,10 +132,26 @@ export default function StocksPage() {
     return list.find(c => c.id === selectedCountry) || list[0] || { id: 'pk', name: 'Pakistan', code: 'PK', symbol: '₨', flag: '🇵🇰', exchange: 'PSX (Karachi)' };
   }, [selectedCountry]);
 
+  const screenerTableRef = useRef(null);
+
   // Handle Filter Change
   const handleChangeFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1);
+  };
+
+  // Handle Direct Sector Selection with Smooth Scroll to Stock Screener Table
+  const handleSectorClick = (sectorName) => {
+    // 1. Immediately set active sector filter state (and reset pagination to Page 1)
+    handleChangeFilter('sector', sectorName);
+
+    // 2. Programmatically scroll viewport directly to #stock-screener-table with sticky header offset
+    setTimeout(() => {
+      const target = screenerTableRef.current || document.getElementById('stock-screener-table');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 60);
   };
 
   const handleResetFilters = () => {
@@ -520,7 +536,30 @@ export default function StocksPage() {
       {/* ========================================================
           MODULE 3 & 5: COUNTRY SELECTOR + MULTI-TAB DATA TABLE
           ======================================================== */}
-      <div className="space-y-4">
+      <div 
+        id="stock-screener-table" 
+        ref={screenerTableRef} 
+        className="space-y-4 scroll-mt-24"
+        style={{ scrollMarginTop: '90px' }}
+      >
+        {/* Active Sector Filter Badge when a sector is selected */}
+        {filters.sector && filters.sector !== 'Any' && (
+          <div className="flex items-center justify-between p-3 px-4 rounded-xl bg-[#00E676]/10 border border-[#00E676]/30 text-xs text-gray-800 dark:text-gray-200 animate-in fade-in duration-200">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse" />
+              <span className="font-medium text-gray-600 dark:text-gray-400">Filtered by Sector:</span>
+              <span className="font-extrabold text-[#00E676] text-sm">{filters.sector}</span>
+              <span className="text-gray-500 font-mono">({filteredStocks.length} matching stocks)</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleChangeFilter('sector', 'Any')}
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 hover:text-red-500 transition-colors border border-gray-200 dark:border-gray-700 cursor-pointer"
+            >
+              Clear Filter
+            </button>
+          </div>
+        )}
         
         {/* Table Controls Top Bar */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2 relative z-30">
@@ -831,33 +870,62 @@ export default function StocksPage() {
       {/* ========================================================
           MODULE 6A: DYNAMIC [SELECTED COUNTRY] SECTORS DIRECTORY
           ======================================================== */}
-      <section className="bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs">
+      <section className="bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs relative z-20 cursor-pointer pointer-events-auto touch-manipulation select-none">
         <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
           <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <span>{activeCountryObj.flag}</span>
             <span>{activeCountryObj.name} Sectors Directory</span>
           </h2>
-          <span className="text-xs font-mono text-gray-500 dark:text-gray-400 font-medium">
-            {dynamicSectors.length} Primary Industry Divisions
-          </span>
+          <div className="flex items-center gap-3">
+            {filters.sector && filters.sector !== 'Any' && (
+              <button
+                type="button"
+                onClick={() => handleSectorClick('Any')}
+                className="relative z-20 cursor-pointer pointer-events-auto touch-manipulation select-none text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-[#00E676] hover:underline"
+              >
+                Clear Sector Filter
+              </button>
+            )}
+            <span className="text-xs font-mono text-gray-500 dark:text-gray-400 font-medium">
+              {dynamicSectors.length} Primary Industry Divisions
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-1">
-          {dynamicSectors.map((sec) => (
-            <button
-              key={sec.name}
-              onClick={() => handleChangeFilter('sector', sec.name)}
-              className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-blue-50/60 dark:bg-[#06111F] dark:hover:bg-white/5 border border-gray-200 dark:border-gray-800 text-left transition-all cursor-pointer group"
-            >
-              <span className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-[#00E676] transition-colors">
-                {sec.name}
-              </span>
-              <span className="text-[11px] font-mono text-gray-500 group-hover:text-blue-500 font-semibold flex items-center gap-0.5">
-                <span>({sec.count})</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </span>
-            </button>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-1 relative z-20 cursor-pointer pointer-events-auto touch-manipulation select-none">
+          {dynamicSectors.map((sec) => {
+            const isSelected = filters.sector === sec.name;
+            return (
+              <button
+                type="button"
+                key={sec.name}
+                onClick={() => handleSectorClick(sec.name)}
+                aria-pressed={isSelected}
+                className={`relative z-20 cursor-pointer pointer-events-auto touch-manipulation select-none flex items-center justify-between p-3.5 rounded-xl border text-left transition-all group ${
+                  isSelected
+                    ? 'bg-[#00E676]/15 border-[#00E676] ring-2 ring-[#00E676]/40 shadow-sm'
+                    : 'bg-gray-50 hover:bg-emerald-50/40 dark:bg-[#06111F] dark:hover:bg-white/5 border-gray-200 dark:border-gray-800 hover:border-[#00E676]/50'
+                }`}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 transition-colors ${
+                    isSelected ? 'bg-[#00E676] ring-2 ring-[#00E676]/30 animate-pulse' : 'bg-gray-300 dark:bg-gray-700 group-hover:bg-[#00E676]'
+                  }`} />
+                  <span className={`text-xs font-bold truncate transition-colors ${
+                    isSelected ? 'text-gray-900 dark:text-[#00E676]' : 'text-gray-800 dark:text-gray-200 group-hover:text-emerald-600 dark:group-hover:text-[#00E676]'
+                  }`}>
+                    {sec.name}
+                  </span>
+                </div>
+                <span className={`text-[11px] font-mono shrink-0 ml-2 font-semibold flex items-center gap-0.5 transition-colors ${
+                  isSelected ? 'text-[#00E676] font-bold' : 'text-gray-500 group-hover:text-emerald-500 dark:group-hover:text-[#00E676]'
+                }`}>
+                  <span>({sec.count})</span>
+                  <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isSelected ? 'translate-x-0.5 text-[#00E676]' : 'group-hover:translate-x-0.5'}`} />
+                </span>
+              </button>
+            );
+          })}
         </div>
       </section>
 
