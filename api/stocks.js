@@ -38,6 +38,12 @@ const TICKER_MAP = {
   ],
   au: [
     'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 'ANZ.AX'
+  ],
+  ae: [
+    'EMAAR.AE', 'ENBD.AE', 'FAB.AE', 'DEWA.AE', 'ALDAR.AE', 'AIRARABIA.AE', 'DIB.AE'
+  ],
+  cn: [
+    '0700.HK', '9988.HK', '1398.HK', '1211.HK', '3690.HK', '0941.HK', '1810.HK'
   ]
 };
 
@@ -77,7 +83,7 @@ export default async function handler(req, res) {
         if (!meta || typeof meta.regularMarketPrice !== 'number') return null;
 
         const rawSym = meta.symbol || sym;
-        const cleanSym = rawSym.replace(/\.(KA|L|SR|NS|T|HK)$/i, '');
+        const cleanSym = rawSym.replace(/\.(KA|L|SR|NS|T|HK|AE|AX|DE|PA|TO)$/i, '');
         const price = Number(meta.regularMarketPrice.toFixed(2));
         const prev = meta.chartPreviousClose || price;
         const change = Number((price - prev).toFixed(2));

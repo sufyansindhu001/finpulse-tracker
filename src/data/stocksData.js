@@ -1653,6 +1653,624 @@ export function getStocksForCountry(countryId) {
     ];
   }
 
+  // United Kingdom - London Stock Exchange (FTSE 100 Flagships)
+  if (countryId === 'uk') {
+    return [
+      {
+        id: 'uk-shel', ticker: 'SHEL', name: 'Shell plc', country: 'uk', exchange: 'London',
+        sector: 'Energy', industry: 'Oil & Gas Integrated', price: 27.80, currency: 'GBP', change24h: 0.35, changePercent: 1.27,
+        marketCap: '£178.50B', marketCapNum: 178.5, peRatio: 11.2, pbRatio: 1.15, dividendYield: 4.1, volume3M: '14.2M', change1Y: '+18.4%',
+        fairValueUpside: '+14.5%', analystUpside: '+16.0%', rsi14: 58.4, piotroski: 8, altmanZ: 3.8, evEbitda: 4.2, equityType: 'Common Stock',
+        low52: 23.40, high52: 29.80, technicalRating: 'Buy',
+        fundamentals: { eps: 2.48, pbRatio: 1.15, roe: '14.2%', debtToEquity: '0.38', revenueGrowth: '+8.4% YoY' },
+        profile: 'Shell plc is a global group of energy and petrochemical companies exploring for crude oil and natural gas worldwide.'
+      },
+      {
+        id: 'uk-azn', ticker: 'AZN', name: 'AstraZeneca PLC', country: 'uk', exchange: 'London',
+        sector: 'Healthcare', industry: 'Pharmaceuticals', price: 118.40, currency: 'GBP', change24h: 1.20, changePercent: 1.02,
+        marketCap: '£182.40B', marketCapNum: 182.4, peRatio: 34.2, pbRatio: 4.8, dividendYield: 2.2, volume3M: '3.8M', change1Y: '+14.2%',
+        fairValueUpside: '+11.0%', analystUpside: '+18.5%', rsi14: 52.8, piotroski: 7, altmanZ: 4.1, evEbitda: 16.8, equityType: 'Common Stock',
+        low52: 97.60, high52: 134.20, technicalRating: 'Buy',
+        fundamentals: { eps: 3.46, pbRatio: 4.8, roe: '18.4%', debtToEquity: '0.72', revenueGrowth: '+18.5% YoY' },
+        profile: 'AstraZeneca is a global, science-led biopharmaceutical business focusing on the discovery and commercialization of prescription medicines.'
+      },
+      {
+        id: 'uk-hsba', ticker: 'HSBA', name: 'HSBC Holdings plc', country: 'uk', exchange: 'London',
+        sector: 'Financials', industry: 'Banking Services', price: 6.95, currency: 'GBP', change24h: 0.08, changePercent: 1.16,
+        marketCap: '£131.20B', marketCapNum: 131.2, peRatio: 7.4, pbRatio: 0.88, dividendYield: 7.1, volume3M: '24.5M', change1Y: '+22.6%',
+        fairValueUpside: '+16.0%', analystUpside: '+14.5%', rsi14: 63.1, piotroski: 8, altmanZ: 2.8, evEbitda: 6.4, equityType: 'Common Stock',
+        low52: 5.80, high52: 7.25, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 0.94, pbRatio: 0.88, roe: '14.8%', debtToEquity: '1.40', revenueGrowth: '+9.4% YoY' },
+        profile: 'HSBC Holdings plc is an institutional banking and financial services organization serving customers worldwide through four global businesses.'
+      },
+      {
+        id: 'uk-ulvr', ticker: 'ULVR', name: 'Unilever PLC', country: 'uk', exchange: 'London',
+        sector: 'Consumer Non-Cyclicals', industry: 'Household & Personal Products', price: 47.60, currency: 'GBP', change24h: -0.25, changePercent: -0.52,
+        marketCap: '£118.90B', marketCapNum: 118.9, peRatio: 21.8, pbRatio: 6.2, dividendYield: 3.6, volume3M: '4.2M', change1Y: '+24.8%',
+        fairValueUpside: '+8.5%', analystUpside: '+10.2%', rsi14: 55.4, piotroski: 7, altmanZ: 5.2, evEbitda: 14.1, equityType: 'Common Stock',
+        low52: 36.80, high52: 50.40, technicalRating: 'Buy',
+        fundamentals: { eps: 2.18, pbRatio: 6.2, roe: '29.4%', debtToEquity: '1.25', revenueGrowth: '+5.8% YoY' },
+        profile: 'Unilever is a British multinational consumer goods company producing food, condiments, ice cream, cleaning agents, and personal care products.'
+      },
+      {
+        id: 'uk-bp', ticker: 'BP', name: 'BP p.l.c.', country: 'uk', exchange: 'London',
+        sector: 'Energy', industry: 'Oil & Gas Integrated', price: 4.15, currency: 'GBP', change24h: 0.04, changePercent: 0.97,
+        marketCap: '£68.40B', marketCapNum: 68.4, peRatio: 8.6, pbRatio: 0.95, dividendYield: 5.4, volume3M: '31.2M', change1Y: '-8.5%',
+        fairValueUpside: '+22.0%', analystUpside: '+20.5%', rsi14: 48.2, piotroski: 7, altmanZ: 3.1, evEbitda: 3.8, equityType: 'Common Stock',
+        low52: 3.85, high52: 5.40, technicalRating: 'Neutral',
+        fundamentals: { eps: 0.48, pbRatio: 0.95, roe: '11.5%', debtToEquity: '0.52', revenueGrowth: '-2.1% YoY' },
+        profile: 'BP p.l.c. delivers energy products and services to customers around the world, transitioning toward integrated energy and low-carbon solutions.'
+      },
+      {
+        id: 'uk-gsk', ticker: 'GSK', name: 'GSK plc', country: 'uk', exchange: 'London',
+        sector: 'Healthcare', industry: 'Pharmaceuticals', price: 14.80, currency: 'GBP', change24h: 0.15, changePercent: 1.02,
+        marketCap: '£61.50B', marketCapNum: 61.5, peRatio: 12.8, pbRatio: 4.1, dividendYield: 3.9, volume3M: '7.8M', change1Y: '-2.4%',
+        fairValueUpside: '+19.0%', analystUpside: '+17.4%', rsi14: 51.6, piotroski: 7, altmanZ: 4.4, evEbitda: 8.8, equityType: 'Common Stock',
+        low52: 13.60, high52: 18.20, technicalRating: 'Buy',
+        fundamentals: { eps: 1.15, pbRatio: 4.1, roe: '32.1%', debtToEquity: '0.88', revenueGrowth: '+7.2% YoY' },
+        profile: 'GSK plc researches, develops, and manufactures innovative vaccines and specialty medicines to prevent and treat disease.'
+      },
+      {
+        id: 'uk-rio', ticker: 'RIO', name: 'Rio Tinto plc', country: 'uk', exchange: 'London',
+        sector: 'Basic Materials', industry: 'Diversified Metals & Mining', price: 49.80, currency: 'GBP', change24h: 0.85, changePercent: 1.74,
+        marketCap: '£62.40B', marketCapNum: 62.4, peRatio: 10.4, pbRatio: 1.7, dividendYield: 6.8, volume3M: '3.1M', change1Y: '-6.8%',
+        fairValueUpside: '+18.5%', analystUpside: '+15.2%', rsi14: 57.2, piotroski: 8, altmanZ: 4.8, evEbitda: 5.2, equityType: 'Common Stock',
+        low52: 44.50, high52: 58.20, technicalRating: 'Buy',
+        fundamentals: { eps: 4.78, pbRatio: 1.7, roe: '16.8%', debtToEquity: '0.28', revenueGrowth: '+4.5% YoY' },
+        profile: 'Rio Tinto is an Anglo-Australian multinational corporation and the world’s second-largest metals and mining corporation.'
+      },
+      {
+        id: 'uk-rel', ticker: 'REL', name: 'RELX PLC', country: 'uk', exchange: 'London',
+        sector: 'Technology', industry: 'Information & Analytics', price: 36.20, currency: 'GBP', change24h: 0.40, changePercent: 1.12,
+        marketCap: '£68.10B', marketCapNum: 68.1, peRatio: 32.5, pbRatio: 18.2, dividendYield: 1.7, volume3M: '2.4M', change1Y: '+34.5%',
+        fairValueUpside: '+10.2%', analystUpside: '+12.5%', rsi14: 64.8, piotroski: 8, altmanZ: 7.2, evEbitda: 18.4, equityType: 'Common Stock',
+        low52: 28.50, high52: 37.80, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 1.11, pbRatio: 18.2, roe: '58.4%', debtToEquity: '1.65', revenueGrowth: '+8.8% YoY' },
+        profile: 'RELX is a global provider of information-based analytics and decision tools for professional and business customers.'
+      }
+    ];
+  }
+
+  // Saudi Arabia - Riyadh Tadawul (TASI Premier Flagships)
+  if (countryId === 'sa') {
+    return [
+      {
+        id: 'sa-2222', ticker: '2222', name: 'Saudi Aramco', country: 'sa', exchange: 'Tadawul',
+        sector: 'Energy', industry: 'Oil & Gas Upstream & Refining', price: 25.80, currency: 'SAR', change24h: 0.20, changePercent: 0.78,
+        marketCap: 'SR 6.24T', marketCapNum: 6240, peRatio: 14.5, pbRatio: 3.4, dividendYield: 6.8, volume3M: '28.4M', change1Y: '-14.2%',
+        fairValueUpside: '+18.5%', analystUpside: '+16.0%', rsi14: 51.4, piotroski: 8, altmanZ: 7.8, evEbitda: 7.2, equityType: 'Common Stock',
+        low52: 25.20, high52: 33.80, technicalRating: 'Buy',
+        fundamentals: { eps: 1.78, pbRatio: 3.4, roe: '24.2%', debtToEquity: '0.14', revenueGrowth: '-4.8% YoY' },
+        profile: 'Saudi Aramco is the national oil company of Saudi Arabia and the world’s most profitable integrated hydrocarbon enterprise.'
+      },
+      {
+        id: 'sa-1120', ticker: '1120', name: 'Al Rajhi Bank', country: 'sa', exchange: 'Tadawul',
+        sector: 'Financials', industry: 'Islamic Commercial Banking', price: 86.40, currency: 'SAR', change24h: 1.10, changePercent: 1.29,
+        marketCap: 'SR 345.60B', marketCapNum: 345.6, peRatio: 18.2, pbRatio: 3.2, dividendYield: 3.1, volume3M: '5.4M', change1Y: '+18.4%',
+        fairValueUpside: '+12.0%', analystUpside: '+14.5%', rsi14: 62.5, piotroski: 8, altmanZ: 3.8, evEbitda: 14.5, equityType: 'Common Stock',
+        low52: 68.50, high52: 92.40, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 4.75, pbRatio: 3.2, roe: '19.8%', debtToEquity: '0.45', revenueGrowth: '+12.4% YoY' },
+        profile: 'Al Rajhi Bank is the world’s largest Islamic bank by capital and assets, deeply entrenched in retail and institutional finance across the Gulf.'
+      },
+      {
+        id: 'sa-2010', ticker: '2010', name: 'SABIC (Saudi Basic Industries Corp)', country: 'sa', exchange: 'Tadawul',
+        sector: 'Basic Materials', industry: 'Diversified Chemicals', price: 74.20, currency: 'SAR', change24h: 0.60, changePercent: 0.82,
+        marketCap: 'SR 222.60B', marketCapNum: 222.6, peRatio: 24.1, pbRatio: 1.3, dividendYield: 4.5, volume3M: '3.8M', change1Y: '-8.2%',
+        fairValueUpside: '+21.4%', analystUpside: '+18.0%', rsi14: 48.9, piotroski: 7, altmanZ: 4.2, evEbitda: 8.4, equityType: 'Common Stock',
+        low52: 68.20, high52: 86.50, technicalRating: 'Buy',
+        fundamentals: { eps: 3.08, pbRatio: 1.3, roe: '5.8%', debtToEquity: '0.35', revenueGrowth: '+6.2% YoY' },
+        profile: 'SABIC is a global leader in diversified chemicals, manufacturing polymers, agri-nutrients, and performance materials.'
+      },
+      {
+        id: 'sa-1180', ticker: '1180', name: 'Saudi National Bank (SNB)', country: 'sa', exchange: 'Tadawul',
+        sector: 'Financials', industry: 'Commercial Banking', price: 35.80, currency: 'SAR', change24h: 0.40, changePercent: 1.13,
+        marketCap: 'SR 214.80B', marketCapNum: 214.8, peRatio: 10.8, pbRatio: 1.25, dividendYield: 4.2, volume3M: '7.2M', change1Y: '+8.5%',
+        fairValueUpside: '+15.2%', analystUpside: '+16.5%', rsi14: 56.4, piotroski: 8, altmanZ: 3.1, evEbitda: 8.8, equityType: 'Common Stock',
+        low52: 31.40, high52: 41.20, technicalRating: 'Buy',
+        fundamentals: { eps: 3.31, pbRatio: 1.25, roe: '12.4%', debtToEquity: '1.20', revenueGrowth: '+8.1% YoY' },
+        profile: 'Saudi National Bank is the kingdom’s largest financial institution by total balance sheet assets, created via the merger of NCB and Samba.'
+      },
+      {
+        id: 'sa-7010', ticker: '7010', name: 'stc Group', country: 'sa', exchange: 'Tadawul',
+        sector: 'Technology', industry: 'Telecommunications & Digital Services', price: 41.50, currency: 'SAR', change24h: 0.30, changePercent: 0.73,
+        marketCap: 'SR 207.50B', marketCapNum: 207.5, peRatio: 15.6, pbRatio: 2.8, dividendYield: 4.8, volume3M: '4.8M', change1Y: '+12.4%',
+        fairValueUpside: '+14.0%', analystUpside: '+15.0%', rsi14: 57.8, piotroski: 8, altmanZ: 6.2, evEbitda: 8.1, equityType: 'Common Stock',
+        low52: 36.20, high52: 44.80, technicalRating: 'Buy',
+        fundamentals: { eps: 2.66, pbRatio: 2.8, roe: '18.5%', debtToEquity: '0.42', revenueGrowth: '+6.5% YoY' },
+        profile: 'stc Group is an engine of digital transformation across the Middle East, offering mobile, cloud computing, cybersecurity, and fintech.'
+      },
+      {
+        id: 'sa-2020', ticker: '2020', name: 'SABIC Agri-Nutrients', country: 'sa', exchange: 'Tadawul',
+        sector: 'Basic Materials', industry: 'Agricultural Fertilizers', price: 116.80, currency: 'SAR', change24h: 1.20, changePercent: 1.04,
+        marketCap: 'SR 55.60B', marketCapNum: 55.6, peRatio: 16.2, pbRatio: 3.1, dividendYield: 5.2, volume3M: '1.2M', change1Y: '-11.2%',
+        fairValueUpside: '+18.0%', analystUpside: '+16.8%', rsi14: 49.5, piotroski: 7, altmanZ: 8.4, evEbitda: 10.4, equityType: 'Common Stock',
+        low52: 108.00, high52: 142.00, technicalRating: 'Buy',
+        fundamentals: { eps: 7.21, pbRatio: 3.1, roe: '21.5%', debtToEquity: '0.08', revenueGrowth: '+5.4% YoY' },
+        profile: 'SABIC Agri-Nutrients produces and markets urea, ammonia, and specialty fertilizers supplying global agricultural supply chains.'
+      },
+      {
+        id: 'sa-1010', ticker: '1010', name: 'Riyad Bank', country: 'sa', exchange: 'Tadawul',
+        sector: 'Financials', industry: 'Banking Services', price: 26.40, currency: 'SAR', change24h: 0.35, changePercent: 1.34,
+        marketCap: 'SR 79.20B', marketCapNum: 79.2, peRatio: 9.4, pbRatio: 1.15, dividendYield: 5.4, volume3M: '3.4M', change1Y: '-4.5%',
+        fairValueUpside: '+19.2%', analystUpside: '+17.0%', rsi14: 55.1, piotroski: 8, altmanZ: 2.9, evEbitda: 7.8, equityType: 'Common Stock',
+        low52: 24.10, high52: 31.80, technicalRating: 'Buy',
+        fundamentals: { eps: 2.81, pbRatio: 1.15, roe: '13.2%', debtToEquity: '1.10', revenueGrowth: '+7.4% YoY' },
+        profile: 'Riyad Bank is one of the premier financial institutions in Saudi Arabia, providing corporate, retail, and investment banking.'
+      }
+    ];
+  }
+
+  // United Arab Emirates - Dubai (DFM) & Abu Dhabi (ADX) Blue Chips
+  if (countryId === 'ae') {
+    return [
+      {
+        id: 'ae-emaar', ticker: 'EMAAR', name: 'Emaar Properties PJSC', country: 'ae', exchange: 'Dubai',
+        sector: 'Real Estate', industry: 'Real Estate Development & Hospitality', price: 11.50, currency: 'AED', change24h: 0.20, changePercent: 1.77,
+        marketCap: 'AED 98.40B', marketCapNum: 98.4, peRatio: 7.8, pbRatio: 1.2, dividendYield: 5.8, volume3M: '18.4M', change1Y: '+48.5%',
+        fairValueUpside: '+16.5%', analystUpside: '+18.0%', rsi14: 64.2, piotroski: 8, altmanZ: 4.8, evEbitda: 6.8, equityType: 'Common Stock',
+        low52: 7.20, high52: 12.10, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 1.47, pbRatio: 1.2, roe: '16.4%', debtToEquity: '0.24', revenueGrowth: '+28.4% YoY' },
+        profile: 'Emaar Properties is a master developer of iconic lifestyle communities including Downtown Dubai, Burj Khalifa, and Dubai Mall.'
+      },
+      {
+        id: 'ae-enbd', ticker: 'ENBD', name: 'Emirates NBD Bank PJSC', country: 'ae', exchange: 'Dubai',
+        sector: 'Financials', industry: 'Banking Services', price: 19.85, currency: 'AED', change24h: 0.35, changePercent: 1.79,
+        marketCap: 'AED 125.40B', marketCapNum: 125.4, peRatio: 5.2, pbRatio: 0.95, dividendYield: 6.2, volume3M: '6.4M', change1Y: '+24.2%',
+        fairValueUpside: '+22.0%', analystUpside: '+20.5%', rsi14: 61.8, piotroski: 9, altmanZ: 3.4, evEbitda: 4.5, equityType: 'Common Stock',
+        low52: 15.60, high52: 21.20, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 3.82, pbRatio: 0.95, roe: '19.8%', debtToEquity: '0.85', revenueGrowth: '+16.8% YoY' },
+        profile: 'Emirates NBD is the leading banking conglomerate in the MENAT region with extensive retail, corporate, and private banking arms.'
+      },
+      {
+        id: 'ae-fab', ticker: 'FAB', name: 'First Abu Dhabi Bank PJSC', country: 'ae', exchange: 'Abu Dhabi',
+        sector: 'Financials', industry: 'Banking Services', price: 13.40, currency: 'AED', change24h: 0.15, changePercent: 1.13,
+        marketCap: 'AED 148.20B', marketCapNum: 148.2, peRatio: 8.6, pbRatio: 1.1, dividendYield: 5.1, volume3M: '8.2M', change1Y: '+6.4%',
+        fairValueUpside: '+14.5%', analystUpside: '+15.2%', rsi14: 56.4, piotroski: 8, altmanZ: 3.2, evEbitda: 7.2, equityType: 'Common Stock',
+        low52: 12.10, high52: 15.40, technicalRating: 'Buy',
+        fundamentals: { eps: 1.56, pbRatio: 1.1, roe: '13.5%', debtToEquity: '1.15', revenueGrowth: '+8.4% YoY' },
+        profile: 'First Abu Dhabi Bank (FAB) is the largest bank in the UAE, formed by the merger of National Bank of Abu Dhabi and First Gulf Bank.'
+      },
+      {
+        id: 'ae-dewa', ticker: 'DEWA', name: 'Dubai Electricity and Water Authority', country: 'ae', exchange: 'Dubai',
+        sector: 'Utilities', industry: 'Electric & Water Utilities', price: 2.45, currency: 'AED', change24h: 0.02, changePercent: 0.82,
+        marketCap: 'AED 122.50B', marketCapNum: 122.5, peRatio: 16.4, pbRatio: 1.45, dividendYield: 6.5, volume3M: '14.8M', change1Y: '+4.2%',
+        fairValueUpside: '+12.0%', analystUpside: '+14.0%', rsi14: 53.8, piotroski: 8, altmanZ: 4.1, evEbitda: 8.4, equityType: 'Common Stock',
+        low52: 2.30, high52: 2.68, technicalRating: 'Buy',
+        fundamentals: { eps: 0.15, pbRatio: 1.45, roe: '9.2%', debtToEquity: '0.45', revenueGrowth: '+6.8% YoY' },
+        profile: 'DEWA is the exclusive electricity and water provider to Dubai’s 3.5 million residents and sovereign businesses.'
+      },
+      {
+        id: 'ae-aldar', ticker: 'ALDAR', name: 'Aldar Properties PJSC', country: 'ae', exchange: 'Abu Dhabi',
+        sector: 'Real Estate', industry: 'Real Estate Development', price: 7.60, currency: 'AED', change24h: 0.12, changePercent: 1.60,
+        marketCap: 'AED 59.80B', marketCapNum: 59.8, peRatio: 11.2, pbRatio: 1.5, dividendYield: 4.2, volume3M: '9.5M', change1Y: '+42.1%',
+        fairValueUpside: '+15.4%', analystUpside: '+16.8%', rsi14: 63.4, piotroski: 8, altmanZ: 5.4, evEbitda: 9.8, equityType: 'Common Stock',
+        low52: 5.10, high52: 8.10, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 0.68, pbRatio: 1.5, roe: '14.5%', debtToEquity: '0.32', revenueGrowth: '+34.2% YoY' },
+        profile: 'Aldar Properties is the leading real estate developer, investor, and manager in Abu Dhabi developing premier commercial and residential masterplans.'
+      },
+      {
+        id: 'ae-airarabia', ticker: 'AIRARABIA', name: 'Air Arabia PJSC', country: 'ae', exchange: 'Dubai',
+        sector: 'Industrials', industry: 'Aviation & Budget Airlines', price: 2.85, currency: 'AED', change24h: 0.04, changePercent: 1.42,
+        marketCap: 'AED 13.30B', marketCapNum: 13.3, peRatio: 8.4, pbRatio: 1.3, dividendYield: 5.5, volume3M: '5.2M', change1Y: '+18.5%',
+        fairValueUpside: '+19.5%', analystUpside: '+18.0%', rsi14: 58.9, piotroski: 8, altmanZ: 5.8, evEbitda: 5.4, equityType: 'Common Stock',
+        low52: 2.35, high52: 3.12, technicalRating: 'Buy',
+        fundamentals: { eps: 0.34, pbRatio: 1.3, roe: '16.8%', debtToEquity: '0.18', revenueGrowth: '+14.5% YoY' },
+        profile: 'Air Arabia is the first and largest low-cost carrier in the Middle East and North Africa, operating hubs across UAE, Morocco, and Egypt.'
+      },
+      {
+        id: 'ae-dib', ticker: 'DIB', name: 'Dubai Islamic Bank PJSC', country: 'ae', exchange: 'Dubai',
+        sector: 'Financials', industry: 'Islamic Commercial Banking', price: 6.20, currency: 'AED', change24h: 0.08, changePercent: 1.31,
+        marketCap: 'AED 44.80B', marketCapNum: 44.8, peRatio: 6.8, pbRatio: 1.05, dividendYield: 6.8, volume3M: '8.4M', change1Y: '+14.2%',
+        fairValueUpside: '+18.2%', analystUpside: '+16.5%', rsi14: 59.4, piotroski: 8, altmanZ: 3.1, evEbitda: 5.8, equityType: 'Common Stock',
+        low52: 5.25, high52: 6.65, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 0.91, pbRatio: 1.05, roe: '16.2%', debtToEquity: '0.62', revenueGrowth: '+12.1% YoY' },
+        profile: 'Dubai Islamic Bank is the world’s pioneer of modern Islamic banking, offering Sharia-compliant retail and corporate banking services.'
+      }
+    ];
+  }
+
+  // India - Mumbai (NSE / NIFTY 50 Flagships)
+  if (countryId === 'in') {
+    return [
+      {
+        id: 'in-reliance', ticker: 'RELIANCE', name: 'Reliance Industries Limited', country: 'in', exchange: 'NSE',
+        sector: 'Energy', industry: 'Oil to Chemicals & Digital Telecom', price: 2840.00, currency: 'INR', change24h: 24.50, changePercent: 0.87,
+        marketCap: '₹19.20T', marketCapNum: 19200, peRatio: 26.4, pbRatio: 2.4, dividendYield: 0.4, volume3M: '6.4M', change1Y: '+24.5%',
+        fairValueUpside: '+14.0%', analystUpside: '+18.0%', rsi14: 56.4, piotroski: 8, altmanZ: 4.8, evEbitda: 12.8, equityType: 'Common Stock',
+        low52: 2220.00, high52: 3217.00, technicalRating: 'Buy',
+        fundamentals: { eps: 107.50, pbRatio: 2.4, roe: '9.8%', debtToEquity: '0.45', revenueGrowth: '+11.2% YoY' },
+        profile: 'Reliance Industries is India’s largest private sector conglomerate spanning petrochemicals, telecom (Jio), and nationwide retail.'
+      },
+      {
+        id: 'in-tcs', ticker: 'TCS', name: 'Tata Consultancy Services', country: 'in', exchange: 'NSE',
+        sector: 'Technology', industry: 'IT Services & Consulting', price: 4120.00, currency: 'INR', change24h: 35.00, changePercent: 0.86,
+        marketCap: '₹14.90T', marketCapNum: 14900, peRatio: 31.8, pbRatio: 14.2, dividendYield: 1.4, volume3M: '2.4M', change1Y: '+18.4%',
+        fairValueUpside: '+10.5%', analystUpside: '+12.4%', rsi14: 54.8, piotroski: 9, altmanZ: 18.5, evEbitda: 21.4, equityType: 'Common Stock',
+        low52: 3310.00, high52: 4585.00, technicalRating: 'Buy',
+        fundamentals: { eps: 129.50, pbRatio: 14.2, roe: '51.2%', debtToEquity: '0.00', revenueGrowth: '+7.4% YoY' },
+        profile: 'Tata Consultancy Services is an IT services, consulting, and business solutions organization partnered with global enterprises for 50+ years.'
+      },
+      {
+        id: 'in-hdfcbank', ticker: 'HDFCBANK', name: 'HDFC Bank Limited', country: 'in', exchange: 'NSE',
+        sector: 'Financials', industry: 'Private Banking', price: 1680.00, currency: 'INR', change24h: 18.40, changePercent: 1.11,
+        marketCap: '₹12.80T', marketCapNum: 12800, peRatio: 18.9, pbRatio: 2.8, dividendYield: 1.2, volume3M: '14.2M', change1Y: '+9.4%',
+        fairValueUpside: '+18.2%', analystUpside: '+20.5%', rsi14: 61.2, piotroski: 8, altmanZ: 3.2, evEbitda: 14.1, equityType: 'Common Stock',
+        low52: 1363.00, high52: 1794.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 88.90, pbRatio: 2.8, roe: '16.8%', debtToEquity: '1.45', revenueGrowth: '+26.8% YoY' },
+        profile: 'HDFC Bank is India’s largest private sector bank by balance sheet assets, providing comprehensive consumer and institutional financial services.'
+      },
+      {
+        id: 'in-infy', ticker: 'INFY', name: 'Infosys Limited', country: 'in', exchange: 'NSE',
+        sector: 'Technology', industry: 'IT Services & Cloud Consulting', price: 1920.00, currency: 'INR', change24h: 16.50, changePercent: 0.87,
+        marketCap: '₹7.98T', marketCapNum: 7980, peRatio: 28.5, pbRatio: 8.4, dividendYield: 2.1, volume3M: '6.8M', change1Y: '+32.4%',
+        fairValueUpside: '+12.5%', analystUpside: '+14.0%', rsi14: 59.8, piotroski: 8, altmanZ: 14.2, evEbitda: 18.6, equityType: 'Common Stock',
+        low52: 1358.00, high52: 1990.00, technicalRating: 'Buy',
+        fundamentals: { eps: 67.40, pbRatio: 8.4, roe: '32.4%', debtToEquity: '0.08', revenueGrowth: '+8.2% YoY' },
+        profile: 'Infosys is a global leader in next-generation digital services and consulting, enabling clients across 56 countries to steer digital transformations.'
+      },
+      {
+        id: 'in-icicibank', ticker: 'ICICIBANK', name: 'ICICI Bank Limited', country: 'in', exchange: 'NSE',
+        sector: 'Financials', industry: 'Private Banking', price: 1240.00, currency: 'INR', change24h: 12.80, changePercent: 1.04,
+        marketCap: '₹8.72T', marketCapNum: 8720, peRatio: 17.4, pbRatio: 3.1, dividendYield: 0.9, volume3M: '11.5M', change1Y: '+31.8%',
+        fairValueUpside: '+16.5%', analystUpside: '+18.2%', rsi14: 63.5, piotroski: 9, altmanZ: 3.6, evEbitda: 12.5, equityType: 'Common Stock',
+        low52: 915.00, high52: 1300.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 71.20, pbRatio: 3.1, roe: '18.9%', debtToEquity: '0.95', revenueGrowth: '+18.4% YoY' },
+        profile: 'ICICI Bank is a leading private sector bank in India, offering retail and corporate banking products alongside venture capital and insurance.'
+      },
+      {
+        id: 'in-sbin', ticker: 'SBIN', name: 'State Bank of India', country: 'in', exchange: 'NSE',
+        sector: 'Financials', industry: 'Public Sector Commercial Banking', price: 820.00, currency: 'INR', change24h: 8.50, changePercent: 1.05,
+        marketCap: '₹7.31T', marketCapNum: 7310, peRatio: 10.5, pbRatio: 1.6, dividendYield: 1.8, volume3M: '18.4M', change1Y: '+41.2%',
+        fairValueUpside: '+19.0%', analystUpside: '+18.5%', rsi14: 58.2, piotroski: 8, altmanZ: 2.4, evEbitda: 8.4, equityType: 'Common Stock',
+        low52: 555.00, high52: 912.00, technicalRating: 'Buy',
+        fundamentals: { eps: 78.10, pbRatio: 1.6, roe: '17.4%', debtToEquity: '1.25', revenueGrowth: '+14.2% YoY' },
+        profile: 'State Bank of India is a Fortune 500 public sector banking institution commanding over a quarter of India’s commercial lending market.'
+      },
+      {
+        id: 'in-bhartiartl', ticker: 'BHARTIARTL', name: 'Bharti Airtel Limited', country: 'in', exchange: 'NSE',
+        sector: 'Telecommunication', industry: 'Telecom & Digital Services', price: 1680.00, currency: 'INR', change24h: 15.20, changePercent: 0.91,
+        marketCap: '₹9.54T', marketCapNum: 9540, peRatio: 54.2, pbRatio: 8.2, dividendYield: 0.6, volume3M: '5.2M', change1Y: '+78.5%',
+        fairValueUpside: '+12.4%', analystUpside: '+15.2%', rsi14: 67.2, piotroski: 8, altmanZ: 4.8, evEbitda: 14.8, equityType: 'Common Stock',
+        low52: 912.00, high52: 1780.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 31.00, pbRatio: 8.2, roe: '18.2%', debtToEquity: '1.35', revenueGrowth: '+12.8% YoY' },
+        profile: 'Bharti Airtel is a global communications solutions provider with over 500 million customers across South Asia and Africa.'
+      }
+    ];
+  }
+
+  // Japan - Tokyo (TSE / Nikkei 225 Flagships)
+  if (countryId === 'jp') {
+    return [
+      {
+        id: 'jp-7203', ticker: '7203', name: 'Toyota Motor Corporation', country: 'jp', exchange: 'Tokyo',
+        sector: 'Consumer Cyclicals', industry: 'Automotive Manufacturing', price: 2740.00, currency: 'JPY', change24h: 32.00, changePercent: 1.18,
+        marketCap: '¥37.50T', marketCapNum: 37500, peRatio: 8.2, pbRatio: 1.05, dividendYield: 3.1, volume3M: '24.5M', change1Y: '+8.4%',
+        fairValueUpside: '+18.4%', analystUpside: '+16.5%', rsi14: 54.8, piotroski: 8, altmanZ: 3.8, evEbitda: 5.4, equityType: 'Common Stock',
+        low52: 2420.00, high52: 3870.00, technicalRating: 'Buy',
+        fundamentals: { eps: 334.00, pbRatio: 1.05, roe: '14.2%', debtToEquity: '0.62', revenueGrowth: '+12.5% YoY' },
+        profile: 'Toyota Motor Corporation is the world’s leading automobile manufacturer by vehicle volume, pioneering hybrid and hydrogen propulsion.'
+      },
+      {
+        id: 'jp-6758', ticker: '6758', name: 'Sony Group Corporation', country: 'jp', exchange: 'Tokyo',
+        sector: 'Technology', industry: 'Entertainment & Gaming', price: 2890.00, currency: 'JPY', change24h: 42.00, changePercent: 1.47,
+        marketCap: '¥17.80T', marketCapNum: 17800, peRatio: 18.4, pbRatio: 2.4, dividendYield: 1.2, volume3M: '8.4M', change1Y: '+16.5%',
+        fairValueUpside: '+14.5%', analystUpside: '+18.0%', rsi14: 61.2, piotroski: 8, altmanZ: 5.2, evEbitda: 11.2, equityType: 'Common Stock',
+        low52: 2310.00, high52: 3150.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 157.00, pbRatio: 2.4, roe: '13.8%', debtToEquity: '0.38', revenueGrowth: '+9.4% YoY' },
+        profile: 'Sony Group is a creative entertainment company with a solid foundation of technology spanning PlayStation, music, pictures, and image sensors.'
+      },
+      {
+        id: 'jp-9984', ticker: '9984', name: 'SoftBank Group Corp.', country: 'jp', exchange: 'Tokyo',
+        sector: 'Financials', industry: 'Venture Capital & AI Investments', price: 8950.00, currency: 'JPY', change24h: 110.00, changePercent: 1.24,
+        marketCap: '¥13.20T', marketCapNum: 13200, peRatio: 16.8, pbRatio: 1.1, dividendYield: 0.6, volume3M: '9.2M', change1Y: '+42.1%',
+        fairValueUpside: '+20.5%', analystUpside: '+22.0%', rsi14: 58.4, piotroski: 7, altmanZ: 2.8, evEbitda: 9.8, equityType: 'Common Stock',
+        low52: 5620.00, high52: 11800.00, technicalRating: 'Buy',
+        fundamentals: { eps: 532.00, pbRatio: 1.1, roe: '8.4%', debtToEquity: '1.20', revenueGrowth: '+14.8% YoY' },
+        profile: 'SoftBank Group is a multinational investment holding company focused on artificial intelligence, robotics, and semiconductor IP via Arm.'
+      },
+      {
+        id: 'jp-6861', ticker: '6861', name: 'Keyence Corporation', country: 'jp', exchange: 'Tokyo',
+        sector: 'Technology', industry: 'Factory Automation & Sensors', price: 66800.00, currency: 'JPY', change24h: 400.00, changePercent: 0.60,
+        marketCap: '¥16.20T', marketCapNum: 16200, peRatio: 42.5, pbRatio: 6.8, dividendYield: 0.6, volume3M: '0.8M', change1Y: '+6.2%',
+        fairValueUpside: '+12.0%', analystUpside: '+14.5%', rsi14: 52.8, piotroski: 9, altmanZ: 22.4, evEbitda: 28.5, equityType: 'Common Stock',
+        low52: 58900.00, high52: 74200.00, technicalRating: 'Buy',
+        fundamentals: { eps: 1570.00, pbRatio: 6.8, roe: '16.8%', debtToEquity: '0.00', revenueGrowth: '+8.1% YoY' },
+        profile: 'Keyence is a direct-sales powerhouse developing automation sensors, machine vision systems, barcode readers, and digital microscopes.'
+      },
+      {
+        id: 'jp-8306', ticker: '8306', name: 'Mitsubishi UFJ Financial Group', country: 'jp', exchange: 'Tokyo',
+        sector: 'Financials', industry: 'Commercial Banking', price: 1540.00, currency: 'JPY', change24h: 18.00, changePercent: 1.18,
+        marketCap: '¥18.40T', marketCapNum: 18400, peRatio: 10.4, pbRatio: 0.85, dividendYield: 3.6, volume3M: '32.4M', change1Y: '+32.4%',
+        fairValueUpside: '+18.0%', analystUpside: '+17.2%', rsi14: 62.4, piotroski: 8, altmanZ: 2.6, evEbitda: 7.4, equityType: 'Common Stock',
+        low52: 1140.00, high52: 1720.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 148.00, pbRatio: 0.85, roe: '8.9%', debtToEquity: '1.45', revenueGrowth: '+12.8% YoY' },
+        profile: 'MUFG is Japan’s largest banking conglomerate and one of the largest financial holding companies in the world.'
+      },
+      {
+        id: 'jp-6501', ticker: '6501', name: 'Hitachi, Ltd.', country: 'jp', exchange: 'Tokyo',
+        sector: 'Industrials', industry: 'Industrial Conglomerate & Green Energy', price: 3980.00, currency: 'JPY', change24h: 45.00, changePercent: 1.14,
+        marketCap: '¥15.10T', marketCapNum: 15100, peRatio: 24.2, pbRatio: 2.8, dividendYield: 1.2, volume3M: '4.8M', change1Y: '+88.4%',
+        fairValueUpside: '+14.2%', analystUpside: '+16.5%', rsi14: 64.8, piotroski: 8, altmanZ: 6.4, evEbitda: 14.2, equityType: 'Common Stock',
+        low52: 2110.00, high52: 4180.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 164.00, pbRatio: 2.8, roe: '12.4%', debtToEquity: '0.48', revenueGrowth: '+16.2% YoY' },
+        profile: 'Hitachi is a global technology conglomerate focusing on Social Innovation business through Digital Systems, Green Energy, and Mobility.'
+      }
+    ];
+  }
+
+  // Germany - Frankfurt (XETRA / DAX 40 Flagships)
+  if (countryId === 'de') {
+    return [
+      {
+        id: 'de-sap', ticker: 'SAP', name: 'SAP SE', country: 'de', exchange: 'XETRA',
+        sector: 'Technology', industry: 'Enterprise Cloud Software', price: 212.50, currency: 'EUR', change24h: 2.80, changePercent: 1.34,
+        marketCap: '€252.00B', marketCapNum: 252, peRatio: 38.5, pbRatio: 5.8, dividendYield: 1.1, volume3M: '2.4M', change1Y: '+64.2%',
+        fairValueUpside: '+12.5%', analystUpside: '+15.0%', rsi14: 66.8, piotroski: 8, altmanZ: 7.4, evEbitda: 22.4, equityType: 'Common Stock',
+        low52: 124.00, high52: 218.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 5.52, pbRatio: 5.8, roe: '15.8%', debtToEquity: '0.24', revenueGrowth: '+10.4% YoY' },
+        profile: 'SAP SE is the market leader in enterprise application software, helping companies of all sizes run at their best via cloud ERP.'
+      },
+      {
+        id: 'de-sie', ticker: 'SIE', name: 'Siemens AG', country: 'de', exchange: 'XETRA',
+        sector: 'Industrials', industry: 'Industrial Automation & Infrastructure', price: 184.20, currency: 'EUR', change24h: 1.60, changePercent: 0.88,
+        marketCap: '€145.60B', marketCapNum: 145.6, peRatio: 16.4, pbRatio: 2.6, dividendYield: 2.8, volume3M: '1.8M', change1Y: '+28.5%',
+        fairValueUpside: '+14.0%', analystUpside: '+16.8%', rsi14: 59.4, piotroski: 8, altmanZ: 4.8, evEbitda: 11.2, equityType: 'Common Stock',
+        low52: 138.00, high52: 192.00, technicalRating: 'Buy',
+        fundamentals: { eps: 11.20, pbRatio: 2.6, roe: '16.5%', debtToEquity: '0.62', revenueGrowth: '+7.8% YoY' },
+        profile: 'Siemens AG is a technology company focused on industry, infrastructure, transport, and healthcare, creating resource-efficient factories.'
+      },
+      {
+        id: 'de-alv', ticker: 'ALV', name: 'Allianz SE', country: 'de', exchange: 'XETRA',
+        sector: 'Financials', industry: 'Multi-line Insurance & Asset Management', price: 298.00, currency: 'EUR', change24h: 2.40, changePercent: 0.81,
+        marketCap: '€116.80B', marketCapNum: 116.8, peRatio: 11.2, pbRatio: 1.7, dividendYield: 4.8, volume3M: '1.2M', change1Y: '+34.2%',
+        fairValueUpside: '+12.4%', analystUpside: '+14.0%', rsi14: 62.5, piotroski: 8, altmanZ: 3.4, evEbitda: 8.4, equityType: 'Common Stock',
+        low52: 218.00, high52: 304.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 26.60, pbRatio: 1.7, roe: '15.4%', debtToEquity: '0.45', revenueGrowth: '+8.2% YoY' },
+        profile: 'Allianz is one of the world’s strongest financial communities in insurance and asset management, serving 125 million institutional clients.'
+      },
+      {
+        id: 'de-dte', ticker: 'DTE', name: 'Deutsche Telekom AG', country: 'de', exchange: 'XETRA',
+        sector: 'Telecommunication', industry: 'Telecommunication Services', price: 27.40, currency: 'EUR', change24h: 0.25, changePercent: 0.92,
+        marketCap: '€136.20B', marketCapNum: 136.2, peRatio: 14.8, pbRatio: 2.4, dividendYield: 3.2, volume3M: '8.4M', change1Y: '+36.8%',
+        fairValueUpside: '+15.2%', analystUpside: '+16.5%', rsi14: 63.8, piotroski: 8, altmanZ: 3.8, evEbitda: 6.8, equityType: 'Common Stock',
+        low52: 19.80, high52: 28.20, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 1.85, pbRatio: 2.4, roe: '16.8%', debtToEquity: '1.45', revenueGrowth: '+6.4% YoY' },
+        profile: 'Deutsche Telekom is one of the world’s leading integrated telecommunications companies, holding a controlling stake in T-Mobile US.'
+      },
+      {
+        id: 'de-air', ticker: 'AIR', name: 'Airbus SE', country: 'de', exchange: 'XETRA',
+        sector: 'Industrials', industry: 'Aerospace & Commercial Aircraft', price: 138.60, currency: 'EUR', change24h: 1.40, changePercent: 1.02,
+        marketCap: '€109.40B', marketCapNum: 109.4, peRatio: 24.5, pbRatio: 6.4, dividendYield: 1.6, volume3M: '1.6M', change1Y: '+8.2%',
+        fairValueUpside: '+18.4%', analystUpside: '+19.5%', rsi14: 54.2, piotroski: 8, altmanZ: 4.8, evEbitda: 14.2, equityType: 'Common Stock',
+        low52: 122.00, high52: 172.00, technicalRating: 'Buy',
+        fundamentals: { eps: 5.65, pbRatio: 6.4, roe: '28.4%', debtToEquity: '0.45', revenueGrowth: '+11.8% YoY' },
+        profile: 'Airbus SE is a European multinational aerospace corporation pioneering sustainable aerospace for a safe and united world.'
+      },
+      {
+        id: 'de-mbg', ticker: 'MBG', name: 'Mercedes-Benz Group AG', country: 'de', exchange: 'XETRA',
+        sector: 'Consumer Cyclicals', industry: 'Automotive', price: 58.20, currency: 'EUR', change24h: -0.40, changePercent: -0.68,
+        marketCap: '€61.80B', marketCapNum: 61.8, peRatio: 5.6, pbRatio: 0.72, dividendYield: 9.1, volume3M: '3.4M', change1Y: '-12.4%',
+        fairValueUpside: '+24.5%', analystUpside: '+20.0%', rsi14: 44.5, piotroski: 7, altmanZ: 3.2, evEbitda: 4.1, equityType: 'Common Stock',
+        low52: 54.80, high52: 77.40, technicalRating: 'Buy',
+        fundamentals: { eps: 10.40, pbRatio: 0.72, roe: '13.5%', debtToEquity: '0.85', revenueGrowth: '-4.2% YoY' },
+        profile: 'Mercedes-Benz Group AG is one of the world’s most successful automotive companies and a leading global supplier of premium cars and vans.'
+      }
+    ];
+  }
+
+  // France - Paris (Euronext Paris / CAC 40 Flagships)
+  if (countryId === 'fr') {
+    return [
+      {
+        id: 'fr-mc', ticker: 'MC', name: 'LVMH Moët Hennessy Louis Vuitton', country: 'fr', exchange: 'Paris',
+        sector: 'Consumer Cyclicals', industry: 'Luxury Goods & Fashion', price: 628.00, currency: 'EUR', change24h: 8.50, changePercent: 1.37,
+        marketCap: '€315.00B', marketCapNum: 315, peRatio: 21.8, pbRatio: 4.8, dividendYield: 2.1, volume3M: '0.6M', change1Y: '-14.8%',
+        fairValueUpside: '+21.5%', analystUpside: '+20.0%', rsi14: 48.2, piotroski: 8, altmanZ: 5.4, evEbitda: 12.4, equityType: 'Common Stock',
+        low52: 582.00, high52: 885.00, technicalRating: 'Buy',
+        fundamentals: { eps: 28.80, pbRatio: 4.8, roe: '24.5%', debtToEquity: '0.42', revenueGrowth: '+4.2% YoY' },
+        profile: 'LVMH is the world leader in luxury, possessing a unique portfolio of over 75 prestigious brands including Louis Vuitton, Christian Dior, and Tiffany.'
+      },
+      {
+        id: 'fr-or', ticker: 'OR', name: "L'Oréal S.A.", country: 'fr', exchange: 'Paris',
+        sector: 'Consumer Non-Cyclicals', industry: 'Personal Care & Beauty', price: 362.00, currency: 'EUR', change24h: 3.20, changePercent: 0.89,
+        marketCap: '€193.50B', marketCapNum: 193.5, peRatio: 28.4, pbRatio: 6.2, dividendYield: 1.8, volume3M: '0.5M', change1Y: '-8.5%',
+        fairValueUpside: '+15.0%', analystUpside: '+16.5%', rsi14: 51.4, piotroski: 8, altmanZ: 7.8, evEbitda: 18.2, equityType: 'Common Stock',
+        low52: 348.00, high52: 458.00, technicalRating: 'Buy',
+        fundamentals: { eps: 12.75, pbRatio: 6.2, roe: '22.4%', debtToEquity: '0.15', revenueGrowth: '+7.1% YoY' },
+        profile: 'L’Oréal is the world’s leading beauty player, dedicated exclusively to the beauty industry with 36 international brands.'
+      },
+      {
+        id: 'fr-tte', ticker: 'TTE', name: 'TotalEnergies SE', country: 'fr', exchange: 'Paris',
+        sector: 'Energy', industry: 'Oil & Gas Integrated & Clean Power', price: 60.40, currency: 'EUR', change24h: 0.70, changePercent: 1.17,
+        marketCap: '€142.80B', marketCapNum: 142.8, peRatio: 7.4, pbRatio: 1.15, dividendYield: 5.2, volume3M: '3.8M', change1Y: '+2.4%',
+        fairValueUpside: '+18.5%', analystUpside: '+17.4%', rsi14: 55.4, piotroski: 8, altmanZ: 3.8, evEbitda: 4.1, equityType: 'Common Stock',
+        low52: 56.40, high52: 70.20, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 8.16, pbRatio: 1.15, roe: '16.8%', debtToEquity: '0.34', revenueGrowth: '+3.8% YoY' },
+        profile: 'TotalEnergies is a global multi-energy company producing oil, biofuels, natural gas, green gases, renewables, and electricity.'
+      },
+      {
+        id: 'fr-rms', ticker: 'RMS', name: 'Hermès International SCA', country: 'fr', exchange: 'Paris',
+        sector: 'Consumer Cyclicals', industry: 'Luxury Goods', price: 2140.00, currency: 'EUR', change24h: 22.00, changePercent: 1.04,
+        marketCap: '€225.60B', marketCapNum: 225.6, peRatio: 48.5, pbRatio: 14.8, dividendYield: 1.2, volume3M: '0.1M', change1Y: '+18.4%',
+        fairValueUpside: '+10.5%', analystUpside: '+12.0%', rsi14: 59.8, piotroski: 9, altmanZ: 14.8, evEbitda: 28.4, equityType: 'Common Stock',
+        low52: 1840.00, high52: 2420.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 44.10, pbRatio: 14.8, roe: '32.5%', debtToEquity: '0.08', revenueGrowth: '+12.8% YoY' },
+        profile: 'Hermès International specializes in the design, manufacturing, and marketing of high-end luxury goods, leather goods, and saddlery.'
+      },
+      {
+        id: 'fr-san', ticker: 'SAN', name: 'Sanofi S.A.', country: 'fr', exchange: 'Paris',
+        sector: 'Healthcare', industry: 'Pharmaceuticals & Vaccines', price: 98.50, currency: 'EUR', change24h: 0.80, changePercent: 0.82,
+        marketCap: '€123.40B', marketCapNum: 123.4, peRatio: 14.2, pbRatio: 1.6, dividendYield: 3.8, volume3M: '2.1M', change1Y: '+14.2%',
+        fairValueUpside: '+16.5%', analystUpside: '+18.0%', rsi14: 56.4, piotroski: 8, altmanZ: 4.5, evEbitda: 9.8, equityType: 'Common Stock',
+        low52: 81.20, high52: 106.80, technicalRating: 'Buy',
+        fundamentals: { eps: 6.94, pbRatio: 1.6, roe: '11.8%', debtToEquity: '0.28', revenueGrowth: '+8.4% YoY' },
+        profile: 'Sanofi is an innovative global healthcare company driven by one purpose: chasing the miracles of science to improve people’s lives.'
+      },
+      {
+        id: 'fr-su', ticker: 'SU', name: 'Schneider Electric SE', country: 'fr', exchange: 'Paris',
+        sector: 'Industrials', industry: 'Energy Management & Automation', price: 242.00, currency: 'EUR', change24h: 3.50, changePercent: 1.47,
+        marketCap: '€137.80B', marketCapNum: 137.8, peRatio: 28.6, pbRatio: 4.2, dividendYield: 1.5, volume3M: '1.2M', change1Y: '+52.4%',
+        fairValueUpside: '+12.0%', analystUpside: '+14.5%', rsi14: 63.8, piotroski: 8, altmanZ: 6.4, evEbitda: 18.2, equityType: 'Common Stock',
+        low52: 154.00, high52: 248.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 8.46, pbRatio: 4.2, roe: '15.4%', debtToEquity: '0.45', revenueGrowth: '+11.4% YoY' },
+        profile: 'Schneider Electric’s purpose is to empower all to make the most of our energy and resources, bridging progress and sustainability.'
+      }
+    ];
+  }
+
+  // Canada - Toronto (TSX Flagships)
+  if (countryId === 'ca') {
+    return [
+      {
+        id: 'ca-ry', ticker: 'RY', name: 'Royal Bank of Canada', country: 'ca', exchange: 'Toronto',
+        sector: 'Financials', industry: 'Commercial Banking & Wealth Management', price: 164.20, currency: 'CAD', change24h: 1.40, changePercent: 0.86,
+        marketCap: 'C$232.00B', marketCapNum: 232, peRatio: 13.8, pbRatio: 2.1, dividendYield: 3.5, volume3M: '3.4M', change1Y: '+38.5%',
+        fairValueUpside: '+12.5%', analystUpside: '+14.0%', rsi14: 64.2, piotroski: 8, altmanZ: 3.4, evEbitda: 11.2, equityType: 'Common Stock',
+        low52: 118.00, high52: 171.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 11.90, pbRatio: 2.1, roe: '15.8%', debtToEquity: '1.15', revenueGrowth: '+12.4% YoY' },
+        profile: 'Royal Bank of Canada is one of Canada’s biggest banks and among the largest in the world based on market capitalization.'
+      },
+      {
+        id: 'ca-td', ticker: 'TD', name: 'Toronto-Dominion Bank', country: 'ca', exchange: 'Toronto',
+        sector: 'Financials', industry: 'Banking Services', price: 82.50, currency: 'CAD', change24h: 0.80, changePercent: 0.98,
+        marketCap: 'C$144.60B', marketCapNum: 144.6, peRatio: 11.2, pbRatio: 1.35, dividendYield: 5.0, volume3M: '6.8M', change1Y: '+2.4%',
+        fairValueUpside: '+18.0%', analystUpside: '+16.5%', rsi14: 54.8, piotroski: 7, altmanZ: 2.8, evEbitda: 8.8, equityType: 'Common Stock',
+        low52: 74.00, high52: 89.50, technicalRating: 'Buy',
+        fundamentals: { eps: 7.36, pbRatio: 1.35, roe: '12.4%', debtToEquity: '1.28', revenueGrowth: '+7.8% YoY' },
+        profile: 'The Toronto-Dominion Bank and its subsidiaries are collectively known as TD Bank Group, operating across Canada and the US.'
+      },
+      {
+        id: 'ca-enb', ticker: 'ENB', name: 'Enbridge Inc.', country: 'ca', exchange: 'Toronto',
+        sector: 'Energy', industry: 'Midstream Oil & Gas Pipelines', price: 54.80, currency: 'CAD', change24h: 0.40, changePercent: 0.74,
+        marketCap: 'C$118.50B', marketCapNum: 118.5, peRatio: 18.4, pbRatio: 1.95, dividendYield: 6.7, volume3M: '8.4M', change1Y: '+24.5%',
+        fairValueUpside: '+14.5%', analystUpside: '+15.0%', rsi14: 61.2, piotroski: 8, altmanZ: 3.6, evEbitda: 11.4, equityType: 'Common Stock',
+        low52: 43.50, high52: 56.40, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 2.98, pbRatio: 1.95, roe: '10.8%', debtToEquity: '1.45', revenueGrowth: '+9.2% YoY' },
+        profile: 'Enbridge is a leader in energy delivery, operating the world’s longest and most sophisticated crude oil and liquids transportation system.'
+      },
+      {
+        id: 'ca-cnr', ticker: 'CNR', name: 'Canadian National Railway', country: 'ca', exchange: 'Toronto',
+        sector: 'Industrials', industry: 'Rail Transportation', price: 152.00, currency: 'CAD', change24h: 1.10, changePercent: 0.73,
+        marketCap: 'C$96.80B', marketCapNum: 96.8, peRatio: 19.5, pbRatio: 4.4, dividendYield: 2.2, volume3M: '1.6M', change1Y: '+4.2%',
+        fairValueUpside: '+16.0%', analystUpside: '+15.5%', rsi14: 52.4, piotroski: 8, altmanZ: 6.8, evEbitda: 12.8, equityType: 'Common Stock',
+        low52: 144.00, high52: 178.00, technicalRating: 'Buy',
+        fundamentals: { eps: 7.80, pbRatio: 4.4, roe: '24.2%', debtToEquity: '0.88', revenueGrowth: '+5.4% YoY' },
+        profile: 'CN is a world-class transportation leader and the only transcontinental railroad connecting the Atlantic, Pacific, and Gulf coasts.'
+      },
+      {
+        id: 'ca-shop', ticker: 'SHOP', name: 'Shopify Inc.', country: 'ca', exchange: 'Toronto',
+        sector: 'Technology', industry: 'E-Commerce Infrastructure', price: 112.40, currency: 'CAD', change24h: 3.80, changePercent: 3.50,
+        marketCap: 'C$145.20B', marketCapNum: 145.2, peRatio: 78.4, pbRatio: 11.5, dividendYield: 0.0, volume3M: '2.8M', change1Y: '+48.5%',
+        fairValueUpside: '+14.0%', analystUpside: '+18.5%', rsi14: 67.4, piotroski: 8, altmanZ: 14.8, evEbitda: 42.1, equityType: 'Common Stock',
+        low52: 66.80, high52: 124.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 1.43, pbRatio: 11.5, roe: '14.8%', debtToEquity: '0.12', revenueGrowth: '+25.4% YoY' },
+        profile: 'Shopify is a leading global commerce platform providing trusted tools to start, scale, market, and run a retail business of any size.'
+      }
+    ];
+  }
+
+  // Australia - Sydney (ASX / ASX 200 Flagships)
+  if (countryId === 'au') {
+    return [
+      {
+        id: 'au-bhp', ticker: 'BHP', name: 'BHP Group Limited', country: 'au', exchange: 'Sydney',
+        sector: 'Basic Materials', industry: 'Diversified Metals & Mining', price: 42.80, currency: 'AUD', change24h: 0.65, changePercent: 1.54,
+        marketCap: 'A$216.50B', marketCapNum: 216.5, peRatio: 11.4, pbRatio: 3.2, dividendYield: 5.4, volume3M: '8.4M', change1Y: '-4.8%',
+        fairValueUpside: '+18.0%', analystUpside: '+16.5%', rsi14: 56.8, piotroski: 8, altmanZ: 5.4, evEbitda: 5.8, equityType: 'Common Stock',
+        low52: 38.50, high52: 48.20, technicalRating: 'Buy',
+        fundamentals: { eps: 3.75, pbRatio: 3.2, roe: '28.4%', debtToEquity: '0.34', revenueGrowth: '+4.2% YoY' },
+        profile: 'BHP Group is a leading global resources company producing iron ore, copper, metallurgical coal, and nickel.'
+      },
+      {
+        id: 'au-cba', ticker: 'CBA', name: 'Commonwealth Bank of Australia', country: 'au', exchange: 'Sydney',
+        sector: 'Financials', industry: 'Commercial Banking', price: 142.50, currency: 'AUD', change24h: 1.80, changePercent: 1.28,
+        marketCap: 'A$238.20B', marketCapNum: 238.2, peRatio: 23.8, pbRatio: 3.1, dividendYield: 3.3, volume3M: '2.4M', change1Y: '+42.5%',
+        fairValueUpside: '+8.0%', analystUpside: '+9.5%', rsi14: 67.2, piotroski: 8, altmanZ: 3.8, evEbitda: 14.8, equityType: 'Common Stock',
+        low52: 98.50, high52: 146.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 5.98, pbRatio: 3.1, roe: '14.2%', debtToEquity: '1.25', revenueGrowth: '+6.8% YoY' },
+        profile: 'Commonwealth Bank is Australia’s leading provider of integrated financial services including retail, business, and institutional banking.'
+      },
+      {
+        id: 'au-csl', ticker: 'CSL', name: 'CSL Limited', country: 'au', exchange: 'Sydney',
+        sector: 'Healthcare', industry: 'Biotechnology & Vaccines', price: 288.00, currency: 'AUD', change24h: 3.20, changePercent: 1.12,
+        marketCap: 'A$139.40B', marketCapNum: 139.4, peRatio: 36.5, pbRatio: 7.8, dividendYield: 1.4, volume3M: '1.1M', change1Y: '+12.4%',
+        fairValueUpside: '+15.4%', analystUpside: '+18.0%', rsi14: 55.4, piotroski: 8, altmanZ: 6.8, evEbitda: 19.5, equityType: 'Common Stock',
+        low52: 242.00, high52: 312.00, technicalRating: 'Buy',
+        fundamentals: { eps: 7.89, pbRatio: 7.8, roe: '18.5%', debtToEquity: '0.62', revenueGrowth: '+11.4% YoY' },
+        profile: 'CSL is a leading global biotechnology company that develops and delivers innovative biotherapies and influenza vaccines.'
+      },
+      {
+        id: 'au-nab', ticker: 'NAB', name: 'National Australia Bank', country: 'au', exchange: 'Sydney',
+        sector: 'Financials', industry: 'Commercial & Business Banking', price: 37.80, currency: 'AUD', change24h: 0.45, changePercent: 1.20,
+        marketCap: 'A$117.80B', marketCapNum: 117.8, peRatio: 16.2, pbRatio: 1.95, dividendYield: 4.4, volume3M: '4.8M', change1Y: '+34.8%',
+        fairValueUpside: '+12.0%', analystUpside: '+13.5%', rsi14: 63.8, piotroski: 8, altmanZ: 3.2, evEbitda: 11.4, equityType: 'Common Stock',
+        low52: 27.80, high52: 39.20, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 2.33, pbRatio: 1.95, roe: '12.8%', debtToEquity: '1.30', revenueGrowth: '+5.8% YoY' },
+        profile: 'National Australia Bank is one of the four largest financial institutions in Australia, specializing in business and agribusiness lending.'
+      },
+      {
+        id: 'au-wes', ticker: 'WES', name: 'Wesfarmers Limited', country: 'au', exchange: 'Sydney',
+        sector: 'Consumer Cyclicals', industry: 'Home Improvement & Retail', price: 69.50, currency: 'AUD', change24h: 0.80, changePercent: 1.16,
+        marketCap: 'A$78.90B', marketCapNum: 78.9, peRatio: 28.4, pbRatio: 8.2, dividendYield: 2.8, volume3M: '1.8M', change1Y: '+36.2%',
+        fairValueUpside: '+11.5%', analystUpside: '+13.0%', rsi14: 62.4, piotroski: 8, altmanZ: 8.4, evEbitda: 16.2, equityType: 'Common Stock',
+        low52: 50.40, high52: 73.20, technicalRating: 'Buy',
+        fundamentals: { eps: 2.45, pbRatio: 8.2, roe: '29.4%', debtToEquity: '0.45', revenueGrowth: '+8.4% YoY' },
+        profile: 'Wesfarmers is one of Australia’s largest listed companies with retail operations spanning Bunnings, Kmart, Target, and Priceline.'
+      }
+    ];
+  }
+
+  // China & Hong Kong - HKEX / CSI Flagships
+  if (countryId === 'cn' || countryId === 'hk') {
+    return [
+      {
+        id: 'cn-0700', ticker: '0700', name: 'Tencent Holdings Limited', country: 'cn', exchange: 'Hong Kong',
+        sector: 'Technology', industry: 'Internet, Gaming & Cloud', price: 412.00, currency: 'HKD', change24h: 5.60, changePercent: 1.38,
+        marketCap: 'HK$3.88T', marketCapNum: 3880, peRatio: 22.4, pbRatio: 3.8, dividendYield: 0.9, volume3M: '18.4M', change1Y: '+38.5%',
+        fairValueUpside: '+18.5%', analystUpside: '+22.0%', rsi14: 62.4, piotroski: 8, altmanZ: 8.4, evEbitda: 15.4, equityType: 'Common Stock',
+        low52: 260.00, high52: 482.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 18.40, pbRatio: 3.8, roe: '18.4%', debtToEquity: '0.35', revenueGrowth: '+10.4% YoY' },
+        profile: 'Tencent is a world-leading internet and technology company developing communication and social services (WeChat) and interactive entertainment.'
+      },
+      {
+        id: 'cn-9988', ticker: '9988', name: 'Alibaba Group Holding Limited', country: 'cn', exchange: 'Hong Kong',
+        sector: 'Consumer Cyclicals', industry: 'E-Commerce & Hyperscale Cloud', price: 105.50, currency: 'HKD', change24h: 1.80, changePercent: 1.74,
+        marketCap: 'HK$2.04T', marketCapNum: 2040, peRatio: 14.8, pbRatio: 1.4, dividendYield: 2.1, volume3M: '42.1M', change1Y: '+24.5%',
+        fairValueUpside: '+26.0%', analystUpside: '+24.5%', rsi14: 58.9, piotroski: 8, altmanZ: 5.2, evEbitda: 8.8, equityType: 'Common Stock',
+        low52: 68.00, high52: 118.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 7.12, pbRatio: 1.4, roe: '11.2%', debtToEquity: '0.24', revenueGrowth: '+6.8% YoY' },
+        profile: 'Alibaba Group provides fundamental technology infrastructure and marketing reach to help merchants and brands leverage the power of new tech.'
+      },
+      {
+        id: 'cn-1398', ticker: '1398', name: 'Industrial and Commercial Bank of China', country: 'cn', exchange: 'Hong Kong',
+        sector: 'Financials', industry: 'Commercial Banking', price: 4.85, currency: 'HKD', change24h: 0.05, changePercent: 1.04,
+        marketCap: 'HK$1.72T', marketCapNum: 1720, peRatio: 4.1, pbRatio: 0.42, dividendYield: 7.8, volume3M: '85.4M', change1Y: '+32.4%',
+        fairValueUpside: '+24.0%', analystUpside: '+21.5%', rsi14: 64.2, piotroski: 8, altmanZ: 2.1, evEbitda: 4.2, equityType: 'Common Stock',
+        low52: 3.65, high52: 5.10, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 1.18, pbRatio: 0.42, roe: '10.5%', debtToEquity: '1.45', revenueGrowth: '+4.5% YoY' },
+        profile: 'ICBC is the world’s largest bank by total assets, deposits, loans, number of customers, and number of employees.'
+      },
+      {
+        id: 'cn-1211', ticker: '1211', name: 'BYD Company Limited', country: 'cn', exchange: 'Hong Kong',
+        sector: 'Consumer Cyclicals', industry: 'Electric Vehicles & Batteries', price: 284.00, currency: 'HKD', change24h: 4.20, changePercent: 1.50,
+        marketCap: 'HK$826.00B', marketCapNum: 826, peRatio: 21.2, pbRatio: 4.1, dividendYield: 1.2, volume3M: '7.8M', change1Y: '+18.4%',
+        fairValueUpside: '+22.5%', analystUpside: '+25.0%', rsi14: 61.4, piotroski: 9, altmanZ: 7.2, evEbitda: 11.5, equityType: 'Common Stock',
+        low52: 178.00, high52: 318.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 13.40, pbRatio: 4.1, roe: '24.2%', debtToEquity: '0.45', revenueGrowth: '+28.4% YoY' },
+        profile: 'BYD is a high-tech company dedicated to technological innovations for a better life, dominating global new energy vehicles (NEVs).'
+      },
+      {
+        id: 'cn-3690', ticker: '3690', name: 'Meituan', country: 'cn', exchange: 'Hong Kong',
+        sector: 'Consumer Cyclicals', industry: 'Local Commerce & Delivery', price: 188.00, currency: 'HKD', change24h: 3.40, changePercent: 1.84,
+        marketCap: 'HK$1.14T', marketCapNum: 1140, peRatio: 28.4, pbRatio: 5.2, dividendYield: 0.0, volume3M: '19.5M', change1Y: '+68.4%',
+        fairValueUpside: '+18.0%', analystUpside: '+22.0%', rsi14: 63.8, piotroski: 8, altmanZ: 8.8, evEbitda: 14.8, equityType: 'Common Stock',
+        low52: 62.00, high52: 215.00, technicalRating: 'Strong Buy',
+        fundamentals: { eps: 6.62, pbRatio: 5.2, roe: '19.8%', debtToEquity: '0.28', revenueGrowth: '+22.4% YoY' },
+        profile: 'Meituan is China’s leading retail tech company connecting consumers and merchants through on-demand food delivery, in-store dining, and travel.'
+      }
+    ];
+  }
+
   // Dynamic procedural generator for the other 50+ World Countries
   // Creates realistic flagship companies tailored to that country's currency and exchange
   const sectorsList = [

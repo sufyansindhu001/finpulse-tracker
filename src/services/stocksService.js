@@ -99,7 +99,9 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
           quotes[`${stock.ticker}.PA`] ||
           quotes[`${stock.ticker}.TO`] ||
           quotes[`${stock.ticker}.T`] ||
-          quotes[`${stock.ticker}.AX`];
+          quotes[`${stock.ticker}.AX`] ||
+          quotes[`${stock.ticker}.AE`] ||
+          quotes[`${stock.ticker}.HK`];
 
         if (!quote || typeof quote !== 'object') return stock;
 
