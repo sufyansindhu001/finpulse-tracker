@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, RefreshCw, Home } from 'lucide-react';
+import { AlertCircle, RefreshCw, Home, BookOpen } from 'lucide-react';
 
 export default class GlobalErrorBoundary extends React.Component {
   constructor(props) {
@@ -47,6 +47,10 @@ export default class GlobalErrorBoundary extends React.Component {
       localStorage.removeItem('fgc_spot_forex_rates');
       localStorage.removeItem('fgc_stocks_live_pk');
       localStorage.removeItem('fgc_stocks_live_us');
+      localStorage.removeItem('fgc_portal_articles');
+      localStorage.removeItem('fgc_portal_articles_v2');
+      localStorage.removeItem('fgc_portal_articles_v3');
+      localStorage.removeItem('fgc_portal_articles_last_fetch');
       sessionStorage.clear();
     } catch {}
     window.location.href = '/';
@@ -54,6 +58,8 @@ export default class GlobalErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
+      const isBlogRoute = typeof window !== 'undefined' && window.location.pathname.startsWith('/blog');
+
       return (
         <div className="min-h-screen bg-[#06111F] text-[#A8B3C2] flex items-center justify-center p-4 font-sans">
           <div className="w-full max-w-lg p-8 bg-[#0A1726] border border-white/10 rounded-3xl shadow-2xl text-center space-y-6">
@@ -85,6 +91,16 @@ export default class GlobalErrorBoundary extends React.Component {
                 <RefreshCw className="w-4 h-4" />
                 <span>Recover &amp; Reload Terminal</span>
               </button>
+
+              {isBlogRoute && (
+                <a
+                  href="/blog"
+                  className="px-5 py-2.5 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border border-white/10"
+                >
+                  <BookOpen className="w-4 h-4 text-[#00E676]" />
+                  <span>Return to Blog Desk</span>
+                </a>
+              )}
 
               <a
                 href="/"

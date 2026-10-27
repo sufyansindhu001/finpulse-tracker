@@ -7,8 +7,8 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPA
 
 function sanitizeArticle(art) {
   if (!art) return art;
-  let cleanImage = art.image;
-  if (!cleanImage || typeof cleanImage !== 'string' || cleanImage.startsWith('data:') || cleanImage.length > 1000) {
+  let cleanImage = art.image || art.cover_image || art.coverImage || art.featured_image || art.featuredImage;
+  if (!cleanImage || typeof cleanImage !== 'string' || cleanImage.startsWith('data:') || cleanImage.length > 2000) {
     const cat = (art.category || '').toLowerCase();
     if (cat.includes('crypto')) {
       cleanImage = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';
@@ -20,7 +20,12 @@ function sanitizeArticle(art) {
       cleanImage = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
     }
   }
-  return { ...art, image: cleanImage };
+  return { 
+    ...art, 
+    image: cleanImage, 
+    cover_image: cleanImage, 
+    featured_image: cleanImage 
+  };
 }
 
 export default async function handler(req, res) {
@@ -30,14 +35,19 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
   
-  // Edge Caching: Browser 3 mins (max-age=180), Vercel CDN 15 mins (s-maxage=900), SWR 24 hrs
-  res.setHeader('Cache-Control', 'public, max-age=180, s-maxage=900, stale-while-revalidate=86400');
+  const { slug, _t, fresh, purge } = req.query || {};
+
+  // Edge & CDN Caching: Instant browser revalidation (max-age=0), tight CDN cache (s-maxage=60)
+  // If cache-busting timestamp or fresh parameter is present, bypass cache entirely
+  if (_t || fresh || purge) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  } else {
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=120, must-revalidate');
+  }
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-
-  const { slug } = req.query || {};
 
   try {
     const controller = new AbortController();

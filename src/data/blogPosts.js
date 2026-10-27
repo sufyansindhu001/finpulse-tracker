@@ -603,3 +603,26 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:18:07.17+00:00"
   }
 ];
+
+/**
+ * Direct slug/id lookup helper exported directly from blogPosts.js
+ * Guarantees zero ReferenceErrors regardless of module import path.
+ */
+export function getCachedArticleBySlug(target) {
+  if (!target) return null;
+  const clean = String(target).toLowerCase().trim();
+  const cleanNoDash = clean.replace(/[^a-z0-9]/g, '');
+
+  const found = BLOG_POSTS.find(p => {
+    if (!p) return false;
+    const s = String(p.slug || '').toLowerCase().trim();
+    const i = String(p.id || '').toLowerCase().trim();
+    return s === clean || i === clean || s.replace(/[^a-z0-9]/g, '') === cleanNoDash;
+  });
+
+  return found || null;
+}
+
+export const getArticleBySlug = getCachedArticleBySlug;
+export const findArticleBySlug = getCachedArticleBySlug;
+

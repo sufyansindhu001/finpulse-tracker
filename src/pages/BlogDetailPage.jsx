@@ -20,7 +20,7 @@ import { updateSEO, updateCanonical } from '../utils/seo';
 import { getRelatedArticles } from '../utils/relatedArticles';
 import { getCategoryFallbackImage } from '../services/newsService';
 import OptimizedImage from '../components/OptimizedImage';
-import { getCachedArticles, fetchArticlesSWR } from '../services/articlesService';
+import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR } from '../services/articlesService';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -72,31 +72,40 @@ function formatInlineText(text) {
   return parts.length > 0 ? parts : text;
 }
 
-// Fast O(1) synchronous lookup from memory/localStorage
+// Resilient O(1) synchronous lookup from memory/localStorage with zero ReferenceError risk
 function findLocalArticle(target) {
   if (!target) return null;
-  let clean = target.toLowerCase().trim();
-  if (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
-    clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+  try {
+    let clean = String(target).toLowerCase().trim();
+    if (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
+      clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+    } else if (clean === 'usd-pkr-interbank-vs-open-market-guide') {
+      clean = 'usd-to-pkr-interbank-vs-open-market-guide';
+    }
+
+    // 1. Resilient lookup from articlesService
+    if (typeof getCachedArticleBySlug === 'function') {
+      const found = getCachedArticleBySlug(clean);
+      if (found) return normalizeArticle(found);
+    }
+
+    // 2. Bundled fallback
+    const cleanNoDash = clean.replace(/[^a-z0-9]/g, '');
+    const bundled = BLOG_POSTS.find(p => {
+      if (!p) return false;
+      const s = String(p.slug || '').toLowerCase().trim();
+      const i = String(p.id || '').toLowerCase().trim();
+      return s === clean || i === clean || s.replace(/[^a-z0-9]/g, '') === cleanNoDash;
+    });
+    if (bundled) return normalizeArticle(bundled);
+  } catch (err) {
+    console.warn('[BlogDetailPage] findLocalArticle exception:', err);
   }
-
-  // 1. O(1) map check from articlesService
-  const found = getCachedArticleBySlug(clean);
-  if (found) return normalizeArticle(found);
-
-  // 2. Bundled fallback
-  const bundled = BLOG_POSTS.find(p => {
-    if (!p) return false;
-    const s = (p.slug || '').toLowerCase().trim();
-    const i = (p.id || '').toLowerCase().trim();
-    return s === clean || i === clean;
-  });
-  if (bundled) return normalizeArticle(bundled);
 
   return null;
 }
 
-export default function BlogDetailPage() {
+function BlogDetailPageContent() {
   const { slug, id } = useParams();
   const rawIdentifier = slug || id;
   // Gracefully map legacy or alternative slugs to prevent 404s
@@ -340,7 +349,7 @@ export default function BlogDetailPage() {
       : 'Market Analysis & Financial Blog | FGC Spot';
 
     const excerpt = article?.excerpt || article?.summary || '';
-    const image = article?.coverImage || article?.featuredImage || '';
+    const image = article?.image || article?.coverImage || article?.featuredImage || '';
 
     // Immediately inject/update self-referencing canonical URL and meta tags
     updateSEO({
@@ -354,7 +363,7 @@ export default function BlogDetailPage() {
     return () => {
       document.title = 'FGC Spot — Live Forex, Gold & Crypto Terminals';
     };
-  }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug, article?.coverImage, article?.featuredImage]);
+  }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug, article?.image, article?.coverImage, article?.featuredImage]);
 
   const relatedArticles = useMemo(() => {
     return getRelatedArticles(article, allArticles, 4);
@@ -445,17 +454,31 @@ export default function BlogDetailPage() {
 
   if (!article) {
     return (
-      <div className="w-full max-w-3xl mx-auto py-20 text-center space-y-4">
-        <BookOpen className="w-12 h-12 text-[#A8B3C2] mx-auto opacity-50" />
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Article Not Found</h2>
-        <p className="text-sm text-slate-600 dark:text-[#A8B3C2]">The requested financial analysis article does not exist or has been moved.</p>
-        <Link
-          to="/blog"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-md"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Return to Blog &amp; Analysis Desk</span>
-        </Link>
+      <div className="w-full max-w-3xl mx-auto py-20 px-4 text-center space-y-5 animate-in fade-in">
+        <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 mx-auto">
+          <BookOpen className="w-7 h-7" />
+        </div>
+        <div className="space-y-1.5">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Article Not Found</h2>
+          <p className="text-sm text-slate-600 dark:text-[#A8B3C2] max-w-md mx-auto">
+            The requested financial analysis article does not exist or may have been updated.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-md cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Return to Blog &amp; Analysis Desk</span>
+          </Link>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-900 dark:text-white text-xs font-bold rounded-xl transition-all border border-slate-200 dark:border-white/10 cursor-pointer"
+          >
+            <span>Back to Home</span>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -576,10 +599,10 @@ export default function BlogDetailPage() {
         </div>
 
         {/* Featured Image */}
-        {article.image && (
+        {(article.image || article.coverImage || article.featuredImage) && (
           <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
             <OptimizedImage 
-              src={article.image} 
+              src={article.image || article.coverImage || article.featuredImage} 
               alt={article.title} 
               width={900}
               height={506}
@@ -871,3 +894,69 @@ export default function BlogDetailPage() {
     </article>
   );
 }
+
+/**
+ * Robust Route Error Boundary for Blog Detail Pages
+ * Catches any slug lookups or rendering failures and displays a clean 404 / fallback UI
+ * rather than crashing to the global terminal recovery screen.
+ */
+export class BlogDetailErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.warn('[BlogDetailErrorBoundary] Caught blog routing exception:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full max-w-3xl mx-auto py-20 px-4 text-center space-y-6 animate-in fade-in">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 mx-auto shadow-sm">
+            <BookOpen className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Article Temporarily Unavailable</h2>
+            <p className="text-sm text-slate-600 dark:text-[#A8B3C2] max-w-md mx-auto leading-relaxed">
+              The financial analysis article you requested could not be loaded or may have been updated.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-md cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Return to Blog &amp; Research Desk</span>
+            </Link>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-900 dark:text-white text-xs font-bold rounded-xl transition-all border border-slate-200 dark:border-white/10 cursor-pointer"
+            >
+              <span>Back to Home</span>
+            </Link>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function BlogDetailPage() {
+  return (
+    <BlogDetailErrorBoundary>
+      <BlogDetailPageContent />
+    </BlogDetailErrorBoundary>
+  );
+}
+
+// Re-export slug lookup helpers for universal drop-in compatibility
+export { getCachedArticleBySlug, getArticleBySlug } from '../services/articlesService';
+
