@@ -12,15 +12,29 @@ export const ARTICLES_LAST_FETCH_KEY = 'fgc_portal_articles_last_fetch';
 const SWR_BACKGROUND_THROTTLE_MS = 60 * 1000; // 1 minute background revalidation throttle
 
 let inMemoryArticlesCache = null;
+let articlesMap = new Map();
 let lastFetchTimestamp = 0;
 let inFlightArticlesPromise = null;
 
+function buildArticlesMap(articlesList) {
+  articlesMap.clear();
+  if (!Array.isArray(articlesList)) return;
+  for (const art of articlesList) {
+    if (!art) continue;
+    if (art.slug) articlesMap.set(art.slug.toLowerCase().trim(), art);
+    if (art.id) articlesMap.set(String(art.id).toLowerCase().trim(), art);
+  }
+}
+
 /**
  * Synchronously retrieves cached articles from memory or localStorage.
+ * Automatically upgrades outdated or incomplete local storage to the latest 30 clean bundled articles.
  * Guarantees instant 0ms initial render without waiting for network or showing blank skeletons.
  */
 export function getCachedArticles() {
-  if (inMemoryArticlesCache && inMemoryArticlesCache.length > 0) {
+  const bundled = BLOG_POSTS.map(normalizeArticle);
+
+  if (inMemoryArticlesCache && inMemoryArticlesCache.length >= bundled.length) {
     return inMemoryArticlesCache;
   }
 
@@ -28,16 +42,25 @@ export function getCachedArticles() {
     const saved = localStorage.getItem(ARTICLES_CACHE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        inMemoryArticlesCache = parsed.map(normalizeArticle);
-        return inMemoryArticlesCache;
+      if (Array.isArray(parsed) && parsed.length >= bundled.length) {
+        // Ensure top article is not older than bundled top article
+        if (parsed[0]?.slug === bundled[0]?.slug) {
+          inMemoryArticlesCache = parsed.map(normalizeArticle);
+          buildArticlesMap(inMemoryArticlesCache);
+          return inMemoryArticlesCache;
+        }
       }
     }
   } catch (e) {
     console.warn('[articlesService] Failed to read cached articles:', e);
   }
 
-  inMemoryArticlesCache = BLOG_POSTS.map(normalizeArticle);
+  // If localStorage had an older or incomplete set, immediately upgrade to bundled
+  inMemoryArticlesCache = bundled;
+  buildArticlesMap(inMemoryArticlesCache);
+  try {
+    localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(bundled));
+  } catch {}
   return inMemoryArticlesCache;
 }
 
@@ -49,7 +72,7 @@ function hasArticlesChanged(existingList, newList) {
   if (!Array.isArray(existingList) || !Array.isArray(newList)) return true;
   if (existingList.length !== newList.length) return true;
 
-  // Check top 3 articles and random sample for slug and timestamp changes
+  // Check top 5 articles for slug and timestamp changes
   for (let i = 0; i < Math.min(existingList.length, 5); i++) {
     const a = existingList[i];
     const b = newList[i];
@@ -131,6 +154,7 @@ export async function fetchArticlesSWR(onUpdate, forceFresh = false) {
 
     if (freshArticles && freshArticles.length > 0) {
       inMemoryArticlesCache = freshArticles;
+      buildArticlesMap(freshArticles);
       try {
         localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(freshArticles));
         localStorage.setItem(ARTICLES_LAST_FETCH_KEY, String(lastFetchTimestamp));
@@ -156,17 +180,15 @@ export async function fetchArticlesSWR(onUpdate, forceFresh = false) {
 }
 
 /**
- * Synchronously retrieves a single article by slug or id from cache
+ * Fast O(1) synchronous lookup for a single article by slug or id from cache
  */
 export function getCachedArticleBySlug(target) {
   if (!target) return null;
   const clean = target.toLowerCase().trim();
-  const all = getCachedArticles();
+  
+  if (articlesMap.size === 0) {
+    getCachedArticles();
+  }
 
-  return all.find(p => {
-    if (!p) return false;
-    const s = (p.slug || '').toLowerCase().trim();
-    const i = (p.id || '').toLowerCase().trim();
-    return s === clean || i === clean;
-  }) || null;
+  return articlesMap.get(clean) || null;
 }

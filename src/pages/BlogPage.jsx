@@ -83,41 +83,17 @@ export default function BlogPage() {
     canonical: '/blog'
   });
 
-  // Synchronous instant cache initialization: 0ms render delay upon refresh
-  const [articles, setArticles] = useState(() => {
+  // Single source of truth from AppContext / getCachedArticles with instant 0ms SSR/hydration speed
+  const articles = useMemo(() => {
     if (Array.isArray(contextArticles) && contextArticles.length > 0) {
       return contextArticles;
     }
     return getCachedArticles();
-  });
+  }, [contextArticles]);
 
-  // Background Stale-While-Revalidate without blocking initial UI paint
   useEffect(() => {
-    let isMounted = true;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
     document.title = 'Market Analysis & Financial Blog | FGC Spot';
-
-    fetchArticlesSWR((freshArticles) => {
-      if (isMounted && Array.isArray(freshArticles) && freshArticles.length > 0) {
-        setArticles(freshArticles);
-      }
-    });
-
-    const handleSync = () => {
-      const cached = getCachedArticles();
-      if (isMounted && cached.length > 0) {
-        setArticles(cached);
-      }
-    };
-
-    window.addEventListener('fgc_articles_updated', handleSync);
-    window.addEventListener('storage', handleSync);
-
-    return () => {
-      isMounted = false;
-      window.removeEventListener('fgc_articles_updated', handleSync);
-      window.removeEventListener('storage', handleSync);
-    };
   }, []);
 
   // Dynamically include all categories present across published articles

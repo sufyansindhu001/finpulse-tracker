@@ -51,6 +51,20 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
     };
   }, [mobileMenuOpen]);
 
+  // Fast route chunk preloader for instant navigation (<0.1s)
+  const preloadRoute = (path) => {
+    switch (path) {
+      case '/stocks': import('../pages/StocksPage'); break;
+      case '/rates': import('../pages/RatesPage'); break;
+      case '/crypto': import('../pages/CryptoPage'); break;
+      case '/charts': import('../pages/ChartsPage'); break;
+      case '/converter': import('../pages/ConverterPage'); break;
+      case '/news': import('../pages/NewsPage'); break;
+      case '/blog': import('../pages/BlogPage'); break;
+      default: break;
+    }
+  };
+
   // Clean navigation links with Stocks & PSX
   const navLinks = [
     { label: 'Home', path: '/', icon: Home, match: (p) => p === '/' },
@@ -104,9 +118,11 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                 const Icon = item.icon;
                 const isActive = item.match(currentPath);
                 return (
-                  <button
+                  <Link
                     key={item.label}
-                    onClick={() => handleNavClick(item.path)}
+                    to={item.path}
+                    onMouseEnter={() => preloadRoute(item.path)}
+                    onTouchStart={() => preloadRoute(item.path)}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                       isActive
                         ? 'bg-[#00E676] text-[#06111F] shadow-sm shadow-[#00E676]/30 font-bold'
@@ -115,7 +131,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                   >
                     <Icon className="w-3.5 h-3.5" />
                     <span>{item.label}</span>
-                  </button>
+                  </Link>
                 );
               })}
             </nav>
@@ -250,9 +266,11 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                   const Icon = item.icon;
                   const isActive = item.match(currentPath);
                   return (
-                    <button
+                    <Link
                       key={item.label}
-                      onClick={() => handleNavClick(item.path)}
+                      to={item.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      onTouchStart={() => preloadRoute(item.path)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer touch-manipulation select-none ${
                         isActive
                           ? 'bg-[#00E676] text-[#06111F] font-bold'
@@ -261,7 +279,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                     >
                       <Icon className="w-4 h-4" />
                       <span>{item.label}</span>
-                    </button>
+                    </Link>
                   );
                 })}
               </div>

@@ -5,6 +5,24 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
 
+function sanitizeArticle(art) {
+  if (!art) return art;
+  let cleanImage = art.image;
+  if (!cleanImage || typeof cleanImage !== 'string' || cleanImage.startsWith('data:') || cleanImage.length > 1000) {
+    const cat = (art.category || '').toLowerCase();
+    if (cat.includes('crypto')) {
+      cleanImage = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';
+    } else if (cat.includes('gold') || cat.includes('metal')) {
+      cleanImage = 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80';
+    } else if (cat.includes('forex') || cat.includes('currency')) {
+      cleanImage = 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=1200&q=80';
+    } else {
+      cleanImage = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
+    }
+  }
+  return { ...art, image: cleanImage };
+}
+
 export default async function handler(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -50,7 +68,7 @@ export default async function handler(req, res) {
           if (data.length > 0) {
             return res.status(200).json({
               success: true,
-              data: data[0],
+              data: sanitizeArticle(data[0]),
               source: 'Supabase Edge Cache'
             });
           } else {
@@ -62,10 +80,11 @@ export default async function handler(req, res) {
           }
         }
 
+        const sanitized = data.map(sanitizeArticle);
         return res.status(200).json({
           success: true,
-          count: data.length,
-          data,
+          count: sanitized.length,
+          data: sanitized,
           source: 'Supabase Edge Cache'
         });
       }

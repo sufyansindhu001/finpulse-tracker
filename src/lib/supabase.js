@@ -79,6 +79,20 @@ export function normalizeArticle(raw) {
       }));
   const readTimeStr = raw.readTime || raw.read_time || `${Math.max(1, Math.ceil(((raw.content || '').split(' ').length) / 200))} min read`;
 
+  let cleanImage = raw.image;
+  if (!cleanImage || typeof cleanImage !== 'string' || cleanImage.startsWith('data:') || cleanImage.length > 1000) {
+    const cat = (raw.category || '').toLowerCase();
+    if (cat.includes('crypto')) {
+      cleanImage = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';
+    } else if (cat.includes('gold') || cat.includes('metal')) {
+      cleanImage = 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80';
+    } else if (cat.includes('forex') || cat.includes('currency')) {
+      cleanImage = 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=1200&q=80';
+    } else {
+      cleanImage = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
+    }
+  }
+
   return {
     ...raw,
     id: raw.id || raw.slug,
@@ -94,7 +108,7 @@ export function normalizeArticle(raw) {
     excerpt: stripSpanMarkup(raw.excerpt || raw.summary) || '',
     content: raw.content || '',
     likes: typeof raw.likes === 'number' ? raw.likes : (raw.likes ? parseInt(raw.likes, 10) : undefined),
-    image: raw.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
+    image: cleanImage,
     tags: parseTags(raw.tags)
   };
 }

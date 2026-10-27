@@ -72,7 +72,7 @@ function formatInlineText(text) {
   return parts.length > 0 ? parts : text;
 }
 
-// Helper to synchronously find matching article from localStorage or bundled posts
+// Fast O(1) synchronous lookup from memory/localStorage
 function findLocalArticle(target) {
   if (!target) return null;
   let clean = target.toLowerCase().trim();
@@ -80,35 +80,19 @@ function findLocalArticle(target) {
     clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
   }
 
-  // 1. Check cached articles in localStorage (contains all synced articles from Supabase)
-  try {
-    const saved = localStorage.getItem('fgc_portal_articles');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        const found = parsed.find(p => {
-          if (!p) return false;
-          const s = (p.slug || '').toLowerCase().trim();
-          const i = (p.id || '').toLowerCase().trim();
-          return s === clean || i === clean || 
-            (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide' && s.includes('pakistan-stock-exchange-psx'));
-        });
-        if (found) return normalizeArticle(found);
-      }
-    }
-  } catch {}
+  // 1. O(1) map check from articlesService
+  const found = getCachedArticleBySlug(clean);
+  if (found) return normalizeArticle(found);
 
-  // 2. Check bundled BLOG_POSTS
+  // 2. Bundled fallback
   const bundled = BLOG_POSTS.find(p => {
     if (!p) return false;
     const s = (p.slug || '').toLowerCase().trim();
     const i = (p.id || '').toLowerCase().trim();
-    return s === clean || i === clean || 
-      (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide' && s.includes('pakistan-stock-exchange-psx'));
+    return s === clean || i === clean;
   });
   if (bundled) return normalizeArticle(bundled);
 
-  // Return null if not yet cached so a neutral skeleton placeholder is shown instead of flashing the wrong article
   return null;
 }
 
@@ -127,18 +111,7 @@ export default function BlogDetailPage() {
   const initialMatch = useMemo(() => findLocalArticle(targetIdentifier), [targetIdentifier]);
 
   const [article, setArticle] = useState(initialMatch);
-  const [allArticles, setAllArticles] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map(normalizeArticle);
-        }
-      }
-    } catch {}
-    return BLOG_POSTS.map(normalizeArticle);
-  });
+  const [allArticles, setAllArticles] = useState(() => getCachedArticles());
   const [loading, setLoading] = useState(() => !initialMatch);
 
   const articleKey = article?.slug || article?.id || targetIdentifier;

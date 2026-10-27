@@ -120,67 +120,7 @@ export function AppProvider({ children }) {
   // -------------------------------------------------------------
   // 2. ARTICLE MANAGER PERSISTENCE (Key: fgc_portal_articles)
   // -------------------------------------------------------------
-  const [articles, setArticles] = useState(() => {
-    try {
-      const deletedRaw = localStorage.getItem(PORTAL_KEYS.DELETED_ARTICLES);
-      const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
-
-      // 1. Primary check: fgc_portal_articles
-      const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
-      if (saved !== null) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          // Check if any built-in article from INITIAL_BLOG_POSTS is missing and hasn't been explicitly deleted
-          const existingIds = new Set(parsed.flatMap(a => [a.id, a.slug]));
-          const missingBuiltins = INITIAL_BLOG_POSTS.filter(b => 
-            !existingIds.has(b.id) && 
-            !existingIds.has(b.slug) && 
-            !deletedIds.includes(b.id) && 
-            !deletedIds.includes(b.slug)
-          );
-          if (missingBuiltins.length > 0) {
-            const merged = [...parsed, ...missingBuiltins];
-            try {
-              localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(merged));
-              localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(merged));
-            } catch {}
-            return merged;
-          }
-          return parsed;
-        }
-      }
-
-      // 2. Legacy key check
-      const legacy = localStorage.getItem('fgc_spot_blog_posts');
-      if (legacy !== null) {
-        const parsedLegacy = JSON.parse(legacy);
-        if (Array.isArray(parsedLegacy) && parsedLegacy.length > 0) {
-          const existingIds = new Set(parsedLegacy.flatMap(a => [a.id, a.slug]));
-          const missingBuiltins = INITIAL_BLOG_POSTS.filter(b => 
-            !existingIds.has(b.id) && 
-            !existingIds.has(b.slug) && 
-            !deletedIds.includes(b.id) && 
-            !deletedIds.includes(b.slug)
-          );
-          const merged = missingBuiltins.length > 0 ? [...parsedLegacy, ...missingBuiltins] : parsedLegacy;
-          try {
-            localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(merged));
-          } catch {}
-          return merged;
-        }
-      }
-
-      // 3. Only seed initial articles if the key is completely null
-      try {
-        localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(INITIAL_BLOG_POSTS));
-        localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(INITIAL_BLOG_POSTS));
-      } catch {}
-      return INITIAL_BLOG_POSTS;
-    } catch (e) {
-      console.warn('[AppContext] Error initializing articles:', e);
-    }
-    return INITIAL_BLOG_POSTS;
-  });
+  const [articles, setArticles] = useState(() => getCachedArticles());
 
   // Keep AppContext articles synced with SWR edge cache in background
   useEffect(() => {
