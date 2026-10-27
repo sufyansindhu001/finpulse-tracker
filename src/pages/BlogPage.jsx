@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { 
@@ -8,22 +8,73 @@ import {
   ArrowRight, 
   BookOpen, 
   ChevronRight,
-  Sparkles,
-  ShieldCheck,
-  TrendingUp,
-  Tag,
   ChevronDown
 } from 'lucide-react';
-import { BLOG_POSTS } from '../data/blogPosts';
-import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
+import { parseTags } from '../lib/supabase';
 import { useSEO } from '../hooks/useSEO';
 import { getCategoryFallbackImage } from '../services/newsService';
+import { getCachedArticles, fetchArticlesSWR } from '../services/articlesService';
+import OptimizedImage from '../components/OptimizedImage';
+
+/**
+ * High-Performance Memoized Article Card
+ * Eliminates redundant re-renders when "Load More" appends new articles or parent states update.
+ */
+const BlogArticleCard = memo(function BlogArticleCard({ post }) {
+  const fallbackCover = useMemo(() => getCategoryFallbackImage(post?.category, 0), [post?.category]);
+
+  return (
+    <Link
+      to={`/blog/${post.slug || post.id}`}
+      className="rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-4 sm:p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm dark:shadow-xl hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
+    >
+      <div className="space-y-3 sm:space-y-4">
+        {post.image && (
+          <div className="w-full h-36 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
+            <OptimizedImage 
+              src={post.image} 
+              alt={post.title} 
+              width={400}
+              height={225}
+              quality={75}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+              fallbackSrc={fallbackCover}
+            />
+          </div>
+        )}
+
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
+            {post.category}
+          </span>
+          <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium">
+            <Clock className="w-3.5 h-3.5 text-[#00E676]" />
+            <span>{post.readTime}</span>
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
+            {post.title}
+          </h3>
+          <p className="text-xs text-slate-600 dark:text-[#A8B3C2] line-clamp-3 leading-relaxed">
+            {post.summary || post.excerpt}
+          </p>
+        </div>
+      </div>
+
+      <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-[#00E676]">
+        <span>Read Article</span>
+        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      </div>
+    </Link>
+  );
+});
 
 export default function BlogPage() {
   const { articles: contextArticles = [] } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
   const [visibleArticleCount, setVisibleArticleCount] = useState(6);
 
   useSEO({
@@ -32,75 +83,42 @@ export default function BlogPage() {
     canonical: '/blog'
   });
 
+  // Synchronous instant cache initialization: 0ms render delay upon refresh
   const [articles, setArticles] = useState(() => {
-    try {
-      const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved !== null) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed.map(normalizeArticle);
-      }
-    } catch (e) {
-      console.error("Failed to parse articles from localStorage", e);
+    if (Array.isArray(contextArticles) && contextArticles.length > 0) {
+      return contextArticles;
     }
-    return BLOG_POSTS.map(normalizeArticle);
+    return getCachedArticles();
   });
 
-  const fetchArticles = React.useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (!error && Array.isArray(data) && data.length > 0) {
-        const normalized = data.map(normalizeArticle);
-        setArticles(normalized);
-        try {
-          localStorage.setItem('fgc_portal_articles', JSON.stringify(normalized));
-        } catch {}
-        return;
-      }
-    } catch (e) {
-      console.warn('[BlogPage] Supabase fetch error, using fallback:', e);
-    } finally {
-      setLoading(false);
-    }
-
-    // Fallback gracefully to localStorage or bundled default articles
-    try {
-      const saved = localStorage.getItem('fgc_portal_articles');
-      if (saved !== null) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setArticles(parsed.map(normalizeArticle));
-          return;
-        }
-      }
-    } catch (e) {
-      console.error("Failed to parse articles from localStorage", e);
-    }
-    if (Array.isArray(contextArticles) && contextArticles.length > 0) {
-      setArticles(contextArticles.map(normalizeArticle));
-    } else {
-      setArticles(BLOG_POSTS.map(normalizeArticle));
-    }
-  }, [contextArticles]);
-
+  // Background Stale-While-Revalidate without blocking initial UI paint
   useEffect(() => {
+    let isMounted = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Market Analysis & Financial Blog | FGC Spot';
-    fetchArticles();
 
-    const handleSync = () => fetchArticles();
+    fetchArticlesSWR((freshArticles) => {
+      if (isMounted && Array.isArray(freshArticles) && freshArticles.length > 0) {
+        setArticles(freshArticles);
+      }
+    });
+
+    const handleSync = () => {
+      const cached = getCachedArticles();
+      if (isMounted && cached.length > 0) {
+        setArticles(cached);
+      }
+    };
+
     window.addEventListener('fgc_articles_updated', handleSync);
     window.addEventListener('storage', handleSync);
 
     return () => {
+      isMounted = false;
       window.removeEventListener('fgc_articles_updated', handleSync);
       window.removeEventListener('storage', handleSync);
     };
-  }, [fetchArticles]);
+  }, []);
 
   // Dynamically include all categories present across published articles
   const categories = useMemo(() => {
@@ -121,6 +139,7 @@ export default function BlogPage() {
       const title = post.title || '';
       const summary = post.summary || post.excerpt || '';
       const matchSearch = 
+        !searchQuery ||
         title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tagsList.some(t => (t || '').toLowerCase().includes(searchQuery.toLowerCase()));
@@ -148,9 +167,13 @@ export default function BlogPage() {
     return gridPosts.slice(0, visibleArticleCount);
   }, [gridPosts, visibleArticleCount]);
 
-  const handleLoadMoreArticles = () => {
+  const handleLoadMoreArticles = useCallback(() => {
     setVisibleArticleCount(prev => prev + 6);
-  };
+  }, []);
+
+  const featuredFallbackCover = useMemo(() => 
+    featuredPost ? getCategoryFallbackImage(featuredPost.category, 0) : ''
+  , [featuredPost]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 animate-in fade-in duration-300">
@@ -159,7 +182,7 @@ export default function BlogPage() {
       <nav className="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
         <Link to="/" className="hover:text-slate-900 dark:hover:text-white font-medium">Home</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-900 dark:text-white font-semibold">Financial Analysis & Blog</span>
+        <span className="text-slate-900 dark:text-white font-semibold">Financial Analysis &amp; Blog</span>
       </nav>
 
       {/* Header Banner */}
@@ -245,18 +268,15 @@ export default function BlogPage() {
 
             <div className="lg:col-span-5">
               <div className="h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative aspect-[16/9]">
-                <img 
+                <OptimizedImage 
                   src={featuredPost.image} 
                   alt={featuredPost.title}
-                  width="600"
-                  height="338"
-                  decoding="async"
+                  width={600}
+                  height={338}
+                  quality={80}
+                  priority={true}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = getCategoryFallbackImage(featuredPost.category, 0);
-                  }}
+                  fallbackSrc={featuredFallbackCover}
                 />
               </div>
             </div>
@@ -286,55 +306,7 @@ export default function BlogPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayedPosts.map((post) => (
-                <Link
-                  key={post.id}
-                  to={`/blog/${post.slug || post.id}`}
-                  className="animate-fade-in rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-4 sm:p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm dark:shadow-xl hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
-                >
-                  <div className="space-y-3 sm:space-y-4">
-                    {post.image && (
-                      <div className="w-full h-36 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
-                        <img 
-                          src={post.image} 
-                          alt={post.title} 
-                          width="400"
-                          height="225"
-                          decoding="async"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = getCategoryFallbackImage(post.category, 0);
-                          }}
-                        />
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
-                        {post.category}
-                      </span>
-                      <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium">
-                        <Clock className="w-3.5 h-3.5 text-[#00E676]" />
-                        <span>{post.readTime}</span>
-                      </span>
-                    </div>
-
-                    <div className="space-y-2">
-                      <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors line-clamp-2 leading-snug">
-                        {post.title}
-                      </h3>
-                      <p className="text-xs text-slate-600 dark:text-[#A8B3C2] line-clamp-3 leading-relaxed">
-                        {post.summary || post.excerpt}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-[#00E676]">
-                    <span>Read Article</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
+                <BlogArticleCard key={post.id || post.slug} post={post} />
               ))}
             </div>
 
@@ -403,12 +375,12 @@ export default function BlogPage() {
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="px-2.5 py-0.5 rounded-full font-bold bg-[#00E676]/20 text-[#00E676] border border-[#00E676]/30">
-                    Banking & Tax Exemption
+                    Banking &amp; Tax Exemption
                   </span>
                   <span className="text-slate-500 dark:text-[#A8B3C2] font-mono text-[11px]">5 min read</span>
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors leading-snug">
-                  Freelance Remittances & Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Retention Accounts Explained
+                  Freelance Remittances &amp; Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Retention Accounts Explained
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed line-clamp-2">
                   Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.
@@ -428,7 +400,7 @@ export default function BlogPage() {
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-[#00E676]" />
-                <span>Complete Research & Editorial Archives Directory</span>
+                <span>Complete Research &amp; Editorial Archives Directory</span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
                 Direct permanent links to all published analytical guides, macro research papers, and financial tutorials.

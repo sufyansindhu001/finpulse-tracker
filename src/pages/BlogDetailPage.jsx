@@ -19,6 +19,8 @@ import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
 import { updateSEO, updateCanonical } from '../utils/seo';
 import { getRelatedArticles } from '../utils/relatedArticles';
 import { getCategoryFallbackImage } from '../services/newsService';
+import OptimizedImage from '../components/OptimizedImage';
+import { getCachedArticles, fetchArticlesSWR } from '../services/articlesService';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -252,7 +254,22 @@ export default function BlogDetailPage() {
       }
 
       try {
-        // Supabase query matching by slug
+        // 1. Try Vercel Edge Cached Endpoint first
+        const edgeRes = await fetch(`/api/articles?slug=${encodeURIComponent(cleanTarget)}`, {
+          headers: { 'Accept': 'application/json' }
+        }).then(r => r.ok ? r.json() : null).catch(() => null);
+
+        if (edgeRes?.data && isMounted) {
+          const normalized = normalizeArticle(edgeRes.data);
+          // Only update state if content or likes differs to prevent re-render flash
+          if (!local || local.content !== normalized.content || local.likes !== normalized.likes) {
+            setArticle(normalized);
+          }
+          setLoading(false);
+          return;
+        }
+
+        // 2. Supabase query matching by slug
         const { data, error } = await supabase
           .from('articles')
           .select('*')
@@ -261,7 +278,9 @@ export default function BlogDetailPage() {
 
         if (data && isMounted) {
           const normalized = normalizeArticle(data);
-          setArticle(normalized);
+          if (!local || local.content !== normalized.content || local.likes !== normalized.likes) {
+            setArticle(normalized);
+          }
           setLoading(false);
 
           // Update local cache with newly resolved article
@@ -290,12 +309,14 @@ export default function BlogDetailPage() {
 
         if (idQuery.data && isMounted) {
           const normalized = normalizeArticle(idQuery.data);
-          setArticle(normalized);
+          if (!local || local.content !== normalized.content || local.likes !== normalized.likes) {
+            setArticle(normalized);
+          }
           setLoading(false);
           return;
         }
       } catch (err) {
-        console.warn('[BlogDetailPage] Supabase fetch error, checking local articles:', err);
+        console.warn('[BlogDetailPage] Fetch error, checking local articles:', err);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -314,36 +335,23 @@ export default function BlogDetailPage() {
     };
   }, [targetIdentifier]);
 
-  // Load all articles for related stories list
+  // Load all articles for related stories list via SWR cache
   useEffect(() => {
-    async function loadAllArticles() {
-      try {
-        const { data, error } = await supabase
-          .from('articles')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (!error && Array.isArray(data) && data.length > 0) {
-          setAllArticles(data.map(normalizeArticle));
-          return;
-        }
-      } catch {}
-
-      try {
-        const saved = localStorage.getItem('fgc_portal_articles');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setAllArticles(parsed.map(normalizeArticle));
-            return;
-          }
-        }
-      } catch {}
-
-      setAllArticles(BLOG_POSTS.map(normalizeArticle));
+    let isMounted = true;
+    const cached = getCachedArticles();
+    if (cached && cached.length > 0) {
+      setAllArticles(cached);
     }
 
-    loadAllArticles();
+    fetchArticlesSWR((fresh) => {
+      if (isMounted && Array.isArray(fresh) && fresh.length > 0) {
+        setAllArticles(fresh);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Scroll to top and set dynamic document title, meta description & self-referencing canonical for SEO
@@ -597,18 +605,15 @@ export default function BlogDetailPage() {
         {/* Featured Image */}
         {article.image && (
           <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden mb-8 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
-            <img 
+            <OptimizedImage 
               src={article.image} 
               alt={article.title} 
-              width="1000"
-              height="562"
+              width={900}
+              height={506}
+              quality={80}
+              priority={true}
               className="w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = getCategoryFallbackImage(article.category, 0);
-              }}
+              fallbackSrc={getCategoryFallbackImage(article.category, 0)}
             />
           </div>
         )}
@@ -845,18 +850,14 @@ export default function BlogDetailPage() {
                 <div className="space-y-3">
                   {rel.image && (
                     <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative border border-slate-200/50 dark:border-white/5 aspect-[16/9]">
-                      <img 
+                      <OptimizedImage 
                         src={rel.image} 
                         alt={rel.title} 
-                        width="300"
-                        height="169"
+                        width={320}
+                        height={180}
+                        quality={75}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = getCategoryFallbackImage(rel.category, 0);
-                        }}
+                        fallbackSrc={getCategoryFallbackImage(rel.category, 0)}
                       />
                     </div>
                   )}

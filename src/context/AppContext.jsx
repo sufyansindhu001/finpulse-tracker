@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
+import { fetchArticlesSWR, getCachedArticles } from '../services/articlesService';
 
 const AppContext = createContext();
 
@@ -181,33 +182,26 @@ export function AppProvider({ children }) {
     return INITIAL_BLOG_POSTS;
   });
 
-  // Keep AppContext articles synced with Supabase in real-time
+  // Keep AppContext articles synced with SWR edge cache in background
   useEffect(() => {
-    async function syncSupabaseArticles() {
-      try {
-        const { data, error } = await supabase
-          .from('articles')
-          .select('*')
-          .order('created_at', { ascending: false });
+    let isMounted = true;
 
-        if (!error && Array.isArray(data) && data.length > 0) {
-          const normalized = data.map(normalizeArticle);
-          setArticles(normalized);
-          try {
-            localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(normalized));
-            localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(normalized));
-          } catch {}
-        }
-      } catch (e) {
-        console.warn('[AppContext] Supabase sync error:', e);
+    fetchArticlesSWR((freshArticles) => {
+      if (isMounted && Array.isArray(freshArticles) && freshArticles.length > 0) {
+        setArticles(freshArticles);
       }
-    }
+    });
 
-    syncSupabaseArticles();
+    const handleSync = () => {
+      const cached = getCachedArticles();
+      if (isMounted && cached.length > 0) {
+        setArticles(cached);
+      }
+    };
 
-    const handleSync = () => syncSupabaseArticles();
     window.addEventListener('fgc_articles_updated', handleSync);
     return () => {
+      isMounted = false;
       window.removeEventListener('fgc_articles_updated', handleSync);
     };
   }, []);

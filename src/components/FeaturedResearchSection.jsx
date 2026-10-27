@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, ArrowUpRight, Calendar, Clock } from 'lucide-react';
 import { getCategoryFallbackImage } from '../services/newsService';
+import OptimizedImage from './OptimizedImage';
 
 const FEATURED_ARTICLES = [
   {
@@ -83,18 +84,14 @@ export default function FeaturedResearchSection() {
                 to={`/blog/${article.slug}`}
                 className="relative aspect-video w-full overflow-hidden block bg-slate-200 dark:bg-white/5"
               >
-                <img
+                <OptimizedImage
                   src={article.image}
                   alt={article.title}
-                  width="400"
-                  height="225"
-                  loading="lazy"
-                  decoding="async"
+                  width={400}
+                  height={225}
+                  quality={75}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = getCategoryFallbackImage(article.category, 0);
-                  }}
+                  fallbackSrc={getCategoryFallbackImage(article.category, 0)}
                 />
                 <div className="absolute top-3 left-3 bg-[#06111F]/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold text-[#00E676] border border-[#00E676]/30">
                   {article.category}

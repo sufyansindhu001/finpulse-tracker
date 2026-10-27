@@ -9,6 +9,7 @@ import {
   Newspaper 
 } from 'lucide-react';
 import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 export default function MarketNewsWire({ limit = 6 }) {
   const [news, setNews] = useState([]);
@@ -205,9 +206,10 @@ export default function MarketNewsWire({ limit = 6 }) {
               const headline = decodeHtmlEntities(item.headline);
               const summary = decodeHtmlEntities(item.summary);
               const author = decodeHtmlEntities(item.author || item.source);
-              const fallbackImg = getCategoryFallbackImage(item.category, idx);
+              const fallbackImg = getOptimizedImageUrl(getCategoryFallbackImage(item.category, idx), { width: 400, format: 'webp' });
               const svgFallback = getCategoryFallbackSvg(item.category);
-              const imageSrc = item.image || fallbackImg;
+              const rawImg = item.image || fallbackImg;
+              const imageSrc = getOptimizedImageUrl(rawImg, { width: 400, format: 'webp' });
 
               return (
                 <a

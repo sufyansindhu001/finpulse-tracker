@@ -11,11 +11,46 @@ export const DEFAULT_CRYPTO_BENCHMARKS = [
   { id: 'cardano', symbol: 'ada', name: 'Cardano', current_price: 0.78, price_change_percentage_24h: -1.20, high_24h: 0.82, low_24h: 0.76, market_cap: 28000000000, total_volume: 1100000000, circulating_supply: 35700000000, image: 'https://assets.coingecko.com/coins/images/975/large/cardano.png' }
 ];
 
+export const CRYPTO_CACHE_KEY = 'fgc_spot_crypto_cache';
+const CRYPTO_CACHE_TTL_MS = 120 * 1000; // 2 minutes
+
+let inMemoryCryptoCache = null;
+
+function getCachedCrypto() {
+  if (inMemoryCryptoCache && (Date.now() - inMemoryCryptoCache.timestamp < CRYPTO_CACHE_TTL_MS)) {
+    return inMemoryCryptoCache.data;
+  }
+  try {
+    const raw = localStorage.getItem(CRYPTO_CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.data && (Date.now() - parsed.timestamp < CRYPTO_CACHE_TTL_MS)) {
+        inMemoryCryptoCache = parsed;
+        return parsed.data;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function saveCachedCrypto(data) {
+  try {
+    const record = { data, timestamp: Date.now() };
+    inMemoryCryptoCache = record;
+    localStorage.setItem(CRYPTO_CACHE_KEY, JSON.stringify(record));
+  } catch {}
+}
+
 /**
  * Fetches real-time crypto prices, 24h changes, market caps, and volumes
- * with a 2-second safeguard timeout and immediate benchmark price fallback.
+ * with memory/localStorage caching, a 2-second safeguard timeout, and benchmark price fallback.
  */
-export async function fetchLiveCryptoMarkets() {
+export async function fetchLiveCryptoMarkets(forceFresh = false) {
+  if (!forceFresh) {
+    const cached = getCachedCrypto();
+    if (cached) return cached;
+  }
+
   const controller = new AbortController();
   // 2-second timeout safeguard
   const timeoutId = setTimeout(() => controller.abort(), 2000);
@@ -31,12 +66,14 @@ export async function fetchLiveCryptoMarkets() {
 
     if (res.status === 429) {
       console.warn('Crypto API 429 rate limit - switching to benchmark cache');
-      return {
+      const fallbackResult = {
         success: true,
         data: DEFAULT_CRYPTO_BENCHMARKS,
         lastUpdated: new Date().toLocaleTimeString(),
         source: 'Benchmark Multi-Exchange Cache'
       };
+      saveCachedCrypto(fallbackResult);
+      return fallbackResult;
     }
 
     if (!res.ok) {
@@ -45,7 +82,7 @@ export async function fetchLiveCryptoMarkets() {
 
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) {
-      return {
+      const result = {
         success: true,
         data: data.map(coin => ({
           id: coin.id,
@@ -64,6 +101,8 @@ export async function fetchLiveCryptoMarkets() {
         lastUpdated: new Date().toLocaleTimeString(),
         source: 'Multi-Exchange Feeds (Live)'
       };
+      saveCachedCrypto(result);
+      return result;
     } else {
       throw new Error('Empty response from digital asset feed');
     }

@@ -122,10 +122,45 @@ export function calculateGoldLocalMetrics(goldPriceUsd = 4158.00, localRateAgain
   }
 }
 
+export const METALS_CACHE_KEY = 'fgc_spot_metals_cache';
+const METALS_CACHE_TTL_MS = 120 * 1000; // 2 minutes
+
+let inMemoryMetalsCache = null;
+
+function getCachedMetals() {
+  if (inMemoryMetalsCache && (Date.now() - inMemoryMetalsCache.timestamp < METALS_CACHE_TTL_MS)) {
+    return inMemoryMetalsCache.data;
+  }
+  try {
+    const raw = localStorage.getItem(METALS_CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.data && (Date.now() - parsed.timestamp < METALS_CACHE_TTL_MS)) {
+        inMemoryMetalsCache = parsed;
+        return parsed.data;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function saveCachedMetals(data) {
+  try {
+    const record = { data, timestamp: Date.now() };
+    inMemoryMetalsCache = record;
+    localStorage.setItem(METALS_CACHE_KEY, JSON.stringify(record));
+  } catch {}
+}
+
 /**
  * Fetches real-time Gold and Silver spot rates with fallback to public CDN feeder
  */
-export async function fetchLiveMetals() {
+export async function fetchLiveMetals(forceFresh = false) {
+  if (!forceFresh) {
+    const cached = getCachedMetals();
+    if (cached) return cached;
+  }
+
   // 1. Try serverless /api/metals route
   try {
     const controller = new AbortController();
@@ -139,7 +174,7 @@ export async function fetchLiveMetals() {
     if (res.ok) {
       const data = await res.json();
       if (data && data.gold && data.silver && typeof data.gold.price === 'number' && data.gold.price > 1000) {
-        return {
+        const result = {
           success: true,
           gold: data.gold,
           silver: data.silver,
@@ -150,6 +185,8 @@ export async function fetchLiveMetals() {
           source: data.source || 'Global Bullion & Commodity Desk (Live)',
           lastUpdated: data.lastUpdated || new Date().toLocaleTimeString()
         };
+        saveCachedMetals(result);
+        return result;
       }
     }
   } catch {

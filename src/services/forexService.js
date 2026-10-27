@@ -35,17 +35,28 @@ export const DEFAULT_RATES = {
 };
 
 export const RATES_CACHE_KEY = 'fgc_spot_forex_rates';
-export const CACHE_TTL_MS = 30 * 1000; // 30 seconds live client-side cache TTL
+export const CACHE_TTL_MS = 120 * 1000; // 2 minutes live fresh client-side cache TTL
+export const SWR_MAX_AGE_MS = 600 * 1000; // 10 minutes stale-while-revalidate TTL
 
 const OPEN_EXCHANGE_URL = 'https://open.er-api.com/v6/latest/USD';
 const JSDELIVR_URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
 const FLOATRATES_URL = 'https://www.floatrates.com/daily/usd.json';
 
+let inMemoryRatesCache = null;
+let inFlightForexPromise = null;
+
 /**
- * Retrieves valid cached rates from localStorage.
+ * Retrieves valid cached rates from in-memory cache or localStorage.
  * Automatically invalidates if older than 10 minutes or containing outdated rates.
  */
-export function getCachedRates() {
+export function getCachedRates(allowStale = false) {
+  if (inMemoryRatesCache && typeof inMemoryRatesCache.timestamp === 'number') {
+    const age = Date.now() - inMemoryRatesCache.timestamp;
+    if (age <= CACHE_TTL_MS || (allowStale && age <= SWR_MAX_AGE_MS)) {
+      return inMemoryRatesCache;
+    }
+  }
+
   try {
     const raw = localStorage.getItem(RATES_CACHE_KEY);
     if (!raw) return null;
@@ -55,9 +66,11 @@ export function getCachedRates() {
       return null;
     }
 
-    // Invalidate if cache age exceeds 10 minutes
     const age = Date.now() - parsed.timestamp;
-    if (age > CACHE_TTL_MS) {
+    if (age > SWR_MAX_AGE_MS) {
+      return null;
+    }
+    if (!allowStale && age > CACHE_TTL_MS) {
       return null;
     }
 
@@ -67,55 +80,82 @@ export function getCachedRates() {
       return null;
     }
 
+    inMemoryRatesCache = parsed;
     return parsed;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
 
 /**
- * Saves fresh rates to localStorage with timestamp.
+ * Saves fresh rates to memory and localStorage with timestamp.
  */
 export function saveRatesToCache(data) {
   try {
-    localStorage.setItem(RATES_CACHE_KEY, JSON.stringify({
+    const record = {
       rates: data.rates,
       base: data.base || 'USD',
       lastUpdated: data.lastUpdated || new Date().toISOString(),
       source: data.source || 'Live Interbank Feeds',
       timestamp: Date.now()
-    }));
-  } catch (e) {}
+    };
+    inMemoryRatesCache = record;
+    localStorage.setItem(RATES_CACHE_KEY, JSON.stringify(record));
+  } catch {}
 }
 
 /**
  * Robust live exchange rates fetcher:
- * 1. Checks 10-minute cache (bypassed if forceFresh is true).
- * 2. Fetches open.er-api.com and floatrates.com concurrently with cache-busting headers.
+ * 1. Checks memory & localStorage cache (bypassed if forceFresh is true).
+ * 2. Fetches open.er-api.com and floatrates.com concurrently with SWR deduplication.
  * 3. Incorporates low-latency mid-market rates (accurately reflecting ~277.10 PKR).
  * 4. Gracefully merges live quotes with reliable DEFAULT_RATES baseline.
  */
 export async function fetchLiveExchangeRates(forceFresh = false) {
   if (!forceFresh) {
-    const cached = getCachedRates();
-    if (cached) {
+    const freshCached = getCachedRates(false);
+    if (freshCached) {
       return {
         success: true,
-        rates: cached.rates,
-        base: cached.base || 'USD',
-        lastUpdated: cached.lastUpdated,
-        source: `${cached.source} (Cache Active)`
+        rates: freshCached.rates,
+        base: freshCached.base || 'USD',
+        lastUpdated: freshCached.lastUpdated,
+        source: `${freshCached.source} (Cache Active)`
+      };
+    }
+
+    // If stale cache exists, return it immediately and trigger background sync
+    const staleCached = getCachedRates(true);
+    if (staleCached) {
+      // Background revalidation
+      fetchLiveExchangeRates(true).catch(() => {});
+      return {
+        success: true,
+        rates: staleCached.rates,
+        base: staleCached.base || 'USD',
+        lastUpdated: staleCached.lastUpdated,
+        source: `${staleCached.source} (SWR Active)`
       };
     }
   }
 
-  try {
-    const [forexRes, jsDelivrRes, floatRes, metalsRes] = await Promise.allSettled([
-      fetch(`${OPEN_EXCHANGE_URL}?_t=${Date.now()}`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null),
-      fetch(`${JSDELIVR_URL}?_t=${Date.now()}`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null),
-      fetch(`${FLOATRATES_URL}?_t=${Date.now()}`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null),
-      fetch('/api/metals', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
-    ]);
+  // Deduplicate concurrent in-flight requests
+  if (inFlightForexPromise) {
+    return inFlightForexPromise;
+  }
+
+  inFlightForexPromise = (async () => {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 4500);
+
+      const [forexRes, jsDelivrRes, floatRes, metalsRes] = await Promise.allSettled([
+        fetch(OPEN_EXCHANGE_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
+        fetch(JSDELIVR_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
+        fetch(FLOATRATES_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
+        fetch('/api/metals', { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null)
+      ]);
+      clearTimeout(timeout);
 
     const erData = forexRes.status === 'fulfilled' ? forexRes.value : null;
     const jsData = jsDelivrRes.status === 'fulfilled' ? jsDelivrRes.value : null;
@@ -201,6 +241,13 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
       source: 'Interbank Baseline Rates'
     };
+  }
+  })();
+
+  try {
+    return await inFlightForexPromise;
+  } finally {
+    inFlightForexPromise = null;
   }
 }
 

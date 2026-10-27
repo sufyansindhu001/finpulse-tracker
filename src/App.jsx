@@ -163,7 +163,7 @@ export default function App() {
     setIsRefreshing(true);
 
     // 1. Fetch Live Fiat Rates (low-latency interbank mid-market feeds)
-    const forexPromise = fetchLiveExchangeRates(true)
+    const forexPromise = fetchLiveExchangeRates(isManual)
       .then((res) => {
         if (res && res.rates && typeof res.rates === 'object' && Object.keys(res.rates).length > 0) {
           setRates(res.rates);
@@ -181,7 +181,7 @@ export default function App() {
       });
 
     // 2. Fetch Live Crypto Markets
-    const cryptoPromise = fetchLiveCryptoMarkets()
+    const cryptoPromise = fetchLiveCryptoMarkets(isManual)
       .then((res) => {
         if (res && Array.isArray(res.data) && res.data.length > 0) {
           setCryptoList(res.data);
