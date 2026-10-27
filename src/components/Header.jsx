@@ -54,13 +54,13 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
   // Fast route chunk preloader for instant navigation (<0.1s)
   const preloadRoute = (path) => {
     switch (path) {
-      case '/stocks': import('../pages/StocksPage'); break;
-      case '/rates': import('../pages/RatesPage'); break;
-      case '/crypto': import('../pages/CryptoPage'); break;
-      case '/charts': import('../pages/ChartsPage'); break;
-      case '/converter': import('../pages/ConverterPage'); break;
-      case '/news': import('../pages/NewsPage'); break;
-      case '/blog': import('../pages/BlogPage'); break;
+      case '/stocks': import('../pages/StocksPage').catch(() => {}); break;
+      case '/rates': import('../pages/RatesPage').catch(() => {}); break;
+      case '/crypto': import('../pages/CryptoPage').catch(() => {}); break;
+      case '/charts': import('../pages/ChartsPage').catch(() => {}); break;
+      case '/converter': import('../pages/ConverterPage').catch(() => {}); break;
+      case '/news': import('../pages/NewsPage').catch(() => {}); break;
+      case '/blog': import('../pages/BlogPage').catch(() => {}); break;
       default: break;
     }
   };

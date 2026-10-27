@@ -6,6 +6,14 @@ import App from './App.jsx'
 import { AppProvider } from './context/AppContext'
 import GlobalErrorBoundary from './components/GlobalErrorBoundary'
 
+// Auto-recover from stale deployment chunks across client sessions
+if (typeof window !== 'undefined') {
+  window.addEventListener('vite:preloadError', (event) => {
+    console.warn('[Vite] Deployment chunk hash change detected; reloading latest build...', event);
+    window.location.reload();
+  });
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <GlobalErrorBoundary>

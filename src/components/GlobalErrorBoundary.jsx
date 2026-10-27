@@ -14,6 +14,31 @@ export default class GlobalErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     console.error('[GlobalErrorBoundary] Caught unexpected UI exception:', error, errorInfo);
     this.setState({ errorInfo });
+
+    // Auto-reload on deployment chunk load errors so users never see the error modal
+    const isChunkError =
+      error?.message?.includes('Failed to fetch dynamically imported module') ||
+      error?.message?.includes('error loading dynamically imported module') ||
+      error?.message?.includes('Loading chunk') ||
+      error?.name === 'ChunkLoadError' ||
+      error?.message?.includes('MIME type');
+
+    if (isChunkError && typeof window !== 'undefined') {
+      const lockKey = 'fgc_global_chunk_reload_lock';
+      let hasReloaded = false;
+      try {
+        hasReloaded = sessionStorage.getItem(lockKey) === 'true';
+      } catch {}
+
+      if (!hasReloaded) {
+        try {
+          sessionStorage.setItem(lockKey, 'true');
+        } catch {}
+        const url = new URL(window.location.href);
+        url.searchParams.set('_v', Date.now().toString());
+        window.location.replace(url.toString());
+      }
+    }
   }
 
   handleReload = () => {

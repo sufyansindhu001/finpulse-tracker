@@ -16,27 +16,29 @@ import MarketIntelligenceMethodology from './components/MarketIntelligenceMethod
 import FeaturedResearchSection from './components/FeaturedResearchSection';
 import Footer from './components/Footer';
 
-// Modals lazy-loaded on user action for zero initial bundle overhead
-const SearchModal = lazy(() => import('./components/SearchModal'));
-const CryptoConverterModal = lazy(() => import('./components/CryptoConverterModal'));
+import { lazyWithRetry } from './utils/lazyWithRetry';
 
-// Standalone dedicated pages & terminal views
-const StocksPage = lazy(() => import('./pages/StocksPage'));
-const RatesPage = lazy(() => import('./pages/RatesPage'));
-const CryptoPage = lazy(() => import('./pages/CryptoPage'));
-const GoldPage = lazy(() => import('./pages/GoldPage'));
-const ChartsPage = lazy(() => import('./pages/ChartsPage'));
-const ConverterPage = lazy(() => import('./pages/ConverterPage'));
-const NewsPage = lazy(() => import('./pages/NewsPage'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
-const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
-const ArticleView = lazy(() => import('./components/ArticleView'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
-const TermsPage = lazy(() => import('./pages/TermsPage'));
-const DisclaimerPage = lazy(() => import('./pages/DisclaimerPage'));
-const AdminPage = lazy(() => import('./pages/AdminPage'));
+// Modals lazy-loaded on user action with deployment retry protection
+const SearchModal = lazyWithRetry(() => import('./components/SearchModal'));
+const CryptoConverterModal = lazyWithRetry(() => import('./components/CryptoConverterModal'));
+
+// Standalone dedicated pages & terminal views with deployment retry protection
+const StocksPage = lazyWithRetry(() => import('./pages/StocksPage'));
+const RatesPage = lazyWithRetry(() => import('./pages/RatesPage'));
+const CryptoPage = lazyWithRetry(() => import('./pages/CryptoPage'));
+const GoldPage = lazyWithRetry(() => import('./pages/GoldPage'));
+const ChartsPage = lazyWithRetry(() => import('./pages/ChartsPage'));
+const ConverterPage = lazyWithRetry(() => import('./pages/ConverterPage'));
+const NewsPage = lazyWithRetry(() => import('./pages/NewsPage'));
+const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
+const BlogDetailPage = lazyWithRetry(() => import('./pages/BlogDetailPage'));
+const ArticleView = lazyWithRetry(() => import('./components/ArticleView'));
+const AboutPage = lazyWithRetry(() => import('./pages/AboutPage'));
+const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
+const PrivacyPolicyPage = lazyWithRetry(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'));
+const DisclaimerPage = lazyWithRetry(() => import('./pages/DisclaimerPage'));
+const AdminPage = lazyWithRetry(() => import('./pages/AdminPage'));
 
 import { CheckCircle } from 'lucide-react';
 import { recordPageView } from './utils/telemetry';
@@ -87,12 +89,12 @@ export default function App() {
   useEffect(() => {
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
       window.requestIdleCallback(() => {
-        import('./pages/StocksPage');
-        import('./pages/BlogPage');
-        import('./pages/RatesPage');
-        import('./pages/ConverterPage');
-        import('./pages/NewsPage');
-        import('./pages/ChartsPage');
+        import('./pages/StocksPage').catch(() => {});
+        import('./pages/BlogPage').catch(() => {});
+        import('./pages/RatesPage').catch(() => {});
+        import('./pages/ConverterPage').catch(() => {});
+        import('./pages/NewsPage').catch(() => {});
+        import('./pages/ChartsPage').catch(() => {});
       });
     }
   }, []);
