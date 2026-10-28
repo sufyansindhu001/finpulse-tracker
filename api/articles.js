@@ -7,8 +7,10 @@ const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPA
 
 function sanitizeArticle(art) {
   if (!art) return art;
-  let cleanImage = art.image || art.cover_image || art.coverImage || art.featured_image || art.featuredImage;
-  if (!cleanImage || typeof cleanImage !== 'string' || cleanImage.startsWith('data:') || cleanImage.length > 2000) {
+  let cleanImage = art.image || art.cover_image || art.coverImage || art.featured_image || art.featuredImage || art.img;
+  if (cleanImage && typeof cleanImage === 'string' && cleanImage.trim().length > 0) {
+    cleanImage = cleanImage.trim();
+  } else {
     const cat = (art.category || '').toLowerCase();
     if (cat.includes('crypto')) {
       cleanImage = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';

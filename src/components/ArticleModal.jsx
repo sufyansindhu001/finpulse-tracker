@@ -71,10 +71,10 @@ export default function ArticleModal({ article, onClose }) {
         </div>
 
         {/* Featured Image */}
-        {article.image && (
+        {(article.image || article.coverImage || article.featuredImage) && (
           <div className="w-full h-56 sm:h-72 rounded-xl overflow-hidden mb-6 border border-slate-800 relative bg-slate-900">
             <img 
-              src={article.image} 
+              src={article.image || article.coverImage || article.featuredImage} 
               alt={article.title} 
               className="w-full h-full object-cover"
               loading="eager"

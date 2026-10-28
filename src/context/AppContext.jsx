@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
-import { fetchArticlesSWR, getCachedArticles } from '../services/articlesService';
+import { fetchArticlesSWR, getCachedArticles, ARTICLES_CACHE_KEY } from '../services/articlesService';
 
 const AppContext = createContext();
 
@@ -9,7 +9,7 @@ const AppContext = createContext();
 // STANDARDIZED PORTAL LOCALSTORAGE KEYS
 // -------------------------------------------------------------
 export const PORTAL_KEYS = {
-  ARTICLES: 'fgc_portal_articles',
+  ARTICLES: ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3',
   MESSAGES: 'fgc_portal_messages',
   SUBSCRIBERS: 'fgc_portal_subscribers',
   SETTINGS: 'fgc_portal_settings',
@@ -149,7 +149,9 @@ export function AppProvider({ children }) {
   const saveArticles = (newArticles) => {
     setArticles(newArticles);
     try {
-      localStorage.setItem(PORTAL_KEYS.ARTICLES, JSON.stringify(newArticles));
+      const cacheKey = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
+      localStorage.setItem(cacheKey, JSON.stringify(newArticles));
+      localStorage.setItem('fgc_portal_articles', JSON.stringify(newArticles));
       localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(newArticles));
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('fgc_articles_updated'));
@@ -213,19 +215,26 @@ export function AppProvider({ children }) {
 
   const updateArticle = async (id, updatedFields) => {
     if (!id) return;
+    const newImage = updatedFields.image !== undefined ? updatedFields.image : undefined;
+
     try {
+      const dbUpdate = {
+        title: updatedFields.title,
+        category: updatedFields.category,
+        author: updatedFields.author,
+        tags: updatedFields.tags,
+        excerpt: updatedFields.excerpt || updatedFields.summary,
+        content: updatedFields.content,
+        read_time: updatedFields.read_time || updatedFields.readTime
+      };
+      if (newImage !== undefined) {
+        dbUpdate.image = newImage;
+        dbUpdate.cover_image = newImage;
+      }
+
       await supabase
         .from('articles')
-        .update({
-          title: updatedFields.title,
-          category: updatedFields.category,
-          author: updatedFields.author,
-          tags: updatedFields.tags,
-          image: updatedFields.image,
-          excerpt: updatedFields.excerpt || updatedFields.summary,
-          content: updatedFields.content,
-          read_time: updatedFields.read_time || updatedFields.readTime
-        })
+        .update(dbUpdate)
         .or(`id.eq.${id},slug.eq.${id}`);
     } catch (e) {
       console.warn('[AppContext] Supabase update error:', e);
@@ -233,7 +242,8 @@ export function AppProvider({ children }) {
 
     let currentList = articles;
     try {
-      const saved = localStorage.getItem(PORTAL_KEYS.ARTICLES);
+      const cacheKey = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
+      const saved = localStorage.getItem(cacheKey) || localStorage.getItem('fgc_portal_articles');
       if (saved !== null) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) currentList = parsed;
@@ -244,9 +254,13 @@ export function AppProvider({ children }) {
       if (art.id === id || art.slug === id) {
         const summaryText = updatedFields.summary !== undefined ? updatedFields.summary : (art.summary || art.excerpt || '');
         const excerptText = updatedFields.excerpt !== undefined ? updatedFields.excerpt : (art.excerpt || summaryText);
+        const resolvedImage = newImage !== undefined ? newImage : (art.image || art.coverImage);
         return {
           ...art,
           ...updatedFields,
+          image: resolvedImage,
+          coverImage: resolvedImage,
+          featuredImage: resolvedImage,
           summary: summaryText,
           excerpt: excerptText,
           tags: Array.isArray(updatedFields.tags) 

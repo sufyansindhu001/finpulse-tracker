@@ -112,9 +112,9 @@ export default function ResearchSection({ limit, showViewAll = false }) {
                 <div>
                   {/* Thumbnail Banner */}
                   <div className="w-full h-44 overflow-hidden relative bg-slate-100 dark:bg-[#07090E] border-b border-slate-200 dark:border-white/[0.06]">
-                    {post.image ? (
+                    {(post.image || post.coverImage || post.featuredImage) ? (
                       <img
-                        src={post.image}
+                        src={post.image || post.coverImage || post.featuredImage}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
@@ -254,10 +254,10 @@ export default function ResearchSection({ limit, showViewAll = false }) {
               </div>
 
               {/* Drawer Image */}
-              {activeDrawerArticle.image && (
+              {(activeDrawerArticle.image || activeDrawerArticle.coverImage || activeDrawerArticle.featuredImage) && (
                 <div className="w-full h-56 rounded-2xl overflow-hidden mb-6 border border-slate-200 dark:border-white/[0.08]">
                   <img 
-                    src={activeDrawerArticle.image} 
+                    src={activeDrawerArticle.image || activeDrawerArticle.coverImage || activeDrawerArticle.featuredImage} 
                     alt={activeDrawerArticle.title} 
                     className="w-full h-full object-cover" 
                     loading="lazy"

@@ -29,10 +29,10 @@ const BlogArticleCard = memo(function BlogArticleCard({ post }) {
       className="rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 p-4 sm:p-6 flex flex-col justify-between transition-all duration-300 group shadow-sm dark:shadow-xl hover:-translate-y-1 hover:shadow-xl hover:shadow-[#00E676]/10"
     >
       <div className="space-y-3 sm:space-y-4">
-        {post.image && (
+        {(post.image || post.coverImage || post.featuredImage) && (
           <div className="w-full h-36 sm:h-44 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] relative aspect-[16/9]">
             <OptimizedImage 
-              src={post.image} 
+              src={post.image || post.coverImage || post.featuredImage} 
               alt={post.title} 
               width={400}
               height={225}
@@ -245,7 +245,7 @@ export default function BlogPage() {
             <div className="lg:col-span-5">
               <div className="h-64 sm:h-72 rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 relative aspect-[16/9]">
                 <OptimizedImage 
-                  src={featuredPost.image} 
+                  src={featuredPost.image || featuredPost.coverImage || featuredPost.featuredImage} 
                   alt={featuredPost.title}
                   width={600}
                   height={338}

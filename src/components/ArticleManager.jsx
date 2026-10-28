@@ -11,8 +11,11 @@ import {
 } from 'lucide-react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
+import { compressImageFile } from '../utils/imageCompressor';
+import GalleryModal from './GalleryModal';
+import { ARTICLES_CACHE_KEY } from '../services/articlesService';
 
-const STORAGE_KEY = 'fgc_portal_articles';
+const STORAGE_KEY = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
 const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
 
 const INITIAL_FORM_STATE = {
@@ -31,6 +34,7 @@ export default function ArticleManager() {
   const [editingArticleId, setEditingArticleId] = useState(null);
   const [articleSaved, setArticleSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [tableCategoryFilter, setTableCategoryFilter] = useState('ALL');
 
   // Local storage fallback loader
@@ -117,6 +121,7 @@ export default function ArticleManager() {
     setArticles(updatedList);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList));
+      localStorage.setItem('fgc_portal_articles', JSON.stringify(updatedList));
       localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(updatedList));
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('fgc_articles_updated'));
@@ -160,6 +165,7 @@ export default function ArticleManager() {
         author,
         tags,
         image,
+        cover_image: image,
         excerpt,
         content,
         read_time
@@ -196,6 +202,7 @@ export default function ArticleManager() {
         author,
         tags,
         image,
+        cover_image: image,
         excerpt,
         content,
         read_time,
@@ -268,14 +275,22 @@ export default function ArticleManager() {
     persistArticles(updated);
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e?.target?.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setArticleForm(prev => ({ ...prev, image: reader.result || '' }));
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressed = await compressImageFile(file, 1200, 800, 0.82);
+        if (compressed) {
+          setArticleForm(prev => ({ ...prev, image: compressed }));
+        }
+      } catch (err) {
+        console.warn('[ArticleManager] Image compression error, falling back:', err);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setArticleForm(prev => ({ ...prev, image: reader.result || '' }));
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -408,20 +423,41 @@ export default function ArticleManager() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-              Cover Image URL or File Upload
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400">
+                Cover Image
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsGalleryOpen(true)}
+                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>Browse Curated Gallery</span>
+              </button>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="url"
                 value={articleForm.image}
                 onChange={(e) => setArticleForm(prev => ({ ...prev, image: e.target.value }))}
-                placeholder="https://images.unsplash.com/photo-..."
+                placeholder="Image URL (https://...) or upload below"
                 className="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
               />
+
+              <button
+                type="button"
+                onClick={() => setIsGalleryOpen(true)}
+                className="px-4 py-2.5 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-blue-200 dark:border-blue-800"
+              >
+                <ImageIcon className="w-4 h-4" />
+                <span>Gallery</span>
+              </button>
+
               <label className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shrink-0 border border-slate-300 dark:border-slate-700">
                 <ImageIcon className="w-4 h-4 text-blue-500" />
-                <span>Upload Image</span>
+                <span>Upload File</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -430,11 +466,28 @@ export default function ArticleManager() {
                 />
               </label>
             </div>
+
             {articleForm.image && (
-              <div className="mt-3 w-32 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                <img src={articleForm.image} alt="Preview" className="w-full h-full object-cover" />
+              <div className="mt-3 flex items-center gap-3">
+                <div className="w-36 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 relative bg-slate-100 dark:bg-[#07090E]">
+                  <img src={articleForm.image} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setArticleForm(prev => ({ ...prev, image: '' }))}
+                  className="text-xs text-rose-500 hover:text-rose-600 font-semibold cursor-pointer underline"
+                >
+                  Remove Image
+                </button>
               </div>
             )}
+
+            <GalleryModal
+              isOpen={isGalleryOpen}
+              onClose={() => setIsGalleryOpen(false)}
+              onSelect={(url) => setArticleForm(prev => ({ ...prev, image: url }))}
+              currentUrl={articleForm.image}
+            />
           </div>
 
           <div>

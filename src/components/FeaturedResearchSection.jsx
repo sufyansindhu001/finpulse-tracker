@@ -85,7 +85,7 @@ export default function FeaturedResearchSection() {
                 className="relative aspect-video w-full overflow-hidden block bg-slate-200 dark:bg-white/5"
               >
                 <OptimizedImage
-                  src={article.image}
+                  src={article.image || article.coverImage || article.featuredImage}
                   alt={article.title}
                   width={400}
                   height={225}

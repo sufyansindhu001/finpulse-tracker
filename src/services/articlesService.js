@@ -38,6 +38,8 @@ export function purgeArticlesCache() {
     localStorage.removeItem(ARTICLES_CACHE_KEY);
     localStorage.removeItem('fgc_portal_articles');
     localStorage.removeItem('fgc_portal_articles_v2');
+    localStorage.removeItem('fgc_portal_articles_v3');
+    localStorage.removeItem('fgc_spot_blog_posts');
     localStorage.removeItem(ARTICLES_LAST_FETCH_KEY);
   } catch {}
 }
@@ -55,7 +57,7 @@ export function getCachedArticles() {
   }
 
   try {
-    const saved = localStorage.getItem(ARTICLES_CACHE_KEY);
+    const saved = localStorage.getItem(ARTICLES_CACHE_KEY) || localStorage.getItem('fgc_portal_articles');
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length >= bundled.length) {

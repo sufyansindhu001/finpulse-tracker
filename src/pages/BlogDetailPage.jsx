@@ -20,7 +20,7 @@ import { updateSEO, updateCanonical } from '../utils/seo';
 import { getRelatedArticles } from '../utils/relatedArticles';
 import { getCategoryFallbackImage } from '../services/newsService';
 import OptimizedImage from '../components/OptimizedImage';
-import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR } from '../services/articlesService';
+import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR, ARTICLES_CACHE_KEY } from '../services/articlesService';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -236,23 +236,58 @@ function BlogDetailPageContent() {
       }
 
       try {
-        // 1. Try Vercel Edge Cached Endpoint first
-        const edgeRes = await fetch(`/api/articles?slug=${encodeURIComponent(cleanTarget)}`, {
-          headers: { 'Accept': 'application/json' }
+        const hasDiff = (a, b) => {
+          if (!a || !b) return true;
+          return (
+            a.image !== b.image ||
+            a.coverImage !== b.coverImage ||
+            a.featuredImage !== b.featuredImage ||
+            a.title !== b.title ||
+            a.content !== b.content ||
+            a.summary !== b.summary ||
+            a.likes !== b.likes
+          );
+        };
+
+        const updateLocalCache = (newItem) => {
+          try {
+            const cacheKey = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
+            const saved = localStorage.getItem(cacheKey) || localStorage.getItem('fgc_portal_articles');
+            let list = saved ? JSON.parse(saved) : [];
+            if (Array.isArray(list)) {
+              const idx = list.findIndex(a => (a.slug || a.id) === (newItem.slug || newItem.id));
+              if (idx >= 0) {
+                list[idx] = newItem;
+              } else {
+                list.push(newItem);
+              }
+              localStorage.setItem(cacheKey, JSON.stringify(list));
+              localStorage.setItem('fgc_portal_articles', JSON.stringify(list));
+              window.dispatchEvent(new Event('fgc_articles_updated'));
+            }
+          } catch {}
+        };
+
+        // 1. Try Vercel Edge Endpoint with cache-busting timestamp
+        const edgeRes = await fetch(`/api/articles?slug=${encodeURIComponent(cleanTarget)}&_t=${Date.now()}`, {
+          headers: { 
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache'
+          }
         }).then(r => r.ok ? r.json() : null).catch(() => null);
 
         if (edgeRes?.data && isMounted) {
           const normalized = normalizeArticle(edgeRes.data);
-          // Only update state if content or likes differs to prevent re-render flash
-          if (!local || local.content !== normalized.content || local.likes !== normalized.likes) {
+          if (hasDiff(local, normalized)) {
             setArticle(normalized);
           }
+          updateLocalCache(normalized);
           setLoading(false);
           return;
         }
 
         // 2. Supabase query matching by slug
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('articles')
           .select('*')
           .eq('slug', cleanTarget)
@@ -260,25 +295,11 @@ function BlogDetailPageContent() {
 
         if (data && isMounted) {
           const normalized = normalizeArticle(data);
-          if (!local || local.content !== normalized.content || local.likes !== normalized.likes) {
+          if (hasDiff(local, normalized)) {
             setArticle(normalized);
           }
+          updateLocalCache(normalized);
           setLoading(false);
-
-          // Update local cache with newly resolved article
-          try {
-            const saved = localStorage.getItem('fgc_portal_articles');
-            let list = saved ? JSON.parse(saved) : [];
-            if (Array.isArray(list)) {
-              const idx = list.findIndex(a => (a.slug || a.id) === (normalized.slug || normalized.id));
-              if (idx >= 0) {
-                list[idx] = normalized;
-              } else {
-                list.push(normalized);
-              }
-              localStorage.setItem('fgc_portal_articles', JSON.stringify(list));
-            }
-          } catch {}
           return;
         }
 
@@ -291,9 +312,10 @@ function BlogDetailPageContent() {
 
         if (idQuery.data && isMounted) {
           const normalized = normalizeArticle(idQuery.data);
-          if (!local || local.content !== normalized.content || local.likes !== normalized.likes) {
+          if (hasDiff(local, normalized)) {
             setArticle(normalized);
           }
+          updateLocalCache(normalized);
           setLoading(false);
           return;
         }

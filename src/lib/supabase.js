@@ -79,8 +79,10 @@ export function normalizeArticle(raw) {
       }));
   const readTimeStr = raw.readTime || raw.read_time || `${Math.max(1, Math.ceil(((raw.content || '').split(' ').length) / 200))} min read`;
 
-  let cleanImage = raw.image || raw.cover_image || raw.coverImage || raw.featured_image || raw.featuredImage;
-  if (!cleanImage || typeof cleanImage !== 'string' || cleanImage.startsWith('data:') || cleanImage.length > 2000) {
+  let cleanImage = raw.image || raw.cover_image || raw.coverImage || raw.featured_image || raw.featuredImage || raw.img;
+  if (cleanImage && typeof cleanImage === 'string' && cleanImage.trim().length > 0) {
+    cleanImage = cleanImage.trim();
+  } else {
     const cat = (raw.category || '').toLowerCase();
     if (cat.includes('crypto')) {
       cleanImage = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';
