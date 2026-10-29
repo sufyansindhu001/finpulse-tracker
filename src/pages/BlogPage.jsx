@@ -39,6 +39,7 @@ const BlogArticleCard = memo(function BlogArticleCard({ post }) {
               quality={75}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
               fallbackSrc={fallbackCover}
+              version={post.updated_at || post.created_at}
             />
           </div>
         )}
@@ -253,6 +254,7 @@ export default function BlogPage() {
                   priority={true}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   fallbackSrc={featuredFallbackCover}
+                  version={featuredPost.updated_at || featuredPost.created_at}
                 />
               </div>
             </div>

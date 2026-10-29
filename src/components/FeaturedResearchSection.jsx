@@ -92,6 +92,7 @@ export default function FeaturedResearchSection() {
                   quality={75}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   fallbackSrc={getCategoryFallbackImage(article.category, 0)}
+                  version={article.updated_at || article.created_at}
                 />
                 <div className="absolute top-3 left-3 bg-[#06111F]/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold text-[#00E676] border border-[#00E676]/30">
                   {article.category}

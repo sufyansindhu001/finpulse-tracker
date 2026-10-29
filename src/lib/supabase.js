@@ -64,6 +64,32 @@ function stripSpanMarkup(text) {
 }
 
 /**
+ * Appends a cache-busting version parameter to remote HTTP/HTTPS image URLs,
+ * while leaving data URIs, SVGs, and blob URLs completely untouched.
+ */
+export function withImageVersion(url, timestamp) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('data:') || url.startsWith('blob:') || url.endsWith('.svg')) {
+    return url;
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return url;
+  }
+  try {
+    const u = new URL(url);
+    const v = timestamp ? new Date(timestamp).getTime() : null;
+    if (v && !isNaN(v)) {
+      u.searchParams.set('v', String(v));
+    } else if (!u.searchParams.has('v')) {
+      u.searchParams.set('v', '1');
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+/**
  * Standardize article attributes between Supabase column schema and React UI props.
  * Supabase uses snake_case (read_time, created_at) while JSX often uses camelCase (readTime, date).
  */
@@ -95,6 +121,9 @@ export function normalizeArticle(raw) {
     }
   }
 
+  // Version remote image URL if applicable
+  const versionedImage = withImageVersion(cleanImage, raw.updated_at || raw.created_at);
+
   return {
     ...raw,
     id: raw.id || raw.slug,
@@ -106,18 +135,19 @@ export function normalizeArticle(raw) {
     read_time: readTimeStr,
     date: dateFormatted,
     created_at: raw.created_at || new Date().toISOString(),
+    updated_at: raw.updated_at || raw.created_at || new Date().toISOString(),
     summary: stripSpanMarkup(raw.summary || raw.excerpt) || '',
     excerpt: stripSpanMarkup(raw.excerpt || raw.summary) || '',
     content: raw.content || '',
     likes: typeof raw.likes === 'number' ? raw.likes : (raw.likes ? parseInt(raw.likes, 10) : undefined),
-    image: cleanImage,
-    coverImage: cleanImage,
-    featuredImage: cleanImage,
+    image: versionedImage,
+    coverImage: versionedImage,
+    featuredImage: versionedImage,
     tags: parseTags(raw.tags)
   };
 }
 
 // Re-export high-performance slug retrieval helpers for global drop-in availability
-export { getCachedArticleBySlug, getArticleBySlug, purgeArticlesCache } from '../services/articlesService';
+export { getCachedArticleBySlug, getArticleBySlug, purgeArticlesCache, updateArticlesCache } from '../services/articlesService';
 
 export default supabase;

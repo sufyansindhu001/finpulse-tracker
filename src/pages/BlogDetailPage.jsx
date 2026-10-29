@@ -20,7 +20,7 @@ import { updateSEO, updateCanonical } from '../utils/seo';
 import { getRelatedArticles } from '../utils/relatedArticles';
 import { getCategoryFallbackImage } from '../services/newsService';
 import OptimizedImage from '../components/OptimizedImage';
-import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR, ARTICLES_CACHE_KEY } from '../services/articlesService';
+import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR, ARTICLES_CACHE_KEY, updateArticlesCache } from '../services/articlesService';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -263,16 +263,19 @@ function BlogDetailPageContent() {
               }
               localStorage.setItem(cacheKey, JSON.stringify(list));
               localStorage.setItem('fgc_portal_articles', JSON.stringify(list));
+              updateArticlesCache(list);
               window.dispatchEvent(new Event('fgc_articles_updated'));
             }
           } catch {}
         };
 
-        // 1. Try Vercel Edge Endpoint with cache-busting timestamp
-        const edgeRes = await fetch(`/api/articles?slug=${encodeURIComponent(cleanTarget)}&_t=${Date.now()}`, {
+        // 1. Try Vercel Edge Endpoint with cache-busting timestamp & fresh bypass
+        const edgeRes = await fetch(`/api/articles?slug=${encodeURIComponent(cleanTarget)}&_t=${Date.now()}&fresh=1`, {
+          cache: 'no-store',
           headers: { 
             'Accept': 'application/json',
-            'Cache-Control': 'no-cache'
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache'
           }
         }).then(r => r.ok ? r.json() : null).catch(() => null);
 
@@ -632,6 +635,7 @@ function BlogDetailPageContent() {
               priority={true}
               className="w-full h-full object-cover"
               fallbackSrc={getCategoryFallbackImage(article.category, 0)}
+              version={article.updated_at || article.created_at}
             />
           </div>
         )}
@@ -876,6 +880,7 @@ function BlogDetailPageContent() {
                         quality={75}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                         fallbackSrc={getCategoryFallbackImage(rel.category, 0)}
+                        version={rel.updated_at || rel.created_at}
                       />
                     </div>
                   )}

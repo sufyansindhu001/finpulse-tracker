@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
-import { fetchArticlesSWR, getCachedArticles, ARTICLES_CACHE_KEY } from '../services/articlesService';
+import { fetchArticlesSWR, getCachedArticles, ARTICLES_CACHE_KEY, updateArticlesCache } from '../services/articlesService';
 
 const AppContext = createContext();
 
@@ -153,6 +153,7 @@ export function AppProvider({ children }) {
       localStorage.setItem(cacheKey, JSON.stringify(newArticles));
       localStorage.setItem('fgc_portal_articles', JSON.stringify(newArticles));
       localStorage.setItem('fgc_spot_blog_posts', JSON.stringify(newArticles));
+      updateArticlesCache(newArticles);
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('fgc_articles_updated'));
         window.dispatchEvent(new Event('storage'));
@@ -254,7 +255,7 @@ export function AppProvider({ children }) {
         const summaryText = updatedFields.summary !== undefined ? updatedFields.summary : (art.summary || art.excerpt || '');
         const excerptText = updatedFields.excerpt !== undefined ? updatedFields.excerpt : (art.excerpt || summaryText);
         const resolvedImage = newImage !== undefined ? newImage : (art.image || art.coverImage);
-        return {
+        return normalizeArticle({
           ...art,
           ...updatedFields,
           image: resolvedImage,
@@ -262,10 +263,11 @@ export function AppProvider({ children }) {
           featuredImage: resolvedImage,
           summary: summaryText,
           excerpt: excerptText,
+          updated_at: new Date().toISOString(),
           tags: Array.isArray(updatedFields.tags) 
             ? updatedFields.tags 
             : (updatedFields.tags ? updatedFields.tags.split(',').map(t => t.trim()) : art.tags)
-        };
+        });
       }
       return art;
     });

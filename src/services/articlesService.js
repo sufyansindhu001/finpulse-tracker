@@ -60,12 +60,26 @@ export function getCachedArticles() {
     const saved = localStorage.getItem(ARTICLES_CACHE_KEY) || localStorage.getItem('fgc_portal_articles');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length >= bundled.length) {
-        // Ensure top article is not older than bundled top article
-        if (parsed[0]?.slug === bundled[0]?.slug) {
-          inMemoryArticlesCache = parsed.map(normalizeArticle);
-          buildArticlesMap(inMemoryArticlesCache);
-          return inMemoryArticlesCache;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const parsedNormalized = parsed.map(normalizeArticle).filter(Boolean);
+        if (parsedNormalized.length > 0) {
+          const existingKeys = new Set(
+            parsedNormalized.flatMap(a => [
+              String(a.id || '').toLowerCase().trim(),
+              String(a.slug || '').toLowerCase().trim()
+            ]).filter(Boolean)
+          );
+
+          const missingBundled = bundled.filter(b => {
+            const bId = String(b.id || '').toLowerCase().trim();
+            const bSlug = String(b.slug || '').toLowerCase().trim();
+            return !existingKeys.has(bId) && !existingKeys.has(bSlug);
+          });
+
+          const merged = [...parsedNormalized, ...missingBundled];
+          inMemoryArticlesCache = merged;
+          buildArticlesMap(merged);
+          return merged;
         }
       }
     }
@@ -73,13 +87,30 @@ export function getCachedArticles() {
     console.warn('[articlesService] Failed to read cached articles:', e);
   }
 
-  // If localStorage had an older or incomplete set, immediately upgrade to bundled
+  // If localStorage had an older or incomplete set, seed with bundled
   inMemoryArticlesCache = bundled;
   buildArticlesMap(inMemoryArticlesCache);
   try {
     localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(bundled));
   } catch {}
   return inMemoryArticlesCache;
+}
+
+/**
+ * Synchronously writes updated articles to in-memory cache and localStorage,
+ * ensuring 0ms first-paint consistency across all page refreshes.
+ */
+export function updateArticlesCache(articlesList) {
+  if (!Array.isArray(articlesList)) return;
+  const normalized = articlesList.map(normalizeArticle).filter(Boolean);
+  inMemoryArticlesCache = normalized;
+  buildArticlesMap(normalized);
+  lastFetchTimestamp = Date.now();
+  try {
+    localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(normalized));
+    localStorage.setItem('fgc_portal_articles', JSON.stringify(normalized));
+    localStorage.setItem('fgc_portal_articles_v3', JSON.stringify(normalized));
+  } catch {}
 }
 
 /**
@@ -146,11 +177,13 @@ export async function fetchArticlesSWR(onUpdate, forceFresh = false) {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 4500);
-      const res = await fetch(`/api/articles?_t=${Date.now()}`, {
+      const res = await fetch(`/api/articles?_t=${Date.now()}&fresh=1`, {
         signal: controller.signal,
+        cache: 'no-store',
         headers: { 
           'Accept': 'application/json',
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
         }
       });
       clearTimeout(timeout);

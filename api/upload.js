@@ -10,13 +10,33 @@ export const config = {
   }
 };
 
+function withImageVersion(url, timestamp) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('data:') || url.startsWith('blob:') || url.endsWith('.svg')) {
+    return url;
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return url;
+  }
+  try {
+    const u = new URL(url);
+    const v = timestamp ? new Date(timestamp).getTime() : Date.now();
+    u.searchParams.set('v', String(v));
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 export default async function handler(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -54,9 +74,10 @@ export default async function handler(req, res) {
 
     // Case 1: Image is already an HTTPS / HTTP URL (e.g. curated gallery or external link)
     if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      const versionedUrl = withImageVersion(trimmed, Date.now());
       return res.status(200).json({
         success: true,
-        url: trimmed,
+        url: versionedUrl,
         filename,
         type: 'remote',
         message: 'External image verified successfully'

@@ -5,6 +5,28 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
 
+function withImageVersion(url, timestamp) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('data:') || url.startsWith('blob:') || url.endsWith('.svg')) {
+    return url;
+  }
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return url;
+  }
+  try {
+    const u = new URL(url);
+    const v = timestamp ? new Date(timestamp).getTime() : null;
+    if (v && !isNaN(v)) {
+      u.searchParams.set('v', String(v));
+    } else if (!u.searchParams.has('v')) {
+      u.searchParams.set('v', '1');
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 function sanitizeArticle(art) {
   if (!art) return art;
   let cleanImage = art.image || art.cover_image || art.coverImage || art.featured_image || art.featuredImage || art.img;
@@ -22,11 +44,14 @@ function sanitizeArticle(art) {
       cleanImage = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
     }
   }
+
+  const versionedImage = withImageVersion(cleanImage, art.updated_at || art.created_at);
+
   return { 
     ...art, 
-    image: cleanImage, 
-    cover_image: cleanImage, 
-    featured_image: cleanImage 
+    image: versionedImage, 
+    cover_image: versionedImage, 
+    featured_image: versionedImage 
   };
 }
 
@@ -37,15 +62,12 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
   
-  const { slug, _t, fresh, purge } = req.query || {};
+  // Disable stale caching for instant reflection on page refresh
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
-  // Edge & CDN Caching: Instant browser revalidation (max-age=0), tight CDN cache (s-maxage=60)
-  // If cache-busting timestamp or fresh parameter is present, bypass cache entirely
-  if (_t || fresh || purge) {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  } else {
-    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=120, must-revalidate');
-  }
+  const { slug } = req.query || {};
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -64,10 +86,13 @@ export default async function handler(req, res) {
 
     const response = await fetch(endpoint, {
       signal: controller.signal,
+      cache: 'no-store',
       headers: {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       }
     });
 

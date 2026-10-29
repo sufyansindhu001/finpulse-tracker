@@ -119,7 +119,7 @@ export default function BlogSection() {
 
             <div className="lg:col-span-5 h-48 sm:h-60 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-white/[0.08] relative shadow-md">
               <img
-                src={featuredPost.image}
+                src={featuredPost.image || featuredPost.coverImage || featuredPost.featuredImage}
                 alt={featuredPost.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
@@ -143,7 +143,7 @@ export default function BlogSection() {
               {/* Thumbnail */}
               <div className="w-full h-36 sm:h-44 overflow-hidden relative border-b border-slate-200/80 dark:border-white/[0.06] bg-slate-100 dark:bg-[#070A12]">
                 <img
-                  src={post.image}
+                  src={post.image || post.coverImage || post.featuredImage}
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"

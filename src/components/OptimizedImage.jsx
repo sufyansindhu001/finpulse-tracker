@@ -18,18 +18,19 @@ export default function OptimizedImage({
   fallbackSrc,
   onError,
   sizes,
+  version,
   ...rest
 }) {
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(() => 
-    getOptimizedImageUrl(src, { width, height, quality, format: 'webp' })
+    getOptimizedImageUrl(src, { width, height, quality, format: 'webp', version })
   );
 
-  // Re-sync if src changes
+  // Re-sync if src or version changes
   React.useEffect(() => {
     setHasError(false);
-    setCurrentSrc(getOptimizedImageUrl(src, { width, height, quality, format: 'webp' }));
-  }, [src, width, height, quality]);
+    setCurrentSrc(getOptimizedImageUrl(src, { width, height, quality, format: 'webp', version }));
+  }, [src, width, height, quality, version]);
 
   const handleError = (e) => {
     if (!hasError && fallbackSrc && currentSrc !== fallbackSrc) {
@@ -42,7 +43,7 @@ export default function OptimizedImage({
   };
 
   const srcSet = !hasError && src && src.includes('images.unsplash.com')
-    ? getOptimizedSrcSet(src, [Math.round(width * 0.75), width, Math.round(width * 1.5)], { quality })
+    ? getOptimizedSrcSet(src, [Math.round(width * 0.75), width, Math.round(width * 1.5)], { quality, version })
     : undefined;
 
   return (

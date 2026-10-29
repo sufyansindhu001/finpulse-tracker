@@ -15,7 +15,7 @@ import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
 import { compressImageFile } from '../utils/imageCompressor';
 import GalleryModal from './GalleryModal';
-import { ARTICLES_CACHE_KEY } from '../services/articlesService';
+import { ARTICLES_CACHE_KEY, updateArticlesCache } from '../services/articlesService';
 
 const STORAGE_KEY = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
 const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
@@ -47,7 +47,7 @@ export default function ArticleManager() {
       const deletedRaw = localStorage.getItem('fgc_portal_deleted_articles');
       const deletedIds = deletedRaw ? JSON.parse(deletedRaw) : [];
 
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('fgc_portal_articles');
       if (stored !== null) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
@@ -127,6 +127,7 @@ export default function ArticleManager() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList));
       localStorage.setItem('fgc_portal_articles', JSON.stringify(updatedList));
       localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(updatedList));
+      updateArticlesCache(updatedList);
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('fgc_articles_updated'));
         window.dispatchEvent(new Event('storage'));
@@ -216,7 +217,8 @@ export default function ArticleManager() {
             ...dbUpdatePayload,
             cover_image: image,
             coverImage: image,
-            featuredImage: image
+            featuredImage: image,
+            updated_at: new Date().toISOString()
           });
         }
         return art;

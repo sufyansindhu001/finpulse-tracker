@@ -27,13 +27,22 @@ export function getOptimizedImageUrl(url, options = {}) {
     height,
     quality = 75,
     format = 'webp',
-    fit = 'crop'
+    fit = 'crop',
+    version,
+    v
   } = options;
 
   try {
+    const urlObj = new URL(url);
+
+    // Apply explicit version or preserve existing cache-busting version param
+    const versionVal = version || v || urlObj.searchParams.get('v') || urlObj.searchParams.get('_v');
+    if (versionVal) {
+      urlObj.searchParams.set('v', String(versionVal));
+    }
+
     // Unsplash dynamic image optimization
     if (url.includes('images.unsplash.com')) {
-      const urlObj = new URL(url);
       urlObj.searchParams.set('auto', 'format');
       urlObj.searchParams.set('fit', fit);
       urlObj.searchParams.set('fm', format);
@@ -47,7 +56,6 @@ export function getOptimizedImageUrl(url, options = {}) {
 
     // Pexels dynamic image optimization
     if (url.includes('images.pexels.com')) {
-      const urlObj = new URL(url);
       urlObj.searchParams.set('auto', 'compress');
       urlObj.searchParams.set('cs', 'tinysrgb');
       urlObj.searchParams.set('w', String(width));
@@ -61,14 +69,19 @@ export function getOptimizedImageUrl(url, options = {}) {
     if (url.includes('res.cloudinary.com') && url.includes('/upload/')) {
       const parts = url.split('/upload/');
       const transform = `f_${format},q_${quality},w_${width},c_${fit}`;
-      return `${parts[0]}/upload/${transform}/${parts[1]}`;
+      const transformedUrl = `${parts[0]}/upload/${transform}/${parts[1]}`;
+      const transformedObj = new URL(transformedUrl);
+      if (versionVal) {
+        transformedObj.searchParams.set('v', String(versionVal));
+      }
+      return transformedObj.toString();
     }
+
+    return urlObj.toString();
   } catch {
     // If URL parsing fails, return original
     return url;
   }
-
-  return url;
 }
 
 /**
