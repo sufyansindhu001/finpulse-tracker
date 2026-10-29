@@ -345,14 +345,37 @@ export default function AdminPage() {
     setTimeout(() => setCredSuccess(''), 4000);
   };
 
-  // Handle Image Upload with Canvas Compression
+  // Handle Image Upload with Canvas Compression & /api/upload integration
   const handleImageUpload = async (e) => {
     const file = e?.target?.files?.[0];
     if (file) {
+      e.target.value = '';
       try {
         const compressed = await compressImageFile(file, 1200, 800, 0.82);
-        if (compressed) {
-          setArticleForm(prev => ({ ...prev, image: compressed }));
+        const readyImage = compressed || '';
+        if (readyImage) {
+          setArticleForm(prev => ({ ...prev, image: readyImage }));
+        }
+
+        // Post to /api/upload
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              image: readyImage,
+              filename: file.name,
+              type: file.type
+            })
+          });
+          if (res.ok) {
+            const result = await res.json();
+            if (result && result.success && result.url) {
+              setArticleForm(prev => ({ ...prev, image: result.url }));
+            }
+          }
+        } catch {
+          // Client compressed data URL is already bound
         }
       } catch (err) {
         console.warn('[AdminPage] Image compression failed, falling back:', err);
@@ -374,11 +397,22 @@ export default function AdminPage() {
       return;
     }
 
+    const category = articleForm?.category || 'Stocks & Equities';
+    let image = (articleForm?.image || '').trim();
+
     if (editingArticleId) {
+      const existing = (articles || []).find(a => a.id === editingArticleId || a.slug === editingArticleId);
+      if (!image && existing) {
+        image = (existing.image || existing.coverImage || existing.cover_image || existing.featuredImage || '').trim();
+      }
+      if (!image) {
+        image = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
+      }
+
       updateArticle(editingArticleId, {
         title: safeTitle,
-        category: articleForm?.category || 'Stocks & Equities',
-        image: articleForm?.image || '',
+        category,
+        image,
         author: articleForm?.author || 'FGC Spot Research Lead',
         summary: articleForm?.summary || '',
         content: articleForm?.content || '',
@@ -386,10 +420,23 @@ export default function AdminPage() {
       });
       setEditingArticleId(null);
     } else {
+      if (!image) {
+        const cat = category.toLowerCase();
+        if (cat.includes('crypto')) {
+          image = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';
+        } else if (cat.includes('gold') || cat.includes('metal')) {
+          image = 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80';
+        } else if (cat.includes('forex') || cat.includes('currency')) {
+          image = 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=1200&q=80';
+        } else {
+          image = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
+        }
+      }
+
       addArticle({
         title: safeTitle,
-        category: articleForm?.category || 'Stocks & Equities',
-        image: articleForm?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',
+        category,
+        image,
         author: articleForm?.author || 'FGC Spot Research Lead',
         summary: articleForm?.summary || '',
         content: articleForm?.content || '',
@@ -410,10 +457,11 @@ export default function AdminPage() {
   const handleEditArticle = (art) => {
     if (!art) return;
     setEditingArticleId(art.id || art.slug || null);
+    const existingImg = art?.image || art?.coverImage || art?.cover_image || art?.featuredImage || art?.img || '';
     setArticleForm({
       title: art?.title || '',
       category: art?.category || 'Stocks & Equities',
-      image: art?.image || '',
+      image: existingImg,
       author: art?.author || 'FGC Spot Research Lead',
       summary: art?.summary || art?.excerpt || '',
       content: art?.content || '',

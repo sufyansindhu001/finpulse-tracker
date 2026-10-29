@@ -229,7 +229,6 @@ export function AppProvider({ children }) {
       };
       if (newImage !== undefined) {
         dbUpdate.image = newImage;
-        dbUpdate.cover_image = newImage;
       }
 
       await supabase
