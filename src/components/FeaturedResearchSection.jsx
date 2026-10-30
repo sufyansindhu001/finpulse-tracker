@@ -12,7 +12,7 @@ const FEATURED_ARTICLES = [
     category: 'Equity Research',
     readTime: '6 min read',
     date: 'October 19, 2026',
-    author: 'Sufyan Saleem',
+    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
     image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
     tags: ['PSX', 'KSE-100', 'S&P 500', 'Dividend Yield', 'P/E Compression']
   },
@@ -23,7 +23,7 @@ const FEATURED_ARTICLES = [
     category: 'Precious Metals',
     readTime: '5 min read',
     date: 'October 20, 2026',
-    author: 'Sufyan Saleem',
+    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
     image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80',
     tags: ['Gold Bullion', 'Tola', 'Karat', 'Sarafa Bazaar', 'Hedging']
   },
@@ -34,7 +34,7 @@ const FEATURED_ARTICLES = [
     category: 'Banking & Remittances',
     readTime: '5 min read',
     date: 'October 20, 2026',
-    author: 'Sufyan Saleem',
+    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
     image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
     tags: ['Freelance Banking', 'FBR Tax', 'PSEB', 'Remittances', 'Forex']
   }

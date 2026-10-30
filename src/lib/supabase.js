@@ -148,6 +148,6 @@ export function normalizeArticle(raw) {
 }
 
 // Re-export high-performance slug retrieval helpers for global drop-in availability
-export { getCachedArticleBySlug, getArticleBySlug, purgeArticlesCache, updateArticlesCache } from '../services/articlesService';
+export { getCachedArticleBySlug, getArticleBySlug, purgeArticlesCache, updateArticlesCache } from '../services/articlesService.js';
 
 export default supabase;

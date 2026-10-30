@@ -4,10 +4,10 @@
  * Guarantees 0ms initial page render with background synchronization, cache purging, and zero redundant re-renders.
  */
 
-import { BLOG_POSTS } from '../data/blogPosts';
-import { supabase, normalizeArticle } from '../lib/supabase';
+import { BLOG_POSTS } from '../data/blogPosts.js';
+import { supabase, normalizeArticle } from '../lib/supabase.js';
 
-export const ARTICLES_CACHE_KEY = 'fgc_portal_articles_v3';
+export const ARTICLES_CACHE_KEY = 'fgc_portal_articles_v4';
 export const ARTICLES_LAST_FETCH_KEY = 'fgc_portal_articles_last_fetch';
 const SWR_BACKGROUND_THROTTLE_MS = 45 * 1000; // 45 seconds background revalidation throttle
 
@@ -39,6 +39,7 @@ export function purgeArticlesCache() {
     localStorage.removeItem('fgc_portal_articles');
     localStorage.removeItem('fgc_portal_articles_v2');
     localStorage.removeItem('fgc_portal_articles_v3');
+    localStorage.removeItem('fgc_portal_articles_v4');
     localStorage.removeItem('fgc_spot_blog_posts');
     localStorage.removeItem(ARTICLES_LAST_FETCH_KEY);
   } catch {}
@@ -57,29 +58,31 @@ export function getCachedArticles() {
   }
 
   try {
-    const saved = localStorage.getItem(ARTICLES_CACHE_KEY) || localStorage.getItem('fgc_portal_articles');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        const parsedNormalized = parsed.map(normalizeArticle).filter(Boolean);
-        if (parsedNormalized.length > 0) {
-          const existingKeys = new Set(
-            parsedNormalized.flatMap(a => [
-              String(a.id || '').toLowerCase().trim(),
-              String(a.slug || '').toLowerCase().trim()
-            ]).filter(Boolean)
-          );
+    if (typeof localStorage !== 'undefined') {
+      const saved = localStorage.getItem(ARTICLES_CACHE_KEY) || localStorage.getItem('fgc_portal_articles');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const parsedNormalized = parsed.map(normalizeArticle).filter(Boolean);
+          if (parsedNormalized.length > 0) {
+            const existingKeys = new Set(
+              parsedNormalized.flatMap(a => [
+                String(a.id || '').toLowerCase().trim(),
+                String(a.slug || '').toLowerCase().trim()
+              ]).filter(Boolean)
+            );
 
-          const missingBundled = bundled.filter(b => {
-            const bId = String(b.id || '').toLowerCase().trim();
-            const bSlug = String(b.slug || '').toLowerCase().trim();
-            return !existingKeys.has(bId) && !existingKeys.has(bSlug);
-          });
+            const missingBundled = bundled.filter(b => {
+              const bId = String(b.id || '').toLowerCase().trim();
+              const bSlug = String(b.slug || '').toLowerCase().trim();
+              return !existingKeys.has(bId) && !existingKeys.has(bSlug);
+            });
 
-          const merged = [...parsedNormalized, ...missingBundled];
-          inMemoryArticlesCache = merged;
-          buildArticlesMap(merged);
-          return merged;
+            const merged = [...parsedNormalized, ...missingBundled];
+            inMemoryArticlesCache = merged;
+            buildArticlesMap(merged);
+            return merged;
+          }
         }
       }
     }
@@ -91,7 +94,9 @@ export function getCachedArticles() {
   inMemoryArticlesCache = bundled;
   buildArticlesMap(inMemoryArticlesCache);
   try {
-    localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(bundled));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(bundled));
+    }
   } catch {}
   return inMemoryArticlesCache;
 }
@@ -257,6 +262,8 @@ export function getCachedArticleBySlug(target) {
       clean = 'usd-to-pkr-interbank-vs-open-market-guide';
     } else if (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
       clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+    } else if (clean === 'buying-gold-in-pakistan-tola-vs-gram-24k-vs-22k-and-how-jewelers-calculate-katt' || clean === 'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand') {
+      clean = 'buying-gold-in-pakistan-tola-karat-making-charges-guide';
     }
     
     if (articlesMap.size === 0) {

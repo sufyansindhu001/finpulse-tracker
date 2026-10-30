@@ -265,10 +265,11 @@ export default function App() {
         </div>
       )}
 
-      {/* 1. Real-time Crypto Marquee Ticker */}
+      {/* 1. Real-time Multi-Asset Marquee Ticker (Gold, Forex & Crypto) */}
       <div className="relative z-20">
         <CryptoTickerBar 
-          cryptoList={cryptoList} 
+          cryptoList={cryptoList}
+          rates={rates || DEFAULT_RATES}
           onSelectCoin={(coin) => setSelectedCryptoForConvert(coin)} 
         />
       </div>

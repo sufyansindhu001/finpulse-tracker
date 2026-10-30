@@ -14,7 +14,8 @@ import {
   Sun,
   Moon,
   BookOpen,
-  Building2
+  Building2,
+  Coins
 } from 'lucide-react';
 
 export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }) {
@@ -57,6 +58,7 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
       case '/stocks': import('../pages/StocksPage').catch(() => {}); break;
       case '/rates': import('../pages/RatesPage').catch(() => {}); break;
       case '/crypto': import('../pages/CryptoPage').catch(() => {}); break;
+      case '/gold': import('../pages/GoldPage').catch(() => {}); break;
       case '/charts': import('../pages/ChartsPage').catch(() => {}); break;
       case '/converter': import('../pages/ConverterPage').catch(() => {}); break;
       case '/news': import('../pages/NewsPage').catch(() => {}); break;
@@ -65,11 +67,12 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
     }
   };
 
-  // Clean navigation links with Stocks & PSX
+  // Clean navigation links with Stocks, PSX & Gold
   const navLinks = [
     { label: 'Home', path: '/', icon: Home, match: (p) => p === '/' },
     { label: 'Stocks & PSX', path: '/stocks', icon: Building2, match: (p) => p.startsWith('/stocks') || p === '/psx' || p === '/equities' },
     { label: 'Rates', path: '/rates', icon: TrendingUp, match: (p) => p === '/rates' || p === '/forex' },
+    { label: 'Gold', path: '/gold', icon: Coins, match: (p) => p.startsWith('/gold') },
     { label: 'Charts', path: '/charts', icon: LineChart, match: (p) => p === '/charts' },
     { label: 'Converter', path: '/converter', icon: ArrowLeftRight, match: (p) => p === '/converter' || p === '/tools' },
     { label: 'News', path: '/news', icon: Newspaper, match: (p) => p.startsWith('/news') },
