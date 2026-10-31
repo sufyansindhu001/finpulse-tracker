@@ -11,6 +11,25 @@ export const ARTICLES_CACHE_KEY = 'fgc_portal_articles_v4';
 export const ARTICLES_LAST_FETCH_KEY = 'fgc_portal_articles_last_fetch';
 const SWR_BACKGROUND_THROTTLE_MS = 45 * 1000; // 45 seconds background revalidation throttle
 
+/**
+ * Verified list of thin/generic articles purged for AdSense compliance.
+ * Guarantees that stale client storage or cached payloads NEVER resurface these items.
+ */
+export const PURGED_SLUG_SET = new Set([
+  'understanding-crypto-market-cycles-halving-events-liquidity-flows-and-retail-psychology',
+  'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility',
+  'the-mechanics-of-sovereign-wealth-funds-how-national-capital-drives-global-asset-markets',
+  'the-anatomy-of-liquidity-traps-why-zero-interest-rates-fail-to-stimulate-borrowing',
+  'the-foreign-exchange-reserve-buffer-how-import-cover-shapes-sovereign-stability',
+  'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index',
+  'the-mechanics-of-current-account-deficits-why-trade-balances-drive-currency-revaluations',
+  'the-mechanics-of-currency-swaps-how-central-banks-provide-offshore-dollar-liquidity',
+  'sovereign-debt-cycles-and-currency-valuation-how-national-debt-impacts-foreign-exchange',
+  'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies',
+  'decoding-the-sovereign-yield-curve-what-inversions-signal-to-global-markets',
+  'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand'
+]);
+
 let inMemoryArticlesCache = null;
 let articlesMap = new Map();
 let lastFetchTimestamp = 0;
@@ -21,8 +40,10 @@ function buildArticlesMap(articlesList) {
   if (!Array.isArray(articlesList)) return;
   for (const art of articlesList) {
     if (!art) continue;
-    if (art.slug) articlesMap.set(String(art.slug).toLowerCase().trim(), art);
-    if (art.id) articlesMap.set(String(art.id).toLowerCase().trim(), art);
+    const slugStr = String(art.slug || '').toLowerCase().trim();
+    const idStr = String(art.id || '').toLowerCase().trim();
+    if (slugStr && !PURGED_SLUG_SET.has(slugStr)) articlesMap.set(slugStr, art);
+    if (idStr && !PURGED_SLUG_SET.has(idStr)) articlesMap.set(idStr, art);
   }
 }
 
@@ -48,22 +69,26 @@ export function purgeArticlesCache() {
 /**
  * Synchronously retrieves cached articles from memory or localStorage.
  * Automatically upgrades outdated or incomplete local storage to the latest clean bundled articles.
+ * Strips any purged/suppressed articles from previous sessions.
  * Guarantees instant 0ms initial render without waiting for network or showing blank skeletons.
  */
 export function getCachedArticles() {
-  const bundled = BLOG_POSTS.map(normalizeArticle);
+  const bundled = BLOG_POSTS.map(normalizeArticle).filter(a => a && !PURGED_SLUG_SET.has(String(a.slug || a.id).toLowerCase().trim()));
 
   if (inMemoryArticlesCache && inMemoryArticlesCache.length >= bundled.length) {
-    return inMemoryArticlesCache;
+    return inMemoryArticlesCache.filter(a => a && !PURGED_SLUG_SET.has(String(a.slug || a.id).toLowerCase().trim()));
   }
 
   try {
     if (typeof localStorage !== 'undefined') {
-      const saved = localStorage.getItem(ARTICLES_CACHE_KEY) || localStorage.getItem('fgc_portal_articles');
+      const saved = localStorage.getItem(ARTICLES_CACHE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const parsedNormalized = parsed.map(normalizeArticle).filter(Boolean);
+          const parsedNormalized = parsed
+            .map(normalizeArticle)
+            .filter(a => a && !PURGED_SLUG_SET.has(String(a.slug || a.id).toLowerCase().trim()));
+
           if (parsedNormalized.length > 0) {
             const existingKeys = new Set(
               parsedNormalized.flatMap(a => [
@@ -84,6 +109,14 @@ export function getCachedArticles() {
             return merged;
           }
         }
+      } else {
+        // Clear old stale storage keys from before the AdSense audit
+        try {
+          localStorage.removeItem('fgc_portal_articles');
+          localStorage.removeItem('fgc_portal_articles_v2');
+          localStorage.removeItem('fgc_portal_articles_v3');
+          localStorage.removeItem('fgc_spot_blog_posts');
+        } catch {}
       }
     }
   } catch (e) {
@@ -96,6 +129,7 @@ export function getCachedArticles() {
   try {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(bundled));
+      localStorage.setItem('fgc_portal_articles', JSON.stringify(bundled));
     }
   } catch {}
   return inMemoryArticlesCache;
@@ -107,14 +141,16 @@ export function getCachedArticles() {
  */
 export function updateArticlesCache(articlesList) {
   if (!Array.isArray(articlesList)) return;
-  const normalized = articlesList.map(normalizeArticle).filter(Boolean);
+  const normalized = articlesList
+    .map(normalizeArticle)
+    .filter(a => a && !PURGED_SLUG_SET.has(String(a.slug || a.id).toLowerCase().trim()));
+
   inMemoryArticlesCache = normalized;
   buildArticlesMap(normalized);
   lastFetchTimestamp = Date.now();
   try {
     localStorage.setItem(ARTICLES_CACHE_KEY, JSON.stringify(normalized));
     localStorage.setItem('fgc_portal_articles', JSON.stringify(normalized));
-    localStorage.setItem('fgc_portal_articles_v3', JSON.stringify(normalized));
   } catch {}
 }
 
@@ -196,7 +232,9 @@ export async function fetchArticlesSWR(onUpdate, forceFresh = false) {
       if (res.ok) {
         const json = await res.json();
         if (json && Array.isArray(json.data) && json.data.length > 0) {
-          freshArticles = json.data.map(normalizeArticle);
+          freshArticles = json.data
+            .map(normalizeArticle)
+            .filter(a => a && !PURGED_SLUG_SET.has(String(a.slug || a.id).toLowerCase().trim()));
         }
       }
     } catch {
@@ -212,7 +250,9 @@ export async function fetchArticlesSWR(onUpdate, forceFresh = false) {
           .order('created_at', { ascending: false });
 
         if (!error && Array.isArray(data) && data.length > 0) {
-          freshArticles = data.map(normalizeArticle);
+          freshArticles = data
+            .map(normalizeArticle)
+            .filter(a => a && !PURGED_SLUG_SET.has(String(a.slug || a.id).toLowerCase().trim()));
         }
       } catch (err) {
         console.warn('[articlesService] Supabase fallback warning:', err);
@@ -257,13 +297,23 @@ export function getCachedArticleBySlug(target) {
   try {
     let clean = String(target).toLowerCase().trim();
 
-    // Normalize known legacy slug redirects
+    // Normalize known legacy slug redirects and counterpart mappings
     if (clean === 'usd-pkr-interbank-vs-open-market-guide') {
       clean = 'usd-to-pkr-interbank-vs-open-market-guide';
     } else if (clean === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
       clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
     } else if (clean === 'buying-gold-in-pakistan-tola-vs-gram-24k-vs-22k-and-how-jewelers-calculate-katt' || clean === 'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand') {
       clean = 'buying-gold-in-pakistan-tola-karat-making-charges-guide';
+    } else if (clean === 'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index') {
+      clean = 'gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends';
+    } else if (clean === 'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility') {
+      clean = 'understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex';
+    } else if (clean === 'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies') {
+      clean = 'the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies';
+    }
+
+    if (PURGED_SLUG_SET.has(clean)) {
+      return null;
     }
     
     if (articlesMap.size === 0) {

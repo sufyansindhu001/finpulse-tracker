@@ -95,6 +95,8 @@ export default function App() {
         import('./pages/ConverterPage').catch(() => {});
         import('./pages/NewsPage').catch(() => {});
         import('./pages/ChartsPage').catch(() => {});
+        import('./pages/GoldPage').catch(() => {});
+        import('./pages/CryptoPage').catch(() => {});
       });
     }
   }, []);

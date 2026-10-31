@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Zap, ArrowUpRight, BookOpen } from 'lucide-react';
+import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Zap, BookOpen } from 'lucide-react';
 import LegalModal from './LegalModal';
 
-export default function Footer({ onSelectPair }) {
-  const navigate = useNavigate();
+export default function Footer() {
   const { siteSettings, addSubscriber } = useApp();
   const [legalModalTab, setLegalModalTab] = useState(null);
   const [newsletterEmail, setNewsletterEmail] = useState('');

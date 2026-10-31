@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
 import { 
   Calendar, 
   Clock, 
@@ -16,7 +15,7 @@ import {
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
-import { updateSEO, updateCanonical } from '../utils/seo';
+import { updateSEO } from '../utils/seo';
 import { getRelatedArticles } from '../utils/relatedArticles';
 import { getCategoryFallbackImage } from '../services/newsService';
 import OptimizedImage from '../components/OptimizedImage';
@@ -81,6 +80,14 @@ function findLocalArticle(target) {
       clean = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
     } else if (clean === 'usd-pkr-interbank-vs-open-market-guide') {
       clean = 'usd-to-pkr-interbank-vs-open-market-guide';
+    } else if (clean === 'buying-gold-in-pakistan-tola-vs-gram-24k-vs-22k-and-how-jewelers-calculate-katt' || clean === 'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand') {
+      clean = 'buying-gold-in-pakistan-tola-karat-making-charges-guide';
+    } else if (clean === 'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index') {
+      clean = 'gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends';
+    } else if (clean === 'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility') {
+      clean = 'understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex';
+    } else if (clean === 'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies') {
+      clean = 'the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies';
     }
 
     // 1. Resilient lookup from articlesService
@@ -114,6 +121,14 @@ function BlogDetailPageContent() {
     targetIdentifier = 'usd-to-pkr-interbank-vs-open-market-guide';
   } else if (rawIdentifier === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
     targetIdentifier = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+  } else if (rawIdentifier === 'buying-gold-in-pakistan-tola-vs-gram-24k-vs-22k-and-how-jewelers-calculate-katt' || rawIdentifier === 'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand') {
+    targetIdentifier = 'buying-gold-in-pakistan-tola-karat-making-charges-guide';
+  } else if (rawIdentifier === 'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index') {
+    targetIdentifier = 'gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends';
+  } else if (rawIdentifier === 'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility') {
+    targetIdentifier = 'understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex';
+  } else if (rawIdentifier === 'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies') {
+    targetIdentifier = 'the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies';
   }
 
   // Synchronously resolve local match without hardcoded fallback to article 0
@@ -159,7 +174,7 @@ function BlogDetailPageContent() {
     } catch (e) {
       console.warn('Error reading like state:', e);
     }
-  }, [articleKey, article?.likes]);
+  }, [articleKey, article?.likes, likedStorageKey]);
 
   const handleToggleLike = async () => {
     if (!articleKey) return;
@@ -983,7 +998,4 @@ export default function BlogDetailPage() {
     </BlogDetailErrorBoundary>
   );
 }
-
-// Re-export slug lookup helpers for universal drop-in compatibility
-export { getCachedArticleBySlug, getArticleBySlug } from '../services/articlesService';
 

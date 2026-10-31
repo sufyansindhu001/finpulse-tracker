@@ -10,13 +10,10 @@ import {
   Settings, 
   FileText, 
   PlusCircle, 
-  Edit3, 
   Trash2, 
   Check, 
   ExternalLink,
   AlertCircle,
-  Upload,
-  Image as ImageIcon,
   Mail,
   KeyRound,
   ShieldCheck,
@@ -27,17 +24,11 @@ import {
   Download,
   Search,
   Globe,
-  Clock,
   Zap,
   CheckCircle2,
   Calendar,
-  MessageSquare,
-  Sparkles,
   Users
 } from 'lucide-react';
-
-import { compressImageFile } from '../utils/imageCompressor';
-import GalleryModal from '../components/GalleryModal';
 
 import {
   getLiveKPIs,
@@ -62,9 +53,6 @@ export default function AdminPage() {
     siteSettings, 
     updateSiteSettings, 
     articles, 
-    addArticle, 
-    updateArticle, 
-    deleteArticle,
     subscribers,
     addSubscriber,
     deleteSubscriber,
@@ -76,8 +64,8 @@ export default function AdminPage() {
     logoutAdmin
   } = useApp();
 
-  const safeArticles = Array.isArray(articles) ? articles : [];
-  const safeSubscribers = Array.isArray(subscribers) ? subscribers : [];
+  const safeArticles = useMemo(() => Array.isArray(articles) ? articles : [], [articles]);
+  const safeSubscribers = useMemo(() => Array.isArray(subscribers) ? subscribers : [], [subscribers]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -106,13 +94,13 @@ export default function AdminPage() {
   const [isRefreshingTelemetry, setIsRefreshingTelemetry] = useState(false);
 
   // Synchronize state with latest telemetry (from server or cache)
-  const applyLatestTelemetry = () => {
+  const applyLatestTelemetry = useCallback(() => {
     setKpis(getLiveKPIs());
     setEvents(getRecentEvents(50));
     setCorridors(getCorridorDistribution());
     setInquiries(getInquiries());
     setAuditReports(getDailyAuditReports(auditRange));
-  };
+  }, [auditRange]);
 
   // Real-time server polling every 10 seconds for cross-device visitor sync
   useEffect(() => {
@@ -137,7 +125,7 @@ export default function AdminPage() {
       isMounted = false;
       clearInterval(interval);
     };
-  }, [isAdminAuth, auditRange]);
+  }, [isAdminAuth, applyLatestTelemetry]);
 
   // Manual Refresh Telemetry Handler
   const refreshTelemetry = async () => {
@@ -151,10 +139,10 @@ export default function AdminPage() {
     }, 400);
   };
 
-  // Sync audit reports when range toggles
-  useEffect(() => {
-    setAuditReports(getDailyAuditReports(auditRange));
-  }, [auditRange]);
+  const handleAuditRangeChange = (r) => {
+    setAuditRange(r);
+    setAuditReports(getDailyAuditReports(r));
+  };
 
   // Handle Inquiry status changes
   const handleStatusChange = (id, newStatus) => {
@@ -259,22 +247,6 @@ export default function AdminPage() {
   const [credError, setCredError] = useState('');
   const [credSuccess, setCredSuccess] = useState('');
 
-  // --- Article Manager Form State ---
-  const INITIAL_ARTICLE_FORM = {
-    title: '',
-    category: 'Stocks & Equities',
-    image: '',
-    author: 'FGC Spot Research Lead',
-    summary: '',
-    content: '',
-    tags: 'Stocks, Equities, Market'
-  };
-
-  const [articleForm, setArticleForm] = useState(INITIAL_ARTICLE_FORM);
-  const [editingArticleId, setEditingArticleId] = useState(null);
-  const [articleSaved, setArticleSaved] = useState(false);
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-
   // Handle Login with Email & Password
   const handleLoginSubmit = (e) => {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
@@ -343,136 +315,6 @@ export default function AdminPage() {
       confirmPassword: ''
     }));
     setTimeout(() => setCredSuccess(''), 4000);
-  };
-
-  // Handle Image Upload with Canvas Compression & /api/upload integration
-  const handleImageUpload = async (e) => {
-    const file = e?.target?.files?.[0];
-    if (file) {
-      e.target.value = '';
-      try {
-        const compressed = await compressImageFile(file, 1200, 800, 0.82);
-        const readyImage = compressed || '';
-        if (readyImage) {
-          setArticleForm(prev => ({ ...prev, image: readyImage }));
-        }
-
-        // Post to /api/upload
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              image: readyImage,
-              filename: file.name,
-              type: file.type
-            })
-          });
-          if (res.ok) {
-            const result = await res.json();
-            if (result && result.success && result.url) {
-              setArticleForm(prev => ({ ...prev, image: result.url }));
-            }
-          }
-        } catch {
-          // Client compressed data URL is already bound
-        }
-      } catch (err) {
-        console.warn('[AdminPage] Image compression failed, falling back:', err);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setArticleForm(prev => ({ ...prev, image: reader.result || '' }));
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  };
-
-  // Handle Article Form Submit
-  const handleArticleSubmit = (e) => {
-    if (e && typeof e.preventDefault === 'function') e.preventDefault();
-    const safeTitle = (articleForm?.title || '').trim();
-    if (!safeTitle) {
-      alert('Please enter an article title.');
-      return;
-    }
-
-    const category = articleForm?.category || 'Stocks & Equities';
-    let image = (articleForm?.image || '').trim();
-
-    if (editingArticleId) {
-      const existing = (articles || []).find(a => a.id === editingArticleId || a.slug === editingArticleId);
-      if (!image && existing) {
-        image = (existing.image || existing.coverImage || existing.cover_image || existing.featuredImage || '').trim();
-      }
-      if (!image) {
-        image = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
-      }
-
-      updateArticle(editingArticleId, {
-        title: safeTitle,
-        category,
-        image,
-        author: articleForm?.author || 'FGC Spot Research Lead',
-        summary: articleForm?.summary || '',
-        content: articleForm?.content || '',
-        tags: articleForm?.tags || ''
-      });
-      setEditingArticleId(null);
-    } else {
-      if (!image) {
-        const cat = category.toLowerCase();
-        if (cat.includes('crypto')) {
-          image = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80';
-        } else if (cat.includes('gold') || cat.includes('metal')) {
-          image = 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80';
-        } else if (cat.includes('forex') || cat.includes('currency')) {
-          image = 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=1200&q=80';
-        } else {
-          image = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';
-        }
-      }
-
-      addArticle({
-        title: safeTitle,
-        category,
-        image,
-        author: articleForm?.author || 'FGC Spot Research Lead',
-        summary: articleForm?.summary || '',
-        content: articleForm?.content || '',
-        tags: articleForm?.tags || ''
-      });
-    }
-
-    setArticleForm(INITIAL_ARTICLE_FORM);
-    setArticleSaved(true);
-    setTimeout(() => setArticleSaved(false), 3000);
-
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('fgc_articles_updated'));
-      window.dispatchEvent(new Event('storage'));
-    }
-  };
-
-  const handleEditArticle = (art) => {
-    if (!art) return;
-    setEditingArticleId(art.id || art.slug || null);
-    const existingImg = art?.image || art?.coverImage || art?.cover_image || art?.featuredImage || art?.img || '';
-    setArticleForm({
-      title: art?.title || '',
-      category: art?.category || 'Stocks & Equities',
-      image: existingImg,
-      author: art?.author || 'FGC Spot Research Lead',
-      summary: art?.summary || art?.excerpt || '',
-      content: art?.content || '',
-      tags: Array.isArray(art?.tags) ? art.tags.join(', ') : (art?.tags || '')
-    });
-    window.scrollTo({ top: 300, behavior: 'smooth' });
-  };
-
-  const handleCancelEdit = () => {
-    setEditingArticleId(null);
-    setArticleForm(INITIAL_ARTICLE_FORM);
   };
 
   // Filtered Events
@@ -1044,7 +886,7 @@ export default function AdminPage() {
                   {['7d', '30d', 'all'].map(r => (
                     <button
                       key={r}
-                      onClick={() => setAuditRange(r)}
+                      onClick={() => handleAuditRangeChange(r)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                         auditRange === r
                           ? 'bg-blue-600 text-white shadow-sm'
@@ -1843,337 +1685,6 @@ export default function AdminPage() {
             onReset={() => {}}
           >
             <ArticleManager />
-          </AdminErrorBoundary>
-        )}
-        {activeTab === '__legacy_articles__' && (
-          <AdminErrorBoundary 
-            title="Blog / Article Manager Error"
-            onSwitchTab={setActiveTab}
-            onReset={() => {
-              setEditingArticleId(null);
-              setArticleForm(INITIAL_ARTICLE_FORM);
-            }}
-          >
-            <div className="space-y-8">
-              
-              {/* Article Publishing Form */}
-              <div className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6">
-                
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-2">
-                  <div>
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <PlusCircle className="w-5 h-5 text-blue-500" />
-                      <span>{editingArticleId ? 'Edit Article' : 'Publish New Financial Article'}</span>
-                    </h2>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                      Articles published here immediately generate dedicated dynamic routes at <code className="text-blue-500 font-mono">/blog/:id</code>.
-                    </p>
-                  </div>
-
-                  {editingArticleId && (
-                    <button
-                      type="button"
-                      onClick={handleCancelEdit}
-                      className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold cursor-pointer"
-                    >
-                      Cancel Edit
-                    </button>
-                  )}
-                </div>
-
-                {articleSaved && (
-                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2 text-xs font-bold text-emerald-400 animate-in fade-in">
-                    <Check className="w-4 h-4" />
-                    <span>Article successfully saved and live on /blog!</span>
-                  </div>
-                )}
-
-                <form onSubmit={handleArticleSubmit} className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                    <div className="md:col-span-8">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                        Article Title *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={articleForm?.title || ''}
-                        onChange={(e) => setArticleForm(prev => ({ ...prev, title: e.target.value }))}
-                        placeholder="e.g. Navigating Emerging Market Forex Swaps in 2026"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                      />
-                    </div>
-
-                    <div className="md:col-span-4">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                        Category *
-                      </label>
-                      <select
-                        value={articleForm?.category || 'Stocks & Equities'}
-                        onChange={(e) => setArticleForm(prev => ({ ...prev, category: e.target.value }))}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 cursor-pointer"
-                      >
-                        <option value="Stocks & Equities">Stocks & Equities (Company Deep-Dives, Market Analysis)</option>
-                        <option value="Cryptocurrency">Cryptocurrency (Bitcoin, Altcoins, Digital Assets)</option>
-                        <option value="Markets & Forex">Markets & Forex (Exchange Rates, FX Corridors)</option>
-                        <option value="Gold & Commodities">Gold & Commodities (Bullion, Precious Metals, Oil)</option>
-                        <option value="Economy & Central Banks">Economy & Central Banks (SBP, Fed, Macro Policy)</option>
-                        <option value="Macro Analysis">Macro Analysis (Long-term Economic Research)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                        Author Name &amp; Credential
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={articleForm?.author || ''}
-                        onChange={(e) => setArticleForm(prev => ({ ...prev, author: e.target.value }))}
-                        placeholder="e.g. Elena Vance, Senior Macro Strategist"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                        Tags (Comma-separated)
-                      </label>
-                      <input
-                        type="text"
-                        value={articleForm?.tags || ''}
-                        onChange={(e) => setArticleForm(prev => ({ ...prev, tags: e.target.value }))}
-                        placeholder="e.g. Forex, Central Bank, PKR, Liquidity"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Banner Image */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400">
-                        Banner Cover Image
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setIsGalleryOpen(true)}
-                        className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <ImageIcon className="w-3.5 h-3.5" />
-                        <span>Browse Curated Gallery</span>
-                      </button>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                      <input
-                        type="url"
-                        value={articleForm?.image || ''}
-                        onChange={(e) => setArticleForm(prev => ({ ...prev, image: e.target.value }))}
-                        placeholder="Image URL (https://...) or upload below"
-                        className="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
-                      />
-                      
-                      <button
-                        type="button"
-                        onClick={() => setIsGalleryOpen(true)}
-                        className="px-4 py-2.5 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5 shrink-0 border border-blue-200 dark:border-blue-800"
-                      >
-                        <ImageIcon className="w-3.5 h-3.5" />
-                        <span>Curated Gallery</span>
-                      </button>
-
-                      <label className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5 shrink-0 border border-slate-200 dark:border-slate-700">
-                        <Upload className="w-3.5 h-3.5" />
-                        <span>Upload File</span>
-                        <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                      </label>
-                    </div>
-
-                    {articleForm?.image && (
-                      <div className="mt-3 flex items-center gap-3">
-                        <div className="w-36 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 relative bg-slate-100 dark:bg-[#07090E]">
-                          <img src={articleForm.image} alt="Preview" className="w-full h-full object-cover" width="144" height="80" loading="lazy" />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setArticleForm(prev => ({ ...prev, image: '' }))}
-                          className="text-xs text-rose-500 hover:text-rose-600 font-semibold cursor-pointer underline"
-                        >
-                          Remove Image
-                        </button>
-                      </div>
-                    )}
-
-                    <GalleryModal
-                      isOpen={isGalleryOpen}
-                      onClose={() => setIsGalleryOpen(false)}
-                      onSelect={(url) => setArticleForm(prev => ({ ...prev, image: url }))}
-                      currentUrl={articleForm?.image}
-                    />
-                  </div>
-
-                  {/* Excerpt */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                      Short Excerpt / Summary *
-                    </label>
-                    <textarea
-                      rows={2}
-                      required
-                      value={articleForm?.summary || ''}
-                      onChange={(e) => setArticleForm(prev => ({ ...prev, summary: e.target.value }))}
-                      placeholder="A concise 1-2 sentence overview of the article for cards and SEO meta..."
-                      className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
-                    ></textarea>
-                  </div>
-
-                  {/* Content */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                      Full Article Content (Markdown headings like ### Section Title supported) *
-                    </label>
-                    <textarea
-                      rows={8}
-                      required
-                      value={articleForm?.content || ''}
-                      onChange={(e) => setArticleForm(prev => ({ ...prev, content: e.target.value }))}
-                      placeholder="### Macroeconomic Drivers&#10;Write the detailed analysis here...&#10;&#10;* Key point 1&#10;* Key point 2"
-                      className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 font-sans"
-                    ></textarea>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer flex items-center gap-2"
-                    >
-                      <Check className="w-4 h-4" />
-                      <span>{editingArticleId ? 'Save Changes' : 'Publish Article'}</span>
-                    </button>
-
-                    {editingArticleId && (
-                      <button
-                        type="button"
-                        onClick={handleCancelEdit}
-                        className="px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </form>
-
-              </div>
-
-              {/* Published Articles Table */}
-              <div className="bg-white dark:bg-[#0B0F19] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                    Published Financial Articles ({safeArticles.length})
-                  </h3>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    Managed in client state &amp; LocalStorage
-                  </span>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px] font-bold">
-                        <th className="py-3 px-3">Article</th>
-                        <th className="py-3 px-3">Category</th>
-                        <th className="py-3 px-3">Author &amp; Date</th>
-                        <th className="py-3 px-3 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                      {safeArticles.length === 0 ? (
-                        <tr>
-                          <td colSpan={4} className="py-8 text-center text-slate-400">
-                            No articles published yet. Use the form above to publish your first article.
-                          </td>
-                        </tr>
-                      ) : (
-                        safeArticles.map((art, idx) => (
-                          <tr key={art?.id || `post-${idx}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                            
-                            <td className="py-3 px-3">
-                              <div className="flex items-center gap-3">
-                                <img
-                                  src={art?.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=100&fm=webp&q=75'}
-                                  alt={art?.title || 'Article thumbnail'}
-                                  className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0"
-                                  width="40"
-                                  height="40"
-                                  loading="lazy"
-                                />
-                                <div>
-                                  <Link
-                                    to={`/blog/${art?.slug || art?.id || ''}`}
-                                    target="_blank"
-                                    className="font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-1 flex items-center gap-1"
-                                  >
-                                    <span>{art?.title || 'Untitled Article'}</span>
-                                    <ExternalLink className="w-3 h-3 text-slate-400 shrink-0" />
-                                  </Link>
-                                  <span className="text-[10px] text-slate-400 font-mono">/blog/{art?.slug || art?.id || ''}</span>
-                                </div>
-                              </div>
-                            </td>
-
-                            <td className="py-3 px-3 font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
-                              {art?.category || 'Stocks & Equities'}
-                            </td>
-
-                            <td className="py-3 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                              <div className="font-medium text-slate-800 dark:text-slate-300">{art?.author || 'FGC Spot Team'}</div>
-                              <div className="text-[10px] text-slate-400">{art?.date || ''}</div>
-                            </td>
-
-                            <td className="py-3 px-3 text-right whitespace-nowrap">
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={() => handleEditArticle(art)}
-                                  className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors cursor-pointer"
-                                  title="Edit Article"
-                                >
-                                  <Edit3 className="w-3.5 h-3.5" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (confirm(`Are you sure you want to delete "${art?.title || 'this article'}"?`)) {
-                                      const targetId = art?.id || art?.slug;
-                                      if (targetId) {
-                                        deleteArticle(targetId);
-                                        if (typeof window !== 'undefined') {
-                                          window.dispatchEvent(new Event('fgc_articles_updated'));
-                                          window.dispatchEvent(new Event('storage'));
-                                        }
-                                      }
-                                    }
-                                  }}
-                                  className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors cursor-pointer"
-                                  title="Delete Article"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            </td>
-
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-              </div>
-
-            </div>
           </AdminErrorBoundary>
         )}
 

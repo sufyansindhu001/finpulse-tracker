@@ -15,7 +15,7 @@ import { BLOG_POSTS as INITIAL_BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle } from '../lib/supabase';
 import { compressImageFile } from '../utils/imageCompressor';
 import GalleryModal from './GalleryModal';
-import { ARTICLES_CACHE_KEY, updateArticlesCache } from '../services/articlesService';
+import { ARTICLES_CACHE_KEY, updateArticlesCache, PURGED_SLUG_SET } from '../services/articlesService';
 
 const STORAGE_KEY = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
 const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
@@ -24,7 +24,7 @@ const INITIAL_FORM_STATE = {
   title: '',
   category: 'Stocks & Equities',
   image: '',
-  author: 'Sufyan Saleem (Financial Research Desk)',
+  author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
   summary: '',
   content: '',
   tags: 'Stocks, Equities, Market'
@@ -51,33 +51,42 @@ export default function ArticleManager() {
       if (stored !== null) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          const existingIds = new Set(parsed.flatMap(a => [a.id, a.slug]));
+          const sanitized = parsed.filter(a => {
+            const s = String(a.slug || '').toLowerCase().trim();
+            const id = String(a.id || '').toLowerCase().trim();
+            return !PURGED_SLUG_SET.has(s) && !PURGED_SLUG_SET.has(id);
+          });
+          const existingIds = new Set(sanitized.flatMap(a => [a.id, a.slug]));
           const missingBuiltins = INITIAL_BLOG_POSTS.filter(b => 
             !existingIds.has(b.id) && 
             !existingIds.has(b.slug) && 
             !deletedIds.includes(b.id) && 
-            !deletedIds.includes(b.slug)
+            !deletedIds.includes(b.slug) &&
+            !PURGED_SLUG_SET.has(b.slug) &&
+            !PURGED_SLUG_SET.has(b.id)
           );
           if (missingBuiltins.length > 0) {
-            const merged = [...parsed, ...missingBuiltins].map(normalizeArticle);
+            const merged = [...sanitized, ...missingBuiltins].map(normalizeArticle);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
             localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(merged));
             setArticles(merged);
             return;
           }
-          setArticles(parsed.map(normalizeArticle));
+          setArticles(sanitized.map(normalizeArticle));
           return;
         }
       }
 
       // Seed only when key is completely null
-      const defaultNormalized = INITIAL_BLOG_POSTS.map(normalizeArticle);
+      const defaultNormalized = INITIAL_BLOG_POSTS
+        .filter(b => !PURGED_SLUG_SET.has(b.slug) && !PURGED_SLUG_SET.has(b.id))
+        .map(normalizeArticle);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultNormalized));
       localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(defaultNormalized));
       setArticles(defaultNormalized);
     } catch (e) {
       console.error('[ArticleManager] Error loading articles:', e);
-      setArticles(INITIAL_BLOG_POSTS.map(normalizeArticle));
+      setArticles(INITIAL_BLOG_POSTS.filter(b => !PURGED_SLUG_SET.has(b.slug) && !PURGED_SLUG_SET.has(b.id)).map(normalizeArticle));
     }
   }, []);
 
@@ -91,7 +100,13 @@ export default function ArticleManager() {
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data) && data.length > 0) {
-        const normalized = data.map(normalizeArticle);
+        const normalized = data
+          .filter(a => {
+            const s = String(a.slug || '').toLowerCase().trim();
+            const id = String(a.id || '').toLowerCase().trim();
+            return !PURGED_SLUG_SET.has(s) && !PURGED_SLUG_SET.has(id);
+          })
+          .map(normalizeArticle);
         setArticles(normalized);
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
@@ -158,7 +173,7 @@ export default function ArticleManager() {
 
     const content = articleForm.content || '';
     const read_time = `${Math.max(1, Math.ceil(content.split(' ').length / 200))} min read`;
-    const author = articleForm.author || 'Sufyan Saleem (Financial Research Desk)';
+    const author = articleForm.author || 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist';
     const excerpt = articleForm.summary || articleForm.excerpt || '';
     const category = articleForm.category || 'Stocks & Equities';
 
@@ -397,6 +412,16 @@ export default function ArticleManager() {
     return 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20';
   };
 
+  const availableTableCategories = useMemo(() => {
+    const cats = new Set(['ALL']);
+    articles.forEach(a => {
+      if (a.category && typeof a.category === 'string') {
+        cats.add(a.category.trim());
+      }
+    });
+    return Array.from(cats);
+  }, [articles]);
+
   const filteredArticles = useMemo(() => {
     if (tableCategoryFilter === 'ALL') return articles;
     return articles.filter(a => {
@@ -466,12 +491,17 @@ export default function ArticleManager() {
                 onChange={(e) => setArticleForm(prev => ({ ...prev, category: e.target.value }))}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-blue-500 cursor-pointer"
               >
-                <option value="Stocks & Equities">Stocks & Equities (Company Deep-Dives, Market Analysis)</option>
-                <option value="Cryptocurrency">Cryptocurrency (Bitcoin, Altcoins, Digital Assets)</option>
-                <option value="Markets & Forex">Markets & Forex (Exchange Rates, FX Corridors)</option>
-                <option value="Gold & Commodities">Gold & Commodities (Bullion, Precious Metals, Oil)</option>
-                <option value="Economy & Central Banks">Economy & Central Banks (SBP, Fed, Macro Policy)</option>
-                <option value="Macro Analysis">Macro Analysis (Long-term Economic Research)</option>
+                <option value="Banking & Remittances">Banking & Remittances (Freelance Banking, Tax, FBR)</option>
+                <option value="Gold & Commodities">Gold & Commodities (Bullion, Sarafa, Karats, Silver)</option>
+                <option value="Macro Analysis">Macro Analysis (Monetary Policy, Central Banks, Yields)</option>
+                <option value="Market Updates">Market Updates (Real-Time Signals, Breakouts, News)</option>
+                <option value="Personal Finance & Currency">Personal Finance & Currency (Hedging, Purchasing Power)</option>
+                <option value="Precious Metals & Wealth">Precious Metals & Wealth (Physical Assets, Safe Havens)</option>
+                <option value="Crypto Security & Self-Custody">Crypto Security & Self-Custody (Cold Storage, Wallets)</option>
+                <option value="Stocks & Equities">Stocks & Equities (PSX, Valuation, Global Indices)</option>
+                <option value="Markets & Forex">Markets & Forex (Interbank vs Open Market, FX Corridors)</option>
+                <option value="Cryptocurrency">Cryptocurrency (Bitcoin, Market Cycles, DeFi)</option>
+                <option value="Economy & Central Banks">Economy & Central Banks (SBP, Fed, Inflation)</option>
               </select>
             </div>
           </div>
@@ -689,7 +719,7 @@ export default function ArticleManager() {
 
           {/* Category Filter Pills */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {['ALL', 'Stocks & Equities', 'Cryptocurrency', 'Markets & Forex', 'Gold & Commodities', 'Economy & Central Banks', 'Macro Analysis'].map(f => (
+            {availableTableCategories.map(f => (
               <button
                 key={f}
                 type="button"

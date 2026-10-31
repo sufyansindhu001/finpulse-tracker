@@ -7,17 +7,17 @@ import {
   Mail, 
   AlertTriangle, 
   ExternalLink,
-  CheckCircle2,
   Lock,
-  Globe
 } from 'lucide-react';
 
 export default function LegalModal({ isOpen, onClose, activeTab = 'privacy', siteName = 'FGC Spot' }) {
   const [tab, setTab] = React.useState(activeTab);
 
-  React.useEffect(() => {
+  const [prevActiveTab, setPrevActiveTab] = React.useState(activeTab);
+  if (activeTab !== prevActiveTab) {
+    setPrevActiveTab(activeTab);
     setTab(activeTab);
-  }, [activeTab]);
+  }
 
   if (!isOpen) return null;
 

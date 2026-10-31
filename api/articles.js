@@ -5,6 +5,21 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
 
+const PURGED_SLUGS = new Set([
+  'understanding-crypto-market-cycles-halving-events-liquidity-flows-and-retail-psychology',
+  'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility',
+  'the-mechanics-of-sovereign-wealth-funds-how-national-capital-drives-global-asset-markets',
+  'the-anatomy-of-liquidity-traps-why-zero-interest-rates-fail-to-stimulate-borrowing',
+  'the-foreign-exchange-reserve-buffer-how-import-cover-shapes-sovereign-stability',
+  'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index',
+  'the-mechanics-of-current-account-deficits-why-trade-balances-drive-currency-revaluations',
+  'the-mechanics-of-currency-swaps-how-central-banks-provide-offshore-dollar-liquidity',
+  'sovereign-debt-cycles-and-currency-valuation-how-national-debt-impacts-foreign-exchange',
+  'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies',
+  'decoding-the-sovereign-yield-curve-what-inversions-signal-to-global-markets',
+  'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand'
+]);
+
 function withImageVersion(url, timestamp) {
   if (!url || typeof url !== 'string') return url;
   if (url.startsWith('data:') || url.startsWith('blob:') || url.endsWith('.svg')) {
@@ -67,7 +82,29 @@ export default async function handler(req, res) {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
 
-  const { slug } = req.query || {};
+  const rawSlug = req.query?.slug ? String(req.query.slug).trim() : null;
+  let targetSlug = rawSlug;
+  if (rawSlug === 'usd-pkr-interbank-vs-open-market-guide') {
+    targetSlug = 'usd-to-pkr-interbank-vs-open-market-guide';
+  } else if (rawSlug === 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-and-s-p-500-allocation-mechanics') {
+    targetSlug = 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide';
+  } else if (rawSlug === 'buying-gold-in-pakistan-tola-vs-gram-24k-vs-22k-and-how-jewelers-calculate-katt' || rawSlug === 'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand') {
+    targetSlug = 'buying-gold-in-pakistan-tola-karat-making-charges-guide';
+  } else if (rawSlug === 'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index') {
+    targetSlug = 'gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends';
+  } else if (rawSlug === 'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility') {
+    targetSlug = 'understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex';
+  } else if (rawSlug === 'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies') {
+    targetSlug = 'the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies';
+  }
+
+  if (targetSlug && PURGED_SLUGS.has(targetSlug)) {
+    return res.status(404).json({
+      success: false,
+      error: 'Article retired or updated',
+      source: 'Supabase Edge Filter'
+    });
+  }
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -78,8 +115,8 @@ export default async function handler(req, res) {
     const timeout = setTimeout(() => controller.abort(), 4500);
 
     let endpoint = `${SUPABASE_URL}/rest/v1/articles?select=*`;
-    if (slug) {
-      endpoint += `&slug=eq.${encodeURIComponent(String(slug).trim())}&limit=1`;
+    if (targetSlug) {
+      endpoint += `&slug=eq.${encodeURIComponent(targetSlug)}&limit=1`;
     } else {
       endpoint += `&order=created_at.desc`;
     }
@@ -101,7 +138,7 @@ export default async function handler(req, res) {
     if (response.ok) {
       const data = await response.json();
       if (Array.isArray(data)) {
-        if (slug) {
+        if (targetSlug) {
           if (data.length > 0) {
             return res.status(200).json({
               success: true,
@@ -117,7 +154,9 @@ export default async function handler(req, res) {
           }
         }
 
-        const sanitized = data.map(sanitizeArticle);
+        const sanitized = data
+          .filter(a => a && !PURGED_SLUGS.has(String(a.slug || a.id).toLowerCase().trim()))
+          .map(sanitizeArticle);
         return res.status(200).json({
           success: true,
           count: sanitized.length,
