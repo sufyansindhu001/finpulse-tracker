@@ -234,10 +234,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   const goldRows = useMemo(() => {
     const goldOzUsd = (rates.XAU && rates.XAU > 0)
       ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData.gold?.price || 4158.00);
+      : (metalsData.gold?.price || 3898.90);
     const silverOzUsd = (rates.XAG && rates.XAG > 0)
       ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData.silver?.price || 57.20);
+      : (metalsData.silver?.price || 49.28);
 
     const goldMetrics = calculateGoldLocalMetrics(goldOzUsd, usdToPkr, true);
     const goldPerTola24K = goldMetrics.pricePerTola24K;

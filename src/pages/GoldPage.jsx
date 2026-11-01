@@ -91,11 +91,11 @@ export default function GoldPage({ rates = {} }) {
   // Live Benchmark spot prices (fallback to metalsData)
   const goldSpotOzUsd = (rates.XAU && rates.XAU > 0)
     ? Number((1 / rates.XAU).toFixed(2))
-    : (metalsData.gold?.price || 4158.00);
+    : (metalsData.gold?.price || 3898.90);
 
   const silverSpotOzUsd = (rates.XAG && rates.XAG > 0)
     ? Number((1 / rates.XAG).toFixed(2))
-    : (metalsData.silver?.price || 57.20);
+    : (metalsData.silver?.price || 49.28);
 
   // Base calculations with calibrated Karachi Sarafa Association dynamic formula
   const goldMetrics = useMemo(() => {
@@ -273,11 +273,11 @@ export default function GoldPage({ rates = {} }) {
       else if (calcUnit === 'oz') grams = calcWeight * 31.1034768;
 
       const totalPkr = Math.round(grams * goldGram24K_Pkr * purityObj.factor);
-      const totalUsd = Math.round(totalPkr / (usdToPkr || 277.10));
+      const totalUsd = Math.round(totalPkr / (usdToPkr || 276.75));
 
       return { totalPkr, totalUsd, grams: grams.toFixed(2) };
     } catch {
-      return { totalPkr: 432500, totalUsd: 1560, grams: '11.66' };
+      return { totalPkr: 404640, totalUsd: 1462, grams: '11.66' };
     }
   }, [calcPurity, calcWeight, calcUnit, goldGram24K_Pkr, usdToPkr]);
 

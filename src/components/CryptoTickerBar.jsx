@@ -25,8 +25,8 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
     : DEFAULT_METALS.gold.price;
 
   const goldMetrics = calculateGoldLocalMetrics(goldSpotUsd, usdToPkr, true);
-  const gold24kTola = goldMetrics?.pricePerTola24K || 432500;
-  const gold22kTola = goldMetrics?.pricePerTola22K || 396458;
+  const gold24kTola = goldMetrics?.pricePerTola24K || 404640;
+  const gold22kTola = goldMetrics?.pricePerTola22K || 370920;
 
   // Curated Multi-Asset Ticker Strip (Gold Bullion, Forex Interbank & Top Crypto)
   const multiAssetItems = [

@@ -405,6 +405,60 @@ function BlogDetailPageContent() {
     };
   }, [targetIdentifier, article?.title, article?.excerpt, article?.summary, article?.slug, article?.image, article?.coverImage, article?.featuredImage]);
 
+  // Inject Article JSON-LD Structured Data for Google AdSense & Search Rich Snippets
+  useEffect(() => {
+    if (!article?.title) return;
+    const activeSlug = article?.slug || targetIdentifier;
+    const canonicalUrl = `https://www.fgcspot.com/blog/${activeSlug}`;
+    const authorName = article.author || 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist';
+    const datePublished = article.created_at || '2026-10-24T12:00:00Z';
+    const dateModified = article.updated_at || datePublished;
+    const imageUrl = article.image || article.coverImage || article.featuredImage || 'https://www.fgcspot.com/logo.png';
+
+    const schemaData = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': article.title,
+      'description': article.excerpt || article.summary || '',
+      'image': [imageUrl],
+      'datePublished': datePublished,
+      'dateModified': dateModified,
+      'author': [
+        {
+          '@type': 'Person',
+          'name': authorName,
+          'jobTitle': 'Lead Financial Analyst & Macro Strategist'
+        }
+      ],
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'FGC Spot',
+        'logo': {
+          '@type': 'ImageObject',
+          'url': 'https://www.fgcspot.com/logo.png'
+        }
+      },
+      'mainEntityOfPage': {
+        '@type': 'WebPage',
+        '@id': canonicalUrl
+      }
+    };
+
+    let scriptEl = document.getElementById('article-json-ld');
+    if (!scriptEl) {
+      scriptEl = document.createElement('script');
+      scriptEl.id = 'article-json-ld';
+      scriptEl.type = 'application/ld+json';
+      document.head.appendChild(scriptEl);
+    }
+    scriptEl.textContent = JSON.stringify(schemaData);
+
+    return () => {
+      const el = document.getElementById('article-json-ld');
+      if (el) el.remove();
+    };
+  }, [article, targetIdentifier]);
+
   const relatedArticles = useMemo(() => {
     return getRelatedArticles(article, allArticles, 4);
   }, [allArticles, article]);

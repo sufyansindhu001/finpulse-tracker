@@ -1,29 +1,37 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, 
   ArrowLeftRight,
   TrendingUp, 
   TrendingDown, 
-  Zap, 
-  LineChart, 
+  Zap,
   Coins, 
   Scale,
   Copy,
   Check,
-  ShieldCheck, 
-  Globe, 
-  Sparkles,
-  RefreshCw,
   ChevronRight
 } from 'lucide-react';
-import { getCurrencyFlagUrl } from '../utils/currencyFlags';
+// Module-level gold purity and weight conversion constants
+const PURITY_FACTORS = {
+  '24K': 1.0,
+  '22K': 22 / 24,
+  '21K': 21 / 24,
+  '18K': 18 / 24
+};
+
+const UNIT_WEIGHTS = {
+  tola: 11.6638,
+  '10g': 10.0,
+  gram: 1.0,
+  oz: 31.1035
+};
+
 import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
 import CurrencySelect from './CurrencySelect';
-import CurrencyFlag from './CurrencyFlag';
 
-export default function HeroSection({ rates, cryptoList }) {
+export default function HeroSection({ rates }) {
   const navigate = useNavigate();
   const [calculatorMode, setCalculatorMode] = useState('fx'); // 'fx' | 'gold' | 'terminal'
   const [tickEffect, setTickEffect] = useState(false);
@@ -82,9 +90,9 @@ export default function HeroSection({ rates, cryptoList }) {
     return (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
   }, [rates]);
 
-  const usdToPkr = activeRates.PKR || 277.10;
-  const eurVal = activeRates.EUR || 0.92;
-  const gbpVal = activeRates.GBP || 0.79;
+  const usdToPkr = activeRates.PKR || 276.75;
+  const eurVal = activeRates.EUR || 0.8955;
+  const gbpVal = activeRates.GBP || 0.7720;
   const sarVal = activeRates.SAR || 3.75;
   const aedVal = activeRates.AED || 3.6725;
 
@@ -95,20 +103,15 @@ export default function HeroSection({ rates, cryptoList }) {
 
   const goldPriceUsd = (typeof activeRates?.XAU === 'number' && !isNaN(activeRates.XAU) && isFinite(activeRates.XAU) && activeRates.XAU > 0)
     ? Number((1 / activeRates.XAU).toFixed(2))
-    : (metalsData?.gold?.price || 4158.00);
-
-  const silverPriceUsd = (typeof activeRates?.XAG === 'number' && !isNaN(activeRates.XAG) && isFinite(activeRates.XAG) && activeRates.XAG > 0)
-    ? Number((1 / activeRates.XAG).toFixed(2))
-    : (metalsData?.silver?.price || 57.20);
+    : (metalsData?.gold?.price || 3898.90);
 
   const goldMetrics = useMemo(() => {
     return calculateGoldLocalMetrics(goldPriceUsd, usdToPkr, true);
   }, [goldPriceUsd, usdToPkr]);
 
-  const goldPkrPerTola24K = goldMetrics?.pricePerTola24K || 432500;
-  const goldPkrPerTola22K = goldMetrics?.pricePerTola22K || 396458;
-  const goldGram24K = goldMetrics?.pricePerGram24K || 37080;
-  const goldChange = metalsData?.gold?.change ?? 0.42;
+  const goldPkrPerTola24K = goldMetrics?.pricePerTola24K || 404640;
+  const goldPkrPerTola22K = goldMetrics?.pricePerTola22K || 370920;
+  const goldGram24K = goldMetrics?.pricePerGram24K || 34691;
 
   // Currency Calculations
   const numericAmount = parseFloat(fxAmount) || 0;
@@ -138,24 +141,10 @@ export default function HeroSection({ rates, cryptoList }) {
   };
 
   // Gold Calculations
-  const purityFactors = {
-    '24K': 1.0,
-    '22K': 22 / 24,
-    '21K': 21 / 24,
-    '18K': 18 / 24
-  };
-
-  const unitWeights = {
-    tola: 11.6638,
-    '10g': 10.0,
-    gram: 1.0,
-    oz: 31.1035
-  };
-
   const goldCalcResult = useMemo(() => {
     const qty = parseFloat(goldQty) || 0;
-    const factor = purityFactors[goldPurity] || 1.0;
-    const weightInGrams = (unitWeights[goldUnit] || 11.6638) * qty;
+    const factor = PURITY_FACTORS[goldPurity] || 1.0;
+    const weightInGrams = (UNIT_WEIGHTS[goldUnit] || 11.6638) * qty;
     const basePkr = Math.round(weightInGrams * goldGram24K * factor);
     const makingChargeAmount = includeMaking ? Math.round(basePkr * 0.09) : 0; // ~9% standard jeweler making charge / katt
     const finalPkr = basePkr + makingChargeAmount;

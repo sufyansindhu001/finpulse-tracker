@@ -3,8 +3,7 @@ import {
   TrendingUp, 
   TrendingDown, 
   ArrowUpRight, 
-  Sparkles, 
-  RefreshCw
+  Sparkles
 } from 'lucide-react';
 import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
 import CurrencyFlag from './CurrencyFlag';
@@ -17,7 +16,6 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     lastUpdated: DEFAULT_METALS.lastUpdated,
     source: DEFAULT_METALS.source
   }));
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Live Precious Metals Auto-Ingestion
   const loadMetals = async () => {
@@ -90,18 +88,18 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
     };
 
     // 2. Forex Corridors
-    const usdPkrRate = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 277.10;
-    const eurUsdRate = (typeof rates?.EUR === 'number' && !isNaN(rates.EUR) && isFinite(rates.EUR) && rates.EUR > 0) ? (1 / rates.EUR) : 1.0845;
-    const gbpUsdRate = (typeof rates?.GBP === 'number' && !isNaN(rates.GBP) && isFinite(rates.GBP) && rates.GBP > 0) ? (1 / rates.GBP) : 1.2890;
+    const usdPkrRate = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 276.75;
+    const eurUsdRate = (typeof rates?.EUR === 'number' && !isNaN(rates.EUR) && isFinite(rates.EUR) && rates.EUR > 0) ? (1 / rates.EUR) : 1.1166;
+    const gbpUsdRate = (typeof rates?.GBP === 'number' && !isNaN(rates.GBP) && isFinite(rates.GBP) && rates.GBP > 0) ? (1 / rates.GBP) : 1.2950;
 
     // 3. Live Precious Metals
     const goldPriceUsd = (typeof rates?.XAU === 'number' && !isNaN(rates.XAU) && isFinite(rates.XAU) && rates.XAU > 0)
       ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData?.gold?.price || 4158.00);
+      : (metalsData?.gold?.price || 3898.90);
 
     const silverPriceUsd = (typeof rates?.XAG === 'number' && !isNaN(rates.XAG) && isFinite(rates.XAG) && rates.XAG > 0)
       ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData?.silver?.price || 57.20);
+      : (metalsData?.silver?.price || 49.28);
 
     const goldChange = metalsData?.gold?.change ?? -0.56;
     const silverChange = metalsData?.silver?.change ?? -0.17;

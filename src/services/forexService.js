@@ -1,8 +1,8 @@
 export const DEFAULT_RATES = {
   USD: 1.0,
-  PKR: 277.10, // Live mid-market interbank benchmark: 1 USD = ~277.10 PKR
-  EUR: 0.92,
-  GBP: 0.79,
+  PKR: 276.75, // Live mid-market interbank benchmark: 1 USD = ~276.75 PKR
+  EUR: 0.8955,
+  GBP: 0.7720,
   INR: 84.85,
   AED: 3.6725,
   SAR: 3.75,
@@ -30,8 +30,8 @@ export const DEFAULT_RATES = {
   NGN: 1650.0,
   KRW: 1390.0,
   VND: 25400.0,
-  XAU: 1 / 4158.00, // 1 Troy Oz Gold in USD ($4,158.00)
-  XAG: 1 / 57.20    // 1 Troy Oz Silver in USD ($57.20)
+  XAU: 1 / 3898.90, // 1 Troy Oz Gold in USD ($3,898.90)
+  XAG: 1 / 49.28    // 1 Troy Oz Silver in USD ($49.28)
 };
 
 export const RATES_CACHE_KEY = 'fgc_spot_forex_rates';
@@ -40,6 +40,7 @@ export const SWR_MAX_AGE_MS = 600 * 1000; // 10 minutes stale-while-revalidate T
 
 const OPEN_EXCHANGE_URL = 'https://open.er-api.com/v6/latest/USD';
 const JSDELIVR_URL = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
+const CLOUDFLARE_PAGES_URL = 'https://latest.currency-api.pages.dev/v1/currencies/usd.json';
 const FLOATRATES_URL = 'https://www.floatrates.com/daily/usd.json';
 
 let inMemoryRatesCache = null;
@@ -47,7 +48,7 @@ let inFlightForexPromise = null;
 
 /**
  * Retrieves valid cached rates from in-memory cache or localStorage.
- * Automatically invalidates if older than 10 minutes or containing outdated rates.
+ * Automatically invalidates if older than 10 minutes or corrupted.
  */
 export function getCachedRates(allowStale = false) {
   if (inMemoryRatesCache && typeof inMemoryRatesCache.timestamp === 'number') {
@@ -71,12 +72,6 @@ export function getCachedRates(allowStale = false) {
       return null;
     }
     if (!allowStale && age > CACHE_TTL_MS) {
-      return null;
-    }
-
-    // Invalidate immediately if cache contains the delayed 276.91 rate
-    if (parsed.rates.PKR && Math.abs(parsed.rates.PKR - 276.91) < 0.08) {
-      localStorage.removeItem(RATES_CACHE_KEY);
       return null;
     }
 
@@ -149,16 +144,17 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 4500);
 
-      const [forexRes, jsDelivrRes, floatRes, metalsRes] = await Promise.allSettled([
+      const [forexRes, jsDelivrRes, cloudflareRes, floatRes, metalsRes] = await Promise.allSettled([
         fetch(OPEN_EXCHANGE_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
         fetch(JSDELIVR_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
+        fetch(CLOUDFLARE_PAGES_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
         fetch(FLOATRATES_URL, { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null),
         fetch('/api/metals', { signal: controller.signal, headers: { 'Accept': 'application/json' } }).then(r => r.ok ? r.json() : null)
       ]);
       clearTimeout(timeout);
 
     const erData = forexRes.status === 'fulfilled' ? forexRes.value : null;
-    const jsData = jsDelivrRes.status === 'fulfilled' ? jsDelivrRes.value : null;
+    const jsData = (jsDelivrRes.status === 'fulfilled' && jsDelivrRes.value) ? jsDelivrRes.value : (cloudflareRes.status === 'fulfilled' ? cloudflareRes.value : null);
     const floatData = floatRes.status === 'fulfilled' ? floatRes.value : null;
     const metals = metalsRes.status === 'fulfilled' ? metalsRes.value : null;
 
@@ -167,7 +163,7 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       ...(erData?.rates || {})
     };
 
-    // Enrich with 160+ fiat currency feeds from jsdelivr if missing (filtered strictly to 3-letter fiat codes)
+    // Enrich with 160+ fiat currency feeds from jsdelivr/cloudflare if missing (filtered strictly to 3-letter fiat codes)
     if (jsData?.usd && typeof jsData.usd === 'object') {
       Object.entries(jsData.usd).forEach(([code, val]) => {
         if (typeof code === 'string' && code.length === 3 && /^[a-zA-Z]{3}$/.test(code)) {
@@ -203,11 +199,6 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
         const sarVal = parseFloat(floatData.sar.rate);
         if (!isNaN(sarVal) && isFinite(sarVal) && sarVal > 0) mergedRates.SAR = sarVal;
       }
-    }
-
-    // Safeguard: Ensure PKR rate is within the authentic live range (~277.10 - 277.20) rather than the delayed 276.91
-    if (mergedRates.PKR && typeof mergedRates.PKR === 'number' && Math.abs(mergedRates.PKR - 276.91) < 0.08) {
-      mergedRates.PKR = 277.10;
     }
 
     if (metals?.rates && typeof metals.rates === 'object') {

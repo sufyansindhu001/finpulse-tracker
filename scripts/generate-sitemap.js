@@ -70,12 +70,27 @@ async function fetchArticles() {
     }
   ];
 
+  const PURGED_SLUGS = new Set([
+    'understanding-crypto-market-cycles-halving-events-liquidity-flows-and-retail-psychology',
+    'the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility',
+    'the-mechanics-of-sovereign-wealth-funds-how-national-capital-drives-global-asset-markets',
+    'the-anatomy-of-liquidity-traps-why-zero-interest-rates-fail-to-stimulate-borrowing',
+    'the-foreign-exchange-reserve-buffer-how-import-cover-shapes-sovereign-stability',
+    'the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index',
+    'the-mechanics-of-current-account-deficits-why-trade-balances-drive-currency-revaluations',
+    'the-mechanics-of-currency-swaps-how-central-banks-provide-offshore-dollar-liquidity',
+    'sovereign-debt-cycles-and-currency-valuation-how-national-debt-impacts-foreign-exchange',
+    'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies',
+    'decoding-the-sovereign-yield-curve-what-inversions-signal-to-global-markets',
+    'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand'
+  ]);
+
   const seenSlugs = new Set();
   const merged = [];
 
   [...MANDATORY_FLAGSHIP_ARTICLES, ...supabaseArticles, ...localArticles].forEach(art => {
     const s = art.slug || art.id;
-    if (s && !seenSlugs.has(s)) {
+    if (s && !seenSlugs.has(s) && !PURGED_SLUGS.has(s)) {
       seenSlugs.add(s);
       merged.push(art);
     }

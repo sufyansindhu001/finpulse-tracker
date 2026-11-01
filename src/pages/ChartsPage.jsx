@@ -86,10 +86,10 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   const btcPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'BTC')?.current_price || 96420;
   const ethPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'ETH')?.current_price || 2745.50;
 
-  // Live Gold Spot Price (~$4,158/oz benchmark)
+  // Live Gold Spot Price benchmark
   const goldPrice = (metalsData.gold?.price && metalsData.gold.price > 0)
     ? metalsData.gold.price 
-    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : 4158.00);
+    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : 3898.90);
 
   // Dynamic Live Asset configurations
   const assets = [
