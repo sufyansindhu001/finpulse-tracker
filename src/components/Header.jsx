@@ -110,14 +110,14 @@ export default function Header({
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-[#06111F]/90 backdrop-blur-md border-b border-slate-200 dark:border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex items-center justify-between h-16 gap-2 sm:gap-4 w-full">
             
             {/* Left: Brand Identity with Logo and Distinct Interactive Live Button */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0 relative z-10">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 relative z-10 min-w-max">
               <Link 
                 to="/"
-                className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer"
+                className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer shrink-0"
                 title="Go to FGC Spot Homepage"
               >
                 <img 
@@ -133,7 +133,7 @@ export default function Header({
                     e.currentTarget.src = '/logo.png';
                   }}
                 />
-                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans">
+                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans shrink-0 whitespace-nowrap">
                   {siteSettings?.websiteName || 'FGC Spot'}
                 </span>
               </Link>
@@ -144,22 +144,22 @@ export default function Header({
                 onClick={handleLiveToggle}
                 title="Live Market Stream Active — Click to toggle telemetry pulse"
                 aria-label="Toggle Live Market Telemetry Feed"
-                className={`inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full cursor-pointer select-none transition-all duration-200 active:scale-95 touch-manipulation ${
+                className={`inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full cursor-pointer select-none transition-all duration-200 active:scale-95 touch-manipulation shrink-0 whitespace-nowrap min-w-max leading-none ${
                   isPulsing
                     ? 'bg-[#00E676]/30 text-[#00E676] border border-[#00E676] ring-2 ring-[#00E676]/40 shadow-md shadow-[#00E676]/30'
                     : 'bg-[#00E676]/10 hover:bg-[#00E676]/20 text-[#00E676] border border-[#00E676]/30 hover:border-[#00E676]/60 shadow-xs'
                 }`}
               >
-                <span className="relative flex h-2 w-2">
+                <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
                 </span>
-                <span>Live</span>
+                <span className="shrink-0 whitespace-nowrap font-bold">Live</span>
               </button>
             </div>
 
             {/* Center: Desktop Navigation Links */}
-            <nav className="hidden xl:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md">
+            <nav className="hidden xl:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md shrink-0">
               {navLinks.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.match(currentPath);
@@ -169,31 +169,31 @@ export default function Header({
                     to={item.path}
                     onMouseEnter={() => preloadRoute(item.path)}
                     onTouchStart={() => preloadRoute(item.path)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       isActive
                         ? 'bg-[#00E676] text-[#06111F] shadow-sm shadow-[#00E676]/30 font-bold'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A8B3C2] dark:hover:text-white dark:hover:bg-white/[0.05]'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5 shrink-0" />
-                    <span>{item.label}</span>
+                    <span className="shrink-0 whitespace-nowrap">{item.label}</span>
                   </Link>
                 );
               })}
             </nav>
 
             {/* Right: Search, Theme Toggle, Language Indicator & Live Rates CTA */}
-            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-max">
               
               {/* Functional Search Input Button (Wide desktop) */}
               <button
                 onClick={onOpenSearch}
-                className="hidden xl:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group"
+                className="hidden xl:inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group shrink-0 whitespace-nowrap"
                 title="Search currency, crypto, gold... (Ctrl+K)"
               >
-                <Search className="w-3.5 h-3.5 text-[#00E676] group-hover:scale-110 transition-transform" />
-                <span>Search currency, crypto, gold...</span>
-                <kbd className="text-[10px] font-mono bg-white dark:bg-[#06111F] px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">
+                <Search className="w-3.5 h-3.5 text-[#00E676] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="shrink-0 whitespace-nowrap">Search currency, crypto, gold...</span>
+                <kbd className="text-[10px] font-mono bg-white dark:bg-[#06111F] px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 shrink-0">
                   ⌘K
                 </kbd>
               </button>
@@ -201,7 +201,7 @@ export default function Header({
               {/* Mobile/Tablet Search Icon Button */}
               <button
                 onClick={onOpenSearch}
-                className="xl:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer"
+                className="xl:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer shrink-0"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4 text-[#00E676]" />
@@ -210,7 +210,7 @@ export default function Header({
               {/* Theme Toggle Button (Moon/Sun) */}
               <button
                 onClick={handleToggleTheme}
-                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-[#00E676] dark:hover:text-[#00E676] transition-all cursor-pointer shadow-xs"
+                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-[#00E676] dark:hover:text-[#00E676] transition-all cursor-pointer shadow-xs shrink-0"
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 aria-label="Toggle visual theme"
               >
@@ -222,9 +222,9 @@ export default function Header({
               </button>
 
               {/* Language Indicator */}
-              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-[#A8B3C2]">
-                <Globe className="w-3.5 h-3.5 text-[#00E676]" />
-                <span>EN</span>
+              <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-[#A8B3C2] shrink-0 whitespace-nowrap min-w-max">
+                <Globe className="w-3.5 h-3.5 text-[#00E676] shrink-0" />
+                <span className="shrink-0 whitespace-nowrap">EN</span>
               </div>
 
               {/* Live Rates / Market Pulse Button */}
@@ -232,17 +232,17 @@ export default function Header({
                 type="button"
                 onClick={handleLiveToggle}
                 title="View Live Market Telemetry & Spot Rates"
-                className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all duration-200 shadow-xs cursor-pointer select-none active:scale-95 ${
+                className={`hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold shrink-0 whitespace-nowrap min-w-max transition-all duration-200 shadow-xs cursor-pointer select-none active:scale-95 leading-none ${
                   isPulsing
                     ? 'bg-[#00E676]/25 border-[#00E676] text-[#00E676] ring-2 ring-[#00E676]/40 shadow-md'
                     : 'bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white'
                 }`}
               >
-                <span className="relative flex h-2 w-2">
+                <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
                 </span>
-                <span className="group-hover:text-[#00E676] transition-colors">Live Pulse</span>
+                <span className="shrink-0 whitespace-nowrap font-bold">Live Pulse</span>
               </button>
 
               {/* Mobile/Tablet Hamburger Toggle Button */}
