@@ -8,7 +8,7 @@ import {
   ShieldCheck, 
   Newspaper 
 } from 'lucide-react';
-import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
+import { fetchLiveMarketNews, matchesCategory, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
 import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 export default function MarketNewsWire({ limit = 6 }) {
@@ -34,14 +34,26 @@ export default function MarketNewsWire({ limit = 6 }) {
   const loadNews = useCallback(async (category = activeCategory, isManual = false) => {
     if (isManual) {
       setIsRefreshing(true);
-    } else {
+    } else if (news.length === 0) {
       setIsLoading(true);
     }
 
     try {
       const res = await fetchLiveMarketNews(category);
-      if (res && Array.isArray(res.data)) {
-        setNews(res.data);
+      if (res && Array.isArray(res.data) && res.data.length > 0) {
+        setNews(prev => {
+          if (prev.length === 0) return res.data;
+          const map = new Map();
+          res.data.forEach(it => {
+            const k = (it.id || it.url || it.headline || '').trim().toLowerCase();
+            if (k) map.set(k, it);
+          });
+          prev.forEach(it => {
+            const k = (it.id || it.url || it.headline || '').trim().toLowerCase();
+            if (k && !map.has(k)) map.set(k, it);
+          });
+          return Array.from(map.values()).sort((a, b) => (b.datetime || 0) - (a.datetime || 0));
+        });
         setMeta({
           source: res.source,
           lastUpdated: res.lastUpdated,
@@ -54,7 +66,7 @@ export default function MarketNewsWire({ limit = 6 }) {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [activeCategory]);
+  }, [activeCategory, news.length]);
 
   useEffect(() => {
     loadNews(activeCategory, false);
@@ -69,6 +81,8 @@ export default function MarketNewsWire({ limit = 6 }) {
 
   const handleCategoryChange = (catKey) => {
     setActiveCategory(catKey);
+    // Silent background refresh for that specific category
+    loadNews(catKey, false);
   };
 
   const categories = [
@@ -81,8 +95,10 @@ export default function MarketNewsWire({ limit = 6 }) {
     { key: 'economy', label: 'Economy & Central Banks' },
   ];
 
-  // Limit display if specified, or display up to 6 items by default
-  const displayItems = limit ? news.slice(0, limit) : news;
+  // Instantly filter news in-memory by category
+  const filteredNews = news.filter(item => matchesCategory(item.category, activeCategory));
+  // Limit display if specified, or display up to limit by default (with fallback if category subset is small)
+  const displayItems = limit ? filteredNews.slice(0, limit) : filteredNews;
 
   // Source badge styling generator
   const getSourceBadgeStyle = (source = '') => {

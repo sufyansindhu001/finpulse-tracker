@@ -279,6 +279,37 @@ export function decodeHtmlEntities(str) {
 // Backward-compatibility alias
 export const decodeHTMLEntities = decodeHtmlEntities;
 
+
+/**
+ * Universal Category Matcher
+ * Performs fast, accurate semantic mapping between item categories and target filter tabs.
+ */
+export function matchesCategory(itemCategory = '', targetCategory = 'all') {
+  if (!targetCategory || targetCategory === 'all') return true;
+  const ic = (itemCategory || '').toLowerCase();
+  const tc = (targetCategory || '').toLowerCase().replace(/[\s_]+/g, '-');
+
+  if (tc === 'local-stocks' || tc === 'psx' || tc === 'local') {
+    return ic.includes('local') || ic.includes('psx') || ic.includes('pakistan') || ic.includes('karachi');
+  }
+  if (tc === 'global-stocks' || tc === 'stocks' || tc === 'international-stocks') {
+    return ic.includes('global') || ic.includes('international') || ic.includes('wall street') || (ic.includes('stock') && !ic.includes('local') && !ic.includes('psx')) || ic.includes('equity') || ic.includes('nasdaq') || ic.includes('s&p');
+  }
+  if (tc === 'crypto' || tc === 'cryptocurrency') {
+    return ic.includes('crypto') || ic.includes('bitcoin') || ic.includes('ethereum') || ic.includes('blockchain') || ic.includes('digital asset');
+  }
+  if (tc === 'forex' || tc === 'markets' || tc === 'markets-forex' || tc === 'currencies') {
+    return ic.includes('forex') || ic.includes('currency') || ic.includes('fx') || ic.includes('interbank') || ic.includes('remittance') || ic.includes('market');
+  }
+  if (tc === 'commodities' || tc === 'gold' || tc === 'gold-commodities') {
+    return ic.includes('gold') || ic.includes('commodit') || ic.includes('bullion') || ic.includes('oil') || ic.includes('silver') || ic.includes('metal') || ic.includes('brent');
+  }
+  if (tc === 'economy' || tc === 'central-banks' || tc === 'economy-central-banks' || tc === 'macro') {
+    return ic.includes('econom') || ic.includes('central bank') || ic.includes('fed') || ic.includes('macro') || ic.includes('sbp') || ic.includes('imf') || ic.includes('monetary');
+  }
+  return ic.includes(tc);
+}
+
 // Live Free Public Financial & Equity RSS Feeds
 const LIVE_FEEDS = {
   all: [

@@ -17,7 +17,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { fetchLiveMarketNews, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
+import { fetchLiveMarketNews, matchesCategory, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
 import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 import { useSEO } from '../hooks/useSEO';
 
@@ -38,13 +38,29 @@ export default function NewsPage() {
   const loadNews = async (cat = selectedCategory, isManual = false) => {
     if (isManual) {
       setIsRefreshing(true);
-    } else {
+    } else if (newsItems.length === 0) {
       setIsLoading(true);
     }
     try {
       const res = await fetchLiveMarketNews(cat);
       const items = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
-      setNewsItems(items);
+      if (items.length > 0) {
+        setNewsItems(prev => {
+          if (prev.length === 0) return items;
+          const map = new Map();
+          // Keep newest incoming first
+          items.forEach(it => {
+            const k = (it.id || it.url || it.headline || '').trim().toLowerCase();
+            if (k) map.set(k, it);
+          });
+          // Merge with previously loaded
+          prev.forEach(it => {
+            const k = (it.id || it.url || it.headline || '').trim().toLowerCase();
+            if (k && !map.has(k)) map.set(k, it);
+          });
+          return Array.from(map.values()).sort((a, b) => (b.datetime || 0) - (a.datetime || 0));
+        });
+      }
     } catch (e) {
       console.warn('Failed to load live news wire:', e);
     } finally {
@@ -66,6 +82,7 @@ export default function NewsPage() {
 
   const handleCategoryChange = (catId) => {
     setSelectedCategory(catId);
+    // Smooth background revalidation without wiping existing view
     loadNews(catId, false);
   };
 
@@ -104,6 +121,11 @@ export default function NewsPage() {
 
   const filteredNews = useMemo(() => {
     return newsItems.filter(item => {
+      // 1. Strict semantic category filter
+      const matchCategory = matchesCategory(item.category, selectedCategory);
+      if (!matchCategory) return false;
+
+      // 2. Keyword search filter
       const q = searchQuery.trim().toLowerCase();
       if (!q) return true;
       return (
@@ -114,7 +136,7 @@ export default function NewsPage() {
         item.category?.toLowerCase().includes(q)
       );
     });
-  }, [newsItems, searchQuery]);
+  }, [newsItems, selectedCategory, searchQuery]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-300">
@@ -189,8 +211,18 @@ export default function NewsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search news by headline, source..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-[#A8B3C2] focus:outline-none focus:border-[#00E676] shadow-xs"
+            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-[#A8B3C2] focus:outline-none focus:border-[#00E676] shadow-xs"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer"
+              title="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -206,10 +238,34 @@ export default function NewsPage() {
           ))}
         </div>
       ) : filteredNews.length === 0 ? (
-        <div className="py-20 text-center rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3 shadow-sm">
+        <div className="py-20 text-center rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-4 shadow-sm p-6">
           <Newspaper className="w-10 h-10 text-slate-400 dark:text-[#A8B3C2] mx-auto opacity-50" />
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">No News Discovered</h3>
-          <p className="text-xs text-slate-500 dark:text-[#A8B3C2]">Try clearing your search query or selecting a different category filter.</p>
+          <div className="space-y-1">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">No Matching Wire Dispatches</h3>
+            <p className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-md mx-auto">
+              No articles found in &ldquo;{categories.find(c => c.id === selectedCategory)?.label || selectedCategory}&rdquo; {searchQuery ? `matching "${searchQuery}"` : ''}.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
+              >
+                Clear Search Query
+              </button>
+            )}
+            {selectedCategory !== 'all' && (
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('all')}
+                className="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm shadow-[#00E676]/20"
+              >
+                Show All Categories
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

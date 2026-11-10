@@ -173,47 +173,79 @@ export default function HeroSection({ rates }) {
         
         {/* TOP BULLION & FOREX SPOT TICKER RIBBON */}
         <div className="w-full overflow-x-auto no-scrollbar py-1">
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-max text-xs">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-bold">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-max text-xs select-none">
+            <button 
+              onClick={() => navigate('/gold')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500/50 text-amber-600 dark:text-amber-400 font-bold cursor-pointer transition-all shadow-xs"
+              title="View full gold bullion rate sheet"
+            >
               <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
               <span>24K TOLA:</span>
               <span className="font-mono text-slate-900 dark:text-white">₨{goldPkrPerTola24K.toLocaleString()}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-medium">
+            <button 
+              onClick={() => navigate('/gold')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-500/40 text-amber-600 dark:text-amber-400 font-medium cursor-pointer transition-all"
+              title="View 22K jewelry rates"
+            >
               <span>22K Tola:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">₨{goldPkrPerTola22K.toLocaleString()}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 font-medium text-slate-700 dark:text-slate-300">
+            <button 
+              onClick={() => navigate('/gold')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-all"
+              title="View live spot gold price"
+            >
               <span className="text-[#00E676] font-bold">XAU/USD:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">${goldPriceUsd.toLocaleString()}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 font-medium text-slate-700 dark:text-slate-300">
+            <button 
+              onClick={() => navigate('/rates')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-cyan-500/40 font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-all"
+              title="View USD/PKR interbank rates"
+            >
               <span className="text-cyan-500 font-bold">USD/PKR:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">₨{usdToPkr.toFixed(2)}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 font-medium text-slate-700 dark:text-slate-300">
+            <button 
+              onClick={() => navigate('/rates')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-blue-500/40 font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-all"
+              title="View EUR/PKR rates"
+            >
               <span className="text-blue-500 font-bold">EUR/PKR:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">₨{eurToPkr}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 font-medium text-slate-700 dark:text-slate-300">
+            <button 
+              onClick={() => navigate('/rates')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-purple-500/40 font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-all"
+              title="View GBP/PKR rates"
+            >
               <span className="text-purple-500 font-bold">GBP/PKR:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">₨{gbpToPkr}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 font-medium text-slate-700 dark:text-slate-300">
+            <button 
+              onClick={() => navigate('/rates')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-emerald-500/40 font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-all"
+              title="View AED/PKR rates"
+            >
               <span className="text-emerald-500 font-bold">AED/PKR:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">₨{aedToPkr}</span>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 font-medium text-slate-700 dark:text-slate-300">
+            <button 
+              onClick={() => navigate('/rates')} 
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-amber-500/40 font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-all"
+              title="View SAR/PKR rates"
+            >
               <span className="text-amber-500 font-bold">SAR/PKR:</span>
               <span className="font-mono text-slate-900 dark:text-white font-bold">₨{sarToPkr}</span>
-            </div>
+            </button>
           </div>
         </div>
 

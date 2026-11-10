@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import LiveMarketPulseModal from './LiveMarketPulseModal';
 import { 
   Menu, 
   X, 
@@ -18,8 +19,17 @@ import {
   Coins
 } from 'lucide-react';
 
-export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }) {
+export default function Header({ 
+  onOpenSearch, 
+  theme: propTheme, 
+  onToggleTheme,
+  isRefreshing = false,
+  onRefresh,
+  rates = {},
+  lastUpdated = ''
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
@@ -34,11 +44,6 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
   };
 
   const currentPath = location.pathname;
-
-  const handleNavClick = (path) => {
-    navigate(path);
-    setMobileMenuOpen(false);
-  };
 
   // Prevent background scroll when mobile drawer is open
   useEffect(() => {
@@ -108,9 +113,22 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                   <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans">
                     {siteSettings?.websiteName || 'FGC Spot'}
                   </span>
-                  <span className="hidden sm:inline-flex text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20">
-                    Live
-                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsPulseModalOpen(true);
+                    }}
+                    title="Open Live Market Pulse Feed"
+                    className="hidden sm:inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00E676]/15 hover:bg-[#00E676]/25 text-[#00E676] border border-[#00E676]/30 transition-all cursor-pointer shadow-xs group"
+                  >
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00E676]"></span>
+                    </span>
+                    <span>Live</span>
+                  </button>
                 </div>
               </div>
             </Link>
@@ -184,16 +202,18 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
                 <span>EN</span>
               </div>
 
-              {/* Live Rates Glowing Pulse Button */}
+              {/* Live Rates / Market Pulse Button */}
               <button
-                onClick={() => navigate('/rates')}
+                type="button"
+                onClick={() => setIsPulseModalOpen(true)}
+                title="View Live Market Telemetry & Spot Rates"
                 className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white text-xs font-semibold transition-all shadow-xs cursor-pointer group"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
                 </span>
-                <span className="group-hover:text-[#00E676] transition-colors">Live Rates</span>
+                <span className="group-hover:text-[#00E676] transition-colors">Live Pulse</span>
               </button>
 
               {/* Mobile Hamburger Toggle Button */}
@@ -304,12 +324,12 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  navigate('/rates');
+                  setIsPulseModalOpen(true);
                 }}
-                className="w-full py-3 rounded-xl bg-[#00E676] text-[#06111F] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#00E676]/25"
+                className="w-full py-3 rounded-xl bg-[#00E676] text-[#06111F] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#00E676]/25 cursor-pointer"
               >
                 <span className="w-2 h-2 rounded-full bg-[#06111F] animate-pulse"></span>
-                <span>Open Live Rates Terminal</span>
+                <span>Open Live Market Pulse</span>
               </button>
 
               <div className="flex items-center justify-between text-xs text-slate-600 dark:text-[#A8B3C2] px-1">
@@ -324,6 +344,16 @@ export default function Header({ onOpenSearch, theme: propTheme, onToggleTheme }
           </div>
         </div>
       )}
+
+      {/* Interactive Live Market Pulse Modal */}
+      <LiveMarketPulseModal
+        isOpen={isPulseModalOpen}
+        onClose={() => setIsPulseModalOpen(false)}
+        onRefresh={onRefresh}
+        isRefreshing={isRefreshing}
+        rates={rates}
+        lastUpdated={lastUpdated}
+      />
     </>
   );
 }
