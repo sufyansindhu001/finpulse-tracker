@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LiveMarketPulseModal from './LiveMarketPulseModal';
 import { 
@@ -33,7 +33,6 @@ export default function Header({
   const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
   const [isPulsing, setIsPulsing] = useState(false);
   const [localToast, setLocalToast] = useState(null);
-  const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
 
@@ -111,9 +110,9 @@ export default function Header({
     <>
       <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-[#06111F]/90 backdrop-blur-md border-b border-slate-200 dark:border-white/10 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="flex items-center justify-between h-16 gap-2 sm:gap-4 w-full">
+          <div className="flex items-center justify-between h-16 gap-3 sm:gap-4 w-full">
             
-            {/* Left: Brand Identity with Logo and Distinct Interactive Live Button */}
+            {/* Left: Brand Identity with Logo and Single Interactive Live Status Button */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0 relative z-10 min-w-max">
               <Link 
                 to="/"
@@ -123,8 +122,8 @@ export default function Header({
                 <img 
                   src={siteSettings?.logoUrl || '/logo.png'} 
                   alt={siteSettings?.websiteName || 'FGC Spot'} 
-                  width="40"
-                  height="40"
+                  width="36"
+                  height="36"
                   decoding="async"
                   className="w-9 h-9 md:w-10 md:h-10 aspect-square object-contain shrink-0 rounded-xl transition-transform group-hover:scale-105 block" 
                   style={{ filter: 'none' }}
@@ -138,13 +137,13 @@ export default function Header({
                 </span>
               </Link>
 
-              {/* Distinct Interactive Live Status Button (Available on Mobile & Desktop) */}
+              {/* Single Interactive Live Status Button */}
               <button
                 type="button"
                 onClick={handleLiveToggle}
-                title="Live Market Stream Active — Click to toggle telemetry pulse"
+                title="Live Market Stream Active — Click to open market pulse & refresh telemetry"
                 aria-label="Toggle Live Market Telemetry Feed"
-                className={`inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full cursor-pointer select-none transition-all duration-200 active:scale-95 touch-manipulation shrink-0 whitespace-nowrap min-w-max leading-none ${
+                className={`inline-flex items-center gap-1.5 text-[10px] sm:text-xs uppercase font-bold tracking-wider px-2.5 py-1 rounded-full cursor-pointer select-none transition-all duration-200 active:scale-95 touch-manipulation shrink-0 whitespace-nowrap leading-none ${
                   isPulsing
                     ? 'bg-[#00E676]/30 text-[#00E676] border border-[#00E676] ring-2 ring-[#00E676]/40 shadow-md shadow-[#00E676]/30'
                     : 'bg-[#00E676]/10 hover:bg-[#00E676]/20 text-[#00E676] border border-[#00E676]/30 hover:border-[#00E676]/60 shadow-xs'
@@ -154,7 +153,7 @@ export default function Header({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
                 </span>
-                <span className="shrink-0 whitespace-nowrap font-bold">Live</span>
+                <span className="shrink-0 whitespace-nowrap">Live</span>
               </button>
             </div>
 
@@ -182,26 +181,26 @@ export default function Header({
               })}
             </nav>
 
-            {/* Right: Search, Theme Toggle, Language Indicator & Live Rates CTA */}
-            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-max">
+            {/* Right: Search, Theme Toggle & Mobile Menu (No duplicate Live button) */}
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-max">
               
-              {/* Functional Search Input Button (Wide desktop) */}
+              {/* Desktop/Tablet Search Input Button */}
               <button
                 onClick={onOpenSearch}
-                className="hidden xl:inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group shrink-0 whitespace-nowrap"
+                className="hidden md:inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group shrink-0 whitespace-nowrap"
                 title="Search currency, crypto, gold... (Ctrl+K)"
               >
                 <Search className="w-3.5 h-3.5 text-[#00E676] group-hover:scale-110 transition-transform shrink-0" />
-                <span className="shrink-0 whitespace-nowrap">Search currency, crypto, gold...</span>
+                <span className="shrink-0 whitespace-nowrap text-slate-500 dark:text-slate-400">Search markets...</span>
                 <kbd className="text-[10px] font-mono bg-white dark:bg-[#06111F] px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 shrink-0">
                   ⌘K
                 </kbd>
               </button>
 
-              {/* Mobile/Tablet Search Icon Button */}
+              {/* Mobile-only Search Icon Button */}
               <button
                 onClick={onOpenSearch}
-                className="xl:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer shrink-0"
+                className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer shrink-0 transition-colors"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4 text-[#00E676]" />
@@ -221,34 +220,10 @@ export default function Header({
                 )}
               </button>
 
-              {/* Language Indicator */}
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-[#A8B3C2] shrink-0 whitespace-nowrap min-w-max">
-                <Globe className="w-3.5 h-3.5 text-[#00E676] shrink-0" />
-                <span className="shrink-0 whitespace-nowrap">EN</span>
-              </div>
-
-              {/* Live Rates / Market Pulse Button */}
-              <button
-                type="button"
-                onClick={handleLiveToggle}
-                title="View Live Market Telemetry & Spot Rates"
-                className={`hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold shrink-0 whitespace-nowrap min-w-max transition-all duration-200 shadow-xs cursor-pointer select-none active:scale-95 leading-none ${
-                  isPulsing
-                    ? 'bg-[#00E676]/25 border-[#00E676] text-[#00E676] ring-2 ring-[#00E676]/40 shadow-md'
-                    : 'bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white'
-                }`}
-              >
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
-                </span>
-                <span className="shrink-0 whitespace-nowrap font-bold">Live Pulse</span>
-              </button>
-
               {/* Mobile/Tablet Hamburger Toggle Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="xl:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none"
+                className="xl:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none transition-colors"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
