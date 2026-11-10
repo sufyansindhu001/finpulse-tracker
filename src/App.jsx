@@ -15,6 +15,7 @@ import WhyFGCSpot from './components/WhyFGCSpot';
 import MarketIntelligenceMethodology from './components/MarketIntelligenceMethodology';
 import FeaturedResearchSection from './components/FeaturedResearchSection';
 import Footer from './components/Footer';
+import CookieConsentBanner from './components/CookieConsentBanner';
 
 import { lazyWithRetry } from './utils/lazyWithRetry';
 
@@ -519,6 +520,9 @@ export default function App() {
 
       {/* Footer with Unified FGC Spot Theme & Standalone Router Links */}
       <Footer onSelectPair={handleSelectPair} />
+
+      {/* Non-intrusive Cookie Consent Banner (Google AdSense & Privacy Compliant) */}
+      <CookieConsentBanner />
 
       {/* Official Vercel Real-Traffic Analytics & Web Vitals Speed Insights */}
       <Analytics />

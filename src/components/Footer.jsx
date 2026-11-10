@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Zap, BookOpen } from 'lucide-react';
+import { ShieldCheck, Mail, AlertTriangle, FileText, Globe, Zap, BookOpen, Cookie } from 'lucide-react';
 import LegalModal from './LegalModal';
 
 export default function Footer() {
@@ -232,6 +232,16 @@ export default function Footer() {
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Privacy Policy & Cookies</span>
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('fgc_open_cookie_preferences'))}
+                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer text-left w-full"
+                >
+                  <Cookie className="w-3.5 h-3.5 text-[#00E676]" />
+                  <span>Cookie Preferences</span>
+                </button>
               </li>
               <li>
                 <Link
