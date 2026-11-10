@@ -54,7 +54,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-10-22T09:44:18.51+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "A practical, ground-level guide to buying gold in Pakistan's Sarafa Bazaars. Learn how to convert between tolas and grams, avoid hidden making charges, protect your resale value, and track real-time bullion rates."
   },
   {
     "id": "2d9dc0ca-3890-4321-94ff-6b3d5b60501a",
@@ -73,13 +74,14 @@ export const BLOG_POSTS = [
       "Emerging Markets"
     ],
     "image": "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&w=1200&q=80",
-    "excerpt": "An institutional comparative analysis of emerging market equities on the Pakistan Stock Exchange (KSE-100) versus developed US indices (S&P 500 and Nasdaq-100). Explore price-to-earnings (P/E) compression, real dividend yield adjustment against PKR inflation, sector concentration risks, and cross-border portfolio weighting frameworks.\n",
+    "excerpt": "An institutional comparative analysis of emerging market equities on the Pakistan Stock Exchange (KSE-100) versus developed US indices (S&P 500 and Nasdaq-100). Explore price-to-earnings (P/E) compression, real dividend yield adjustment against PKR inflation, sector concentration risks, and cross-border portfolio weighting frameworks.",
     "content": "# Institutional Equity Allocation: Emerging High-Yield Markets vs Developed Growth Indices\n\nCapital allocators operating across South Asia and global diaspora corridors face a fundamental portfolio structuring question: how to balance the deep earnings multiples and hard-currency stability of developed US equity indices against the heavily discounted valuations and high cash-dividend payouts of domestic emerging exchanges like the Pakistan Stock Exchange (PSX).\n\nWhile retail participants often view the **KSE-100 Index** and the **S&P 500** through the lens of short-term price momentum, institutional research desks evaluate these markets using three core quantitative pillars: forward Price-to-Earnings (P/E) multiples, currency-adjusted real total return, and sector-level balance sheet resilience.\n\n> Cross-border equity returns are determined not merely by nominal index appreciation, but by the spread between corporate earnings growth, sovereign risk-free bond yields, and long-term exchange rate depreciation.\n\n## Structural Mechanics of the KSE-100 Index\n\nThe benchmark **KSE-100 Index** on the Pakistan Stock Exchange operates primarily as a total-return index. Unlike standard price-return indices globally, the KSE-100 automatically incorporates corporate cash dividends and bonus share issuances into its point calculation. Understanding this structural distinction is critical when evaluating historical chart performance.\n\nThe domestic equity landscape in Pakistan is heavily concentrated across five foundational sectors:\n\n* **Commercial Banking:** Tier-1 Islamic and conventional banks benefit directly from elevated sovereign policy rates through expanded Net Interest Margins (NIMs) and heavy holdings of government securities (PIB and T-Bill portfolios).\n* **Exploration & Production (E&P):** Upstream oil and gas giants operate with dollar-indexed wellhead pricing formulas, offering an organic hedge against domestic currency devaluation despite circular debt liquidity delays.\n* **Fertilizer & Agribusiness:** Characterized by inelastic domestic demand, strong cash flow visibility, and some of the highest consistent quarterly dividend payout ratios on the exchange.\n* **Cement & Construction Materials:** High-beta cyclical plays sensitive to sovereign Public Sector Development Programme (PSDP) allocations, domestic coal import pricing, and interest rate easing cycles.\n* **Technology & IT Exports:** Software and outsourcing enterprises generating US dollar revenues from North American, European, and Middle Eastern enterprise clients while maintaining PKR-denominated operating costs.\n\n## Valuation Multiples: P/E Compression vs Growth Premiums\n\nA primary metric used by institutional screeners to compare global equity markets is the **Price-to-Earnings (P/E) Ratio**, which measures how much investors are willing to pay per unit of corporate net profit.\n\n### Developed US Equities (S&P 500 and Nasdaq-100)\n\nGlobal mega-cap equities listed on the NYSE and Nasdaq—led by semiconductor, cloud infrastructure, and artificial intelligence leaders—routinely trade at forward P/E multiples ranging between **20x and 28x**. Global capital willingly pays this valuation premium due to:\n\n* Deep institutional liquidity and transparent corporate governance standards.\n* Globalized revenue streams across multiple hard currencies.\n* High Return on Invested Capital (ROIC) driven by scalable intellectual property rather than heavy physical capital expenditure.\n* Sovereign monetary stability anchored by the US dollar.\n\n### Pakistan Stock Exchange (KSE-100 Blue Chips)\n\nConversely, leading corporates on the PSX frequently trade at deeply discounted historical P/E multiples between **4.5x and 6.5x**, accompanied by annual cash dividend yields reaching **10% to 16%** among mature blue-chip companies.\n\nWhy does such a wide valuation discount exist? Institutional pricing models apply an **Emerging Market Sovereign Risk Discount** whenever high domestic treasury yields (risk-free rates) compete directly with stocks. When risk-free sovereign T-Bills and Islamic Sukuks offer substantial double-digit returns, domestic institutional funds demand an even higher earnings yield (lower P/E ratio) before rotating capital out of government bonds and into corporate equities.\n\n## The Currency Adjustment Reality: Nominal PKR vs Real USD Returns\n\nFor overseas investors, exporters, and macro allocators benchmarking wealth preservation in hard currency, nominal index milestones tell only half the story.\n\n1. **Nominal Return Illusion:** If a domestic stock index rallies by 25% in local currency terms over a fiscal year, but the local currency depreciates by 15% against the US Dollar during the same window, the net USD-equivalent capital gain is significantly compressed.\n2. **Inflation-Adjusted Dividend Compounding:** High cash dividend yields on the PSX act as a vital compounding engine. Investors who systematically reinvest corporate cash payouts during periods of P/E compression accumulate a larger share base prior to monetary easing cycles.\n3. **Export-Oriented Equity Hedging:** Within domestic portfolios, allocating toward IT exporters and dollar-linked energy producers mitigates currency drag, as rupee devaluation directly expands their translated top-line revenues and gross margins.\n\n## Institutional Screening Metrics Before Buying Any Stock\n\nBefore allocating capital to either a PSX blue-chip company or an international growth stock, disciplined analysts evaluate five fundamental checkpoints:\n\n* **Price-to-Earnings (P/E) vs 5-Year Historical Average:** Determine whether the company is trading at a discount or premium relative to its own historical earnings cycle rather than looking at share price alone.\n* **Dividend Payout Ratio and Cash Flow Coverage:** Verify that high dividends are funded by genuine Free Cash Flow (FCF) rather than short-term corporate borrowing.\n* **Debt-to-Equity Leverage:** In high-interest-rate regimes, heavily leveraged manufacturing companies see their operating profits consumed by bank finance costs. Low-debt, cash-rich balance sheets outperform across tightening cycles.\n* **Return on Equity (ROE):** Measure how efficiently management converts shareholder equity into net corporate profit over consecutive multi-year periods.\n* **Free Float and Daily Trading Volume:** Ensure sufficient market liquidity so institutional or retail positions can be entered and exited without severe bid-ask slippage.\n\n## Portfolio Framework: Combining Domestic Yield with Global Growth\n\nModern portfolio construction does not treat domestic emerging equities and global developed equities as mutually exclusive choices. Instead, each asset class serves a distinct structural role within a diversified balance sheet:\n\n* **Global Equities (US Tech & Broad Index ETFs):** Serve as the long-term hard-currency capital appreciation engine, capturing global technological innovation and protecting purchasing power against local currency volatility.\n* **Domestic Blue-Chip Equities (PSX Dividend Leaders):** Serve as a high-yield cash-flow generator and cyclical re-rating opportunity, particularly during monetary easing phases when central bank rate cuts trigger institutional rotation from fixed income back into equities.\n\n> Disclaimer: This research report is published strictly for educational and macroeconomic analysis purposes. It does not constitute individualized investment advice, brokerage solicitation, or a recommendation to buy or sell any specific security.\n",
     "read_time": "5 min read",
     "created_at": "2026-10-19T07:02:00.627+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "An institutional comparative analysis of emerging market equities on the Pakistan Stock Exchange (KSE-100) versus developed US indices (S&P 500 and Nasdaq-100). Explore price-to-earnings (P/E) compression, real dividend yield adjustment against PKR inflation, sector concentration risks, and cross-border portfolio weighting frameworks."
   },
   {
     "id": "e5ee156e-9bb3-41a9-9d66-ebc267da188f",
@@ -102,7 +104,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-30T15:27:45.569+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Entering and exiting currency positions with market orders often leads to severe slippage. We explain the core architecture of Limit, Stop-Loss, and Trailing orders, and how institutional traders lock in gains without watching screens all day."
   },
   {
     "id": "9dd32d53-e1eb-4ae5-99c0-7d493cf382f5",
@@ -124,7 +127,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-30T15:26:08.699+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Investors seeking gold exposure must choose between physical bars, exchange-traded funds, and paper certificates. A clear breakdown of counterparty risk, liquidity costs, and storage practicalities across gold vehicles.[cite: 1]"
   },
   {
     "id": "5deecc23-43a0-41b9-8ed2-b3372b700ad8",
@@ -146,7 +150,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-30T15:22:22.51+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Leaving savings purely in cash guarantees a slow loss of purchasing power. We break down the real cost of inflation, how money loses ground quietly, and practical assets used to protect family wealth.[cite: 1]"
   },
   {
     "id": "5cd1b90d-dc14-4dcf-8434-809e4c760afe",
@@ -168,7 +173,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-30T15:18:11.444+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "A deep dive into the currency carry trade. Learn how institutional hedge funds borrow low-yielding currencies like the Japanese Yen to fund higher-yielding global assets, and what happens when volatility forces sudden unwinds."
   },
   {
     "id": "9d177452-bc8b-4c59-a751-b899fcdc44c9",
@@ -185,13 +191,14 @@ export const BLOG_POSTS = [
       "Digital Payments"
     ],
     "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=80",
-    "excerpt": "Central banks worldwide are testing sovereign digital currencies (CBDCs) to modernize payments and preserve monetary sovereignty. We break down how CBDCs fundamentally differ from open crypto networks, and what this split means for global liquidity.\n",
+    "excerpt": "Central banks worldwide are testing sovereign digital currencies (CBDCs) to modernize payments and preserve monetary sovereignty. We break down how CBDCs fundamentally differ from open crypto networks, and what this split means for global liquidity.",
     "content": "Over the past decade, financial headlines were dominated by the meteoric rise of permissionless cryptocurrencies like Bitcoin and Ethereum. But behind closed doors at sovereign monetary authorities—from the European Central Bank to the Bank of Japan—a far more quiet, systemic revolution has been brewing: Central Bank Digital Currencies (CBDCs).\n\nWhile public perception often lumps CBDCs and crypto into the same \"digital money\" bucket, their underlying philosophies, control mechanisms, and economic purposes could not be further apart. \n\nUnderstanding where sovereign digital cash ends and open decentralized networks begin is essential for anyone tracking foreign exchange, banking infrastructure, or macro portfolio shifts.\n\n---\n\n### 1. Two Opposing Visions of Digital Money\n\nTo cut through the technical noise, you have to look at the ledger architecture and who holds the keys:\n\n* **Central Bank Digital Currencies (CBDCs):** A CBDC is simply a digital liability of a nation's central bank. It is pegged directly to the domestic fiat unit (1 digital dollar = 1 physical dollar). Crucially, the ledger is centrally managed, permissioned, and sovereign-controlled. The monetary authority decides transaction finality, account limits, and compliance parameters.\n* **Decentralized Cryptocurrencies:** Networks like Bitcoin operate on permissionless, distributed public ledgers without a board of directors, central counterparty, or sovereign backstop. Supply schedules are algorithmic and strictly hardcoded, meaning no policy committee can expand the base money supply to stimulate domestic credit.\n\nCBDCs represent an evolution of state-issued legal tender. Decentralized cryptocurrencies represent an alternative, borderless asset class outside the traditional banking perimeter.\n\n---\n\n### 2. Why Sovereign Treasuries Are Pushing Digital Cash\n\nCentral banks are not spending hundreds of millions on proof-of-concepts just to follow tech fads. They are responding to concrete macroeconomic and operational pressures:\n\n* **Sovereignty Against Private Stablecoins:** The rapid adoption of multi-billion-dollar private stablecoins pegged to single fiat currencies raised alarms across finance ministries. A sovereign digital coin ensures the state preserves direct monetary transmission.\n* **Slashing Cross-Border Settlement Friction:** Interbank international remittances through legacy correspondent banking rails still take days and eat up sizeable transaction fees. Wholesale CBDCs tested across international corridors allow instantaneous atomic settlement between institutional balance sheets.\n* **Modernizing Domestic Retail Velocity:** Direct digital legal tender eliminates payment processor intermediaries, driving down point-of-sale interchange costs for merchants and consumers alike.\n\n---\n\n### 3. The Core Tension: Programmability vs. Financial Privacy\n\nThe primary debate surrounding retail CBDCs has little to do with computational speed; it centers entirely on privacy and monetary autonomy.\n\nPhysical cash possesses one irreplaceable feature: absolute transaction anonymity. When you hand someone paper bank notes, no digital intermediary logs the event, flags the amount, or denies the exchange.\n\nRetail CBDCs fundamentally change that dynamic. Because they run on centralized ledgers, central banks technically possess the capability to incorporate **programmable money**:\n\n* Introducing automated transaction expiration dates to force consumer spending during recessions.\n* Setting restrictive purchase allowances on specific merchant categories or carbon-intensive goods.\n* Freezing accounts instantly during regulatory investigations without coordinating with commercial retail banks.\n\nIt is precisely this programmable oversight that fuels ongoing adoption of decentralized, self-custodied crypto networks. For capital seeking an unseizable, censorship-resistant store of value, open networks offer a property that no sovereign digital coin can ever deliver: neutrality.\n\n---\n\n### 4. What This Shift Means for Commercial Retail Banks\n\nIf retail consumers can hold money directly with the central bank, why leave deposits in a commercial checking account?\n\nThis question represents the biggest headache for central bankers designing digital currencies. If citizens rush to move savings from commercial banks into zero-risk central bank wallets during a banking liquidity crunch, it could trigger an instantaneous digital bank run.\n\nTo neutralize this systemic hazard, most central banks are architecting **two-tier distribution models**:\n\n1. The central bank mints the digital currency and maintains core network security.\n2. Commercial banks and registered fintech institutions handle customer onboarding, KYC compliance, and customer service.\n3. Strict balance caps (such as €3,000 limits proposed in European pilot frameworks) prevent large-scale flight away from commercial bank deposits.\n\n---\n\n### Final Outlook\n\nCBDCs and decentralized cryptocurrencies are not destined to destroy one another. Instead, they are carving out two parallel financial ecosystems. \n\nCBDCs will serve as the hyper-efficient, highly regulated digital backbone of domestic commerce and cross-border trade settlements. Concurrently, permissionless decentralized networks will function as global, algorithmic hedge assets—modern digital equivalents of physical bullion for an increasingly digitized macro landscape.\n",
     "read_time": "4 min read",
     "created_at": "2026-09-29T13:52:59.597+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Central banks worldwide are testing sovereign digital currencies (CBDCs) to modernize payments and preserve monetary sovereignty. We break down how CBDCs fundamentally differ from open crypto networks, and what this split means for global liquidity."
   },
   {
     "id": "4228bb83-8f3b-470b-a86f-3479b0394b2a",
@@ -207,13 +214,14 @@ export const BLOG_POSTS = [
       "Trader Psychology"
     ],
     "image": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80",
-    "excerpt": "A frank, practical breakdown of retail forex risk. We look at why high leverage wipes out deposits, how to size lots against actual pip distance, and the simple math that keeps accounts alive.\n",
+    "excerpt": "A frank, practical breakdown of retail forex risk. We look at why high leverage wipes out deposits, how to size lots against actual pip distance, and the simple math that keeps accounts alive.",
     "content": "Walk into any online trading forum and you will see the same story repeated every single week: someone turned $500 into $3,000 across a lucky run, got confident, loaded up on maximum lots during a high-impact news drop, and lost the entire balance in forty seconds. \n\nThe harsh reality of retail foreign exchange is simple. Traders rarely blow up because their technical chart analysis was completely wrong. They blow up because they don't know how to size a position, they ignore volatility, and they let single losing trades snowball into total account liquidation.\n\nIf you plan on surviving in the interbank market, you have to treat capital preservation as your only actual job. The profits take care of themselves once your downside is locked down.\n\n---\n\n### The Leverage Trap: 1:500 Is Not Free Money\n\nOffshore brokers love advertising 1:500 or 1:1000 leverage. To a beginner, it sounds like an incredible shortcut—put down $200 of margin and control $100,000 worth of currency.\n\nHere is the part the brokers don't put on the homepage: leverage works both ways, and it amplifies your mistakes instantly. \n\nWhen you trade a full standard lot ($100,000 nominal value) on EUR/USD, every single pip movement is worth $10. On a $1,000 account, a standard intraday retracement of just 30 pips wipes out nearly a third of your entire net worth. Two more bad trades and your broker's margin call liquidation bot closes your positions automatically.\n\nProfessional proprietary trading firms rarely let their funded desks run more than 1:10 to 1:30 effective leverage. If institutions managing eight figures refuse to touch reckless margin, retail traders with small accounts shouldn't be gambling with it either.\n\n---\n\n### The 1% to 2% Rule (The Real Mathematics of Survival)\n\nThe math behind drawdowns is brutally asymmetrical:\n\n* Lose 10% of your account, you need an 11% gain to get back to even.\n* Lose 50% of your account, you need a 100% gain just to break even.\n* Lose 80% of your account, you need a 400% miracle run just to see your initial deposit again.\n\nTo ensure a cold streak never kills your portfolio, you must cap risk on any single trade at **1% to 2% of total equity**. \n\nIf your balance sits at $5,000, your maximum allowable loss on a trade is $50 (at 1%). Even if you run into an awful patch where you take five consecutive stop-outs, you still walk away with $4,750—plenty of ammo to execute when clean market conditions return.\n\n---\n\n### Stop Trading Random Lot Sizes: The Sizing Formula\n\nMost retail traders pick a lot size based on a gut feeling: *\"EUR/USD looks bullish today, let me throw 0.50 lots on it.\"*\n\nThis is completely backwards. Your lot size should be the **last** number you calculate, not the first.\n\nUse this sequence every time you set up an order:\n\n1. **Find your technical invalidation level first:** Look at the chart. Where does your setup become completely invalid? That is where your Stop Loss belongs (say, 25 pips below support).\n2. **Determine your maximum cash risk:** On a $2,000 account risking 1.5%, that dollar amount is $30.\n3. **Calculate lot volume to match the stop:** \n   $$\\text{Pip Value Needed} = \\frac{\\text{Cash at Risk}}{\\text{Stop Loss Pips}}$$\n   $$\\frac{\\$30}{25\\text{ pips}} = \\$1.20\\text{ per pip}$$\n   That means you enter with a 0.12 mini lot—not a penny more.\n\nIf market volatility requires a wider 50-pip stop, you cut your position size in half (0.06 lots). The dollar amount you risk remains identical.\n\n---\n\n### The Common Habits That Wreck Portfolios\n\nIf you find yourself doing any of these three things, stop immediately:\n\n* **Moving Stop Losses Further Away:** You see price approaching your stop, panic sets in, and you drag the red line lower hoping for a bounce. This turns controlled $30 losses into disastrous $300 drawdowns. Once an entry idea fails, take the exit and move on.\n* **Revenge Trading:** You lose a trade, feel angry at the market, and instantly double your position size on a random pair to \"make it back fast.\" Markets don't owe you anything; all you are doing is feeding spread fees to your broker.\n* **Averaging Down on Losers:** Adding buy orders while price is actively plunging into liquidity pools is playing Russian roulette. Unless you are running an institutional macro carry book, never add size to an underwater retail trade.\n\n---\n\n### The Final Takeaway\n\nTrading long-term isn't about hitting massive home runs on economic news spikes. It is a slow, disciplined game of risk-to-reward ratios and probability. Protect your downside with mechanical discipline, size your positions according to volatility, and let your edge play out over hundreds of trades.\n",
     "read_time": "4 min read",
     "created_at": "2026-09-29T13:51:09.313+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "A frank, practical breakdown of retail forex risk. We look at why high leverage wipes out deposits, how to size lots against actual pip distance, and the simple math that keeps accounts alive."
   },
   {
     "id": "8df62751-fcf6-4add-b300-c3b2a26b7d1a",
@@ -235,7 +243,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-29T13:48:00.745+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "An in-depth analysis of the inverse relationship between spot gold (XAU/USD) and the US dollar, explaining how real interest rates, central bank reserves, and liquidity cycles influence global capital flows."
   },
   {
     "id": "91182691-4b6f-48c0-bdab-08415cf579e5",
@@ -260,7 +269,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:43:57.209+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Crude oil is the master commodity of modern industrial civilization. Here is an essential breakdown of Brent vs WTI benchmarks, OPEC+ supply control, petrochemical supply chains, and how commodity supercycles impact global consumer prices."
   },
   {
     "id": "58e456bd-54da-4f3c-91ba-31a59831f2fb",
@@ -284,7 +294,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:42:56.662+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Retail traders often lose money attempting to time tops and bottoms. Here is why the world's most disciplined institutions rely on low-cost S&P 500 index funds and the mathematical power of market capitalization weighting."
   },
   {
     "id": "5609ba53-da4e-4868-b14e-d266ad35ff51",
@@ -308,7 +319,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:41:27.435+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "When the US Federal Reserve adjusts benchmark interest rates, capital ripples across every corner of global finance. Here is an institutional breakdown of rate hikes, cuts, the US Dollar Index (DXY), and how global liquidity shifts."
   },
   {
     "id": "f9290652-8579-4c2b-b92a-47ec3ed49a6d",
@@ -332,7 +344,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:39:24.58+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Roshan Digital Accounts allow non-resident Pakistanis to bank, invest in sovereign paper, and repatriate funds freely without domestic branch visits. Here is an objective analysis of real yields, dollar vs rupee certificates, and full legal capital exit rules."
   },
   {
     "id": "829a35a5-2b82-46d7-8a10-02bec856a7f7",
@@ -355,7 +368,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:36:46.078+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Buying gold to protect family wealth is only effective if what you hold is genuinely pure. Here is how laser hallmarking, acid testing, and certified minted bullion bars safeguard you against unverified local melting losses."
   },
   {
     "id": "2a00019a-840f-4bb9-a5e4-006eae4848d9",
@@ -378,7 +392,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:34:44.754+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "For generations, land and housing files have been considered the only reliable investment in Pakistan. Here is an honest, mathematically backed comparison of real estate liquidity, tax friction, and PSX long-term compounding."
   },
   {
     "id": "7447e587-3a16-44ad-91c1-605c5afef17a",
@@ -401,7 +416,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:33:34.025+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Leaving spare capital in a basic commercial savings account gives a false illusion of security while compounding inflation silently erodes your purchasing power. Here is how cash drag works and how money market funds provide a realistic shield."
   },
   {
     "id": "73bcc4f6-2fb2-4594-841b-1f150291865a",
@@ -424,7 +440,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:30:34.375+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Sending hard-earned money back home often comes with hidden currency markups, delayed clearing times, and intermediaries taking undisclosed cuts. Here is a transparent breakdown of official banking channels versus modern digital corridors."
   },
   {
     "id": "storing-crypto-safely-exchanges-vs-wallets-guide",
@@ -446,7 +463,8 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:18:07.171+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "Leaving your cryptocurrency on an exchange might seem convenient, but history proves it is a dangerous gamble. Here is why 'not your keys, not your coins' is an iron rule, how exchange collapses happen, and the step-by-step blueprint to securing your Bitcoin and crypto."
   },
   {
     "id": "usd-to-pkr-interbank-vs-open-market-guide",
@@ -469,8 +487,7 @@ export const BLOG_POSTS = [
     "created_at": "2026-09-28T12:18:07.17+00:00",
     "date": "October 24, 2026",
     "updated_at": "2026-10-25T10:00:00Z",
-    "likes": 142
+    "likes": 142,
+    "summary": "If you've ever checked the dollar rate online and walked into an exchange shop only to be offered a completely different price, you're not alone. Here is the honest truth about interbank vs open market rates in Pakistan."
   }
 ];
-
-export default BLOG_POSTS;

@@ -11,7 +11,8 @@ import {
   ChevronRight, 
   BookOpen,
   ArrowRight,
-  ThumbsUp
+  ThumbsUp,
+  AlertTriangle
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { supabase, normalizeArticle, parseTags } from '../lib/supabase';
@@ -887,6 +888,65 @@ function BlogDetailPageContent() {
               <span>Share</span>
             </button>
           </div>
+        </div>
+
+
+        {/* Author Bio & Editorial Oversight */}
+        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-50/60 dark:bg-[#06111F]/60 border border-slate-200/80 dark:border-white/5">
+          <div className="flex items-center gap-3.5">
+            {article.author?.includes('Sufyan Saleem') ? (
+              <img
+                src="/sufyan-author.jpg"
+                alt="Sufyan Saleem - Lead Financial Analyst"
+                className="w-12 h-12 rounded-full object-cover border-2 border-[#00E676]/40 shadow-sm shrink-0"
+                width="48"
+                height="48"
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold shrink-0">
+                <User className="w-6 h-6" />
+              </div>
+            )}
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-slate-900 dark:text-white">
+                  {article.author || 'Sufyan Saleem'}
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">
+                  Verified Author
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+                Lead Macro Strategist &amp; Financial Analyst specializing in global forex mechanisms, precious metals valuation, and remittances.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1.5 rounded-full border border-[#00E676]/20 font-semibold shrink-0">
+            <ShieldCheck className="w-4 h-4" />
+            <span>Peer-Reviewed Analysis</span>
+          </div>
+        </div>
+
+        {/* Standard Financial Risk Disclaimer & Regulatory Notice */}
+        <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-amber-500/5 dark:bg-[#06111F] border border-amber-500/20 text-xs text-slate-600 dark:text-[#A8B3C2] space-y-2.5">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider text-[11px]">
+            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+            <span>Regulatory Notice &amp; Financial Risk Disclaimer</span>
+          </div>
+          <p className="leading-relaxed">
+            <strong>Educational Purpose Only:</strong> The macroeconomic analysis, gold bullion rates, interbank currency conversions, and financial indicators published on FGC Spot are provided strictly for computational, research, and educational utility. FGC Spot is an independent financial technology portal and does not operate as a broker-dealer, registered investment advisor (RIA), or money services business.
+          </p>
+          <p className="leading-relaxed text-[11px] text-slate-500 dark:text-slate-400">
+            Past performance and spot benchmarks do not guarantee future market outcomes. Foreign exchange and commodity markets carry volatility risks. Conduct independent due diligence or consult a licensed financial advisor before executing financial commitments. Review our full{' '}
+            <Link to="/disclaimer" className="text-[#00E676] hover:underline font-semibold">
+              Financial Disclaimer
+            </Link>{' '}
+            and{' '}
+            <Link to="/terms" className="text-[#00E676] hover:underline font-semibold">
+              Terms of Service
+            </Link>.
+          </p>
         </div>
 
         {/* Market Tickers & Editorial Tags */}
