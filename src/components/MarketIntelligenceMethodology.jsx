@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 export default function MarketIntelligenceMethodology() {
   return (
-    <section className="py-14 sm:py-20 border-b border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#06111F]/70 relative w-full overflow-hidden">
+    <section className="py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#06111F]/70 relative w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
         
         {/* Header Block */}

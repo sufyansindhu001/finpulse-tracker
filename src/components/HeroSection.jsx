@@ -164,7 +164,7 @@ export default function HeroSection({ rates }) {
   const fxPresets = [100, 500, 1000, 2500, 5000];
 
   return (
-    <section className="relative overflow-hidden pt-2 pb-8 sm:pt-6 sm:pb-14 lg:pt-8 lg:pb-18 border-b border-slate-200 dark:border-white/10">
+    <section className="relative overflow-hidden pt-5 pb-12 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-20 border-b border-slate-200 dark:border-white/10">
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00E676]/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/3 right-1/4 w-[450px] h-[450px] bg-[#06B6D4]/10 rounded-full blur-[150px] pointer-events-none" />
@@ -172,8 +172,8 @@ export default function HeroSection({ rates }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-8">
         
         {/* TOP BULLION & FOREX SPOT TICKER RIBBON */}
-        <div className="w-full overflow-x-auto no-scrollbar py-1">
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-max text-xs select-none">
+        <div className="w-full overflow-x-auto no-scrollbar py-2 px-3 rounded-2xl bg-slate-100/70 dark:bg-[#0A1726]/70 border border-slate-200/80 dark:border-white/10 shadow-xs backdrop-blur-md">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-max text-xs select-none">
             <button 
               onClick={() => navigate('/gold')} 
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 hover:border-amber-500/50 text-amber-600 dark:text-amber-400 font-bold cursor-pointer transition-all shadow-xs"

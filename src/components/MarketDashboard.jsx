@@ -10,6 +10,7 @@ import CurrencyFlag from './CurrencyFlag';
 
 export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectAsset, onOpenCryptoConverter }) {
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'crypto', 'forex'
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [metalsData, setMetalsData] = useState(() => ({
     gold: DEFAULT_METALS.gold,
     silver: DEFAULT_METALS.silver,
@@ -311,7 +312,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
   };
 
   return (
-    <section id="markets" className="py-12 border-b border-slate-200/80 dark:border-white/[0.06]">
+    <section id="markets" className="py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

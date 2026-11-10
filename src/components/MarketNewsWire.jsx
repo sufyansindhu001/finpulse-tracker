@@ -146,7 +146,7 @@ export default function MarketNewsWire({ limit = 6 }) {
   };
 
   return (
-    <section id="news-wire" className="py-12 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
+    <section id="news-wire" className="py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header: Live Market Wire with pulsing live beacon */}

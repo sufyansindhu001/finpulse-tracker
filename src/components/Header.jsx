@@ -158,8 +158,8 @@ export default function Header({
               </button>
             </div>
 
-            {/* Center: Desktop Navigation Links (Clean, No "About") */}
-            <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md">
+            {/* Center: Desktop Navigation Links */}
+            <nav className="hidden xl:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md">
               {navLinks.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.match(currentPath);
@@ -169,13 +169,13 @@ export default function Header({
                     to={item.path}
                     onMouseEnter={() => preloadRoute(item.path)}
                     onTouchStart={() => preloadRoute(item.path)}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                       isActive
                         ? 'bg-[#00E676] text-[#06111F] shadow-sm shadow-[#00E676]/30 font-bold'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A8B3C2] dark:hover:text-white dark:hover:bg-white/[0.05]'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -183,12 +183,12 @@ export default function Header({
             </nav>
 
             {/* Right: Search, Theme Toggle, Language Indicator & Live Rates CTA */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
               
-              {/* Functional Search Input Button */}
+              {/* Functional Search Input Button (Wide desktop) */}
               <button
                 onClick={onOpenSearch}
-                className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group"
+                className="hidden xl:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white transition-all cursor-pointer shadow-xs group"
                 title="Search currency, crypto, gold... (Ctrl+K)"
               >
                 <Search className="w-3.5 h-3.5 text-[#00E676] group-hover:scale-110 transition-transform" />
@@ -198,10 +198,10 @@ export default function Header({
                 </kbd>
               </button>
 
-              {/* Mobile Search Icon Button */}
+              {/* Mobile/Tablet Search Icon Button */}
               <button
                 onClick={onOpenSearch}
-                className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer"
+                className="xl:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-600 hover:text-slate-900 dark:text-[#A8B3C2] dark:hover:text-white cursor-pointer"
                 aria-label="Search"
               >
                 <Search className="w-4 h-4 text-[#00E676]" />
@@ -232,7 +232,7 @@ export default function Header({
                 type="button"
                 onClick={handleLiveToggle}
                 title="View Live Market Telemetry & Spot Rates"
-                className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-semibold transition-all duration-200 shadow-xs cursor-pointer select-none active:scale-95 ${
+                className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all duration-200 shadow-xs cursor-pointer select-none active:scale-95 ${
                   isPulsing
                     ? 'bg-[#00E676]/25 border-[#00E676] text-[#00E676] ring-2 ring-[#00E676]/40 shadow-md'
                     : 'bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white'
@@ -245,10 +245,10 @@ export default function Header({
                 <span className="group-hover:text-[#00E676] transition-colors">Live Pulse</span>
               </button>
 
-              {/* Mobile Hamburger Toggle Button */}
+              {/* Mobile/Tablet Hamburger Toggle Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none"
+                className="xl:hidden p-2 rounded-xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -259,9 +259,9 @@ export default function Header({
         </div>
       </header>
 
-      {/* Mobile Slide-Out Drawer Overlay & Menu */}
+      {/* Mobile/Tablet Slide-Out Drawer Overlay & Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden flex justify-end">
+        <div className="fixed inset-0 z-50 xl:hidden flex justify-end">
           {/* Backdrop blur overlay */}
           <div 
             className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"

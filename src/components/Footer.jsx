@@ -31,7 +31,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full max-w-full overflow-hidden bg-slate-50/80 dark:bg-[#06111F] border-t border-slate-200 dark:border-white/10 pt-16 pb-12 mt-20 text-slate-600 dark:text-[#A8B3C2] text-xs transition-colors duration-200 backdrop-blur-sm">
+    <footer className="w-full max-w-full overflow-hidden bg-slate-50/80 dark:bg-[#06111F] border-t border-slate-200 dark:border-white/10 pt-14 pb-12 mt-0 text-slate-600 dark:text-[#A8B3C2] text-xs transition-colors duration-200 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}

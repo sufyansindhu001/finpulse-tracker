@@ -42,7 +42,7 @@ const FEATURED_ARTICLES = [
 
 export default function FeaturedResearchSection() {
   return (
-    <section id="featured-research" className="py-14 sm:py-20 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-[#06111F] relative w-full overflow-hidden">
+    <section id="featured-research" className="py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10 bg-white dark:bg-[#06111F] relative w-full overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Section Header */}

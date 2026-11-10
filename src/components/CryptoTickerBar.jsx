@@ -237,13 +237,13 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
   const tickerItems = [...renderedItems, ...renderedItems];
 
   return (
-    <div className="w-full max-w-full bg-slate-100/95 dark:bg-[#070A12]/95 border-b border-slate-200 dark:border-white/[0.06] text-xs py-1.5 overflow-hidden select-none backdrop-blur-xl sticky top-0 z-40 relative">
+    <div className="w-full max-w-full bg-slate-100 dark:bg-[#070A12] border-b border-slate-200 dark:border-white/[0.08] text-xs py-1.5 overflow-hidden select-none relative z-30">
       
       {/* Sticky Left Live Feed Pill Badge */}
-      <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center pl-3 pr-8 bg-gradient-to-r from-slate-100 via-slate-100 to-transparent dark:from-[#070A12] dark:via-[#070A12] dark:to-transparent pointer-events-none sm:pointer-events-auto">
+      <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center pl-3 pr-6 bg-gradient-to-r from-slate-100 via-slate-100/90 to-transparent dark:from-[#070A12] dark:via-[#070A12]/90 dark:to-transparent pointer-events-auto">
         <button
           onClick={() => navigate('/rates')}
-          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold shadow-xs cursor-pointer hover:bg-emerald-500/25 transition-all"
+          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold shadow-xs cursor-pointer transition-all"
           title="Live market feed active — dynamic real-time price stream"
         >
           <span className="relative flex h-1.5 w-1.5">
@@ -259,7 +259,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-slate-100 to-transparent dark:from-[#070A12] dark:to-transparent pointer-events-none z-10" />
 
       {/* Animated Marquee Strip */}
-      <div className="animate-marquee flex items-center gap-6 whitespace-nowrap pl-24">
+      <div className="animate-marquee flex items-center gap-6 whitespace-nowrap">
         {tickerItems.map((item, index) => {
           return (
             <div

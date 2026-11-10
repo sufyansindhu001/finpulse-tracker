@@ -61,7 +61,7 @@ export default function WhatWeOffer() {
   ];
 
   return (
-    <section className="relative py-10 sm:py-16 lg:py-24 border-b border-slate-200 dark:border-white/10">
+    <section className="relative py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}

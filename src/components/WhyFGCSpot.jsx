@@ -38,7 +38,7 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
   ];
 
   return (
-    <section className="py-16 border-b border-slate-200 dark:border-white/[0.06]">
+    <section className="py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

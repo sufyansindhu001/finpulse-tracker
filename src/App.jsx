@@ -291,7 +291,7 @@ export default function App() {
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}
-      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden pt-2 sm:pt-4">
+      <main className="flex-1 w-full max-w-full mx-auto relative z-10 overflow-x-hidden pt-0">
         <Suspense fallback={
           <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 animate-pulse">
             <div className="w-8 h-8 border-2 border-[#00E676] border-t-transparent rounded-full animate-spin"></div>
@@ -324,7 +324,7 @@ export default function App() {
                   />
 
                   {/* Quick Currency Conversion Matrix */}
-                  <section id="forex-corridors" className="py-12 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
+                  <section id="forex-corridors" className="py-12 sm:py-16 lg:py-20 border-b border-slate-200 dark:border-white/10 w-full max-w-full overflow-hidden">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                       <QuickConversionMatrix
                         rates={rates || DEFAULT_RATES}
