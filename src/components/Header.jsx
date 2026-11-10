@@ -26,13 +26,36 @@ export default function Header({
   isRefreshing = false,
   onRefresh,
   rates = {},
-  lastUpdated = ''
+  lastUpdated = '',
+  onShowToast
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
+  const [isPulsing, setIsPulsing] = useState(false);
+  const [localToast, setLocalToast] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { siteSettings } = useApp();
+
+  const handleLiveToggle = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setIsPulsing(true);
+    setTimeout(() => setIsPulsing(false), 900);
+    setIsPulseModalOpen(prev => !prev);
+    if (onRefresh) {
+      onRefresh();
+    }
+    const msg = '● Live market telemetry active: Sub-40ms stream connected';
+    if (onShowToast) {
+      onShowToast(msg);
+    } else {
+      setLocalToast(msg);
+      setTimeout(() => setLocalToast(null), 3500);
+    }
+  };
 
   // Theme state: single source of truth from props
   const isDark = propTheme === 'dark';
@@ -90,48 +113,50 @@ export default function Header({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-3">
             
-            {/* Left: Brand Identity with /logo.png */}
-            <Link 
-              to="/"
-              className="flex items-center gap-2.5 sm:gap-3 shrink-0 group cursor-pointer relative z-10"
-            >
-              <img 
-                src={siteSettings?.logoUrl || '/logo.png'} 
-                alt={siteSettings?.websiteName || 'FGC Spot'} 
-                width="40"
-                height="40"
-                decoding="async"
-                className="w-9 h-9 md:w-10 md:h-10 aspect-square object-contain shrink-0 rounded-xl transition-transform group-hover:scale-105 block relative z-10" 
-                style={{ filter: 'none' }}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/logo.png';
-                }}
-              />
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans">
-                    {siteSettings?.websiteName || 'FGC Spot'}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsPulseModalOpen(true);
-                    }}
-                    title="Open Live Market Pulse Feed"
-                    className="hidden sm:inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00E676]/15 hover:bg-[#00E676]/25 text-[#00E676] border border-[#00E676]/30 transition-all cursor-pointer shadow-xs group"
-                  >
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00E676]"></span>
-                    </span>
-                    <span>Live</span>
-                  </button>
-                </div>
-              </div>
-            </Link>
+            {/* Left: Brand Identity with Logo and Distinct Interactive Live Button */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 relative z-10">
+              <Link 
+                to="/"
+                className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer"
+                title="Go to FGC Spot Homepage"
+              >
+                <img 
+                  src={siteSettings?.logoUrl || '/logo.png'} 
+                  alt={siteSettings?.websiteName || 'FGC Spot'} 
+                  width="40"
+                  height="40"
+                  decoding="async"
+                  className="w-9 h-9 md:w-10 md:h-10 aspect-square object-contain shrink-0 rounded-xl transition-transform group-hover:scale-105 block" 
+                  style={{ filter: 'none' }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/logo.png';
+                  }}
+                />
+                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-sans">
+                  {siteSettings?.websiteName || 'FGC Spot'}
+                </span>
+              </Link>
+
+              {/* Distinct Interactive Live Status Button (Available on Mobile & Desktop) */}
+              <button
+                type="button"
+                onClick={handleLiveToggle}
+                title="Live Market Stream Active — Click to toggle telemetry pulse"
+                aria-label="Toggle Live Market Telemetry Feed"
+                className={`inline-flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full cursor-pointer select-none transition-all duration-200 active:scale-95 touch-manipulation ${
+                  isPulsing
+                    ? 'bg-[#00E676]/30 text-[#00E676] border border-[#00E676] ring-2 ring-[#00E676]/40 shadow-md shadow-[#00E676]/30'
+                    : 'bg-[#00E676]/10 hover:bg-[#00E676]/20 text-[#00E676] border border-[#00E676]/30 hover:border-[#00E676]/60 shadow-xs'
+                }`}
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E676]"></span>
+                </span>
+                <span>Live</span>
+              </button>
+            </div>
 
             {/* Center: Desktop Navigation Links (Clean, No "About") */}
             <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md">
@@ -205,9 +230,13 @@ export default function Header({
               {/* Live Rates / Market Pulse Button */}
               <button
                 type="button"
-                onClick={() => setIsPulseModalOpen(true)}
+                onClick={handleLiveToggle}
                 title="View Live Market Telemetry & Spot Rates"
-                className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white text-xs font-semibold transition-all shadow-xs cursor-pointer group"
+                className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-semibold transition-all duration-200 shadow-xs cursor-pointer select-none active:scale-95 ${
+                  isPulsing
+                    ? 'bg-[#00E676]/25 border-[#00E676] text-[#00E676] ring-2 ring-[#00E676]/40 shadow-md'
+                    : 'bg-slate-100 dark:bg-[#0A1726] hover:bg-slate-200 dark:hover:bg-[#0D1B2A] border-slate-200 dark:border-[#00E676]/30 hover:border-[#00E676] text-slate-900 dark:text-white'
+                }`}
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E676] opacity-75"></span>
@@ -322,11 +351,12 @@ export default function Header({
               </div>
 
               <button
+                type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  setIsPulseModalOpen(true);
+                  handleLiveToggle();
                 }}
-                className="w-full py-3 rounded-xl bg-[#00E676] text-[#06111F] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#00E676]/25 cursor-pointer"
+                className="w-full py-3 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#00E676]/25 cursor-pointer active:scale-95 transition-all"
               >
                 <span className="w-2 h-2 rounded-full bg-[#06111F] animate-pulse"></span>
                 <span>Open Live Market Pulse</span>
@@ -342,6 +372,14 @@ export default function Header({
             </div>
 
           </div>
+        </div>
+      )}
+
+      {/* Local Toast Fallback Notification */}
+      {localToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-white dark:bg-[#0A1726] text-slate-900 dark:text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-semibold animate-in slide-in-from-bottom duration-300 border border-slate-200 dark:border-[#00E676]/40 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+          <span>{localToast}</span>
         </div>
       )}
 

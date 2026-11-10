@@ -287,6 +287,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
         onOpenSearch={() => setSearchModalOpen(true)}
         rates={rates}
+        onShowToast={showToast}
       />
 
       {/* Main Page Content Container with React Router Standalone Routes */}

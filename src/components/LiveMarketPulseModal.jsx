@@ -6,14 +6,10 @@ import {
   RefreshCw, 
   TrendingUp, 
   TrendingDown, 
-  Globe, 
   ShieldCheck, 
   Zap, 
   ArrowRight,
-  CheckCircle2,
-  Cpu,
-  BarChart3,
-  Coins
+  CheckCircle2
 } from 'lucide-react';
 
 export default function LiveMarketPulseModal({ 
