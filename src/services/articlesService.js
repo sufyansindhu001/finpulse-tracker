@@ -27,7 +27,11 @@ export const PURGED_SLUG_SET = new Set([
   'sovereign-debt-cycles-and-currency-valuation-how-national-debt-impacts-foreign-exchange',
   'understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies',
   'decoding-the-sovereign-yield-curve-what-inversions-signal-to-global-markets',
-  'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand'
+  'navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand',
+  'navigating-central-bank-rate-decisions-and-currency-volatility-in-modern-markets',
+  'gold-prices-hold-near-record-highs-as-investors-flock-to-safe-haven-assets-amid-global-economic-shifts',
+  'understanding-the-u-s-dollar-index-dxy-currency-trends-and-global-market-impact',
+  'us-gold-investment-safe-haven-assets-navigating-inflation-and-economic-uncertainty'
 ]);
 
 let inMemoryArticlesCache = null;

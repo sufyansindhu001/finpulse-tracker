@@ -43,6 +43,7 @@ const AuthorPage = lazyWithRetry(() => import('./pages/AuthorPage'));
 const EditorialPolicyPage = lazyWithRetry(() => import('./pages/EditorialPolicyPage'));
 const DataSourcesPage = lazyWithRetry(() => import('./pages/DataSourcesPage'));
 const AdminPage = lazyWithRetry(() => import('./pages/AdminPage'));
+const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'));
 
 import { CheckCircle } from 'lucide-react';
 import { recordPageView } from './utils/telemetry';
@@ -522,8 +523,12 @@ export default function App() {
               </div>
             } />
 
-            {/* Fallback to Home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* 404 Not Found Page */}
+            <Route path="*" element={
+              <div className="w-full animate-in fade-in duration-300">
+                <NotFoundPage />
+              </div>
+            } />
 
           </Routes>
         </Suspense>

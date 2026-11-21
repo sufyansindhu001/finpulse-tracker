@@ -1,4 +1,95 @@
 {
+  "redirects": [
+    { "source": "/psx", "destination": "/stocks", "permanent": true },
+    { "source": "/equities", "destination": "/stocks", "permanent": true },
+    { "source": "/forex", "destination": "/rates", "permanent": true },
+    { "source": "/matrix", "destination": "/converter", "permanent": true },
+    { "source": "/tools", "destination": "/converter", "permanent": true },
+    { "source": "/research", "destination": "/blog", "permanent": true },
+    { "source": "/author", "destination": "/author/sufyan-saleem", "permanent": true },
+    { "source": "/privacy", "destination": "/privacy-policy", "permanent": true },
+    { "source": "/terms-of-service", "destination": "/terms", "permanent": true },
+    {
+      "source": "/blog/navigating-central-bank-rate-decisions-and-currency-volatility-in-modern-markets",
+      "destination": "/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies",
+      "permanent": true
+    },
+    {
+      "source": "/blog/gold-prices-hold-near-record-highs-as-investors-flock-to-safe-haven-assets-amid-global-economic-shifts",
+      "destination": "/blog/gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends",
+      "permanent": true
+    },
+    {
+      "source": "/blog/understanding-the-u-s-dollar-index-dxy-currency-trends-and-global-market-impact",
+      "destination": "/blog/gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends",
+      "permanent": true
+    },
+    {
+      "source": "/blog/us-gold-investment-safe-haven-assets-navigating-inflation-and-economic-uncertainty",
+      "destination": "/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/understanding-crypto-market-cycles-halving-events-liquidity-flows-and-retail-psychology",
+      "destination": "/blog/storing-crypto-safely-exchanges-vs-wallets-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility",
+      "destination": "/blog/understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-mechanics-of-sovereign-wealth-funds-how-national-capital-drives-global-asset-markets",
+      "destination": "/blog/pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-anatomy-of-liquidity-traps-why-zero-interest-rates-fail-to-stimulate-borrowing",
+      "destination": "/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-foreign-exchange-reserve-buffer-how-import-cover-shapes-sovereign-stability",
+      "destination": "/blog/usd-to-pkr-interbank-vs-open-market-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index",
+      "destination": "/blog/gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-mechanics-of-current-account-deficits-why-trade-balances-drive-currency-revaluations",
+      "destination": "/blog/global-energy-markets-commodity-supercycles-how-crude-oil-brent-vs-wti-shapes-the-world-economy",
+      "permanent": true
+    },
+    {
+      "source": "/blog/the-mechanics-of-currency-swaps-how-central-banks-provide-offshore-dollar-liquidity",
+      "destination": "/blog/usd-to-pkr-interbank-vs-open-market-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/sovereign-debt-cycles-and-currency-valuation-how-national-debt-impacts-foreign-exchange",
+      "destination": "/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies",
+      "permanent": true
+    },
+    {
+      "source": "/blog/understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies",
+      "destination": "/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies",
+      "permanent": true
+    },
+    {
+      "source": "/blog/decoding-the-sovereign-yield-curve-what-inversions-signal-to-global-markets",
+      "destination": "/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies",
+      "permanent": true
+    },
+    {
+      "source": "/blog/navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand",
+      "destination": "/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/).*)",

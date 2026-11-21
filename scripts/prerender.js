@@ -2224,30 +2224,57 @@ async function prerenderAll() {
       const art = item.article;
       schemaJsonLd = JSON.stringify({
         '@context': 'https://schema.org',
-        '@type': 'Article',
-        'headline': art.title,
-        'description': item.description,
-        'image': art.image || art.coverImage || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-        'author': {
-          '@type': 'Person',
-          'name': art.author ? art.author.split(',')[0].trim() : 'Sufyan Saleem',
-          'jobTitle': 'Lead Financial Analyst & Macro Strategist',
-          'url': 'https://www.fgcspot.com/author/sufyan-saleem/'
-        },
-        'publisher': {
-          '@type': 'Organization',
-          'name': 'FGC Spot',
-          'logo': {
-            '@type': 'ImageObject',
-            'url': 'https://www.fgcspot.com/logo.png'
+        '@graph': [
+          {
+            '@type': 'Article',
+            'headline': art.title,
+            'description': item.description,
+            'image': art.image || art.coverImage || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+            'author': {
+              '@type': 'Person',
+              'name': art.author ? art.author.split(',')[0].trim() : 'Sufyan Saleem',
+              'jobTitle': 'Lead Financial Analyst & Macro Strategist',
+              'url': 'https://www.fgcspot.com/author/sufyan-saleem'
+            },
+            'publisher': {
+              '@type': 'Organization',
+              'name': 'FGC Spot',
+              'logo': {
+                '@type': 'ImageObject',
+                'url': 'https://www.fgcspot.com/logo.png'
+              }
+            },
+            'datePublished': art.created_at || TODAY,
+            'dateModified': art.updated_at || TODAY,
+            'mainEntityOfPage': {
+              '@type': 'WebPage',
+              '@id': canonicalUrl
+            }
+          },
+          {
+            '@type': 'BreadcrumbList',
+            'itemListElement': [
+              {
+                '@type': 'ListItem',
+                'position': 1,
+                'name': 'Home',
+                'item': 'https://www.fgcspot.com'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 2,
+                'name': 'Research',
+                'item': 'https://www.fgcspot.com/blog'
+              },
+              {
+                '@type': 'ListItem',
+                'position': 3,
+                'name': art.title,
+                'item': canonicalUrl
+              }
+            ]
           }
-        },
-        'datePublished': art.created_at || TODAY,
-        'dateModified': art.updated_at || TODAY,
-        'mainEntityOfPage': {
-          '@type': 'WebPage',
-          '@id': canonicalUrl
-        }
+        ]
       });
     } else if (item.route.startsWith('/author/')) {
       schemaJsonLd = JSON.stringify({
@@ -2334,7 +2361,7 @@ async function prerenderAll() {
     renderedCount++;
   }
 
-  // Generate Clean Redirect Aliases
+  // Generate Clean Redirect Aliases and Legacy Article Redirects
   const redirects = [
     { from: 'psx', to: '/stocks' },
     { from: 'equities', to: '/stocks' },
@@ -2344,7 +2371,24 @@ async function prerenderAll() {
     { from: 'research', to: '/blog' },
     { from: 'author', to: '/author/sufyan-saleem' },
     { from: 'privacy', to: '/privacy-policy' },
-    { from: 'terms-of-service', to: '/terms' }
+    { from: 'terms-of-service', to: '/terms' },
+    // 16 Legacy Articles smoothly redirected to new comprehensive guides
+    { from: 'blog/navigating-central-bank-rate-decisions-and-currency-volatility-in-modern-markets', to: '/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies' },
+    { from: 'blog/gold-prices-hold-near-record-highs-as-investors-flock-to-safe-haven-assets-amid-global-economic-shifts', to: '/blog/gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends' },
+    { from: 'blog/understanding-the-u-s-dollar-index-dxy-currency-trends-and-global-market-impact', to: '/blog/gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends' },
+    { from: 'blog/us-gold-investment-safe-haven-assets-navigating-inflation-and-economic-uncertainty', to: '/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide' },
+    { from: 'blog/understanding-crypto-market-cycles-halving-events-liquidity-flows-and-retail-psychology', to: '/blog/storing-crypto-safely-exchanges-vs-wallets-guide' },
+    { from: 'blog/the-mechanics-of-carry-trade-how-interest-rate-differentials-drive-fx-volatility', to: '/blog/understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex' },
+    { from: 'blog/the-mechanics-of-sovereign-wealth-funds-how-national-capital-drives-global-asset-markets', to: '/blog/pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide' },
+    { from: 'blog/the-anatomy-of-liquidity-traps-why-zero-interest-rates-fail-to-stimulate-borrowing', to: '/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies' },
+    { from: 'blog/the-foreign-exchange-reserve-buffer-how-import-cover-shapes-sovereign-stability', to: '/blog/usd-to-pkr-interbank-vs-open-market-guide' },
+    { from: 'blog/the-inverse-dynamic-between-gold-prices-and-the-us-dollar-index', to: '/blog/gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends' },
+    { from: 'blog/the-mechanics-of-current-account-deficits-why-trade-balances-drive-currency-revaluations', to: '/blog/global-energy-markets-commodity-supercycles-how-crude-oil-brent-vs-wti-shapes-the-world-economy' },
+    { from: 'blog/the-mechanics-of-currency-swaps-how-central-banks-provide-offshore-dollar-liquidity', to: '/blog/usd-to-pkr-interbank-vs-open-market-guide' },
+    { from: 'blog/sovereign-debt-cycles-and-currency-valuation-how-national-debt-impacts-foreign-exchange', to: '/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies' },
+    { from: 'blog/understanding-central-bank-interest-rates-how-the-federal-reserve-impacts-global-currencies', to: '/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies' },
+    { from: 'blog/decoding-the-sovereign-yield-curve-what-inversions-signal-to-global-markets', to: '/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies' },
+    { from: 'blog/navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand', to: '/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide' }
   ];
 
   for (const r of redirects) {
@@ -2357,6 +2401,7 @@ async function prerenderAll() {
   <title>Redirecting to ${r.to}...</title>
   <meta http-equiv="refresh" content="0; url=${r.to}">
   <link rel="canonical" href="${BASE_URL}${r.to}">
+  <meta name="robots" content="noindex, follow">
 </head>
 <body>
   <p>Redirecting to <a href="${r.to}">${r.to}</a>...</p>
@@ -2365,7 +2410,26 @@ async function prerenderAll() {
     fs.writeFileSync(path.join(dir, 'index.html'), redirectHtml, 'utf8');
   }
 
-  console.log(`[prerender] SUCCESS! Pre-rendered ${renderedCount} canonical pages + ${redirects.length} redirect aliases.`);
+  // Pre-render static 404.html for Vercel and direct error responses
+  const notFoundHtml = baseHtml
+    .replace(/<title>.*?<\/title>/i, '<title>404 — Page Not Found | FGC Spot Financial Terminal</title>')
+    .replace(/<meta name="robots" content=".*?" \/>/i, '<meta name="robots" content="noindex, follow" />')
+    .replace('<div id="root"></div>', `<div id="root">
+      <div class="min-h-screen bg-slate-50 text-slate-800 dark:bg-[#06111F] dark:text-[#A8B3C2] flex flex-col font-sans">
+        ${renderTickerBar()}
+        ${renderHeader('/404')}
+        <main class="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-16 text-center space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-500 border border-red-500/20">HTTP 404 — Terminal Resource Not Found</div>
+          <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white">Page Not Located</h1>
+          <p class="text-sm text-slate-600 dark:text-[#A8B3C2] max-w-md mx-auto">The requested financial terminal endpoint or research guide could not be located.</p>
+          <div class="pt-4"><a href="/" class="px-5 py-2.5 rounded-xl bg-[#00E676] text-slate-950 font-bold hover:bg-[#00c865] text-sm">&larr; Return to Terminal Home</a></div>
+        </main>
+        ${renderFooter()}
+      </div>
+    </div>`);
+  fs.writeFileSync(path.join(distDir, '404.html'), notFoundHtml, 'utf8');
+
+  console.log(`[prerender] SUCCESS! Pre-rendered ${renderedCount} canonical pages + ${redirects.length} redirect aliases + 404.html.`);
 }
 
 prerenderAll().catch(err => {
