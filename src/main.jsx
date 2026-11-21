@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
@@ -14,7 +14,8 @@ if (typeof window !== 'undefined') {
   });
 }
 
-createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root');
+const app = (
   <StrictMode>
     <GlobalErrorBoundary>
       <BrowserRouter>
@@ -23,7 +24,18 @@ createRoot(document.getElementById('root')).render(
         </AppProvider>
       </BrowserRouter>
     </GlobalErrorBoundary>
-  </StrictMode>,
-)
+  </StrictMode>
+);
+
+if (rootElement && rootElement.hasChildNodes()) {
+  try {
+    hydrateRoot(rootElement, app);
+  } catch (err) {
+    console.warn('[Hydration] Hydration fallback to client render:', err);
+    createRoot(rootElement).render(app);
+  }
+} else if (rootElement) {
+  createRoot(rootElement).render(app);
+}
 
 

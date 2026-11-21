@@ -21,6 +21,7 @@ const STORAGE_KEYS = {
 
 // Clean purge of any legacy fake/mock data previously stored in localStorage
 function purgeLegacyMockData() {
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
   try {
     const isPurged = localStorage.getItem(STORAGE_KEYS.PURGED_FLAG);
     if (!isPurged) {
