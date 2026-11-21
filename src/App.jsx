@@ -39,6 +39,9 @@ const ContactPage = lazyWithRetry(() => import('./pages/ContactPage'));
 const PrivacyPolicyPage = lazyWithRetry(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'));
 const DisclaimerPage = lazyWithRetry(() => import('./pages/DisclaimerPage'));
+const AuthorPage = lazyWithRetry(() => import('./pages/AuthorPage'));
+const EditorialPolicyPage = lazyWithRetry(() => import('./pages/EditorialPolicyPage'));
+const DataSourcesPage = lazyWithRetry(() => import('./pages/DataSourcesPage'));
 const AdminPage = lazyWithRetry(() => import('./pages/AdminPage'));
 
 import { CheckCircle } from 'lucide-react';
@@ -98,6 +101,9 @@ export default function App() {
         import('./pages/ChartsPage').catch(() => {});
         import('./pages/GoldPage').catch(() => {});
         import('./pages/CryptoPage').catch(() => {});
+        import('./pages/AuthorPage').catch(() => {});
+        import('./pages/EditorialPolicyPage').catch(() => {});
+        import('./pages/DataSourcesPage').catch(() => {});
       });
     }
   }, []);
@@ -479,6 +485,33 @@ export default function App() {
             <Route path="/disclaimer" element={
               <div className="w-full animate-in fade-in duration-300">
                 <DisclaimerPage />
+              </div>
+            } />
+
+            {/* ROUTE 14: AUTHOR PROFILE PAGE (/author/sufyan-saleem) */}
+            <Route path="/author/sufyan-saleem" element={
+              <div className="w-full animate-in fade-in duration-300">
+                <AuthorPage />
+              </div>
+            } />
+            <Route path="/author" element={<Navigate to="/author/sufyan-saleem" replace />} />
+            <Route path="/author/:name" element={
+              <div className="w-full animate-in fade-in duration-300">
+                <AuthorPage />
+              </div>
+            } />
+
+            {/* ROUTE 15: EDITORIAL POLICY PAGE (/editorial-policy) */}
+            <Route path="/editorial-policy" element={
+              <div className="w-full animate-in fade-in duration-300">
+                <EditorialPolicyPage />
+              </div>
+            } />
+
+            {/* ROUTE 16: DATA SOURCES & FEEDS PAGE (/data-sources) */}
+            <Route path="/data-sources" element={
+              <div className="w-full animate-in fade-in duration-300">
+                <DataSourcesPage />
               </div>
             } />
 

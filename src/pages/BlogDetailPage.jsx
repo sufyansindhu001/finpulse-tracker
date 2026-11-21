@@ -428,7 +428,8 @@ function BlogDetailPageContent() {
         {
           '@type': 'Person',
           'name': authorName,
-          'jobTitle': 'Lead Financial Analyst & Macro Strategist'
+          'jobTitle': 'Lead Financial Analyst & Macro Strategist',
+          'url': 'https://www.fgcspot.com/author/sufyan-saleem/'
         }
       ],
       'publisher': {
@@ -628,9 +629,15 @@ function BlogDetailPageContent() {
           <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20 uppercase tracking-wider">
             {article.category}
           </span>
-          <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium">
-            <Calendar className="w-3.5 h-3.5 text-[#00E676]" /> {article.date}
+          <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium" title="Original Publication Date">
+            <Calendar className="w-3.5 h-3.5 text-[#00E676]" /> Published: {article.date}
           </span>
+          {article.updated_at && (
+            <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full" title="Fact-Checked & Updated">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
+              Updated: {new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi' }).format(new Date(article.updated_at))}
+            </span>
+          )}
           <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium">
             <Clock className="w-3.5 h-3.5 text-[#00E676]" /> {article.readTime}
           </span>
@@ -643,29 +650,31 @@ function BlogDetailPageContent() {
 
         {/* Author Bio Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 mb-8 gap-4">
-          <div className="flex items-center gap-3">
-            {article.author?.includes('Sufyan Saleem') ? (
-              <img
-                src="/sufyan-author.jpg"
-                alt="Sufyan Saleem - Financial Analyst"
-                className="w-10 h-10 rounded-full object-cover border-2 border-slate-200 dark:border-[#00E676]/40 shadow-xs shrink-0"
-                width="40"
-                height="40"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold shrink-0">
-                <User className="w-5 h-5" />
-              </div>
-            )}
+          <Link to="/author/sufyan-saleem" className="flex items-center gap-3.5 group cursor-pointer">
+            <img
+              src="/sufyan-author.jpg"
+              alt="Sufyan Saleem - Lead Financial Analyst"
+              className="w-11 h-11 rounded-full object-cover border-2 border-slate-200 dark:border-[#00E676]/40 shadow-xs shrink-0 group-hover:border-[#00E676] transition-colors"
+              width="44"
+              height="44"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = '/logo.png';
+              }}
+            />
             <div>
-              <div className="text-sm font-bold text-slate-900 dark:text-white">{article.author || 'Sufyan Saleem'}</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors flex items-center gap-2">
+                <span>{article.author || 'Sufyan Saleem'}</span>
+                <span className="text-[10px] text-[#00E676] font-semibold bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">
+                  Author Profile &rarr;
+                </span>
+              </div>
               <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">
-                {article.author?.includes('Sufyan Saleem') 
-                  ? 'Contributing Financial Columnist & Forex Analyst' 
-                  : 'FGC Spot Financial Research Desk • Independent Intelligence'}
+                Lead Financial Analyst &amp; Macro Strategist • FGC Spot
               </div>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-2.5 self-start sm:self-auto">
             <button
@@ -891,40 +900,104 @@ function BlogDetailPageContent() {
         </div>
 
 
-        {/* Author Bio & Editorial Oversight */}
-        <div className="mt-8 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-50/60 dark:bg-[#06111F]/60 border border-slate-200/80 dark:border-white/5">
-          <div className="flex items-center gap-3.5">
-            {article.author?.includes('Sufyan Saleem') ? (
+        {/* Author Bio Card & Editorial Oversight */}
+        <div className="mt-10 p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <Link to="/author/sufyan-saleem" className="flex items-center gap-4 group cursor-pointer">
               <img
                 src="/sufyan-author.jpg"
                 alt="Sufyan Saleem - Lead Financial Analyst"
-                className="w-12 h-12 rounded-full object-cover border-2 border-[#00E676]/40 shadow-sm shrink-0"
-                width="48"
-                height="48"
+                className="w-14 h-14 rounded-2xl object-cover border-2 border-[#00E676]/50 shadow-sm shrink-0 group-hover:scale-105 transition-transform"
+                width="56"
+                height="56"
                 loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/logo.png';
+                }}
               />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex items-center justify-center text-[#00E676] font-bold shrink-0">
-                <User className="w-6 h-6" />
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-base font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors">
+                    {article.author || 'Sufyan Saleem'}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">
+                    Lead Analyst &amp; Strategist
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+                  Financial analyst covering Pakistan foreign exchange corridors, gold bullion assay benchmarks, PSX valuation multiples, and freelance export tax regimes.
+                </p>
               </div>
-            )}
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-slate-900 dark:text-white">
-                  {article.author || 'Sufyan Saleem'}
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">
-                  Verified Author
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
-                Lead Macro Strategist &amp; Financial Analyst specializing in global forex mechanisms, precious metals valuation, and remittances.
-              </p>
+            </Link>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link 
+                to="/author/sufyan-saleem"
+                className="px-3.5 py-1.5 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>View Author Profile</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1.5 rounded-full border border-[#00E676]/20 font-semibold shrink-0">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Peer-Reviewed Analysis</span>
+          
+          <div className="pt-3 border-t border-slate-200/80 dark:border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-[#A8B3C2]">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#00E676]" />
+              <span>Governed by the <Link to="/editorial-policy" className="text-[#00E676] hover:underline font-semibold">FGC Spot Editorial Policy</Link></span>
+            </div>
+            <Link to="/data-sources" className="text-slate-500 hover:text-[#00E676] underline underline-offset-2 transition-colors">
+              Inspect Data Sources &amp; Calculation Models &rarr;
+            </Link>
+          </div>
+        </div>
+
+        {/* Primary Regulatory References & Policy Documentation */}
+        <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#0D1B2A]/60 border border-slate-200 dark:border-white/10 space-y-3">
+          <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
+            <BookOpen className="w-4 h-4 text-[#00E676]" />
+            <span>Primary Regulatory References &amp; Statutory Authorities</span>
+          </div>
+          <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+            All analytical claims, conversion mechanisms, and rate dynamics cited in this research article are referenced against primary documentation from recognized statutory authorities:
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs">
+            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
+              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
+                State Bank of Pakistan (SBP)
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
+                Foreign Exchange Operations Department, SBP FE Manual &amp; Daily Weighted Closing Benchmarks.
+              </span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
+              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
+                Federal Board of Revenue (FBR)
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
+                Income Tax Ordinance 2001 (Section 154A IT Export Regimes &amp; Section 236Y Card Remittance Taxes).
+              </span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
+              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
+                APSGJA Karachi Sarafa
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
+                All Pakistan Sarafa Gems &amp; Jewellers Association official daily provincial bullion rate cards.
+              </span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
+              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
+                Securities &amp; Exchange Commission (SECP)
+              </span>
+              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
+                Pakistan Stock Exchange (PSX) listed company quarterly disclosures and audited financial filings.
+              </span>
+            </div>
           </div>
         </div>
 

@@ -351,9 +351,12 @@ function renderFooter() {
 
           {/* Legal & Governance */}
           <div class="space-y-3">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Company & Legal</h4>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Trust & Governance</h4>
             <ul class="space-y-2">
-              <li><a href="/about" class="hover:text-[#00E676] transition-colors">About FGC Spot</a></li>
+              <li><a href="/about" class="hover:text-[#00E676] transition-colors">About Us</a></li>
+              <li><a href="/author/sufyan-saleem" class="hover:text-[#00E676] transition-colors">Author &amp; Research Desk</a></li>
+              <li><a href="/editorial-policy" class="hover:text-[#00E676] transition-colors">Editorial Policy</a></li>
+              <li><a href="/data-sources" class="hover:text-[#00E676] transition-colors">Data Sources &amp; Governance</a></li>
               <li><a href="/contact" class="hover:text-[#00E676] transition-colors">Contact Support</a></li>
               <li><a href="/privacy-policy" class="hover:text-[#00E676] transition-colors">Privacy Policy</a></li>
               <li><a href="/terms" class="hover:text-[#00E676] transition-colors">Terms of Service</a></li>
@@ -374,7 +377,10 @@ function renderFooter() {
         {/* Bottom Copyright */}
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-[#A8B3C2] pt-4">
           <p>&copy; ${new Date().getFullYear()} FGC Spot. All institutional rights reserved.</p>
-          <div class="flex items-center gap-4">
+          <div class="flex flex-wrap items-center gap-4">
+            <a href="/author/sufyan-saleem" class="hover:text-[#00E676] transition-colors">Author Desk</a>
+            <a href="/editorial-policy" class="hover:text-[#00E676] transition-colors">Editorial Policy</a>
+            <a href="/data-sources" class="hover:text-[#00E676] transition-colors">Data Sources</a>
             <a href="/privacy-policy" class="hover:text-[#00E676] transition-colors">Privacy</a>
             <a href="/terms" class="hover:text-[#00E676] transition-colors">Terms</a>
             <a href="/disclaimer" class="hover:text-[#00E676] transition-colors">Disclaimers</a>
@@ -1349,14 +1355,13 @@ function renderArticleDetailPage(article, allArticles = []) {
 
           {/* Author Byline & Date */}
           <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-[#A8B3C2] pt-2">
-            <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-[#00E676]/20 border border-[#00E676]/40 flex items-center justify-center text-[#00E676] font-bold text-xs">
-                SS
-              </div>
-              <span class="font-semibold text-slate-900 dark:text-white">${escapeHtml(article.author || 'Sufyan Saleem, Lead Financial Analyst')}</span>
-            </div>
+            <a href="/author/sufyan-saleem" class="flex items-center gap-2.5 hover:text-[#00E676] transition-colors">
+              <img src="/sufyan-author.jpg" alt="Sufyan Saleem" class="w-8 h-8 rounded-full object-cover border border-[#00E676]/40" />
+              <span class="font-semibold text-slate-900 dark:text-white hover:text-[#00E676]">${escapeHtml(article.author || 'Sufyan Saleem, Lead Financial Analyst')}</span>
+            </a>
             <span>•</span>
-            <time datetime="${escapeHtml(article.created_at || TODAY)}">${escapeHtml(article.date || 'October 2026')}</time>
+            <time datetime="${escapeHtml(article.created_at || TODAY)}">Published: ${escapeHtml(article.date || 'October 2026')}</time>
+            ${article.updated_at ? `<span>•</span><span class="text-[#00E676] font-medium">Updated: ${escapeHtml(article.updated_at.split('T')[0])}</span>` : ''}
             <span>•</span>
             <span>${escapeHtml(article.readTime || '6 min read')}</span>
           </div>
@@ -1388,15 +1393,38 @@ function renderArticleDetailPage(article, allArticles = []) {
         </div>
 
         {/* Author Bio Box */}
-        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center gap-4 mt-8">
-          <div class="w-14 h-14 rounded-2xl bg-[#00E676]/20 border border-[#00E676]/40 flex items-center justify-center text-[#00E676] font-extrabold text-lg shrink-0">
-            SS
+        <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
+          <div class="flex items-center gap-4">
+            <img src="/sufyan-author.jpg" alt="Sufyan Saleem" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#00E676]/40 shrink-0" />
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">
+                  <a href="/author/sufyan-saleem" class="hover:text-[#00E676] transition-colors">Sufyan Saleem</a>
+                </h3>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">Verified Author</span>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                Lead Financial Analyst and Macro Strategist at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX valuation multiples, and freelance export tax regimes.
+              </p>
+            </div>
           </div>
-          <div class="space-y-1 text-center sm:text-left">
-            <h3 class="text-base font-bold text-slate-900 dark:text-white">About the Author: Sufyan Saleem</h3>
-            <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-              Lead Financial Analyst and Macro Strategist at FGC Spot. Specializes in frontier market currency corridors, State Bank of Pakistan monetary policies, physical gold bullion valuation, and sovereign debt dynamics.
-            </p>
+          <a href="/author/sufyan-saleem" class="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shrink-0">
+            View Author Profile &rarr;
+          </a>
+        </div>
+
+        {/* Regulatory References & Policy Documentation */}
+        <div class="p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#0D1B2A]/60 border border-slate-200 dark:border-white/10 space-y-3">
+          <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
+            <span>Primary Regulatory References &amp; Statutory Authorities</span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+            All analytical claims, conversion mechanisms, and rate dynamics cited in this research article are referenced against primary documentation from recognized statutory authorities: SBP Foreign Exchange Manual, FBR Income Tax Ordinance 2001 (Sections 154A, 236Y), APSGJA Karachi Sarafa daily rate cards, and SECP listed company quarterly filings.
+          </p>
+          <div class="pt-1 flex flex-wrap gap-4 text-xs">
+            <a href="/data-sources" class="text-[#00E676] hover:underline font-semibold">Inspect Complete Data Governance &amp; Calculation Methodologies &rarr;</a>
+            <span class="text-slate-400">•</span>
+            <a href="/editorial-policy" class="hover:underline text-slate-500">Editorial Policy &amp; Standards &rarr;</a>
           </div>
         </div>
 
@@ -1456,6 +1484,43 @@ function renderAboutPage() {
               <p class="text-xs text-slate-600 dark:text-[#A8B3C2]">Strict peer-review procedures, transparent calculation methodologies, and complete regulatory compliance.</p>
             </div>
           </div>
+
+          {/* Author Spotlight */}
+          <div class="pt-6 border-t border-slate-200 dark:border-white/10 space-y-4">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Editorial Leadership &amp; Financial Governance</h2>
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div class="flex items-center gap-4">
+                <img src="/sufyan-author.jpg" alt="Sufyan Saleem" class="w-16 h-16 rounded-2xl object-cover border-2 border-[#00E676]/40 shrink-0" />
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Sufyan Saleem</h3>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">Lead Financial Analyst</span>
+                  </div>
+                  <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-xl">
+                    Lead macro strategist and columnist at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX valuation multiples, and freelance export tax regimes.
+                  </p>
+                </div>
+              </div>
+              <a href="/author/sufyan-saleem" class="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shrink-0">
+                View Full Profile &rarr;
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <a href="/editorial-policy" class="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-colors space-y-1 block">
+                <span class="font-bold text-xs uppercase tracking-wider text-[#00E676] block">Editorial Policy &rarr;</span>
+                <p class="text-xs text-slate-500 dark:text-[#A8B3C2]">Fact-checking standards, primary sources, correction policy, and commercial independence.</p>
+              </a>
+              <a href="/data-sources" class="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-colors space-y-1 block">
+                <span class="font-bold text-xs uppercase tracking-wider text-[#00E676] block">Data Sources &rarr;</span>
+                <p class="text-xs text-slate-500 dark:text-[#A8B3C2]">Transparent disclosure of APIs, polling cadences, calculation formulas, and market limitations.</p>
+              </a>
+              <a href="/disclaimer" class="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-amber-500/40 transition-colors space-y-1 block">
+                <span class="font-bold text-xs uppercase tracking-wider text-amber-500 block">Risk Disclaimer &rarr;</span>
+                <p class="text-xs text-slate-500 dark:text-[#A8B3C2]">Statutory non-advisory notices, volatility warnings, and indicative rate boundaries.</p>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1484,15 +1549,23 @@ function renderContactPage() {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Direct Email</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Direct Email Desk</span>
             <div class="text-lg font-bold text-slate-900 dark:text-white font-mono">fgcspot4@gmail.com</div>
             <p class="text-xs text-slate-500">Guaranteed response within 24-48 business hours.</p>
           </div>
           <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Corporate Headquarters</span>
-            <div class="text-base font-bold text-slate-900 dark:text-white">Karachi & Lahore Financial Corridors</div>
-            <p class="text-xs text-slate-500">Pakistan • Operating Mon-Fri (09:00 - 18:00 PKT)</p>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Digital Operations Desk</span>
+            <div class="text-base font-bold text-slate-900 dark:text-white">FGC Spot Editorial &amp; Technology Desk</div>
+            <p class="text-xs text-slate-500">Digital Publishing &bull; Mon-Fri (09:00 - 18:00 PKT)</p>
           </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 dark:text-[#A8B3C2] py-2">
+          <a href="/author/sufyan-saleem" class="hover:text-[#00E676] underline">Author Desk (Sufyan Saleem)</a>
+          <span>•</span>
+          <a href="/editorial-policy" class="hover:text-[#00E676] underline">Editorial Policy &amp; Corrections</a>
+          <span>•</span>
+          <a href="/data-sources" class="hover:text-[#00E676] underline">Data Feeds &amp; Sources</a>
         </div>
 
         <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-4">
@@ -1617,26 +1690,367 @@ function renderDisclaimerPage() {
         <header class="space-y-2 pb-6 border-b border-slate-200 dark:border-white/10">
           <span class="text-xs font-bold uppercase tracking-wider text-rose-500">Regulatory Disclosure</span>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Financial Disclaimer</h1>
-          <p class="text-xs text-slate-500">SECP & SBP Compliance Notice</p>
+          <p class="text-xs text-slate-500">SECP &amp; SBP Compliance Notice • Educational &amp; Research Boundaries</p>
         </header>
 
         <div class="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
-          <h2 class="text-base font-bold text-slate-900 dark:text-white">1. Non-Advisory Status</h2>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">1. Educational &amp; Computational Nature</h2>
           <p>
-            FGC Spot is strictly an educational publishing and market data aggregation platform. FGC Spot is not a registered financial advisor, stockbroker, foreign exchange dealer, or asset management company under the regulatory oversight of the Securities and Exchange Commission of Pakistan (SECP) or the State Bank of Pakistan (SBP).
+            FGC Spot (https://www.fgcspot.com) operates strictly as a financial information portal, data aggregator, and educational research platform. All tools, currency converters, gold calculators, stock screeners, and research publications are designed to provide mathematical calculations and empirical market transparency.
           </p>
 
-          <h2 class="text-base font-bold text-slate-900 dark:text-white">2. Investment Risk Warning</h2>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">2. Statutory Non-Advisory &amp; Non-Broker Status</h2>
           <p>
-            Trading equities on the Pakistan Stock Exchange (PSX), engaging in foreign exchange transactions, purchasing physical gold bullion, or transacting digital assets involves substantial risk of capital loss. Past market performance is not indicative of future returns. You should never risk capital that you cannot afford to lose, and you are advised to consult a certified financial advisor before executing investment transactions.
+            FGC Spot is not an investment advisor, broker-dealer, portfolio manager, foreign exchange dealer, or licensed financial intermediary under the regulatory oversight of the Securities and Exchange Commission of Pakistan (SECP) or the State Bank of Pakistan (SBP). None of the materials, calculations, or articles published on this platform constitute individual financial, investment, legal, or tax advice.
           </p>
 
-          <h2 class="text-base font-bold text-slate-900 dark:text-white">3. Third-Party Data Attributions</h2>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">3. Volatility Risks &amp; Real-World Market Boundaries</h2>
           <p>
-            Interbank foreign exchange quotations, LBMA spot metal rates, and cryptocurrency order book metrics are aggregated from third-party institutional APIs and market fixings. FGC Spot does not guarantee zero latency or absolute infallibility of external network data.
+            Foreign currency exchange rates, Pakistan Stock Exchange equities, physical gold bullion, and digital assets carry market volatility and capital loss risks. Indicative wholesale rates do not include retail bank card cross-border markups (1.5%–3.5%), advance withholding taxes under Section 236Y (5% for filers, 10% for non-filers), jeweler making charges (Mazdoori), or local dealer spreads.
+          </p>
+
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">4. Independent Due Diligence &amp; Data Verification</h2>
+          <p>
+            Users are advised to conduct independent due diligence and consult licensed financial advisors before entering commercial transactions. FGC Spot maintains strict data governance procedures (<a href="/data-sources" class="text-[#00E676] underline">reviewed here</a>) and never utilizes disclaimers to excuse inaccurate data.
           </p>
         </div>
       </div>
+
+    </div>
+  `;
+}
+
+function renderAuthorPage(articles = []) {
+  const articleListHtml = articles.map(art => `
+    <article class="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3 flex flex-col justify-between shadow-xs">
+      <div class="space-y-2">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
+          ${escapeHtml(art.category || 'Financial Research')}
+        </span>
+        <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
+          <a href="/blog/${art.slug}" class="hover:text-[#00E676] transition-colors">${escapeHtml(art.title)}</a>
+        </h3>
+        <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed line-clamp-3">
+          ${escapeHtml(art.summary || art.excerpt || '')}
+        </p>
+      </div>
+      <div class="pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs text-slate-500">
+        <span>${escapeHtml(art.date || 'October 2026')}</span>
+        <a href="/blog/${art.slug}" class="font-bold text-[#00E676] hover:underline">Read Guide &rarr;</a>
+      </div>
+    </article>
+  `).join('');
+
+  return `
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+      
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
+        <a href="/" class="hover:text-[#00E676] transition-colors">Home</a>
+        <span>/</span>
+        <a href="/about" class="hover:text-[#00E676] transition-colors">About</a>
+        <span>/</span>
+        <span class="text-slate-900 dark:text-white font-semibold">Author Profile: Sufyan Saleem</span>
+      </nav>
+
+      {/* Author Profile Header Card */}
+      <section class="bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8 pb-8 border-b border-slate-200 dark:border-white/10">
+          <img 
+            src="/sufyan-author.jpg" 
+            alt="Sufyan Saleem — Lead Financial Analyst" 
+            width="128" 
+            height="128" 
+            class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-slate-100 dark:border-white/10 shadow-md ring-2 ring-[#00E676]/30"
+          />
+          <div class="space-y-3 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20">
+                Lead Financial Analyst &amp; Macro Strategist
+              </span>
+              <span class="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full">
+                ● Verified Author
+              </span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              Sufyan Saleem
+            </h1>
+            <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-3xl">
+              Sufyan Saleem serves as the Lead Financial Analyst and Macro Strategist at FGC Spot. He is the author of FGC Spot's empirical market research series, focusing on South Asian foreign exchange architecture, physical bullion pricing mechanics, Pakistan Stock Exchange equity valuation multiples, and cross-border remittance banking compliance.
+            </p>
+            <div class="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-500 dark:text-[#A8B3C2]">
+              <a href="mailto:fgcspot4@gmail.com" class="font-semibold text-[#00E676] hover:underline">
+                fgcspot4@gmail.com (Attn: Sufyan Saleem)
+              </a>
+              <span>•</span>
+              <span>${articles.length} Published Research Guides</span>
+              <span>•</span>
+              <a href="/editorial-policy" class="hover:text-[#00E676] underline">Editorial Standards &amp; Review Policy</a>
+            </div>
+          </div>
+        </div>
+
+        {/* Areas of Editorial Focus */}
+        <div class="space-y-4">
+          <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+            Areas of Editorial Focus &amp; Financial Coverage
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <h3 class="font-bold text-[#00E676] text-sm">1. Pakistan Foreign Exchange Corridors</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                Interbank wholesale pricing, open market cash spread dynamics, SBP daily weighted closing benchmarks, and USD/PKR triangular parity.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <h3 class="font-bold text-[#00E676] text-sm">2. Physical Gold &amp; Bullion Valuation</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                Sarafa Bazaar pricing mechanics, 24K vs 22K karat assay testing, tola-to-gram conversions, making charges (mazdoori), and inflation hedging.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <h3 class="font-bold text-[#00E676] text-sm">3. Pakistan Stock Exchange (PSX KSE-100)</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                Equity multiple compression (P/E), double-digit dividend reinvestment yields (DRIP), corporate balance sheet solvency, and Piotroski F-Scores.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <h3 class="font-bold text-[#00E676] text-sm">4. Exporter &amp; Freelance Remittances</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                FBR Section 154A final tax regimes (0.25% vs 1%), SBP 50% foreign currency retention accounts (ESFCA), and electronic e-PRC certificates.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <h3 class="font-bold text-[#00E676] text-sm">5. Digital Asset Valuation &amp; Custody</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                Algorithmic PKR counter-value derivation, multi-exchange VWAP indexation, SBP Circular BPRD/2018-03 compliance, and hardware cold storage.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <h3 class="font-bold text-[#00E676] text-sm">6. Editorial Integrity Statement</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                All research is grounded in primary SBP, FBR, and APSGJA documentation. Zero paid endorsements, token shilling, or hidden promotional links.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Published Research Guides */}
+      <section class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div>
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Published Research Guides (${articles.length})
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
+              Comprehensive empirical analyses authored by Sufyan Saleem on FGC Spot
+            </p>
+          </div>
+          <a href="/blog" class="text-xs text-[#00E676] hover:underline font-bold">
+            Browse Full Blog Archive &rarr;
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${articleListHtml}
+        </div>
+      </section>
+
+    </div>
+  `;
+}
+
+function renderEditorialPolicyPage() {
+  return `
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
+        <a href="/" class="hover:text-[#00E676] transition-colors">Home</a>
+        <span>/</span>
+        <a href="/about" class="hover:text-[#00E676] transition-colors">About</a>
+        <span>/</span>
+        <span class="text-slate-900 dark:text-white font-semibold">Editorial Policy</span>
+      </nav>
+
+      {/* Article Container */}
+      <article class="bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
+        <header class="space-y-2 pb-6 border-b border-slate-200 dark:border-white/10">
+          <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Publishing Ethics &amp; Integrity</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            FGC Spot Editorial Policy &amp; Standards
+          </h1>
+          <p class="text-xs text-slate-500">Effective Date: October 2026 • Governs all financial analysis, tools, and publications</p>
+        </header>
+
+        <div class="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed space-y-6">
+          <p class="text-sm sm:text-base font-medium text-slate-900 dark:text-white">
+            FGC Spot is committed to producing accurate, objective, and actionable financial research and data tools. This Editorial Policy defines the mandatory standards governing topic selection, primary source verification, data validation, correction workflows, and commercial independence across our publications.
+          </p>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              1. Topic Selection &amp; Financial Utility
+            </h2>
+            <p>
+              We prioritize topics that offer genuine, high-utility value to individuals, businesses, exporters, and investors navigating the Pakistani and global financial ecosystems. Topics are selected based on practical utility, regulatory timeliness (SBP and FBR changes), and market opacity resolution.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              2. Research Methodology &amp; Primary Sources
+            </h2>
+            <p>
+              All original research authored by our analytical desk (led by Sufyan Saleem) is grounded strictly in verified primary documentation: SBP Foreign Exchange Manual and BPRD circulars; FBR Income Tax Ordinance 2001; SECP company filings; APSGJA daily Sarafa rate cards; and LBMA clearing benchmarks. We do not rely on rumors or marketing releases.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              3. Financial Data Checking &amp; Model Validation
+            </h2>
+            <p>
+              Before publishing formulas or ticker models, all conversion equations (such as triangular cross-currency parity or tola gold conversions) are cross-checked against live SBP weighted closing benchmarks. Data limitations—such as 15-minute stock delays, retail making charges, or card remittance fees—are explicitly disclosed.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              4. Transparent Corrections &amp; Retractions
+            </h2>
+            <p>
+              If a factual or computational inaccuracy is identified, it is corrected immediately. For substantive changes, a clear correction notice is appended specifying the date, the nature of the error, and corrected figures. Readers can report inaccuracies to <a href="mailto:fgcspot4@gmail.com" class="text-[#00E676] underline font-mono">fgcspot4@gmail.com</a>.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              5. Article Maintenance &amp; Update Cadence
+            </h2>
+            <p>
+              Research articles are reviewed whenever the State Bank of Pakistan updates the policy discount rate or when Federal Budget Finance Acts amend export tax regimes (e.g., Section 154A or Section 236Y). When substantive updates occur, the article displays an updated date stamp alongside its original publication date.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              6. Separation of Original Research vs. Syndicated News
+            </h2>
+            <p>
+              FGC Spot maintains an unambiguous boundary between original editorial research and third-party news syndication. Our Research &amp; Analysis Portal (/blog) contains 100% original, empirical long-form analysis written by Sufyan Saleem. Our Market News Wire (/news) aggregates headlines from external publishers under fair-use excerpts with explicit external source links.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/10 pb-2">
+              7. Commercial Independence &amp; Anti-Paid Shilling
+            </h2>
+            <p>
+              We do not accept paid compensation to review, promote, or endorse cryptocurrency tokens, ICOs, commercial bank products, or jewelry vendors. No commercial advertiser has pre-publication review privileges. Any future sponsored advertising will be labeled clearly as "Sponsored" or "Advertisement".
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">Editorial Inquiries &amp; Oversight</h3>
+            <p class="text-xs text-slate-600 dark:text-[#A8B3C2]">
+              For questions regarding our editorial policy or to submit a correction request, contact our editorial review board at <span class="font-mono text-[#00E676] font-bold">fgcspot4@gmail.com</span>.
+            </p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  `;
+}
+
+function renderDataSourcesPage() {
+  return `
+    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 dark:text-[#A8B3C2]">
+        <a href="/" class="hover:text-[#00E676] transition-colors">Home</a>
+        <span>/</span>
+        <a href="/about" class="hover:text-[#00E676] transition-colors">About</a>
+        <span>/</span>
+        <span class="text-slate-900 dark:text-white font-semibold">Data Sources &amp; Governance</span>
+      </nav>
+
+      {/* Main Content Card */}
+      <article class="bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
+        <header class="space-y-2 pb-6 border-b border-slate-200 dark:border-white/10">
+          <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Data Transparency &amp; Governance</span>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            FGC Spot Market Data Sources &amp; Feeds
+          </h1>
+          <p class="text-xs text-slate-500">Complete disclosure of data providers, polling intervals, mathematical formulas, and real-world trading limitations</p>
+        </header>
+
+        <div class="space-y-6 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+          <p class="text-sm sm:text-base font-medium text-slate-900 dark:text-white">
+            Financial transparency begins with data integrity. FGC Spot aggregates market intelligence from verified global APIs, central bank public bulletins, and provincial trade associations. We never fabricate financial metrics or invent fictional institutional liquidity feeds.
+          </p>
+
+          <div class="space-y-4">
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">1. Interbank Foreign Exchange (/rates)</h2>
+                <span class="text-xs text-[#00E676] font-bold">Wholesale Mid-Market</span>
+              </div>
+              <p><strong>Providers:</strong> Open Exchange Rates, FloatRates &amp; State Bank of Pakistan (SBP).</p>
+              <p><strong>Update Cadence:</strong> Polled every 60s during banking hours; SBP weighted closing daily at 16:30 PKT.</p>
+              <p><strong>Methodology:</strong> Triangular cross-rate parity through USD anchor: Rate(Base/Quote) = (USD/Quote) / (USD/Base).</p>
+              <p><strong>Limitations:</strong> Wholesale book-entry rates exclude retail card cross-border markups (1.5%–3.5%) and advance tax under Section 236Y (5% filers / 10% non-filers).</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">2. Open Market Cash Forex (/converter)</h2>
+                <span class="text-xs text-[#00E676] font-bold">Over-The-Counter Cash</span>
+              </div>
+              <p><strong>Providers:</strong> Exchange Companies Association of Pakistan (ECAP) &amp; representative dealerships.</p>
+              <p><strong>Update Cadence:</strong> Daily business session updates with intraday volatility adjustments.</p>
+              <p><strong>Methodology:</strong> Bid-ask spread reflecting dealer cash transport, insurance, security, and customs handling.</p>
+              <p><strong>Limitations:</strong> Physical cash notes carry a spread above wholesale electronic rates and do not generate digital e-PRC tax documentation.</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">3. Gold &amp; Silver Bullion (/gold)</h2>
+                <span class="text-xs text-[#00E676] font-bold">Spot &amp; Sarafa Benchmarks</span>
+              </div>
+              <p><strong>Providers:</strong> Binance PAXGUSDT (Paxos 1:1 Physical Gold), COMEX Futures (GC=F, SI=F), and APSGJA Karachi Sarafa.</p>
+              <p><strong>Update Cadence:</strong> International spot refreshed every 45s; APSGJA fixings published daily at ~16:30 PKT.</p>
+              <p><strong>Methodology:</strong> Rate per Tola (24K) = (Spot Gold USD / 31.1034768) * USD_PKR * 11.664 * 1.033 (domestic tariff factor).</p>
+              <p><strong>Limitations:</strong> International spot reflects unworked bullion; retail jewelry incurs artisan fabrication charges (Mazdoori) of Rs. 1,500–4,500/tola.</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">4. Stock Screener &amp; PSX Terminal (/stocks)</h2>
+                <span class="text-xs text-[#00E676] font-bold">15-Minute Delayed</span>
+              </div>
+              <p><strong>Providers:</strong> Market API Proxy (api/stocks.js) &amp; PSX listed company filings.</p>
+              <p><strong>Update Cadence:</strong> Polled every 30s during active trading sessions.</p>
+              <p><strong>Methodology:</strong> P/E = Price/EPS, Dividend Yield = DPS/Price, Piotroski F-Score (9-factor fundamental test).</p>
+              <p><strong>Limitations:</strong> Quotes are delayed by 15 minutes per standard exchange dissemination rules.</p>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">5. Cryptocurrency Market Index (/crypto)</h2>
+                <span class="text-xs text-[#00E676] font-bold">Global VWAP Index</span>
+              </div>
+              <p><strong>Providers:</strong> CoinGecko Public Markets API.</p>
+              <p><strong>Update Cadence:</strong> Polled every 60s with client-side caching.</p>
+              <p><strong>Methodology:</strong> PKR Counter-Value = Coin USD Spot * SBP Interbank USD/PKR benchmark.</p>
+              <p><strong>Limitations:</strong> Excludes domestic P2P cash premiums (1.5%–4.5%) and blockchain network gas fees. SBP Circular BPRD/2018-03 applies.</p>
+            </div>
+          </div>
+        </div>
+      </article>
 
     </div>
   `;
@@ -1751,6 +2165,24 @@ async function prerenderAll() {
       title: 'Financial Disclaimer — Risk Disclosures & Regulatory Notice | FGC Spot',
       description: 'Read the official FGC Spot financial disclaimer, market data terms, and risk disclosures regarding currency, crypto, and precious metals tracking.',
       render: () => renderDisclaimerPage()
+    },
+    {
+      route: '/author/sufyan-saleem',
+      title: 'Sufyan Saleem — Lead Financial Analyst & Macro Strategist | FGC Spot',
+      description: 'Author profile and verified financial publications by Sufyan Saleem, Lead Financial Analyst at FGC Spot covering Pakistan forex, gold bullion, PSX equities, and remittance tax regimes.',
+      render: () => renderAuthorPage(articles)
+    },
+    {
+      route: '/editorial-policy',
+      title: 'Editorial Policy & Fact-Checking Standards | FGC Spot',
+      description: 'FGC Spot editorial standards, empirical research methodologies, primary source verification, data check procedures, corrections policy, and independence standards.',
+      render: () => renderEditorialPolicyPage()
+    },
+    {
+      route: '/data-sources',
+      title: 'Data Sources & Market Feeds Governance | FGC Spot',
+      description: 'Detailed transparency regarding FGC Spot market data feeds: upstream providers, refresh frequencies, calculation methodologies, and real-world trading limitations.',
+      render: () => renderDataSourcesPage()
     }
   ];
 
@@ -1798,7 +2230,8 @@ async function prerenderAll() {
         'author': {
           '@type': 'Person',
           'name': art.author ? art.author.split(',')[0].trim() : 'Sufyan Saleem',
-          'jobTitle': 'Lead Financial Analyst'
+          'jobTitle': 'Lead Financial Analyst & Macro Strategist',
+          'url': 'https://www.fgcspot.com/author/sufyan-saleem/'
         },
         'publisher': {
           '@type': 'Organization',
@@ -1813,6 +2246,35 @@ async function prerenderAll() {
         'mainEntityOfPage': {
           '@type': 'WebPage',
           '@id': canonicalUrl
+        }
+      });
+    } else if (item.route.startsWith('/author/')) {
+      schemaJsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        'name': 'Sufyan Saleem',
+        'jobTitle': 'Lead Financial Analyst & Macro Strategist',
+        'worksFor': {
+          '@type': 'Organization',
+          'name': 'FGC Spot',
+          'url': 'https://www.fgcspot.com'
+        },
+        'image': 'https://www.fgcspot.com/sufyan-author.jpg',
+        'url': canonicalUrl,
+        'description': item.description
+      });
+    } else if (item.route === '/') {
+      schemaJsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        'name': 'FGC Spot',
+        'url': BASE_URL,
+        'logo': 'https://www.fgcspot.com/logo.png',
+        'description': item.description,
+        'contactPoint': {
+          '@type': 'ContactPoint',
+          'email': 'fgcspot4@gmail.com',
+          'contactType': 'customer support'
         }
       });
     }
@@ -1879,6 +2341,7 @@ async function prerenderAll() {
     { from: 'matrix', to: '/converter' },
     { from: 'tools', to: '/converter' },
     { from: 'research', to: '/blog' },
+    { from: 'author', to: '/author/sufyan-saleem' },
     { from: 'privacy', to: '/privacy-policy' },
     { from: 'terms-of-service', to: '/terms' }
   ];

@@ -15,7 +15,10 @@ const staticFiles = [
   'dist/contact/index.html',
   'dist/privacy-policy/index.html',
   'dist/terms/index.html',
-  'dist/disclaimer/index.html'
+  'dist/disclaimer/index.html',
+  'dist/author/sufyan-saleem/index.html',
+  'dist/editorial-policy/index.html',
+  'dist/data-sources/index.html'
 ];
 
 let allValid = true;
@@ -66,7 +69,7 @@ BLOG_POSTS.forEach(p => {
 console.log(`\n[PASS ARTICLES] All ${articleCount} / ${BLOG_POSTS.length} blog article pages pre-rendered successfully!`);
 
 if (allValid && articleCount === BLOG_POSTS.length) {
-  console.log(`\nTOTAL PRE-RENDERED CANONICAL ROUTES: ${staticFiles.length + articleCount} / 34 (100% COMPLETE)`);
+  console.log(`\nTOTAL PRE-RENDERED CANONICAL ROUTES: ${staticFiles.length + articleCount} / 37 (100% COMPLETE)`);
 } else {
   console.error('\nVerification failed!');
   process.exit(1);

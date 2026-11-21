@@ -43,6 +43,24 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://www.fgcspot.com/author/sufyan-saleem</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/editorial-policy</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.fgcspot.com/data-sources</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.fgcspot.com/stocks</loc>
     <lastmod>2026-11-22</lastmod>
     <changefreq>hourly</changefreq>

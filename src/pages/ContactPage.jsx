@@ -89,21 +89,39 @@ export default function ContactPage() {
         </div>
 
         <p className="text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-          Have questions regarding our live exchange rate calculations, cryptocurrency tracking data, advertising opportunities, or editorial suggestions? Send us a message and our support team will reply within 24 to 48 business hours.
+          Have questions regarding our live exchange rate calculations, market telemetry, advertising partnerships, or editorial research? Contact our dedicated digital desk below. All inquiries receive direct attention from our editorial and technical team within 24 to 48 business hours.
         </p>
 
-        {/* Minimalist Direct Support Badge */}
-        <div className="flex items-center justify-center p-3.5 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2]">
-          <span className="flex items-center gap-1.5 flex-wrap justify-center">
-            <Mail className="w-4 h-4 text-[#00E676] shrink-0" />
-            <span>Need direct assistance? Email us at:</span>
-            <a 
-              href="mailto:fgcspot4@gmail.com" 
-              className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40 hover:decoration-[#00FF88] transition-colors"
-            >
-              fgcspot4@gmail.com
-            </a>
-          </span>
+        {/* Minimalist Direct Support Badge & Editorial Routing */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-center p-3.5 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2]">
+            <span className="flex items-center gap-1.5 flex-wrap justify-center">
+              <Mail className="w-4 h-4 text-[#00E676] shrink-0" />
+              <span>Direct Inquiries:</span>
+              <a 
+                href="mailto:fgcspot4@gmail.com" 
+                className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40 hover:decoration-[#00FF88] transition-colors"
+              >
+                fgcspot4@gmail.com
+              </a>
+              <span className="text-slate-400">•</span>
+              <span className="text-slate-500">24–48h response window</span>
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 dark:text-[#A8B3C2]">
+            <Link to="/author/sufyan-saleem" className="hover:text-[#00E676] underline underline-offset-2 transition-colors">
+              Author Desk (Sufyan Saleem)
+            </Link>
+            <span className="text-slate-400">•</span>
+            <Link to="/editorial-policy" className="hover:text-[#00E676] underline underline-offset-2 transition-colors">
+              Editorial Policy &amp; Corrections
+            </Link>
+            <span className="text-slate-400">•</span>
+            <Link to="/data-sources" className="hover:text-[#00E676] underline underline-offset-2 transition-colors">
+              Data Feeds &amp; Sources
+            </Link>
+          </div>
         </div>
 
         {submitted ? (

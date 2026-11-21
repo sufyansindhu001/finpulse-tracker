@@ -208,6 +208,33 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  to="/author/sufyan-saleem"
+                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Author &amp; Research Desk</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/editorial-policy"
+                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Editorial Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/data-sources"
+                  className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>Data Sources &amp; Governance</span>
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/contact"
                   className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
                 >

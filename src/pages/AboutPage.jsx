@@ -129,6 +129,110 @@ export default function AboutPage() {
             </div>
           </div>
 
+          {/* Editorial Leadership & E-E-A-T Framework */}
+          <div className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-6">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">
+                Editorial Desk &amp; Authorship
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                Analytical Leadership &amp; Financial Governance
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed mt-1">
+                Every research article, conversion guide, and market calculation on FGC Spot is produced under strict editorial oversight and published by our verified analytical team.
+              </p>
+            </div>
+
+            {/* Author Spotlight Card */}
+            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="flex items-start sm:items-center gap-4">
+                <img
+                  src="/sufyan-author.jpg"
+                  alt="Sufyan Saleem — Lead Financial Analyst"
+                  className="w-16 h-16 rounded-2xl object-cover border-2 border-[#00E676]/40 shadow-sm shrink-0"
+                  width="64"
+                  height="64"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/logo.png';
+                  }}
+                />
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                      Sufyan Saleem
+                    </h3>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
+                      Lead Financial Analyst
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-xl">
+                    Lead macro strategist and columnist at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX equity valuation, and remittance tax structures.
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                to="/author/sufyan-saleem"
+                className="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-xs shrink-0 flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>View Full Profile</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Editorial Policies & Data Transparency Quick Links */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <Link
+                to="/editorial-policy"
+                className="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-colors group space-y-1"
+              >
+                <div className="flex items-center justify-between text-[#00E676] font-bold text-xs uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" />
+                    Editorial Policy
+                  </span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+                  Fact-checking standards, primary sources, correction policy, and commercial independence.
+                </p>
+              </Link>
+
+              <Link
+                to="/data-sources"
+                className="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-[#00E676]/40 transition-colors group space-y-1"
+              >
+                <div className="flex items-center justify-between text-[#00E676] font-bold text-xs uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <Cpu className="w-4 h-4" />
+                    Data Sources
+                  </span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+                  Transparent disclosure of APIs, polling cadences, calculation formulas, and market limitations.
+                </p>
+              </Link>
+
+              <Link
+                to="/disclaimer"
+                className="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 hover:border-amber-500/40 transition-colors group space-y-1"
+              >
+                <div className="flex items-center justify-between text-amber-500 font-bold text-xs uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" />
+                    Risk Disclaimer
+                  </span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+                <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+                  Statutory non-advisory notices, volatility warnings, and indicative rate boundaries.
+                </p>
+              </Link>
+            </div>
+          </div>
+
           {/* Contact CTA */}
           <div className="mt-8 p-6 rounded-2xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>

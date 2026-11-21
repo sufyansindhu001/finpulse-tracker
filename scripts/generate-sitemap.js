@@ -22,6 +22,9 @@ const STATIC_PAGES = [
   { url: `${BASE_URL}/privacy-policy`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/terms`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/disclaimer`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
+  { url: `${BASE_URL}/author/sufyan-saleem`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
+  { url: `${BASE_URL}/editorial-policy`, changefreq: 'monthly', priority: '0.7', lastmod: TODAY },
+  { url: `${BASE_URL}/data-sources`, changefreq: 'monthly', priority: '0.7', lastmod: TODAY },
   // Tools, Stocks & News
   { url: `${BASE_URL}/stocks`, changefreq: 'hourly', priority: '0.9', lastmod: TODAY },
   { url: `${BASE_URL}/converter`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
