@@ -8,7 +8,11 @@ import {
   ChevronRight, 
   Download, 
   ChevronLeft,
-  RefreshCw
+  RefreshCw,
+  ShieldCheck,
+  CheckCircle2,
+  BookOpen,
+  AlertCircle
 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
 import { WORLD_COUNTRIES, getStocksForCountry } from '../data/stocksData';
@@ -926,6 +930,98 @@ export default function StocksPage() {
               </button>
             );
           })}
+        </div>
+      </section>
+
+      {/* ========================================================
+          MODULE 6B-1: SCREENER METHODOLOGY & VALUATION FRAMEWORK
+          ======================================================== */}
+      <section className="bg-white dark:bg-[#0A1726] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-10 shadow-xs space-y-6">
+        <div className="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0 border border-blue-500/20">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-500">Methodological Transparency &amp; Mechanics</span>
+            <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100">
+              Equity Screener Calculation Framework &amp; Data Governance
+            </h2>
+          </div>
+        </div>
+
+        <div className="space-y-5 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-normal">
+          <p>
+            The FGC Spot Global Stock Screener provides multi-variable quantitative filtering across the Pakistan Stock Exchange (PSX KSE-100) and 50+ international equity markets. Our engine indexes balance sheet metrics, trailing earnings, dividend distributions, and operational solvency indicators to empower data-driven equity analysis.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose my-4">
+            <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[#06111F] border border-gray-200 dark:border-gray-800 space-y-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-blue-500">Price-to-Earnings (P/E)</span>
+              <p className="font-mono text-xs text-gray-900 dark:text-white font-bold">P/E = Market Price per Share / EPS (TTM)</p>
+              <p className="text-[11px] text-gray-500 leading-normal">Evaluates share price relative to Trailing Twelve Months earnings. Sub-5.0x multiples on PSX reflect frontier market risk premium.</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[#06111F] border border-gray-200 dark:border-gray-800 space-y-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-blue-500">Dividend Yield (%)</span>
+              <p className="font-mono text-xs text-gray-900 dark:text-white font-bold">Yield (%) = (Annual DPS / Share Price) &times; 100</p>
+              <p className="text-[11px] text-gray-500 leading-normal">Measures annualized cash distribution return. PSX market average frequently exceeds 11%–14% across defensive sectors.</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[#06111F] border border-gray-200 dark:border-gray-800 space-y-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-blue-500">Piotroski F-Score (0–9)</span>
+              <p className="font-mono text-xs text-gray-900 dark:text-white font-bold">F-Score = &sum; (9 Discrete Fundamental Tests)</p>
+              <p className="text-[11px] text-gray-500 leading-normal">Scores profitability (ROA, CFO), leverage/liquidity, and operating efficiency. Scores &ge; 7 signify superior financial health.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+            <div className="space-y-2 p-5 rounded-2xl bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-gray-800">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                <span>Data Feeds &amp; 15-Minute Delayed Quotes</span>
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-[#A8B3C2] leading-relaxed">
+                <strong>Market Pricing:</strong> Sourced via institutional market proxies connecting to PSX trading desks and international exchanges. Per standard regulatory dissemination practices, equity prices are delayed by at least 15 minutes during active sessions.
+              </p>
+              <p className="text-xs text-gray-600 dark:text-[#A8B3C2] leading-relaxed">
+                <strong>Trading Sessions:</strong> PSX trading runs Monday through Friday 09:15 to 15:30 PKT (with Friday midday prayer recess from 12:00 to 14:30 PKT).
+              </p>
+            </div>
+
+            <div className="space-y-2 p-5 rounded-2xl bg-gray-50/70 dark:bg-white/[0.02] border border-gray-200 dark:border-gray-800">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                <span>Data Limitations &amp; Accounting Nuances</span>
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-[#A8B3C2] leading-relaxed">
+                Financial statement ratios (such as P/E, ROE, and Debt/Equity) are calculated using Trailing Twelve Months (TTM) corporate filings. Interim quarterly reports may be un-audited, and one-time extraordinary gains (e.g., asset sales or tax reversals) can temporarily distort valuation metrics.
+              </p>
+              <p className="text-xs text-gray-600 dark:text-[#A8B3C2] leading-relaxed">
+                Secondary tier stocks may have lower floating liquidity, leading to execution slippage outside of official screener closing prices.
+              </p>
+            </div>
+          </div>
+
+          {/* Practical Screening Example */}
+          <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 not-prose space-y-2">
+            <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              <span>Practical Screening Workflow: The High-Yield PSX Blue-Chip Screen</span>
+            </h3>
+            <p className="text-xs text-gray-600 dark:text-[#A8B3C2] leading-relaxed">
+              Investors screening for defensive income champions on the Pakistan Stock Exchange can apply the following three-factor filter combination:
+            </p>
+            <ul className="text-xs text-gray-600 dark:text-[#A8B3C2] list-disc pl-5 space-y-1">
+              <li><strong>P/E Multiple &le; 5.5x:</strong> Isolates companies trading at attractive valuations relative to historic earnings power.</li>
+              <li><strong>Dividend Yield &ge; 10.0%:</strong> Highlights cash-generative businesses distributing substantial dividends (e.g., premier banking or fertilizer producers).</li>
+              <li><strong>Piotroski F-Score &ge; 7:</strong> Filters out value traps by requiring positive operating cash flows, declining debt ratios, and expanding gross margins.</li>
+            </ul>
+          </div>
+
+          {/* SECP Compliance Disclaimer */}
+          <div className="p-4 rounded-xl bg-gray-100 dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 text-[11px] text-gray-500 leading-relaxed not-prose">
+            <strong>SECP &amp; Statutory Regulatory Disclaimer:</strong> FGC Spot is an independent financial data publishing portal. We are not a registered securities broker, investment advisor, or asset management company registered with the Securities and Exchange Commission of Pakistan (SECP) under the Securities Act, 2015. All equity data, valuation metrics, and screening tools are provided for informational and educational purposes only. Past equity returns and historical dividend payouts do not guarantee future investment performance.
+          </div>
         </div>
       </section>
 

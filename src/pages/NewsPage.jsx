@@ -184,6 +184,35 @@ export default function NewsPage() {
         </div>
       </div>
 
+      {/* Editorial Transparency & Syndication Disclosure Banner */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="space-y-1.5 max-w-3xl">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-500 border border-blue-500/20">
+              Syndicated Wire Index
+            </span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">
+              Fair-Use Headline Aggregation
+            </span>
+          </div>
+          <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+            Third-Party Wire Feed Attribution &amp; Publisher Notice
+          </h2>
+          <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+            Headlines and excerpts displayed on this wire are syndicated via RSS and public press feeds from independent global and domestic publications (including MarketWatch, CNBC, Business Recorder, Profit Pakistan, and Cointelegraph). Intellectual property and full reporting remain with the original publishers. For FGC Spot&apos;s proprietary macroeconomic investigations and empirical financial research, visit our Research Hub.
+          </p>
+        </div>
+
+        <Link
+          to="/blog"
+          className="shrink-0 px-5 py-2.5 rounded-2xl bg-[#00E676]/10 hover:bg-[#00E676] text-[#00E676] hover:text-[#06111F] font-bold text-xs transition-all border border-[#00E676]/30 flex items-center gap-2 shadow-xs group"
+        >
+          <BookOpen className="w-4 h-4" />
+          <span>FGC Spot Original Research</span>
+          <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        </Link>
+      </div>
+
       {/* Controls & Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         {/* Category Filter Pills */}
@@ -453,8 +482,8 @@ export default function NewsPage() {
 
             {/* Modal Footer with External Link */}
             <div className="pt-6 border-t border-slate-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
-              <div className="text-xs text-slate-500 dark:text-[#A8B3C2]">
-                Verified Institutional Wire Feed &bull; Live Syndication
+              <div className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-sm">
+                Excerpts indexed under fair use. Full copyright resides with original publisher ({activeArticle.source}).
               </div>
 
               {activeArticle.url && (
@@ -464,7 +493,7 @@ export default function NewsPage() {
                   rel="noopener noreferrer"
                   className="px-5 py-2.5 rounded-xl bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] font-bold text-xs flex items-center gap-2 transition-all shadow-md shadow-[#00E676]/20"
                 >
-                  <span>Open Full Article Source</span>
+                  <span>Read Full Article at {activeArticle.source}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}

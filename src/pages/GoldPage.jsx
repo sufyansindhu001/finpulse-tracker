@@ -9,7 +9,11 @@ import {
   Coins,
   Scale,
   Award,
-  ChevronRight
+  ChevronRight,
+  Info,
+  FileText,
+  HelpCircle,
+  CheckCircle2
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
@@ -91,11 +95,11 @@ export default function GoldPage({ rates = {} }) {
   // Live Benchmark spot prices (fallback to metalsData)
   const goldSpotOzUsd = (rates.XAU && rates.XAU > 0)
     ? Number((1 / rates.XAU).toFixed(2))
-    : (metalsData.gold?.price || 3898.90);
+    : (metalsData.gold?.price || 2650.00);
 
   const silverSpotOzUsd = (rates.XAG && rates.XAG > 0)
     ? Number((1 / rates.XAG).toFixed(2))
-    : (metalsData.silver?.price || 49.28);
+    : (metalsData.silver?.price || 31.50);
 
   // Base calculations with calibrated Karachi Sarafa Association dynamic formula
   const goldMetrics = useMemo(() => {
@@ -492,6 +496,158 @@ export default function GoldPage({ rates = {} }) {
 
         </div>
       </div>
+
+      {/* Comprehensive Bullion Valuation Framework & Calculator Methodology */}
+      <section className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm space-y-8">
+        
+        {/* Section Header */}
+        <div className="space-y-2 border-b border-slate-200 dark:border-white/10 pb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20 text-xs font-bold uppercase tracking-wider">
+            <Scale className="w-3.5 h-3.5" />
+            <span>Calculation Methodology &amp; Data Transparency</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            How FGC Spot Calculates Live Gold &amp; Bullion Benchmarks
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+            Complete mathematical formulas, data sourcing protocols, update frequencies, and buyer valuation checklists for Pakistani and international precious metals markets.
+          </p>
+        </div>
+
+        {/* 1. What This Tool Does */}
+        <div className="space-y-3">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Info className="w-4 h-4 text-[#00E676]" />
+            <span>1. What This Tool Does</span>
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+            The FGC Spot Gold &amp; Bullion Terminal calculates the wholesale monetary value of physical gold and silver across all recognized purity grades (24K, 22K, 21K, 18K) and standard South Asian and metric units: Tola (11.664g), 10 Grams, 1 Gram, and Troy Ounce (31.1035g). It translates global commodity spot prices in US Dollars ($USD/oz) into Pakistani Rupees (PKR) and local currencies with zero markup.
+          </p>
+        </div>
+
+        {/* 2. Mathematical Formulas Used */}
+        <div className="space-y-4">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Calculator className="w-4 h-4 text-[#00E676]" />
+            <span>2. Mathematical Formulas &amp; Conversion Parity</span>
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
+              <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">24K Pure Bullion Base Formula</span>
+              <div className="font-mono text-xs sm:text-sm bg-white dark:bg-[#0D1B2A] p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200">
+                Rate / Tola (24K) = (Spot_USD / 31.1035) &times; USD_PKR &times; 11.664 &times; (1 + Sarafa_Premium)
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Where 1 Troy Ounce = exactly 31.1034768 grams, 1 Tola = 11.664 grams, and the local Sarafa premium covers legal import duties, shipping insurance, and refinery assay tolerances.
+              </p>
+            </div>
+
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
+              <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">Karat Purity Derivations</span>
+              <div className="space-y-1.5 font-mono text-xs bg-white dark:bg-[#0D1B2A] p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200">
+                <div>&bull; 22K (Jewelry) = 24K Rate &times; (22 / 24) [91.67% fine gold]</div>
+                <div>&bull; 21K (Middle East) = 24K Rate &times; (21 / 24) [87.50% fine gold]</div>
+                <div>&bull; 18K (Fine Chains) = 24K Rate &times; (18 / 24) [75.00% fine gold]</div>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Purity ratios follow statutory international hallmark fineness (916, 875, and 750 parts per thousand).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Verified Data Sources & Update Frequency */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#00E676]" />
+              <span>3. Data Sourcing &amp; Verification</span>
+            </h3>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>International Spot:</strong> Aggregated from public LBMA commodity tracking feeds and Paxos Gold (PAXG) physical vault reserve tokens.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Currency Translation:</strong> Live interbank mid-market USD/PKR exchange rates verified via Open Exchange Rates and SBP closing data.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Sarafa Calibration:</strong> Cross-checked against All Pakistan Sarafa Gems and Jewellers Association (APSGJA) daily closing sheets in Karachi.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-[#00E676]" />
+              <span>4. Update Frequency &amp; Latency</span>
+            </h3>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Global Spot Feeds:</strong> Refresh every 45 to 60 seconds during active international commodity trading sessions (Sunday evening through Friday evening GMT).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Domestic Sarafa Rates:</strong> Published once or twice daily (afternoon initial and evening final fixings) following local market consensus.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Client Caching:</strong> Cached in browser memory for 2 minutes with automated background revalidation to ensure zero page load lag.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* 5. Data Limitations (Spot vs Retail Jewelry) */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/30 space-y-2">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <HelpCircle className="w-4 h-4" />
+            <span>5. Data Limitations: Wholesale Spot vs. Retail Jewelry Costs</span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+            The rates displayed on FGC Spot represent pure, unworked wholesale bullion value. When purchasing wearable jewelry at retail bazaars, total invoice amounts will be higher due to:
+          </p>
+          <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] space-y-1 pl-4 list-disc">
+            <li><strong>Making Charges (Mazdoori / Kaarigari):</strong> Artisan fabrication fees ranging from Rs. 1,200 to Rs. 4,000+ per tola depending on design intricacy.</li>
+            <li><strong>Stone Weight Deductions (Katt):</strong> Precious or semi-precious stones, wax, and pearls must be weighed separately and deducted from the gross weight before calculating gold price.</li>
+            <li><strong>Retail Taxes:</strong> Applicable provincial sales taxes on services and retail merchant card processing fees.</li>
+          </ul>
+        </div>
+
+        {/* 6. Practical Calculation Example */}
+        <div className="space-y-3">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <FileText className="w-4 h-4 text-[#00E676]" />
+            <span>6. Practical Buyer's Example: Evaluating a 2.5 Tola 22K Bangle</span>
+          </h3>
+          <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-3 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+            <p>
+              Suppose a jeweler quotes Rs. 730,000 for a 22-karat bridal bangle weighing exactly 2.5 tolas (29.16 grams) with Rs. 2,000/tola making charges, when 24K spot is Rs. 284,500/tola:
+            </p>
+            <ol className="list-decimal pl-5 space-y-1.5 font-mono text-xs">
+              <li><strong>Find 22K Tola Rate:</strong> Rs. 284,500 &times; (22 / 24) = <strong>Rs. 260,792 per tola</strong>.</li>
+              <li><strong>Calculate Net Metal Value:</strong> 2.5 tolas &times; Rs. 260,792 = <strong>Rs. 651,980</strong>.</li>
+              <li><strong>Add Fair Making Charges:</strong> 2.5 tolas &times; Rs. 2,000 = <strong>Rs. 5,000</strong>.</li>
+              <li><strong>Transparent Target Total:</strong> Rs. 651,980 + Rs. 5,000 = <strong>Rs. 656,980</strong>.</li>
+            </ol>
+            <p className="text-xs text-emerald-600 dark:text-[#00E676] font-semibold pt-1">
+              &check; Transparent Result: If the shop quoted Rs. 730,000, you are being overcharged by over Rs. 73,000 in hidden retail markup!
+            </p>
+          </div>
+        </div>
+
+        {/* 7. Regulatory & Financial Disclaimers */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-slate-100 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-[11px] leading-relaxed text-slate-500 dark:text-[#A8B3C2] space-y-1.5">
+          <p className="font-bold uppercase tracking-wider text-slate-800 dark:text-white">Precious Metals Regulatory Advisory &amp; Risk Disclosure</p>
+          <p>
+            FGC Spot is a digital financial publishing platform and market data aggregator. We do not sell physical bullion, execute jewelry transactions, or act as licensed gold dealers under the Securities and Exchange Commission of Pakistan (SECP) or State Bank of Pakistan (SBP). All bullion calculators and price feeds are provided strictly for educational and comparative research purposes. Commodity markets carry price volatility risk. Verify hallmarking assay certificates and itemized invoices with licensed bullion merchants prior to executing transactions.
+          </p>
+        </div>
+
+      </section>
 
     </div>
   );

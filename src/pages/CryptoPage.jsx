@@ -9,10 +9,38 @@ import {
   ShieldCheck, 
   Layers, 
   ArrowUpDown, 
-  ChevronRight
+  ChevronRight,
+  CheckCircle2,
+  BookOpen,
+  HelpCircle,
+  ChevronDown,
+  Lock
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
+
+const cryptoFaqs = [
+  {
+    q: "How are cryptocurrency counter-values in Pakistani Rupees (PKR) calculated?",
+    a: "Our engine multiplies the live global US Dollar spot price (sourced from multi-exchange volume-weighted average pricing) by the prevailing SBP interbank USD/PKR benchmark. This provides a standardized baseline for macroeconomic tracking and cross-asset portfolio valuation."
+  },
+  {
+    q: "What is the legal and regulatory status of cryptocurrency in Pakistan?",
+    a: "Under State Bank of Pakistan (SBP) Circular BPRD/2018-03, virtual currencies and crypto tokens are not recognized as legal tender and commercial banks are prohibited from facilitating crypto-related transactions or remittances. FGC Spot displays cryptocurrency data strictly for educational, research, and macroeconomic benchmarking purposes."
+  },
+  {
+    q: "Why do peer-to-peer (P2P) exchange rates in Pakistan differ from interbank spot prices?",
+    a: "In retail P2P marketplaces (e.g., USDT/PKR), sellers charge a liquidity and risk premium (typically 1.5% to 4.5% above interbank USD/PKR) to compensate for local banking freeze risks, escrow hold times, and domestic payment platform limits."
+  },
+  {
+    q: "What is the difference between circulating supply and total supply?",
+    a: "Circulating supply represents the number of tokens actively available and circulating in the public market. Total supply includes coins currently locked in founder vesting schedules, protocol treasuries, or staking reserve contracts."
+  },
+  {
+    q: "Why is cold hardware wallet storage recommended over custodial exchange accounts?",
+    a: "Centralized exchanges retain your private cryptographic keys, exposing balances to insolvency, regulatory freezes, or security breaches (the 'not your keys, not your coins' principle). Hardware wallets (such as Ledger or Trezor) keep private keys isolated offline."
+  }
+];
 
 export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rates = {} }) {
   useSEO({
@@ -26,6 +54,7 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('rank'); // 'rank' | 'price' | 'change'
   const [highlightedCoin, setHighlightedCoin] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
   const usdToPkr = rates.PKR || 277.10;
 
   useEffect(() => {
@@ -312,6 +341,165 @@ export default function CryptoPage({ cryptoList = [], onOpenCryptoConverter, rat
           </div>
         </div>
       </div>
+
+      {/* Comprehensive Methodological & Regulatory Intelligence Section */}
+      <section className="mt-12 pt-8 border-t border-slate-200 dark:border-white/10 space-y-8">
+        
+        {/* Methodological Transparency & Calculation Framework */}
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Methodological Transparency &amp; Valuation</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Cryptocurrency Valuation Framework &amp; Calculation Engine
+              </h2>
+            </div>
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-5 font-normal">
+            <p>
+              The FGC Spot Cryptocurrency Terminal provides continuous price discovery, circulating supply tracking, and volume-weighted valuations across Tier-1 digital assets. Each token&apos;s Pakistani Rupee (PKR) counter-value is derived algorithmically to provide an objective macroeconomic benchmark against sovereign fiat purchasing power.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose my-4">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">PKR Parity Formula</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Valuation (PKR) = Spot (USD) &times; Interbank (USD/PKR)</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Bridges global cryptocurrency spot pricing to domestic currency purchasing power.</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Market Capitalization</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Market Cap = Circulating Supply &times; Spot Price (USD)</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Excludes illiquid treasury lockups and unvested team allocations.</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">24h Price Momentum</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">&Delta; (%) = ((Price_t - Price_t-24h) / Price_t-24h) &times; 100</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Tracks rolling intraday percentage fluctuations across international liquidity pools.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+              <div className="space-y-2 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676]" />
+                  <span>Data Providers &amp; Refresh Architecture</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  <strong>Spot Pricing Feeds:</strong> Aggregated from CoinGecko Public Markets API, synthesizing Volume-Weighted Average Prices (VWAP) across global decentralized and centralized exchanges.
+                </p>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  <strong>Update Frequency:</strong> Tickers poll every 60 seconds. In the event of upstream rate limits or network latency, resilient cached baselines ensure uninterrupted user access.
+                </p>
+              </div>
+
+              <div className="space-y-2 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676]" />
+                  <span>Data Limitations &amp; P2P Market Premium</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Displayed quotes represent wholesale mid-market pricing. Real-world domestic peer-to-peer (P2P) transactions typically reflect a 1.5% to 4.5% premium over interbank conversion due to domestic payment platform risks, bank account holding friction, and vendor margins.
+                </p>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Network transaction fees (e.g., Bitcoin mining fees or Ethereum gas) and centralized exchange withdrawal charges are excluded from table spot values.
+                </p>
+              </div>
+            </div>
+
+            {/* Practical Example */}
+            <div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 not-prose space-y-2">
+              <h3 className="text-sm font-bold text-emerald-600 dark:text-[#00E676] flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Practical Example: Portfolio Valuation of 0.1 Bitcoin (BTC)</span>
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                If Bitcoin trades at <strong>$96,420 USD</strong> and the SBP USD/PKR benchmark is <strong>277.10 PKR</strong>:
+              </p>
+              <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] list-disc pl-5 space-y-1">
+                <li><strong>Theoretical Interbank Parity:</strong> 0.1 BTC &times; $96,420 = $9,642 USD &times; 277.10 = <strong>₨ 2,671,798 PKR</strong>.</li>
+                <li><strong>Domestic P2P Cash Premium:</strong> If acquiring USDT via local peer-to-peer counters at an effective rate of 285.00 PKR, the acquisition cost increases to <strong>₨ 2,747,970 PKR</strong> (a ~2.85% spread reflecting domestic liquidity friction).</li>
+                <li><strong>Cold Storage Security:</strong> Transferring 0.1 BTC to a dedicated hardware wallet incurs a native network mining fee, isolating the asset from custodial third-party counterparty risk.</li>
+              </ul>
+            </div>
+
+            {/* Regulatory Notice & Cold Storage Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose pt-2">
+              <div className="p-6 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-2">
+                <h3 className="text-sm font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>State Bank of Pakistan (SBP) Regulatory Stance</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Pursuant to State Bank of Pakistan Circular BPRD/2018-03, virtual currencies, initial coin offerings (ICOs), and crypto tokens are neither legal tender nor recognized by the Government of Pakistan. Commercial banks and payment providers are prohibited from dealing in virtual currencies. All cryptocurrency content on FGC Spot is presented strictly for educational, macroeconomic, and software research purposes.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/20 space-y-2">
+                <h3 className="text-sm font-bold text-purple-600 dark:text-purple-400 flex items-center gap-2">
+                  <Lock className="w-4 h-4" />
+                  <span>Self-Custody &amp; Cold Storage Best Practices</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Investors interacting with digital assets in authorized global jurisdictions should observe strict cryptographic security. Storing funds on custodial centralized exchanges subjects balances to insolvency and freezing risks. Non-custodial hardware wallets ensure private key sovereignty.
+                </p>
+                <div className="pt-2">
+                  <Link to="/blog/storing-crypto-safely-exchanges-vs-wallets-guide" className="text-xs font-bold text-purple-500 hover:underline flex items-center gap-1">
+                    <span>Read Full Cold Storage Guide</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="p-4 rounded-xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-[11px] text-slate-500 leading-relaxed not-prose">
+              <strong>Risk &amp; Compliance Disclosure:</strong> Digital assets exhibit extreme price volatility and regulatory scrutiny. FGC Spot does not provide cryptocurrency brokerage, wallet custody, OTC conversion, or financial advisory services. Nothing published herein constitutes an offer, solicitation, or recommendation to acquire or sell digital assets.
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive FAQ Accordion */}
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <HelpCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Frequently Asked Questions</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Frequently Asked Cryptocurrency &amp; Digital Asset Questions
+              </h2>
+            </div>
+          </div>
+
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
+            {cryptoFaqs.map((faq, idx) => (
+              <div key={idx} className="py-4">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between text-left font-bold text-slate-900 dark:text-white text-sm sm:text-base cursor-pointer group"
+                >
+                  <span className="group-hover:text-[#00E676] transition-colors pr-4">{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 group-hover:text-[#00E676] transition-transform duration-200 shrink-0 ${openFaq === idx ? 'rotate-180 text-[#00E676]' : ''}`} />
+                </button>
+                {openFaq === idx && (
+                  <p className="mt-2.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-normal animate-in fade-in duration-200">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </section>
 
     </div>
   );

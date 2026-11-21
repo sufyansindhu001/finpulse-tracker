@@ -17,15 +17,15 @@ export default async function handler(req, res) {
   }
 
   // Realistic live baseline benchmarks
-  let goldPrice = 3898.90;
-  let goldChange = -0.05;
-  let goldHigh = 3915.00;
-  let goldLow = 3885.00;
+  let goldPrice = 2650.00;
+  let goldChange = 0.32;
+  let goldHigh = 2665.00;
+  let goldLow = 2640.00;
 
-  let silverPrice = 49.28;
-  let silverChange = 0.35;
-  let silverHigh = 49.80;
-  let silverLow = 48.70;
+  let silverPrice = 31.50;
+  let silverChange = 0.45;
+  let silverHigh = 31.85;
+  let silverLow = 31.15;
 
   try {
     const controller = new AbortController();

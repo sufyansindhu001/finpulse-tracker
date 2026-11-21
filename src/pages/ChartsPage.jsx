@@ -13,7 +13,9 @@ import {
   ChevronRight,
   ChevronDown,
   BookOpen,
-  HelpCircle
+  HelpCircle,
+  ShieldCheck,
+  CheckCircle2
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
@@ -89,7 +91,7 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   // Live Gold Spot Price benchmark
   const goldPrice = (metalsData.gold?.price && metalsData.gold.price > 0)
     ? metalsData.gold.price 
-    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : 3898.90);
+    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : 2650.00);
 
   // Dynamic Live Asset configurations
   const assets = [
@@ -456,9 +458,9 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
           </div>
 
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
-            <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Interbank Spread</div>
+            <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Pricing Benchmark</div>
             <div className="text-base font-extrabold text-slate-900 dark:text-white font-tabular mt-0.5">
-              0.00% Zero-Spread
+              Indicative Mid-Market
             </div>
           </div>
         </div>
@@ -467,6 +469,97 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
 
       {/* Comprehensive Technical Analysis Educational Guide & AdSense Compliance Section */}
       <section className="mt-12 pt-8 border-t border-slate-200 dark:border-white/10 space-y-8">
+        
+        {/* Methodological Transparency & Charting Architecture */}
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Methodological Transparency &amp; Mechanics</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Technical Analysis Engine &amp; Charting Methodology
+              </h2>
+            </div>
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-5 font-normal">
+            <p>
+              The FGC Spot Interactive Financial Charts terminal maps historical price progression, liquidity corridor occupancy, and momentum indicators across sovereign foreign exchange pairs, bullion commodities, and benchmark cryptocurrencies. The charting engine transforms discrete historical fixings into smooth, continuous vector curves for institutional and retail market analysis.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose my-4">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Simple Moving Average (SMA)</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">SMA_k = (1 / k) &times; &sum; Price_(t-i)</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Unweighted rolling arithmetic mean over 50 or 200 periods to establish macro baseline trends.</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Exponential Moving Avg (EMA)</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">EMA_t = (P_t &times; &alpha;) + (EMA_t-1 &times; (1 - &alpha;))</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Weights recent prices exponentially (&alpha; = 2 / (N + 1)), reducing lag during breakout moves.</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Relative Strength Index (RSI)</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">RSI = 100 - (100 / (1 + (Avg Gain / Avg Loss)))</p>
+                <p className="text-[11px] text-slate-500 leading-normal">14-period momentum oscillator identifying overbought (&gt;70) and oversold (&lt;30) exhaustion zones.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+              <div className="space-y-2 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676]" />
+                  <span>Data Providers &amp; Historical Fixings</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  <strong>Forex History:</strong> Sourced from Open Exchange Rates and daily SBP weighted-average closing benchmarks. Cross-pairs (EUR/PKR, GBP/PKR) are derived algorithmically through USD triangular parity.
+                </p>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  <strong>Metals &amp; Crypto:</strong> Gold spot tracks Binance Paxos (PAXG) and LBMA fixing feeds; digital asset price histories reflect CoinGecko daily volume-weighted market closes.
+                </p>
+              </div>
+
+              <div className="space-y-2 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676]" />
+                  <span>Data Limitations &amp; Chart Resolution</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Historical series are based on end-of-period closing prices and synthetic interpolation. Intraday spike wicks caused by illiquid market moments may be smoothed out in macro (1M, 1Y) views.
+                </p>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Charts reflect indicative wholesale mid-market pricing and do not account for retail counter bid-ask spreads, making charges, or broker execution slippage.
+                </p>
+              </div>
+            </div>
+
+            {/* Practical Example */}
+            <div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 not-prose space-y-2">
+              <h3 className="text-sm font-bold text-emerald-600 dark:text-[#00E676] flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Practical Example: Analyzing Support &amp; Resistance Corridors on USD/PKR</span>
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                When tracking USD/PKR on the 1-Month (1M) chart, an analyst identifies an established trading corridor:
+              </p>
+              <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] list-disc pl-5 space-y-1">
+                <li><strong>Dynamic Support Baseline:</strong> At <strong>277.00 PKR</strong>, commercial bank import demand repeatedly absorbs selling pressure, establishing a floor indicated by the Period Low metric card.</li>
+                <li><strong>Overhead Psychological Resistance:</strong> At <strong>280.00 PKR</strong>, central bank intervention liquidity and remittance inflows curb further dollar appreciation, establishing a ceiling indicated by the Period High card.</li>
+                <li><strong>Range Occupancy:</strong> The shaded gradient area highlights price concentration, showing whether the exchange rate spent the majority of the timeframe consolidating near support or testing upper barriers.</li>
+              </ul>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="p-4 rounded-xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-[11px] text-slate-500 leading-relaxed not-prose">
+              <strong>Technical Analysis &amp; Educational Notice:</strong> Historical price charts, indicators (SMA, EMA, RSI), and trend visualizations are provided for educational and illustrative purposes only. They do not constitute financial advice, automated trading signals, or investment recommendations. Past price trajectory does not predict future market outcomes.
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">

@@ -47,7 +47,8 @@ export default function AdminPage() {
   useSEO({
     title: 'Admin Control Portal | FGC Spot',
     description: 'FGC Spot administrative control portal and management dashboard.',
-    canonical: '/admin'
+    canonical: '/admin',
+    robots: 'noindex, nofollow'
   });
   const { 
     siteSettings, 

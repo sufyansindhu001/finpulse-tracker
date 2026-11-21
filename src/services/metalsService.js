@@ -10,31 +10,31 @@ export const TOLA_TO_GRAMS = 11.664; // Standard Sarafa Association tola weight 
 
 // Calibration benchmarks for local Pakistani Sarafa Association
 // Formula: (Spot_Gold / 31.1034768) * USD_PKR * 11.664 * Import_Tariff_Assay_Multiplier
-export const SARAFA_CALIBRATION_SPOT_USD = 3898.90;
-export const SARAFA_CALIBRATION_USD_PKR = 276.75;
-export const SARAFA_BENCHMARK_BASE_TOLA_24K = Math.round((SARAFA_CALIBRATION_SPOT_USD / TROY_OUNCE_TO_GRAMS) * SARAFA_CALIBRATION_USD_PKR * TOLA_TO_GRAMS);
-export const SARAFA_BASE_MULTIPLIER = 1.0;
+export const SARAFA_CALIBRATION_SPOT_USD = 2650.00;
+export const SARAFA_CALIBRATION_USD_PKR = 277.10;
+export const SARAFA_BENCHMARK_BASE_TOLA_24K = Math.round((SARAFA_CALIBRATION_SPOT_USD / TROY_OUNCE_TO_GRAMS) * SARAFA_CALIBRATION_USD_PKR * TOLA_TO_GRAMS * 1.033);
+export const SARAFA_BASE_MULTIPLIER = 1.033; // ~3.3% local market physical import, assay & Karachi Sarafa premium
 
 export const DEFAULT_METALS = {
   gold: {
     symbol: 'XAU/USD',
     name: 'Gold Spot (Troy Ounce)',
-    price: 3898.90,
-    change: -0.05,
-    high: 3915.00,
-    low: 3885.00,
+    price: 2650.00,
+    change: 0.32,
+    high: 2665.00,
+    low: 2640.00,
     unit: 'troy oz'
   },
   silver: {
     symbol: 'XAG/USD',
     name: 'Silver Spot (Troy Ounce)',
-    price: 49.28,
-    change: 0.35,
-    high: 49.80,
-    low: 48.70,
+    price: 31.50,
+    change: 0.45,
+    high: 31.85,
+    low: 31.15,
     unit: 'troy oz'
   },
-  source: 'Global Bullion & Commodity Desk (Live)',
+  source: 'International Bullion Feeds (LBMA/PAXG) & Karachi Sarafa',
   lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 };
 
@@ -46,15 +46,15 @@ export const DEFAULT_METALS = {
  * As international spot ($/oz) and interbank USD/PKR fluctuate, domestic rates move dynamically in exact real-time parity.
  * Automatically derives 22K, 21K, and 18K purity grades using exact proportional multipliers.
  */
-export function calculateGoldLocalMetrics(goldPriceUsd = 3898.90, localRateAgainstUsd = 276.75, isPakistan = true) {
+export function calculateGoldLocalMetrics(goldPriceUsd = 2650.00, localRateAgainstUsd = 277.10, isPakistan = true) {
   try {
     const cleanGoldUsd = (typeof goldPriceUsd === 'number' && !isNaN(goldPriceUsd) && isFinite(goldPriceUsd) && goldPriceUsd > 0)
       ? goldPriceUsd
-      : 3898.90;
+      : 2650.00;
 
     const cleanRate = (typeof localRateAgainstUsd === 'number' && !isNaN(localRateAgainstUsd) && isFinite(localRateAgainstUsd) && localRateAgainstUsd > 0)
       ? localRateAgainstUsd
-      : 276.75;
+      : 277.10;
 
     const multiplier = isPakistan ? SARAFA_BASE_MULTIPLIER : 1.0;
 

@@ -47,7 +47,7 @@ export default function Header({
     if (onRefresh) {
       onRefresh();
     }
-    const msg = '● Live market telemetry active: Sub-40ms stream connected';
+    const msg = '● Live market telemetry active: Real-time stream synchronized';
     if (onShowToast) {
       onShowToast(msg);
     } else {

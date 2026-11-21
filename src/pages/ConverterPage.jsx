@@ -13,7 +13,11 @@ import {
   BookOpen,
   HelpCircle,
   ChevronDown,
-  ArrowRight
+  ArrowRight,
+  Info,
+  FileText,
+  Calculator,
+  Scale
 } from 'lucide-react';
 import CurrencySelect from '../components/CurrencySelect';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
@@ -465,6 +469,163 @@ export default function ConverterPage({ rates = {} }) {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Comprehensive Exchange Rate Calculation Framework & Methodology */}
+      <section className="rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm space-y-8">
+        
+        {/* Section Header */}
+        <div className="space-y-2 border-b border-slate-200 dark:border-white/10 pb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/20 text-xs font-bold uppercase tracking-wider">
+            <Calculator className="w-3.5 h-3.5" />
+            <span>Calculation Methodology &amp; Data Transparency</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            How FGC Spot Calculates Live Foreign Exchange Conversions
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+            Detailed mathematical formulas, data sourcing protocols, update frequencies, and practical remittance cost comparisons.
+          </p>
+        </div>
+
+        {/* 1. What This Tool Does */}
+        <div className="space-y-3">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Info className="w-4 h-4 text-[#00E676]" />
+            <span>1. What This Tool Does</span>
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+            The FGC Spot Currency Converter calculates real-time currency exchanges across 160+ sovereign fiat currencies and precious metals using pure mid-market interbank exchange rates. It eliminates the 2% to 5% hidden exchange markups commonly embedded in commercial bank calculators, allowing freelance exporters, corporate treasurers, and remittance senders to verify true baseline market value.
+          </p>
+        </div>
+
+        {/* 2. Mathematical Formulas Used */}
+        <div className="space-y-4">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Scale className="w-4 h-4 text-[#00E676]" />
+            <span>2. Triangular Arbitrage Cross-Rate Formulas</span>
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
+              <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">Cross-Rate Calculation Formula</span>
+              <div className="font-mono text-xs sm:text-sm bg-white dark:bg-[#0D1B2A] p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200">
+                Converted Amount = Input Amount &times; (Rate_Target / Rate_Base)
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Where all exchange rates are pegged relative to the US Dollar (USD = 1.0) as the global clearing currency. For example, converting EUR to PKR divides the USD/PKR rate by the USD/EUR rate.
+              </p>
+            </div>
+
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
+              <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">Unit &amp; Inverse Multipliers</span>
+              <div className="space-y-1.5 font-mono text-xs bg-white dark:bg-[#0D1B2A] p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200">
+                <div>&bull; Unit Exchange Rate = Rate_Target / Rate_Base</div>
+                <div>&bull; Inverse Exchange Rate = Rate_Base / Rate_Target</div>
+                <div>&bull; Net Bid-Ask Spread = |Ask - Bid| / Mid_Rate &times; 100</div>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Unit rates represent how much of the target currency you receive for 1 unit of the base currency.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Verified Data Sources & Update Frequency */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#00E676]" />
+              <span>3. Data Sourcing &amp; Verification</span>
+            </h3>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Interbank Spot Feeds:</strong> Live quotes aggregated from Open Exchange Rates API (open.er-api.com) and FloatRates daily bank feeds.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>SBP Benchmark Parity:</strong> Pakistani Rupee (PKR) quotes are calibrated against State Bank of Pakistan (SBP) weighted interbank clearing data.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Precious Metals:</strong> XAU (Gold) and XAG (Silver) spot feeds translated at international troy ounce ratios.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-[#00E676]" />
+              <span>4. Update Frequency &amp; Latency</span>
+            </h3>
+            <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Continuous In-Session Sync:</strong> Updates every 45 to 60 seconds during live global foreign exchange trading windows (Sunday 22:00 GMT through Friday 22:00 GMT).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Weekend Rates:</strong> Over weekends, rates remain fixed at Friday's international market close.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#00E676] font-bold">&bull;</span>
+                <span><strong>Memory Cache:</strong> Clean client-side memory caching for 120 seconds prevents repetitive network queries.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* 5. Data Limitations (Mid-Market vs Bank Fees & Taxes) */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/30 space-y-2">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <HelpCircle className="w-4 h-4" />
+            <span>5. Data Limitations: Mid-Market Wholesale Rates vs. Retail Bank Charges</span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+            The conversion results shown on this calculator use real-time mid-market rates. These are wholesale electronic rates traded between institutional banks. If you convert money at a retail commercial bank or with a credit/debit card, your final received amount will be lower due to:
+          </p>
+          <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] space-y-1 pl-4 list-disc">
+            <li><strong>Retail Bank Spread:</strong> Commercial banks add 1.5% to 3.5% markup above the mid-market rate.</li>
+            <li><strong>Statutory Advance Tax (Section 236Y):</strong> In Pakistan, international card transactions carry a statutory advance withholding tax (5% for active FBR tax filers, 10% for non-filers).</li>
+            <li><strong>Correspondent Banking Fees:</strong> International multi-hop SWIFT wire transfers may incur intermediary deduction fees ($15 to $35 USD per transfer).</li>
+          </ul>
+        </div>
+
+        {/* 6. Practical Remittance Example */}
+        <div className="space-y-3">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <FileText className="w-4 h-4 text-[#00E676]" />
+            <span>6. Practical Example: Remitting $1,000 USD to Pakistan</span>
+          </h3>
+          <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-3 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
+            <p>
+              Compare sending $1,000 USD to a family bank account in Pakistan when the live interbank mid-market rate is <strong>Rs. 277.10</strong>:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 font-mono text-xs">
+              <div className="p-4 rounded-xl bg-white dark:bg-[#0D1B2A] border border-emerald-500/30 space-y-1">
+                <span className="text-emerald-500 font-bold uppercase tracking-wider text-[10px]">SBP Compliant Bank Remittance</span>
+                <div className="text-slate-900 dark:text-white font-bold text-sm">Payout: Rs. 277,100 PKR</div>
+                <div className="text-slate-500 text-[11px]">&bull; 0% fee (covered by SBP incentive scheme)</div>
+                <div className="text-slate-500 text-[11px]">&bull; Automatic e-PRC tax shield issued</div>
+              </div>
+              <div className="p-4 rounded-xl bg-white dark:bg-[#0D1B2A] border border-rose-500/30 space-y-1">
+                <span className="text-rose-500 font-bold uppercase tracking-wider text-[10px]">Opaque Transfer Service (3% Markup)</span>
+                <div className="text-slate-900 dark:text-white font-bold text-sm">Payout: Rs. 268,787 PKR</div>
+                <div className="text-slate-500 text-[11px]">&bull; Hidden spread: Rs. 8,313 lost on conversion</div>
+                <div className="text-slate-500 text-[11px]">&bull; No official e-PRC tax exemption</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 7. Regulatory & Financial Disclaimers */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-slate-100 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-[11px] leading-relaxed text-slate-500 dark:text-[#A8B3C2] space-y-1.5">
+          <p className="font-bold uppercase tracking-wider text-slate-800 dark:text-white">Currency Conversion Disclaimer</p>
+          <p>
+            FGC Spot is an independent financial technology and informational publishing platform. We are not an authorized foreign exchange dealer, currency exchange bureau, or money services business under the State Bank of Pakistan (SBP) Foreign Exchange Regulation Act. Rates presented are indicative mid-market figures provided exclusively for personal reference and analytical research. Always verify executable commercial exchange quotes with SBP-licensed financial institutions before initiating transactions.
+          </p>
+        </div>
+
       </section>
 
     </div>

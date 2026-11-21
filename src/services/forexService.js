@@ -30,8 +30,8 @@ export const DEFAULT_RATES = {
   NGN: 1650.0,
   KRW: 1390.0,
   VND: 25400.0,
-  XAU: 1 / 3898.90, // 1 Troy Oz Gold in USD ($3,898.90)
-  XAG: 1 / 49.28    // 1 Troy Oz Silver in USD ($49.28)
+  XAU: 1 / 2650.00, // 1 Troy Oz Gold Spot Benchmark in USD ($2,650.00)
+  XAG: 1 / 31.50    // 1 Troy Oz Silver Spot Benchmark in USD ($31.50)
 };
 
 export const RATES_CACHE_KEY = 'fgc_spot_forex_rates';

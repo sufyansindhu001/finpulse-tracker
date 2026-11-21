@@ -696,6 +696,97 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
       {/* Comprehensive Institutional Educational Guide & AdSense Compliance Section */}
       <section className="mt-12 pt-8 border-t border-slate-200 dark:border-white/10 space-y-8">
+        
+        {/* Methodological Transparency & Calculation Engine Block */}
+        <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#00E676]">Methodological Transparency &amp; Compliance</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                Foreign Exchange Calculation Framework &amp; Rate Determination
+              </h2>
+            </div>
+          </div>
+
+          <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-5 font-normal">
+            <p>
+              The foreign exchange rates presented across FGC Spot represent verified, multi-provider market data synthesized to deliver complete transparency for personal remittances, corporate treasury monitoring, and foreign trade settlement. Our pricing matrix incorporates both electronic interbank wholesale clearing and over-the-counter retail exchange company benchmarks.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose my-4">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Cross-Rate Formula</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Rate(Base/Quote) = (USD/Quote) / (USD/Base)</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Triangular cross-parity computed via US Dollar anchor to prevent synthetic pricing arbitrage.</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Spread Percentage</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Spread (%) = ((Ask - Bid) / Mid) &times; 100</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Measures dealer friction; wholesale interbank typically sits at 0.02%–0.08%, retail cash at 0.5%–2.0%.</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Open Market Premium</span>
+                <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Premium (%) = ((Open - Interbank) / Interbank) &times; 100</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Reflects physical currency transport, insurance, customs, and retail overheads in Pakistan.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">
+              <div className="space-y-2 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676]" />
+                  <span>Data Providers &amp; Refresh Frequency</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  <strong>Interbank Wholesale Feeds:</strong> Sourced from Open Exchange Rates and FloatRates multi-bank liquidity APIs, refreshed automatically every 60 seconds during active global banking hours (Monday through Friday 09:00 to 17:00 PKT).
+                </p>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  <strong>Official Central Bank Closing:</strong> The State Bank of Pakistan (SBP) weighted-average daily closing benchmark is published weekdays at 16:30 PKT and serves as the legal reference for customs valuation and sovereign balance sheets.
+                </p>
+              </div>
+
+              <div className="space-y-2 p-5 rounded-2xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200 dark:border-white/5">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#00E676]" />
+                  <span>Data Limitations &amp; Retail Banking Charges</span>
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Displayed figures reflect indicative mid-market rates. Retail banking transactions—such as cross-border credit card swipes or international debit card payments—incur card network fees (1.5% to 3.5%) and advance withholding tax under Section 236Y of the Income Tax Ordinance (5% for Active Taxpayers, 10% for Non-Filers).
+                </p>
+                <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                  Physical currency exchange at exchange company counters carries a cash delivery margin to cover secure banknote logistics and vaulting insurance.
+                </p>
+              </div>
+            </div>
+
+            {/* Practical Example Card */}
+            <div className="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 not-prose space-y-2">
+              <h3 className="text-sm font-bold text-emerald-600 dark:text-[#00E676] flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Practical Example: $1,000 Inward Remittance Valuation</span>
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+                If an overseas family member remits <strong>$1,000 USD</strong> to an account in Pakistan when the interbank rate is <strong>277.10 PKR</strong>:
+              </p>
+              <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] list-disc pl-5 space-y-1">
+                <li><strong>Gross Interbank Proceeds:</strong> $1,000 &times; 277.10 = <strong>₨ 277,100 PKR</strong>. Under the Pakistan Remittance Initiative (PRI), home remittances exceeding $100 are exempt from inward banking transfer fees.</li>
+                <li><strong>Electronic Proceeds Realisation Certificate (e-PRC):</strong> The receiving commercial bank issues an e-PRC, confirming legitimate foreign exchange repatriation and shielding the funds from income tax scrutiny under Section 111(4) of the Income Tax Ordinance.</li>
+                <li><strong>Open Market Physical Cash:</strong> Exchanging $1,000 paper banknotes at an exchange company counter at 279.10 PKR yields ₨ 279,100, but lacks digital e-PRC tax documentation.</li>
+              </ul>
+            </div>
+
+            {/* Regulatory Disclaimer */}
+            <div className="p-4 rounded-xl bg-slate-100 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-[11px] text-slate-500 leading-relaxed not-prose">
+              <strong>Regulatory &amp; Compliance Notice:</strong> FGC Spot is an independent financial data aggregator and publisher. We are not an authorized foreign exchange dealer, licensed exchange company, or commercial bank under the Foreign Exchange Regulation Act, 1947. Exchange rates and market indicators are published for educational and informational transparency only and do not constitute trading or investment advice.
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 p-6 sm:p-10 shadow-sm dark:shadow-xl space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center shrink-0 border border-[#00E676]/20">
