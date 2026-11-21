@@ -35,10 +35,11 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-// Convert inline markdown formatting (*italic*, **bold**, `code`)
+// Convert inline markdown formatting (*italic*, **bold**, `code`, [link](url))
 function formatInlineHtml(text) {
   if (!text) return '';
   return text
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[#00E676] hover:underline font-bold">$1</a>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-slate-900 dark:text-white font-bold">$1</strong>')
     .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[#00E676] font-mono text-xs font-semibold">$1</code>')
     .replace(/\*([^*]+)\*/g, '<em class="italic text-slate-800 dark:text-slate-300">$1</em>');

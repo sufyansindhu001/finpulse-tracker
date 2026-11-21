@@ -35,7 +35,7 @@ function getBaseLikes(seed) {
 
 function formatInlineText(text) {
   if (!text) return '';
-  const regex = /(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g;
+  const regex = /(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g;
   const parts = [];
   let lastIdx = 0;
   let match;
@@ -45,7 +45,26 @@ function formatInlineText(text) {
       parts.push(text.substring(lastIdx, match.index));
     }
     const token = match[0];
-    if (token.startsWith('**') && token.endsWith('**')) {
+    if (token.startsWith('[') && token.includes('](') && token.endsWith(')')) {
+      const linkMatch = token.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      if (linkMatch) {
+        const linkText = linkMatch[1];
+        const linkUrl = linkMatch[2];
+        if (linkUrl.startsWith('/')) {
+          parts.push(
+            <Link key={match.index} to={linkUrl} className="text-[#00E676] hover:underline font-bold transition-colors">
+              {linkText}
+            </Link>
+          );
+        } else {
+          parts.push(
+            <a key={match.index} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-[#00E676] hover:underline font-bold transition-colors">
+              {linkText}
+            </a>
+          );
+        }
+      }
+    } else if (token.startsWith('**') && token.endsWith('**')) {
       parts.push(
         <strong key={match.index} className="text-slate-900 dark:text-white font-bold">
           {token.slice(2, -2)}
@@ -734,6 +753,46 @@ function BlogDetailPageContent() {
             // Horizontal Rule
             if (trimmed === '---' || trimmed === '***') {
               return <hr key={idx} className="my-8 border-slate-200 dark:border-white/10" />;
+            }
+
+            // Markdown Table
+            if (trimmed.includes('|') && trimmed.includes('\n|')) {
+              const tableLines = trimmed.split('\n').filter(l => l.trim().startsWith('|'));
+              if (tableLines.length >= 2) {
+                const rows = tableLines.map(line => 
+                  line.split('|')
+                    .map(cell => cell.trim())
+                    .filter((cell, cIdx, arr) => cIdx > 0 && cIdx < arr.length - 1)
+                );
+                const headerRow = rows[0];
+                const dataRows = rows.slice(2);
+                return (
+                  <div key={idx} className="overflow-x-auto my-6 rounded-2xl border border-slate-200 dark:border-white/10 shadow-xs">
+                    <table className="w-full text-left text-xs sm:text-sm border-collapse">
+                      <thead className="bg-slate-100 dark:bg-[#0D1B2A] text-slate-900 dark:text-white font-bold border-b border-slate-200 dark:border-white/10">
+                        <tr>
+                          {headerRow.map((h, hIdx) => (
+                            <th key={hIdx} className="p-3 sm:p-4 text-xs font-bold uppercase tracking-wider">
+                              {formatInlineText(h)}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-white/5 bg-white dark:bg-[#0A1726]">
+                        {dataRows.map((row, rIdx) => (
+                          <tr key={rIdx} className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                            {row.map((cell, cIdx) => (
+                              <td key={cIdx} className="p-3 sm:p-4 text-slate-700 dark:text-[#A8B3C2]">
+                                {formatInlineText(cell)}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }
             }
 
             // Headings (H1)
