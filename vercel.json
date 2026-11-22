@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
     { "source": "/psx", "destination": "/stocks", "permanent": true },
     { "source": "/equities", "destination": "/stocks", "permanent": true },
@@ -88,12 +90,6 @@
       "source": "/blog/navigating-gold-and-currency-volatility-in-pakistan-why-safe-haven-assets-remain-in-high-demand",
       "destination": "/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide",
       "permanent": true
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/"
     }
   ],
   "headers": [
