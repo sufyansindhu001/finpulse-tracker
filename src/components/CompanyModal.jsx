@@ -97,111 +97,54 @@ export default function CompanyModal({ stock, onClose }) {
   // Live price & day change synchronization with live exchange feed
   const displayPrice = (liveHistory?.currentPrice && liveHistory.currentPrice > 0)
     ? liveHistory.currentPrice
-    : (stock?.price || 100);
+    : (stock?.hasVerifiedQuote && Number.isFinite(stock.price) ? stock.price : null);
 
   const displayDayChange = (liveHistory?.dayChange !== undefined && liveHistory?.dayChange !== null)
     ? liveHistory.dayChange
-    : (stock?.change24h || 0);
+    : (stock?.hasVerifiedQuote && Number.isFinite(stock.change24h) ? stock.change24h : null);
 
   const displayDayChangePct = (liveHistory?.dayChangePercent !== undefined && liveHistory?.dayChangePercent !== null)
     ? liveHistory.dayChangePercent
-    : (stock?.changePercent || 0);
+    : (stock?.hasVerifiedQuote && Number.isFinite(stock.changePercent) ? stock.changePercent : null);
 
-  const isPositive = displayDayChangePct >= 0;
+  const isPositive = displayDayChangePct !== null && displayDayChangePct >= 0;
   const currencySymbol = stock?.currencySymbol || countryObj.symbol || '₨';
   const flag = stock?.flag || countryObj.flag || '🇵🇰';
   const countryName = stock?.countryName || countryObj.name || 'Pakistan';
 
   // Safeguarded Technical Indicators
-  const rsiVal = stock?.rsi14 || stock?.technicalIndicators?.rsi14 || 62.4;
-  const ma50Val = stock?.technicalIndicators?.ma50 || (stock ? Number((displayPrice * 0.95).toFixed(2)) : 0);
-  const ma200Val = stock?.technicalIndicators?.ma200 || (stock ? Number((displayPrice * 0.88).toFixed(2)) : 0);
-  const macdVal = stock?.technicalIndicators?.macdSignal || (isPositive ? 'Bullish Expansion' : 'Neutral Range');
-  const techRating = stock?.technicalRating || (isPositive ? 'Strong Buy' : 'Neutral');
+  // The quote/history endpoints do not supply validated indicators or ratings.
+  // Display N/A until a verified indicator calculation is implemented.
+  const rsiVal = null;
+  const ma50Val = null;
+  const ma200Val = null;
+  const macdVal = null;
+  const techRating = null;
 
   // 52-Week envelope metrics (dynamically synced)
-  const low52 = liveHistory?.low52 || stock?.low52 || Number((displayPrice * 0.72).toFixed(2));
-  const high52 = liveHistory?.high52 || stock?.high52 || Number((displayPrice * 1.32).toFixed(2));
-  const range52 = high52 - low52 || 1;
-  const pos52 = Math.min(100, Math.max(0, ((displayPrice - low52) / range52) * 100));
+  const low52 = Number.isFinite(liveHistory?.low52) ? liveHistory.low52 : (stock?.hasVerifiedQuote && Number.isFinite(stock.low52) ? stock.low52 : null);
+  const high52 = Number.isFinite(liveHistory?.high52) ? liveHistory.high52 : (stock?.hasVerifiedQuote && Number.isFinite(stock.high52) ? stock.high52 : null);
+  const range52 = low52 !== null && high52 !== null ? high52 - low52 : null;
+  const pos52 = range52 > 0 && displayPrice !== null ? Math.min(100, Math.max(0, ((displayPrice - low52) / range52) * 100)) : null;
 
   // Dynamic price action series generator (Powered by Live Exchange Feed with organic fractal backup)
   const chartData = useMemo(() => {
-    if (!stock) return null;
-    const basePrice = displayPrice;
-    const isPos = isPositive;
+    if (!stock || !liveHistory || !Array.isArray(liveHistory.points) || liveHistory.points.length < 2) return null;
 
-    // Timeframe configurations for realistic fractal oscillations & price channels
-    const tfConfig = {
-      '1W': { count: 32, driftPct: isPos ? 0.018 : -0.014, vol: 0.009, waveFreq: 3.5, label: 'Past 5 Trading Days' },
-      '1M': { count: 48, driftPct: isPos ? 0.052 : -0.042, vol: 0.016, waveFreq: 5.2, label: 'Past 30 Days' },
-      '6M': { count: 68, driftPct: isPos ? 0.165 : -0.125, vol: 0.024, waveFreq: 7.8, label: 'Past 6 Months' },
-      '1Y': { count: 96, driftPct: isPos ? 0.340 : -0.220, vol: 0.035, waveFreq: 10.5, label: 'Past 52 Weeks' }
-    }[chartTimeframe] || { count: 48, driftPct: 0.05, vol: 0.016, waveFreq: 5.2, label: 'Past 30 Days' };
-
-    let points = [];
-    let timestamps = [];
-    let isLiveExchange = false;
-    let periodChange = 0;
-    let periodChangePercent = 0;
-    let tfLabel = tfConfig.label;
-
-    // Primary: Ingest live market exchange data if available
-    if (liveHistory && Array.isArray(liveHistory.points) && liveHistory.points.length >= 2) {
-      points = [...liveHistory.points];
-      timestamps = liveHistory.timestamps || [];
-      isLiveExchange = true;
-      periodChange = liveHistory.periodChange !== undefined
-        ? liveHistory.periodChange
-        : Number((points[points.length - 1] - points[0]).toFixed(2));
-      periodChangePercent = liveHistory.periodChangePercent !== undefined
-        ? liveHistory.periodChangePercent
-        : Number((((points[points.length - 1] - points[0]) / points[0]) * 100).toFixed(2));
-      tfLabel = liveHistory.tfLabel || tfConfig.label;
-    } else {
-      // Fallback: Multi-frequency harmonic oscillator simulating institutional order book flow
-      const tickerHash = (stock.ticker || 'STK').split('').reduce((acc, c, i) => acc + c.charCodeAt(0) * (i + 1), 0);
-      const n = tfConfig.count;
-
-      for (let i = 0; i < n; i++) {
-        const progress = i / (n - 1); // 0.0 to 1.0
-
-        // Harmonic Fourier waves for organic price action peaks and valleys
-        const h1 = Math.sin(progress * tfConfig.waveFreq * Math.PI + tickerHash * 0.25);
-        const h2 = Math.cos(progress * tfConfig.waveFreq * 2.1 * Math.PI + tickerHash * 0.55) * 0.45;
-        const h3 = Math.sin(progress * tfConfig.waveFreq * 4.7 * Math.PI + tickerHash * 0.85) * 0.22;
-        const heartbeatSpike = Math.sin(i * 2.3 + tickerHash) * tfConfig.vol;
-
-        // Base trend trajectory connecting start price to current price
-        const startPrice = basePrice / (1 + tfConfig.driftPct);
-        const trend = startPrice * (1 - progress) + basePrice * progress;
-        const wave = (h1 + h2 + h3) * (basePrice * tfConfig.vol);
-
-        let price = trend + wave + (heartbeatSpike * basePrice);
-
-        // Smooth cubic convergence near the final 12% of data points so the curve connects seamlessly into live price
-        if (progress > 0.88) {
-          const blend = (progress - 0.88) / 0.12;
-          price = price * (1 - blend) + basePrice * blend;
-        }
-
-        // Bound strictly within logical price envelopes
-        price = Math.max(low52 * 0.96, Math.min(high52 * 1.04, price));
-        points.push(Number(price.toFixed(2)));
-      }
-
-      // Ensure final point matches current live price exactly
-      points[points.length - 1] = basePrice;
-      const startVal = points[0];
-      const endVal = points[points.length - 1];
-      periodChange = Number((endVal - startVal).toFixed(2));
-      periodChangePercent = Number((((endVal - startVal) / startVal) * 100).toFixed(2));
-    }
+    const points = [...liveHistory.points];
+    const timestamps = liveHistory.timestamps || [];
+    const periodChange = Number.isFinite(liveHistory.periodChange)
+      ? liveHistory.periodChange
+      : Number((points.at(-1) - points[0]).toFixed(2));
+    const periodChangePercent = Number.isFinite(liveHistory.periodChangePercent)
+      ? liveHistory.periodChangePercent
+      : (points[0] > 0 ? Number(((points.at(-1) - points[0]) / points[0] * 100).toFixed(2)) : null);
+    const tfLabel = liveHistory.tfLabel || chartTimeframe;
 
     const minPrice = Math.min(...points);
     const maxPrice = Math.max(...points);
     const priceRange = maxPrice - minPrice || 1;
-    const isPeriodPositive = periodChangePercent >= 0;
+    const isPeriodPositive = periodChangePercent !== null && periodChangePercent >= 0;
 
     const width = 640;
     const height = 190;
@@ -262,61 +205,20 @@ export default function CompanyModal({ stock, onClose }) {
       width,
       height,
       tfLabel,
-      isLiveExchange,
-      source: isLiveExchange ? (liveHistory?.source || 'Live Exchange Feed (Yahoo Finance)') : 'Institutional Heartbeat Engine'
+      isLiveExchange: true,
+      source: liveHistory?.source || 'Historical market data'
     };
-  }, [stock, chartTimeframe, liveHistory, displayPrice, isPositive, low52, high52]);
+  }, [stock, chartTimeframe, liveHistory]);
 
   // Multi-Year Consecutive Financial Breakdown (Revenue, Net Income, Operating Cash Flow)
-  const financialHistory = useMemo(() => {
-    if (!stock) return [];
-    const scale = (stock.marketCapNum || 80) * 0.65;
-    const netMargin = (stock.fundamentals?.roe ? parseFloat(stock.fundamentals.roe) : 22.5) / 100;
-
-    return [
-      {
-        year: 'FY 2023',
-        revenue: (scale * 0.78).toFixed(1),
-        netIncome: (scale * 0.78 * netMargin * 0.85).toFixed(1),
-        cashFlow: (scale * 0.78 * netMargin * 0.95).toFixed(1),
-        margin: '18.4%',
-        growth: '+14.2%'
-      },
-      {
-        year: 'FY 2024',
-        revenue: (scale * 0.91).toFixed(1),
-        netIncome: (scale * 0.91 * netMargin * 0.92).toFixed(1),
-        cashFlow: (scale * 0.91 * netMargin * 1.05).toFixed(1),
-        margin: '21.0%',
-        growth: '+16.8%'
-      },
-      {
-        year: 'FY 2025 / TTM',
-        revenue: (scale * 1.08).toFixed(1),
-        netIncome: (scale * 1.08 * netMargin).toFixed(1),
-        cashFlow: (scale * 1.08 * netMargin * 1.15).toFixed(1),
-        margin: '24.2%',
-        growth: stock.fundamentals?.revenueGrowth || '+18.5%'
-      }
-    ];
-  }, [stock]);
+  const financialHistory = stock?.verifiedFinancialHistory === true && Array.isArray(stock.financialHistory)
+    ? stock.financialHistory : [];
 
   // 200–300 Words Written Institutional Fundamental Profile
   const institutionalAnalysis = useMemo(() => {
     if (!stock) return '';
-    const existing = stock.profile || '';
-    if (existing.length > 350) return existing;
-
-    const baseMoat = isPsx 
-      ? `${stock.name} (${stock.ticker}) represents a foundational anchor on the Pakistan Stock Exchange (${stock.exchange}), operating with formidable structural entry barriers. The company benefits from entrenched commercial distribution networks, inelastic domestic demand, and substantial hard-currency export pricing mechanisms that insulate operational cash flows against local currency devaluations. With an aggregate Return on Equity (ROE) of ${stock.fundamentals?.roe || '32.4%'} and a Price-to-Earnings (P/E) multiple of ${stock.peRatio.toFixed(1)}x, the company trades at a notable valuation discount relative to regional emerging market peers.`
-      : `${stock.name} (${stock.ticker}) commands an institutional leadership position across global capital markets, listed on ${stock.exchange} within the ${stock.sector} sector. The enterprise maintains an enduring competitive economic moat fortified by proprietary technology patents, unmatched ecosystem retention, and robust recurring operating cash flows. Commanding a return on equity of ${stock.fundamentals?.roe || '28.0%'}, the company consistently allocates capital into high-margin organic expansions while sustaining dependable capital return programs for global shareholders.`;
-
-    const macroDrivers = isPsx
-      ? `On a macroeconomic horizon, the company's profitability is linked to policy rate adjustments by the State Bank of Pakistan, international hydrocarbon import parity benchmarks, and corporate tax harmonization regimes under the Federal Board of Revenue (FBR). Balance sheet leverage remains prudently managed at a debt-to-equity ratio of ${stock.fundamentals?.debtToEquity || '0.25'}, positioning the enterprise to capture significant margin expansion as industrial energy tariffs normalize and domestic capital formation accelerates. Institutional investors favor the stock for its defensive cash generation and dependable dividend yield profile of ${stock.dividendYield.toFixed(1)}%.`
-      : `From a macroeconomic vantage point, global institutional allocations into ${stock.ticker} are influenced by central bank monetary tightening trajectories, benchmark Treasury yields, and enterprise capital expenditure cycles. The balance sheet demonstrates pristine liquidity reserves and low leverage, enabling opportunistic share repurchases and strategic market share acquisitions during economic cyclical contractions. FGC Spot's quantitative equity screening engine rates the enterprise as a premier constituent for multi-asset long-term portfolios.`;
-
-    return `${baseMoat}\n\n${macroDrivers}`;
-  }, [stock, isPsx]);
+    return `${stock.name} (${stock.ticker}) is listed on ${stock.exchange} in the ${stock.sector} sector. Detailed competitive-moat, valuation, and balance-sheet assessments require verified company filings and are not currently available for this security.`;
+  }, [stock]);
 
   if (!stock) return null;
 
@@ -364,11 +266,11 @@ export default function CompanyModal({ stock, onClose }) {
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <div className="text-xl font-mono font-black text-gray-900 dark:text-gray-100">
-                {currencySymbol}{displayPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {displayPrice !== null ? `${currencySymbol}${displayPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
               </div>
               <div className={`text-xs font-mono font-bold flex items-center justify-end gap-1 ${isPositive ? 'text-[#00E676]' : 'text-rose-500'}`}>
                 {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                <span>{isPositive ? '+' : ''}{displayDayChange.toFixed(2)} ({isPositive ? '+' : ''}{displayDayChangePct.toFixed(2)}%)</span>
+                <span>{displayDayChange !== null && displayDayChangePct !== null ? `${isPositive ? '+' : ''}${displayDayChange.toFixed(2)} (${isPositive ? '+' : ''}${displayDayChangePct.toFixed(2)}%)` : '24h change N/A'}</span>
               </div>
             </div>
 
@@ -385,11 +287,11 @@ export default function CompanyModal({ stock, onClose }) {
         {/* Mobile Price Bar */}
         <div className="sm:hidden px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
           <div className="text-sm font-mono font-black text-gray-900 dark:text-gray-100">
-            {currencySymbol}{displayPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {displayPrice !== null ? `${currencySymbol}${displayPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
           </div>
           <div className={`text-xs font-mono font-bold flex items-center gap-1 ${isPositive ? 'text-[#00E676]' : 'text-rose-500'}`}>
             {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-            <span>{isPositive ? '+' : ''}{displayDayChange.toFixed(2)} ({isPositive ? '+' : ''}{displayDayChangePct.toFixed(2)}%)</span>
+              <span>{displayDayChange !== null && displayDayChangePct !== null ? `${isPositive ? '+' : ''}${displayDayChange.toFixed(2)} (${isPositive ? '+' : ''}${displayDayChangePct.toFixed(2)}%)` : '24h change N/A'}</span>
           </div>
         </div>
 
@@ -463,7 +365,7 @@ export default function CompanyModal({ stock, onClose }) {
                         </span>
                         <span className="inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full bg-[#00E676]/20 text-[#00E676] font-bold border border-[#00E676]/30">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-ping" />
-                          <span>{chartData?.isLiveExchange ? 'LIVE EXCHANGE FEED' : 'LIVE MARKET STREAM'}</span>
+                          <span>{chartData?.isLiveExchange ? 'HISTORICAL EXCHANGE FEED' : 'DATA UNAVAILABLE'}</span>
                         </span>
                         {chartData?.tfLabel && (
                           <span className="text-[11px] font-mono text-slate-400 font-medium">
@@ -484,16 +386,18 @@ export default function CompanyModal({ stock, onClose }) {
                           {(hoverIndex !== null && chartData?.points[hoverIndex] !== undefined
                             ? chartData.points[hoverIndex]
                             : displayPrice
-                          ).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ) !== null && (hoverIndex !== null && chartData?.points[hoverIndex] !== undefined ? chartData.points[hoverIndex] : displayPrice) !== undefined
+                            ? (hoverIndex !== null && chartData?.points[hoverIndex] !== undefined ? chartData.points[hoverIndex] : displayPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'N/A'}
                         </span>
 
-                        <div className={`text-xs sm:text-sm font-mono font-bold flex items-center gap-1 ${chartData?.isPeriodPositive ? 'text-[#00E676]' : 'text-rose-400'}`}>
+                        {chartData && <div className={`text-xs sm:text-sm font-mono font-bold flex items-center gap-1 ${chartData.isPeriodPositive ? 'text-[#00E676]' : 'text-rose-400'}`}>
                           {chartData?.isPeriodPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
                           <span>
                             {chartData?.isPeriodPositive ? '+' : ''}
                             {currencySymbol}{chartData?.periodChange} ({chartData?.isPeriodPositive ? '+' : ''}{chartData?.periodChangePercent}%)
                           </span>
-                        </div>
+                        </div>}
                       </div>
                     </div>
 
@@ -549,6 +453,11 @@ export default function CompanyModal({ stock, onClose }) {
                             <Loader2 className="w-3.5 h-3.5 text-[#00E676] animate-spin" />
                             <span>Syncing live exchange feed ({chartTimeframe})...</span>
                           </div>
+                        </div>
+                      )}
+                      {!isLoadingHistory && !chartData && (
+                        <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/90 text-center p-6">
+                          <p className="text-sm text-slate-300">Verified historical prices are temporarily unavailable for this security. No simulated chart is displayed.</p>
                         </div>
                       )}
 
@@ -671,19 +580,19 @@ export default function CompanyModal({ stock, onClose }) {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono text-slate-400 mt-3 pt-3 border-t border-white/10">
                       <div>
                         <span className="text-slate-500 block text-[10px]">PERIOD LOW</span>
-                        <span className="font-bold text-slate-200">{currencySymbol}{chartData?.minPrice.toFixed(2)}</span>
+                        <span className="font-bold text-slate-200">{chartData ? `${currencySymbol}${chartData.minPrice.toFixed(2)}` : 'N/A'}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-[10px]">PERIOD HIGH</span>
-                        <span className="font-bold text-slate-200">{currencySymbol}{chartData?.maxPrice.toFixed(2)}</span>
+                        <span className="font-bold text-slate-200">{chartData ? `${currencySymbol}${chartData.maxPrice.toFixed(2)}` : 'N/A'}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-[10px]">52W RANGE</span>
-                        <span className="font-bold text-slate-200">{currencySymbol}{low52.toFixed(2)} – {currencySymbol}{high52.toFixed(2)}</span>
+                        <span className="font-bold text-slate-200">{low52 !== null && high52 !== null ? `${currencySymbol}${low52.toFixed(2)} – ${currencySymbol}${high52.toFixed(2)}` : 'N/A'}</span>
                       </div>
                       <div>
                         <span className="text-slate-500 block text-[10px]">52W POSITION</span>
-                        <span className="font-bold text-[#00E676]">{pos52.toFixed(1)}%</span>
+                        <span className="font-bold text-[#00E676]">{pos52 !== null ? `${pos52.toFixed(1)}%` : 'N/A'}</span>
                       </div>
                     </div>
                   </div>
@@ -706,7 +615,7 @@ export default function CompanyModal({ stock, onClose }) {
                         ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                         : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
                     }`}>
-                      {techRating}
+                      {techRating || 'N/A'}
                     </span>
                   </div>
 
@@ -729,14 +638,14 @@ export default function CompanyModal({ stock, onClose }) {
                   <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 dark:border-gray-700 text-xs font-mono">
                     <div>
                       <span className="text-gray-600 dark:text-gray-400 block text-[11px]">RSI-14 Status:</span>
-                      <span className="font-bold text-gray-900 dark:text-gray-100">{rsiVal}</span>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">{rsiVal ?? 'N/A'}</span>
                       <span className="text-[10px] text-gray-500 block">
-                        {rsiVal > 70 ? 'Overbought (>70)' : rsiVal < 35 ? 'Oversold (<35)' : 'Neutral Range'}
+                        {rsiVal === null ? 'Verified RSI unavailable' : rsiVal > 70 ? 'Overbought (>70)' : rsiVal < 35 ? 'Oversold (<35)' : 'Neutral Range'}
                       </span>
                     </div>
                     <div>
                       <span className="text-gray-600 dark:text-gray-400 block text-[11px]">MACD Signal:</span>
-                      <span className="font-bold text-gray-900 dark:text-gray-100">{macdVal}</span>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">{macdVal || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -751,22 +660,22 @@ export default function CompanyModal({ stock, onClose }) {
                   <div className="space-y-2 text-xs font-mono">
                     <div className="flex items-center justify-between p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <span className="text-gray-600 dark:text-gray-400">50-Day SMA:</span>
-                      <span className="font-bold text-gray-900 dark:text-gray-100">{currencySymbol}{ma50Val.toFixed(2)}</span>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">{ma50Val !== null ? `${currencySymbol}${ma50Val.toFixed(2)}` : 'N/A'}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
-                        {displayPrice >= ma50Val ? 'Above (Bullish)' : 'Below'}
+                        {ma50Val !== null && displayPrice !== null ? (displayPrice >= ma50Val ? 'Above' : 'Below') : 'Unavailable'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between p-2 rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                       <span className="text-gray-600 dark:text-gray-400">200-Day SMA:</span>
-                      <span className="font-bold text-gray-900 dark:text-gray-100">{currencySymbol}{ma200Val.toFixed(2)}</span>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">{ma200Val !== null ? `${currencySymbol}${ma200Val.toFixed(2)}` : 'N/A'}</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
-                        {displayPrice >= ma200Val ? 'Above (Golden Setup)' : 'Below'}
+                        {ma200Val !== null && displayPrice !== null ? (displayPrice >= ma200Val ? 'Above' : 'Below') : 'Unavailable'}
                       </span>
                     </div>
                   </div>
 
                   <div className="text-[10px] text-gray-500 dark:text-gray-400 leading-tight pt-1">
-                    *Algorithmic composite rating across moving average crossovers and momentum oscillators.
+                    Technical ratings are hidden until calculated from verified historical observations.
                   </div>
                 </div>
 
@@ -794,6 +703,7 @@ export default function CompanyModal({ stock, onClose }) {
 
                 {/* Visual Bar Chart Breakdown */}
                 <div className="space-y-4 pt-2">
+                  {financialHistory.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">Verified audited financial statements have not been linked for this company. Revenue, profit, and cash-flow charts are unavailable.</p>}
                   {financialHistory.map((row) => (
                     <div key={row.year} className="p-3 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 space-y-2">
                       <div className="flex items-center justify-between text-xs font-bold font-mono">
@@ -837,7 +747,7 @@ export default function CompanyModal({ stock, onClose }) {
                 </div>
 
                 <div className="text-[11px] text-gray-600 dark:text-gray-400 font-medium pt-2 border-t border-gray-200 dark:border-gray-700">
-                  *Audited corporate income statements verified against regulatory filings with sovereign securities and exchange commissions.
+                  Figures are displayed only when sourced from verified financial filings.
                 </div>
               </div>
 
@@ -863,13 +773,15 @@ export default function CompanyModal({ stock, onClose }) {
                   <div className="p-3 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">Competitive Moat</span>
                     <span className="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1 block">
-                      {isPsx ? 'High CASA Deposits / Low-Cost Gas Concessions' : 'Global Platform Scale & Intellectual Property'}
+                      {stock.competitiveMoat || 'Verified company analysis unavailable'}
                     </span>
                   </div>
                   <div className="p-3 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">Dividend Sustainability</span>
                     <span className="text-xs font-bold text-[#00E676] mt-1 block">
-                      {stock.dividendYield > 8 ? 'High Yield (>10% Ann.)' : stock.dividendYield > 2 ? 'Consistent Payout & Growth' : 'Internal Capital Reinvestment'}
+                      {stock.hasVerifiedQuote && Number.isFinite(stock.dividendYield)
+                        ? (stock.dividendYield > 8 ? 'High Yield (>8% Ann.)' : stock.dividendYield > 2 ? 'Consistent Payout & Growth' : 'Internal Capital Reinvestment')
+                        : 'Verified dividend history unavailable'}
                     </span>
                   </div>
                   <div className="p-3 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
@@ -886,7 +798,7 @@ export default function CompanyModal({ stock, onClose }) {
           {/* TAB 4: VALUATION & SCORECARD RATIOS */}
           {activeTab === 'fundamentals' && (
             <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {stock.verifiedFundamentals === true ? <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 
                 <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700">
                   <span className="text-[11px] uppercase tracking-wider font-semibold text-gray-500 block">P/E Ratio (TTM)</span>
@@ -954,7 +866,7 @@ export default function CompanyModal({ stock, onClose }) {
                   <span className="text-[10px] text-gray-500 dark:text-gray-400">Fundamental Strength</span>
                 </div>
 
-              </div>
+              </div> : <div className="p-5 rounded-xl bg-gray-50 dark:bg-gray-800/60 text-sm text-gray-600 dark:text-gray-300">Verified fundamentals are not available for this security. Unsupported ratios and scores are not shown.</div>}
             </div>
           )}
 
@@ -963,18 +875,18 @@ export default function CompanyModal({ stock, onClose }) {
             <div className="flex items-center justify-between text-xs font-mono">
               <span className="text-gray-600 dark:text-gray-400 font-semibold">52-Week Price Spectrum</span>
               <span className="text-gray-900 dark:text-gray-100 font-bold">
-                Low: {currencySymbol}{low52.toFixed(2)} — High: {currencySymbol}{high52.toFixed(2)}
+                {low52 !== null && high52 !== null ? `Low: ${currencySymbol}${low52.toFixed(2)} — High: ${currencySymbol}${high52.toFixed(2)}` : 'Verified range unavailable'}
               </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 h-2.5 rounded-full relative overflow-hidden">
               <div 
                 className="h-full bg-gradient-to-r from-blue-500 via-[#00E676] to-emerald-400 rounded-full"
-                style={{ width: `${pos52}%` }}
+                style={{ width: `${pos52 ?? 0}%` }}
               />
             </div>
             <div className="flex items-center justify-between text-[11px] text-gray-600 dark:text-gray-400 font-mono">
               <span>52W Low (Trough)</span>
-              <span className="text-[#00E676] font-bold">Current: {currencySymbol}{displayPrice.toFixed(2)}</span>
+              <span className="text-[#00E676] font-bold">Current: {displayPrice !== null ? `${currencySymbol}${displayPrice.toFixed(2)}` : 'N/A'}</span>
               <span>52W High (Peak)</span>
             </div>
           </div>

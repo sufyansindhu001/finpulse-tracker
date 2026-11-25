@@ -50,20 +50,20 @@ export default function DataSourcesPage() {
     {
       tool: 'Gold & Silver Bullion Spot',
       route: '/gold',
-      provider: 'Binance PAXGUSDT (Paxos 1:1 Physical Gold) & Yahoo Finance COMEX (GC=F, SI=F)',
-      dataType: 'International Troy Ounce Spot & Futures Benchmark',
-      frequency: 'Refreshed every 45 seconds via api/metals.js serverless proxy',
-      methodology: 'Rate per Tola (24K) = (Spot Gold USD / 31.1034768) * USD_PKR * 11.664 * 1.033. The 1.033 multiplier reflects domestic assay, freight, and local market tariff adjustments.',
-      limitations: 'International spot reflects raw unworked bullion. Retail jewelry transactions incur additional artisan fabrication charges (Mazdoori) of Rs. 1,500 to Rs. 4,500 per tola.'
+      provider: 'Yahoo Finance Commodities (GC=F, SI=F) & PAXG Token Reference',
+      dataType: 'International Troy Ounce Reference Quotes',
+      frequency: 'Polled on request with 60-second client caching via api/metals.js',
+      methodology: 'Indicative Rate per Tola (24K) = (Reference Spot USD / 31.1034768) * USD_PKR * 11.664. Mathematical conversion derived directly from international troy ounce quotes and prevailing exchange rates without arbitrary multipliers.',
+      limitations: 'International commodity references do not reflect official LBMA fixings, physical Karachi Sarafa retail rates, or statutory import duties. When feeds are offline, quotes display N/A.'
     },
     {
-      tool: 'Sarafa Bazaar Benchmarks',
+      tool: 'Sarafa Gold Purity Calculations',
       route: '/gold',
-      provider: 'All Pakistan Sarafa Gems and Jewellers Association (APSGJA) Karachi',
-      dataType: 'Official Daily Provincial Fixings (Tola, 10 Grams, Gram)',
-      frequency: 'Published daily at market close (~16:30 PKT)',
-      methodology: 'Weighted daily fixings across primary provincial markets (Karachi, Lahore, Rawalpindi) for 24K, 22K, 21K, and 18K purities.',
-      limitations: 'Individual jewelry shops may apply modest local premiums or deductions (Katt) for soldering solder and stone deductions during resale.'
+      provider: 'Mathematical Purity Derivation (Standard Karat Assay Ratios)',
+      dataType: 'Indicative Domestic Benchmark Estimator',
+      frequency: 'Dynamically calculated from verified spot and USD/PKR inputs',
+      methodology: 'Derived from 24K baseline using standard statutory fineness: 22K (22/24 = 91.67%), 21K (21/24 = 87.50%), and 18K (18/24 = 75.00%). Zero unverified retail markup or arbitrary local premiums are inserted.',
+      limitations: 'This platform does not ingest official APSGJA association closing rate sheets. PKR valuations are mathematical models only; transaction-ready rates require a licensed local jeweler or sarafa dealer.'
     },
     {
       tool: 'Stock Screener & PSX Terminal',

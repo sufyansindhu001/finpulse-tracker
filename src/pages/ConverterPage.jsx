@@ -80,15 +80,16 @@ export default function ConverterPage({ rates = {} }) {
 
   // Conversion math
   const { fromRate, toRate, convertedAmount, unitRate, inverseRate } = useMemo(() => {
-    const fromR = rates[fromCurrency] || (fromCurrency === 'USD' ? 1.0 : 1.0);
-    const toR = rates[toCurrency] || (toCurrency === 'PKR' ? 277.10 : 1.0);
+    const fromR = fromCurrency === 'USD' ? 1 : Number(rates[fromCurrency]);
+    const toR = toCurrency === 'USD' ? 1 : Number(rates[toCurrency]);
+    const valid = Number.isFinite(fromR) && fromR > 0 && Number.isFinite(toR) && toR > 0;
 
     // Amount in USD = amount / fromR
-    const inUsd = amount / fromR;
-    const finalAmount = inUsd * toR;
+    const inUsd = valid ? amount / fromR : Number.NaN;
+    const finalAmount = valid ? inUsd * toR : Number.NaN;
 
-    const unit = toR / fromR;
-    const inverse = fromR / toR;
+    const unit = valid ? toR / fromR : Number.NaN;
+    const inverse = valid ? fromR / toR : Number.NaN;
 
     return {
       fromRate: fromR,
@@ -243,7 +244,7 @@ export default function ConverterPage({ rates = {} }) {
               />
 
               <div className="mt-3 text-3xl sm:text-4xl font-black text-[#00E676] font-tabular truncate">
-                {convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {Number.isFinite(convertedAmount) ? convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}
               </div>
             </div>
           </div>
@@ -255,11 +256,11 @@ export default function ConverterPage({ rates = {} }) {
           <div className="space-y-1 text-center sm:text-left">
             <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">Interbank Mid-Market Exchange Rate</div>
             <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white font-tabular">
-              1 {fromCurrency} = {unitRate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {toCurrency}
+              1 {fromCurrency} = {Number.isFinite(unitRate) ? unitRate.toLocaleString(undefined, { maximumFractionDigits: 4 }) : 'N/A'} {toCurrency}
             </div>
           </div>
           <div className="text-xs text-slate-500 dark:text-[#A8B3C2] text-center sm:text-right font-medium">
-            Inverse: 1 {toCurrency} = {inverseRate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {fromCurrency}
+            Inverse: 1 {toCurrency} = {Number.isFinite(inverseRate) ? inverseRate.toLocaleString(undefined, { maximumFractionDigits: 4 }) : 'N/A'} {fromCurrency}
           </div>
         </div>
 
@@ -284,7 +285,7 @@ export default function ConverterPage({ rates = {} }) {
                   {d.toLocaleString()} {fromCurrency}
                 </span>
                 <span className="font-bold text-[#00E676] font-tabular">
-                  {(d * unitRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {toCurrency}
+                  {Number.isFinite(unitRate) ? (d * unitRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'} {toCurrency}
                 </span>
               </div>
             ))}
@@ -307,7 +308,7 @@ export default function ConverterPage({ rates = {} }) {
                   {d.toLocaleString()} {toCurrency}
                 </span>
                 <span className="font-bold text-slate-900 dark:text-white font-tabular">
-                  {(d * inverseRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fromCurrency}
+                  {Number.isFinite(inverseRate) ? (d * inverseRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'} {fromCurrency}
                 </span>
               </div>
             ))}

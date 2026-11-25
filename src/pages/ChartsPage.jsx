@@ -15,7 +15,9 @@ import {
   BookOpen,
   HelpCircle,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  BarChart3,
+  RefreshCw
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
@@ -28,7 +30,7 @@ const chartFaqs = [
   },
   {
     q: "How frequently does the interactive price curve update?",
-    a: "The pricing engine connects directly to live institutional financial feeds and websocket data streams. Sovereign forex benchmarks update continuously with active global trading desks, cryptocurrency prices update in real-time, and gold spot tracks international LBMA/COMEX spot markets."
+    a: "The pricing engine connects directly to verified market data feeds. Historical charts plot authentic closing observations across the selected timeframe, while the top benchmark displays current verified quotes. If historical data is temporarily unavailable from upstream sources, the chart displays an unavailable notice rather than presenting simulated curves."
   },
   {
     q: "What does the shaded gradient area under the chart line indicate?",
@@ -80,28 +82,28 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
     return () => { isMounted = false; };
   }, []);
 
-  const usdToPkr = (typeof rates?.PKR === 'number' && rates.PKR > 0) ? rates.PKR : 277.10;
-  const eurToPkr = usdToPkr / ((typeof rates?.EUR === 'number' && rates.EUR > 0) ? rates.EUR : 0.92);
-  const gbpToPkr = usdToPkr / ((typeof rates?.GBP === 'number' && rates.GBP > 0) ? rates.GBP : 0.79);
+  const usdToPkr = Number.isFinite(rates?.PKR) && rates.PKR > 0 ? rates.PKR : null;
+  const eurToPkr = usdToPkr !== null && rates?.EUR > 0 ? usdToPkr / rates.EUR : null;
+  const gbpToPkr = usdToPkr !== null && rates?.GBP > 0 ? usdToPkr / rates.GBP : null;
 
   // Live Crypto Prices
-  const btcPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'BTC')?.current_price || 96420;
-  const ethPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'ETH')?.current_price || 2745.50;
+  const btcPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'BTC')?.current_price ?? null;
+  const ethPrice = cryptoList?.find(c => c.symbol?.toUpperCase() === 'ETH')?.current_price ?? null;
 
   // Live Gold Spot Price benchmark
   const goldPrice = (metalsData.gold?.price && metalsData.gold.price > 0)
     ? metalsData.gold.price 
-    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : 2650.00);
+    : (rates.XAU && rates.XAU > 0 ? (1 / rates.XAU) : null);
 
-  // Dynamic Live Asset configurations
-  const assets = [
-    { id: 'USD/PKR', name: 'US Dollar to PKR', basePrice: usdToPkr, unit: '₨', type: 'currency' },
-    { id: 'EUR/PKR', name: 'Euro to PKR', basePrice: eurToPkr, unit: '₨', type: 'currency' },
-    { id: 'GBP/PKR', name: 'British Pound to PKR', basePrice: gbpToPkr, unit: '₨', type: 'currency' },
-    { id: 'BTC', name: 'Bitcoin / USD', basePrice: btcPrice, unit: '$', type: 'crypto' },
-    { id: 'ETH', name: 'Ethereum / USD', basePrice: ethPrice, unit: '$', type: 'crypto' },
-    { id: 'Gold', name: 'Gold Spot / USD', basePrice: goldPrice, unit: '$', type: 'metal' },
-  ];
+  // Dynamic Live Asset configurations with real market symbols
+  const assets = useMemo(() => [
+    { id: 'USD/PKR', name: 'US Dollar to PKR', basePrice: usdToPkr, unit: '₨', type: 'currency', symbol: 'PKR=X', country: 'us' },
+    { id: 'EUR/PKR', name: 'Euro to PKR', basePrice: eurToPkr, unit: '₨', type: 'currency', symbol: 'EURPKR=X', country: 'us' },
+    { id: 'GBP/PKR', name: 'British Pound to PKR', basePrice: gbpToPkr, unit: '₨', type: 'currency', symbol: 'GBPPKR=X', country: 'us' },
+    { id: 'BTC', name: 'Bitcoin / USD', basePrice: btcPrice, unit: '$', type: 'crypto', symbol: 'BTC-USD', country: 'us' },
+    { id: 'ETH', name: 'Ethereum / USD', basePrice: ethPrice, unit: '$', type: 'crypto', symbol: 'ETH-USD', country: 'us' },
+    { id: 'Gold', name: 'Gold Spot / USD', basePrice: goldPrice, unit: '$', type: 'metal', symbol: 'GC=F', country: 'us' },
+  ], [usdToPkr, eurToPkr, gbpToPkr, btcPrice, ethPrice, goldPrice]);
 
   const currentAsset = assets.find(a => a.id.toUpperCase() === selectedAsset.toUpperCase()) || assets[0];
 
@@ -122,73 +124,107 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
         chartContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 150);
     }
-  }, [searchParams]);
+  }, [searchParams, assets]);
 
-  // Generate deterministic realistic historical price curve based on timeframe & asset
-  const chartData = useMemo(() => {
-    let points = 30;
-    let volatility = 0.015;
-    let trend = 0.0008;
+  // Genuine historical observations state
+  const [historyPoints, setHistoryPoints] = useState(null);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-    if (timeframe === '1D') {
-      points = 24;
-      volatility = 0.004;
-      trend = 0.0002;
-    } else if (timeframe === '7D') {
-      points = 28;
-      volatility = 0.012;
-      trend = 0.0005;
-    } else if (timeframe === '1M') {
-      points = 30;
-      volatility = 0.025;
-      trend = 0.001;
-    } else if (timeframe === '1Y') {
-      points = 36;
-      volatility = 0.08;
-      trend = 0.003;
+  useEffect(() => {
+    let isMounted = true;
+
+    // 1. If crypto and timeframe has live CoinGecko hourly sparkline
+    if (currentAsset.type === 'crypto' && (timeframe === '7D' || timeframe === '1D')) {
+      const coin = cryptoList?.find(c => c.symbol?.toUpperCase() === currentAsset.id.toUpperCase());
+      if (coin?.sparkline_in_7d?.price && Array.isArray(coin.sparkline_in_7d.price) && coin.sparkline_in_7d.price.length > 5) {
+        const raw = coin.sparkline_in_7d.price;
+        const slice = timeframe === '1D' ? raw.slice(-24) : raw;
+        const now = Date.now();
+        const totalDurationMs = (timeframe === '1D' ? 1 : 7) * 86400000;
+        const stepMs = totalDurationMs / slice.length;
+
+        const pts = slice.map((val, i) => {
+          const t = new Date(now - (slice.length - 1 - i) * stepMs);
+          const label = timeframe === '1D'
+            ? t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            : t.toLocaleDateString([], { month: 'short', day: 'numeric' });
+          return {
+            index: i,
+            label,
+            price: Number.isFinite(val) ? Number(val.toFixed((Number.isFinite(currentAsset.basePrice) && currentAsset.basePrice > 100) ? 2 : 4)) : 0,
+            volume: 0
+          };
+        });
+        setHistoryPoints(pts);
+        setIsLoadingHistory(false);
+        return;
+      }
     }
 
-    const base = currentAsset.basePrice;
-    const data = [];
-    let currentVal = base * (1 - (trend * points * 0.7));
+    // 2. Query /api/stock-history for authentic exchange data
+    setIsLoadingHistory(true);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
 
-    const now = Date.now();
-    const stepMs = timeframe === '1D' ? 3600000 : timeframe === '7D' ? 21600000 : timeframe === '1M' ? 86400000 : 86400000 * 10;
-
-    for (let i = 0; i < points; i++) {
-      const pseudoRandom = Math.sin(i * 1.8 + currentAsset.name.length) * Math.cos(i * 0.7);
-      const delta = currentVal * (volatility * pseudoRandom + trend);
-      currentVal = Math.max(base * 0.4, currentVal + delta);
-
-      // Final point matches basePrice closely
-      if (i === points - 1) currentVal = base;
-
-      const time = new Date(now - (points - 1 - i) * stepMs);
-      const label = timeframe === '1D' 
-        ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        : time.toLocaleDateString([], { month: 'short', day: 'numeric' });
-
-      data.push({
-        index: i,
-        label,
-        price: parseFloat(currentVal.toFixed(currentAsset.basePrice > 100 ? 2 : 4)),
-        volume: Math.floor(Math.abs(pseudoRandom * 500) + 120)
+    fetch(`/api/stock-history?symbol=${encodeURIComponent(currentAsset.symbol)}&country=${currentAsset.country}&timeframe=${timeframe}`, {
+      signal: controller.signal
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (!isMounted) return;
+        if (data?.points && Array.isArray(data.points) && data.points.length > 1) {
+          const timestamps = data.timestamps || [];
+          const pts = data.points.map((val, i) => {
+            const ts = timestamps[i] ? new Date(timestamps[i]) : new Date();
+            const label = timeframe === '1D'
+              ? ts.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              : ts.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            return {
+              index: i,
+              label,
+              price: Number.isFinite(val) ? Number(val.toFixed((Number.isFinite(currentAsset.basePrice) && currentAsset.basePrice > 100) ? 2 : 4)) : 0,
+              volume: 0
+            };
+          });
+          setHistoryPoints(pts);
+        } else {
+          setHistoryPoints([]);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setHistoryPoints([]);
+      })
+      .finally(() => {
+        clearTimeout(timeout);
+        if (isMounted) setIsLoadingHistory(false);
       });
-    }
 
-    return data;
-  }, [selectedAsset, timeframe, currentAsset]);
+    return () => {
+      isMounted = false;
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, [currentAsset, timeframe, cryptoList]);
 
-  // High, low, and delta
-  const prices = chartData.map(d => d.price);
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
-  const priceRange = maxPrice - minPrice || 1;
+  // Verified historical observations only — zero synthetic or invented curves
+  const chartData = useMemo(() => {
+    return Array.isArray(historyPoints) ? historyPoints : [];
+  }, [historyPoints]);
 
-  const firstPrice = chartData[0]?.price || 1;
-  const lastPrice = chartData[chartData.length - 1]?.price || 1;
-  const overallChange = (((lastPrice - firstPrice) / firstPrice) * 100).toFixed(2);
-  const isPositive = parseFloat(overallChange) >= 0;
+  const hasChartData = chartData.length > 1;
+
+  // High, low, and delta calculated from verified observations
+  const prices = useMemo(() => chartData.map(d => d.price), [chartData]);
+  const minPrice = hasChartData ? Math.min(...prices) : currentAsset.basePrice;
+  const maxPrice = hasChartData ? Math.max(...prices) : currentAsset.basePrice;
+  const priceRange = hasChartData ? (maxPrice - minPrice || 1) : 0;
+
+  const firstPrice = hasChartData ? chartData[0]?.price : currentAsset.basePrice;
+  const lastPrice = hasChartData ? chartData[chartData.length - 1]?.price : currentAsset.basePrice;
+  const overallChange = (hasChartData && Number.isFinite(firstPrice) && firstPrice > 0 && Number.isFinite(lastPrice))
+    ? (((lastPrice - firstPrice) / firstPrice) * 100).toFixed(2)
+    : 'N/A';
+  const isPositive = hasChartData ? parseFloat(overallChange) >= 0 : null;
 
   // SVG Chart Dimensions
   const svgWidth = 800;
@@ -200,23 +236,36 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
   const usableWidth = svgWidth - paddingX * 2;
 
   // Convert points to SVG coordinates
-  const svgPoints = chartData.map((d, i) => {
-    const x = paddingX + (i / (chartData.length - 1)) * usableWidth;
-    const y = paddingTop + usableHeight - ((d.price - minPrice) / priceRange) * usableHeight;
-    return { ...d, x, y };
-  });
+  const svgPoints = useMemo(() => {
+    if (!hasChartData) return [];
+    return chartData.map((d, i) => {
+      const x = paddingX + (i / (chartData.length - 1)) * usableWidth;
+      const y = paddingTop + usableHeight - ((d.price - minPrice) / (priceRange || 1)) * usableHeight;
+      return { ...d, x, y };
+    });
+  }, [chartData, hasChartData, minPrice, priceRange, usableHeight, usableWidth]);
 
-  const pathD = svgPoints.reduce((acc, pt, i) => {
-    return i === 0 ? `M ${pt.x} ${pt.y}` : `${acc} L ${pt.x} ${pt.y}`;
-  }, '');
+  const pathD = useMemo(() => {
+    if (!hasChartData || svgPoints.length === 0) return '';
+    return svgPoints.reduce((acc, pt, i) => {
+      return i === 0 ? `M ${pt.x} ${pt.y}` : `${acc} L ${pt.x} ${pt.y}`;
+    }, '');
+  }, [hasChartData, svgPoints]);
 
-  const areaD = `${pathD} L ${svgPoints[svgPoints.length - 1].x} ${svgHeight - paddingBottom} L ${svgPoints[0].x} ${svgHeight - paddingBottom} Z`;
+  const areaD = useMemo(() => {
+    if (!hasChartData || svgPoints.length === 0) return '';
+    return `${pathD} L ${svgPoints[svgPoints.length - 1].x} ${svgHeight - paddingBottom} L ${svgPoints[0].x} ${svgHeight - paddingBottom} Z`;
+  }, [hasChartData, pathD, svgPoints]);
 
-  const activePoint = hoverIndex !== null ? svgPoints[hoverIndex] : svgPoints[svgPoints.length - 1];
+  const activePoint = (hasChartData && hoverIndex !== null && svgPoints[hoverIndex])
+    ? svgPoints[hoverIndex]
+    : (hasChartData && svgPoints.length > 0)
+      ? svgPoints[svgPoints.length - 1]
+      : { price: currentAsset.basePrice, label: 'Current Quote' };
 
   // Mouse move handler for interactive crosshair
   const handleMouseMove = (e) => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current || !hasChartData) return;
     const rect = chartContainerRef.current.getBoundingClientRect();
     const clientX = e.clientX - rect.left;
     const ratio = Math.max(0, Math.min(1, (clientX - paddingX) / (rect.width - paddingX * 2)));
@@ -296,7 +345,9 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
                 {a.type === 'currency' ? <Globe className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2]" /> : a.type === 'crypto' ? <Coins className="w-3.5 h-3.5 text-slate-400 dark:text-[#A8B3C2]" /> : <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />}
               </div>
               <div className="text-sm font-extrabold text-slate-900 dark:text-white font-tabular">
-                {a.unit}{a.basePrice > 100 ? a.basePrice.toLocaleString(undefined, { maximumFractionDigits: 2 }) : a.basePrice.toFixed(4)}
+                {Number.isFinite(a.basePrice)
+                  ? `${a.unit || ''}${a.basePrice > 100 ? a.basePrice.toLocaleString(undefined, { maximumFractionDigits: 2 }) : a.basePrice.toFixed(4)}`
+                  : 'N/A'}
               </div>
             </button>
           );
@@ -314,14 +365,20 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
             </div>
             <div className="flex items-baseline gap-3 mt-1">
               <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-tabular">
-                {currentAsset.unit} {activePoint.price.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                {Number.isFinite(activePoint.price) ? `${currentAsset.unit} ${activePoint.price.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : 'N/A — verified quote unavailable'}
               </span>
-              <span className={`inline-flex items-center gap-1 text-sm font-bold ${
-                isPositive ? 'text-[#00E676]' : 'text-rose-500 dark:text-rose-400'
-              }`}>
-                {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                <span>{isPositive ? '+' : ''}{overallChange}%</span>
-              </span>
+              {isPositive !== null ? (
+                <span className={`inline-flex items-center gap-1 text-sm font-bold ${
+                  isPositive ? 'text-[#00E676]' : 'text-rose-500 dark:text-rose-400'
+                }`}>
+                  {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                  <span>{isPositive ? '+' : ''}{overallChange}%</span>
+                </span>
+              ) : (
+                <span className="text-sm font-bold text-slate-400 dark:text-slate-500">
+                  N/A
+                </span>
+              )}
             </div>
           </div>
 
@@ -333,127 +390,157 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
           </div>
         </div>
 
-        {/* SVG Interactive Chart Visualizer */}
-        <div 
-          ref={chartContainerRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          className="relative w-full h-72 sm:h-80 overflow-hidden cursor-crosshair select-none"
-        >
-          <svg 
-            viewBox={`0 0 ${svgWidth} ${svgHeight}`} 
-            className="w-full h-full overflow-visible"
-            preserveAspectRatio="none"
+        {/* Chart Area: Verified Visualizer OR Honest Unavailable Notice */}
+        {hasChartData ? (
+          <div 
+            ref={chartContainerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="relative w-full h-72 sm:h-80 overflow-hidden cursor-crosshair select-none"
           >
-            <defs>
-              <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#00E676" stopOpacity="0.30" />
-                <stop offset="60%" stopColor="#00E676" stopOpacity="0.05" />
-                <stop offset="100%" stopColor="#06111F" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
+            <svg 
+              viewBox={`0 0 ${svgWidth} ${svgHeight}`} 
+              className="w-full h-full overflow-visible"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#00E676" stopOpacity="0.30" />
+                  <stop offset="60%" stopColor="#00E676" stopOpacity="0.05" />
+                  <stop offset="100%" stopColor="#06111F" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
 
-            {/* Horizontal Grid guidelines */}
-            {[0.25, 0.5, 0.75].map((pct, idx) => {
-              const y = paddingTop + usableHeight * pct;
-              const val = maxPrice - (pct * priceRange);
-              return (
-                <g key={idx}>
+              {/* Horizontal Grid guidelines */}
+              {[0.25, 0.5, 0.75].map((pct, idx) => {
+                const y = paddingTop + usableHeight * pct;
+                const val = maxPrice - (pct * priceRange);
+                return (
+                  <g key={idx}>
+                    <line 
+                      x1={paddingX} 
+                      y1={y} 
+                      x2={svgWidth - paddingX} 
+                      y2={y} 
+                      className="stroke-slate-200 dark:stroke-white/10"
+                      strokeDasharray="4 4" 
+                    />
+                    <text 
+                      x={svgWidth - paddingX} 
+                      y={y - 4} 
+                      className="fill-slate-400 dark:fill-[#A8B3C2]"
+                      fontSize="9" 
+                      textAnchor="end"
+                      fontFamily="Inter, sans-serif"
+                    >
+                      {val.toFixed(2)}
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Filled Area */}
+              <path d={areaD} fill="url(#chartGradient)" />
+
+              {/* Main Price Stroke Line */}
+              <path 
+                d={pathD} 
+                fill="none" 
+                stroke="#00E676" 
+                strokeWidth="2.5" 
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Hover Crosshair Vertical Line */}
+              {hoverIndex !== null && (
+                <g>
                   <line 
-                    x1={paddingX} 
-                    y1={y} 
-                    x2={svgWidth - paddingX} 
-                    y2={y} 
-                    className="stroke-slate-200 dark:stroke-white/10"
-                    strokeDasharray="4 4" 
+                    x1={activePoint.x} 
+                    y1={paddingTop} 
+                    x2={activePoint.x} 
+                    y2={svgHeight - paddingBottom} 
+                    stroke="#00E676" 
+                    strokeWidth="1" 
+                    strokeDasharray="3 3"
                   />
-                  <text 
-                    x={svgWidth - paddingX} 
-                    y={y - 4} 
-                    className="fill-slate-400 dark:fill-[#A8B3C2]"
-                    fontSize="9" 
-                    textAnchor="end"
-                    fontFamily="Inter, sans-serif"
-                  >
-                    {val.toFixed(2)}
-                  </text>
+                  <circle 
+                    cx={activePoint.x} 
+                    cy={activePoint.y} 
+                    r="5" 
+                    fill="#00E676" 
+                    className="stroke-white dark:stroke-[#06111F]"
+                    strokeWidth="2" 
+                  />
                 </g>
-              );
-            })}
+              )}
 
-            {/* Filled Area */}
-            <path d={areaD} fill="url(#chartGradient)" />
-
-            {/* Main Price Stroke Line */}
-            <path 
-              d={pathD} 
-              fill="none" 
-              stroke="#00E676" 
-              strokeWidth="2.5" 
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            {/* Hover Crosshair Vertical Line */}
-            {hoverIndex !== null && (
-              <g>
-                <line 
-                  x1={activePoint.x} 
-                  y1={paddingTop} 
-                  x2={activePoint.x} 
-                  y2={svgHeight - paddingBottom} 
-                  stroke="#00E676" 
-                  strokeWidth="1" 
-                  strokeDasharray="3 3"
-                />
-                <circle 
-                  cx={activePoint.x} 
-                  cy={activePoint.y} 
-                  r="5" 
-                  fill="#00E676" 
-                  className="stroke-white dark:stroke-[#06111F]"
-                  strokeWidth="2" 
-                />
-              </g>
+              {/* X-axis date labels */}
+              {svgPoints.filter((_, i) => i % Math.ceil(svgPoints.length / 6) === 0).map((pt, i) => (
+                <text 
+                  key={i} 
+                  x={pt.x} 
+                  y={svgHeight - 12} 
+                  className="fill-slate-400 dark:fill-[#A8B3C2]"
+                  fontSize="10" 
+                  textAnchor="middle"
+                  fontFamily="Inter, sans-serif"
+                >
+                  {pt.label}
+                </text>
+              ))}
+            </svg>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-72 sm:h-80 rounded-2xl bg-slate-50/70 dark:bg-[#06111F]/60 border border-slate-200 dark:border-white/10 p-6 text-center space-y-3 select-none">
+            {isLoadingHistory ? (
+              <>
+                <RefreshCw className="w-8 h-8 text-[#00E676] animate-spin" />
+                <div className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Retrieving verified historical observations...
+                </div>
+                <p className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-sm">
+                  Connecting to upstream market exchange feeds for {currentAsset.name} ({timeframe}).
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 dark:text-slate-500">
+                  <BarChart3 className="w-6 h-6" />
+                </div>
+                <div className="max-w-md">
+                  <div className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    Historical chart temporarily unavailable
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-1 leading-relaxed">
+                    Verified historical price series for {currentAsset.name} ({timeframe}) are currently unavailable from upstream feeds. FGC Spot displays verified market data only and never presents simulated or synthetic curves.
+                  </p>
+                </div>
+              </>
             )}
-
-            {/* X-axis date labels */}
-            {svgPoints.filter((_, i) => i % Math.ceil(svgPoints.length / 6) === 0).map((pt, i) => (
-              <text 
-                key={i} 
-                x={pt.x} 
-                y={svgHeight - 12} 
-                className="fill-slate-400 dark:fill-[#A8B3C2]"
-                fontSize="10" 
-                textAnchor="middle"
-                fontFamily="Inter, sans-serif"
-              >
-                {pt.label}
-              </text>
-            ))}
-          </svg>
-        </div>
+          </div>
+        )}
 
         {/* 4 Bottom Key Statistics Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 dark:border-white/10 text-xs">
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
             <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Period High</div>
             <div className="text-base font-extrabold text-slate-900 dark:text-white font-tabular mt-0.5">
-              {currentAsset.unit}{maxPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+              {hasChartData ? `${currentAsset.unit}${maxPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : 'N/A'}
             </div>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
             <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Period Low</div>
             <div className="text-base font-extrabold text-slate-900 dark:text-white font-tabular mt-0.5">
-              {currentAsset.unit}{minPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+              {hasChartData ? `${currentAsset.unit}${minPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })}` : 'N/A'}
             </div>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10">
             <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Corridor Range</div>
             <div className="text-base font-extrabold text-[#00E676] font-tabular mt-0.5">
-              {currentAsset.unit}{priceRange.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              {hasChartData ? `${currentAsset.unit}${priceRange.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : 'N/A'}
             </div>
           </div>
 
@@ -529,7 +616,7 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
                   <span>Data Limitations &amp; Chart Resolution</span>
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  Historical series are based on end-of-period closing prices and synthetic interpolation. Intraday spike wicks caused by illiquid market moments may be smoothed out in macro (1M, 1Y) views.
+                  Historical series are displayed only when the selected upstream provider supplies actual observations. Missing periods are not filled with simulated values; an unavailable notice is shown when the series cannot be verified.
                 </p>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
                   Charts reflect indicative wholesale mid-market pricing and do not account for retail counter bid-ask spreads, making charges, or broker execution slippage.

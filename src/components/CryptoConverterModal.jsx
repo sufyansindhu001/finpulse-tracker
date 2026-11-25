@@ -14,7 +14,8 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
   const numAmount = parseFloat(cryptoAmount) || 0;
   
   // Coin price is in USD from CoinGecko live feed
-  const totalUsdValue = numAmount * (coin?.current_price || 0);
+  const totalUsdValue = Number.isFinite(Number(coin?.current_price)) && coin.current_price > 0
+    ? numAmount * coin.current_price : Number.NaN;
 
   // Convert USD total dynamically to target fiat currency using live rates
   const convertedFiat = useMemo(() => {
@@ -65,7 +66,7 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
               </span>
             </h3>
             <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold tabular-nums mt-0.5">
-              Live Price: ${coin.current_price < 1 ? coin.current_price.toFixed(4) : coin.current_price.toLocaleString()} USD
+              Live Price: {Number.isFinite(coin.current_price) && coin.current_price > 0 ? `$${coin.current_price < 1 ? coin.current_price.toFixed(4) : coin.current_price.toLocaleString()} USD` : 'N/A'}
             </p>
           </div>
         </div>
@@ -126,10 +127,10 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
               Live Converted Total
             </span>
             <div className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight">
-              {fiatObj.symbol} {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {Number.isFinite(convertedFiat) ? `${fiatObj.symbol} ${convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 tabular-nums font-medium">
-              {numAmount} {coin.symbol.toUpperCase()} = {convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {fiatCurrency}
+              {numAmount} {coin.symbol.toUpperCase()} = {Number.isFinite(convertedFiat) ? convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'} {fiatCurrency}
             </div>
           </div>
         </div>

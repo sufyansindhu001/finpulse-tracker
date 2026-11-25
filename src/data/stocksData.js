@@ -2271,65 +2271,6 @@ export function getStocksForCountry(countryId) {
     ];
   }
 
-  // Dynamic procedural generator for the other 50+ World Countries
-  // Creates realistic flagship companies tailored to that country's currency and exchange
-  const sectorsList = [
-    { sector: 'Financials', industry: 'Banking Services', nameSuffix: 'National Bank', pe: 7.2, pb: 1.1, div: 6.5 },
-    { sector: 'Energy', industry: 'Oil & Gas', nameSuffix: 'Energy Holdings', pe: 6.4, pb: 0.9, div: 8.2 },
-    { sector: 'Basic Materials', industry: 'Chemicals & Mining', nameSuffix: 'Resources Corp', pe: 8.1, pb: 1.4, div: 5.4 },
-    { sector: 'Consumer Cyclicals', industry: 'Textiles & Apparel', nameSuffix: 'Industries Ltd', pe: 9.5, pb: 1.6, div: 4.2 },
-    { sector: 'Consumer Non-Cyclicals', industry: 'Food & Tobacco', nameSuffix: 'Foods International', pe: 14.8, pb: 3.2, div: 4.5 },
-    { sector: 'Technology', industry: 'Software & IT Services', nameSuffix: 'Technologies', pe: 22.4, pb: 4.5, div: 1.8 },
-    { sector: 'Utilities', industry: 'Electric Utilities', nameSuffix: 'Power & Utility Corp', pe: 8.8, pb: 1.2, div: 7.4 },
-    { sector: 'Healthcare', industry: 'Pharmaceuticals', nameSuffix: 'Pharma Group', pe: 18.5, pb: 3.8, div: 2.5 },
-    { sector: 'Industrials', industry: 'Construction Materials', nameSuffix: 'Heavy Industries', pe: 8.4, pb: 1.3, div: 5.1 },
-    { sector: 'Real Estate', industry: 'Real Estate Development', nameSuffix: 'Properties REIT', pe: 11.2, pb: 0.85, div: 8.8 }
-  ];
-
-  return sectorsList.map((item, idx) => {
-    const ticker = `${country.code}${idx + 1}`;
-    const basePrice = (idx + 1) * 38.5;
-    const isPos = idx % 3 !== 0;
-    const change = isPos ? (idx * 0.45 + 0.35) : -(idx * 0.25 + 0.15);
-    const pct = isPos ? (idx * 0.35 + 0.85) : -(idx * 0.2 + 0.4);
-
-    return {
-      id: `${country.id}-${ticker.toLowerCase()}`,
-      ticker: ticker,
-      name: `${country.name} ${item.nameSuffix}`,
-      country: country.id,
-      exchange: country.exchange,
-      sector: item.sector,
-      industry: item.industry,
-      price: basePrice,
-      currency: country.currency,
-      change24h: Number(change.toFixed(2)),
-      changePercent: Number(pct.toFixed(2)),
-      marketCap: `${country.symbol}${(12.5 * (10 - idx)).toFixed(1)}B`,
-      marketCapNum: 12.5 * (10 - idx),
-      peRatio: item.pe,
-      pbRatio: item.pb,
-      dividendYield: item.div,
-      volume3M: `${(idx + 1) * 1.2}M`,
-      change1Y: isPos ? `+${(idx * 8 + 14)}%` : `-${(idx * 3 + 4)}%`,
-      fairValueUpside: `+${(idx * 3 + 12)}%`,
-      analystUpside: `+${(idx * 2 + 10)}%`,
-      rsi14: isPos ? 58 + idx : 42 - idx,
-      piotroski: 7 + (idx % 3),
-      altmanZ: 3.2 + (idx * 0.2),
-      evEbitda: 4.5 + (idx * 0.5),
-      equityType: 'Common Stock',
-      low52: Number((basePrice * 0.75).toFixed(2)),
-      high52: Number((basePrice * 1.35).toFixed(2)),
-      technicalRating: isPos ? (idx % 2 === 0 ? 'Strong Buy' : 'Buy') : 'Neutral',
-      fundamentals: {
-        eps: Number((basePrice / item.pe).toFixed(2)),
-        pbRatio: item.pb,
-        roe: `${(item.div * 3.2).toFixed(1)}%`,
-        debtToEquity: '0.35',
-        revenueGrowth: '+18.5% YoY'
-      },
-      profile: `${country.name} ${item.nameSuffix} is a premier constituent of the ${country.benchmark} index listed on the ${country.exchange} exchange, operating as an institutional anchor in the ${item.sector} sector.`
-    };
-  });
+  // For countries without verified flagship datasets, return empty array to prevent synthetic tickers
+  return [];
 }

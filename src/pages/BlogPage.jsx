@@ -270,7 +270,7 @@ export default function BlogPage() {
             <span>Latest Educational Articles &amp; Dispatches</span>
           </h2>
           <span className="text-xs text-slate-500 dark:text-[#A8B3C2]">
-            Showing <strong className="text-slate-900 dark:text-white font-tabular">{displayedPosts.length}</strong> of <strong className="text-slate-900 dark:text-white font-tabular">{gridPosts.length}</strong> articles
+            Showing <strong className="text-slate-900 dark:text-white font-tabular">{displayedPosts.length + (isShowingFeatured && featuredPost ? 1 : 0)}</strong> of <strong className="text-slate-900 dark:text-white font-tabular">{filteredPosts.length}</strong> articles
           </span>
         </div>
 

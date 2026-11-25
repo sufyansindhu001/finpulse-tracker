@@ -90,28 +90,28 @@ export default function HeroSection({ rates }) {
     return (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
   }, [rates]);
 
-  const usdToPkr = activeRates.PKR || 276.75;
-  const eurVal = activeRates.EUR || 0.8955;
-  const gbpVal = activeRates.GBP || 0.7720;
-  const sarVal = activeRates.SAR || 3.75;
-  const aedVal = activeRates.AED || 3.6725;
+  const usdToPkr = Number.isFinite(activeRates.PKR) && activeRates.PKR > 0 ? activeRates.PKR : null;
+  const eurVal = activeRates.EUR;
+  const gbpVal = activeRates.GBP;
+  const sarVal = activeRates.SAR;
+  const aedVal = activeRates.AED;
 
-  const eurToPkr = (usdToPkr / eurVal).toFixed(2);
-  const gbpToPkr = (usdToPkr / gbpVal).toFixed(2);
-  const sarToPkr = (usdToPkr / sarVal).toFixed(2);
-  const aedToPkr = (usdToPkr / aedVal).toFixed(2);
+  const formatCross = denominator => usdToPkr !== null && Number.isFinite(denominator) && denominator > 0 ? (usdToPkr / denominator).toFixed(2) : 'N/A';
+  const eurToPkr = formatCross(eurVal);
+  const gbpToPkr = formatCross(gbpVal);
+  const sarToPkr = formatCross(sarVal);
+  const aedToPkr = formatCross(aedVal);
 
-  const goldPriceUsd = (typeof activeRates?.XAU === 'number' && !isNaN(activeRates.XAU) && isFinite(activeRates.XAU) && activeRates.XAU > 0)
-    ? Number((1 / activeRates.XAU).toFixed(2))
-    : (metalsData?.gold?.price || 3898.90);
+  const goldPriceUsd = Number.isFinite(metalsData?.gold?.price) && metalsData.gold.price > 0
+    ? metalsData.gold.price : (activeRates.XAU > 0 ? Number((1 / activeRates.XAU).toFixed(2)) : null);
 
   const goldMetrics = useMemo(() => {
     return calculateGoldLocalMetrics(goldPriceUsd, usdToPkr, true);
   }, [goldPriceUsd, usdToPkr]);
 
-  const goldPkrPerTola24K = goldMetrics?.pricePerTola24K || 404640;
-  const goldPkrPerTola22K = goldMetrics?.pricePerTola22K || 370920;
-  const goldGram24K = goldMetrics?.pricePerGram24K || 34691;
+  const goldPkrPerTola24K = goldMetrics?.pricePerTola24K ?? null;
+  const goldPkrPerTola22K = goldMetrics?.pricePerTola22K ?? null;
+  const goldGram24K = goldMetrics?.pricePerGram24K ?? null;
 
   // Currency Calculations
   const numericAmount = parseFloat(fxAmount) || 0;
@@ -133,7 +133,7 @@ export default function HeroSection({ rates }) {
   };
 
   const handleCopyFxResult = () => {
-    if (convertedFxValue <= 0) return;
+    if (!Number.isFinite(convertedFxValue) || convertedFxValue <= 0) return;
     const text = `${numericAmount} ${baseCurrency} = ${convertedFxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${targetCurrency} (via FGC Spot)`;
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -145,6 +145,9 @@ export default function HeroSection({ rates }) {
     const qty = parseFloat(goldQty) || 0;
     const factor = PURITY_FACTORS[goldPurity] || 1.0;
     const weightInGrams = (UNIT_WEIGHTS[goldUnit] || 11.6638) * qty;
+    if (goldGram24K === null || usdToPkr === null) {
+      return { basePkr: null, makingChargeAmount: null, finalPkr: null, finalUsd: null, perGramPkr: null, weightInGrams };
+    }
     const basePkr = Math.round(weightInGrams * goldGram24K * factor);
     const makingChargeAmount = includeMaking ? Math.round(basePkr * 0.09) : 0; // ~9% standard jeweler making charge / katt
     const finalPkr = basePkr + makingChargeAmount;
@@ -181,7 +184,7 @@ export default function HeroSection({ rates }) {
             >
               <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
               <span>24K TOLA:</span>
-              <span className="font-mono text-slate-900 dark:text-white">₨{goldPkrPerTola24K.toLocaleString()}</span>
+              <span className="font-mono text-slate-900 dark:text-white">{goldPkrPerTola24K !== null ? `₨${goldPkrPerTola24K.toLocaleString()}` : 'N/A'}</span>
             </button>
 
             <button 
@@ -190,7 +193,7 @@ export default function HeroSection({ rates }) {
               title="View 22K jewelry rates"
             >
               <span>22K Tola:</span>
-              <span className="font-mono text-slate-900 dark:text-white font-bold">₨{goldPkrPerTola22K.toLocaleString()}</span>
+              <span className="font-mono text-slate-900 dark:text-white font-bold">{goldPkrPerTola22K !== null ? `₨${goldPkrPerTola22K.toLocaleString()}` : 'N/A'}</span>
             </button>
 
             <button 
@@ -199,7 +202,7 @@ export default function HeroSection({ rates }) {
               title="View live spot gold price"
             >
               <span className="text-[#00E676] font-bold">XAU/USD:</span>
-              <span className="font-mono text-slate-900 dark:text-white font-bold">${goldPriceUsd.toLocaleString()}</span>
+              <span className="font-mono text-slate-900 dark:text-white font-bold">{goldPriceUsd !== null ? `$${goldPriceUsd.toLocaleString()}` : 'N/A'}</span>
             </button>
 
             <button 
@@ -208,7 +211,7 @@ export default function HeroSection({ rates }) {
               title="View USD/PKR interbank rates"
             >
               <span className="text-cyan-500 font-bold">USD/PKR:</span>
-              <span className="font-mono text-slate-900 dark:text-white font-bold">₨{usdToPkr.toFixed(2)}</span>
+              <span className="font-mono text-slate-900 dark:text-white font-bold">{usdToPkr !== null ? `₨${usdToPkr.toFixed(2)}` : 'N/A'}</span>
             </button>
 
             <button 
@@ -400,11 +403,11 @@ export default function HeroSection({ rates }) {
                         Calculated Exchange Value
                       </span>
                       <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono flex items-baseline gap-2">
-                        <span>{convertedFxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        <span>{Number.isFinite(convertedFxValue) ? convertedFxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</span>
                         <span className="text-base sm:text-lg text-[#00E676] font-sans font-bold">{targetCurrency}</span>
                       </div>
                       <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-mono">
-                        1 {baseCurrency} = {directFxRate.toFixed(4)} {targetCurrency} • 1 {targetCurrency} = {inverseFxRate.toFixed(6)} {baseCurrency}
+                        {Number.isFinite(directFxRate) && Number.isFinite(inverseFxRate) ? `1 ${baseCurrency} = ${directFxRate.toFixed(4)} ${targetCurrency} • 1 ${targetCurrency} = ${inverseFxRate.toFixed(6)} ${baseCurrency}` : 'Verified exchange rate temporarily unavailable'}
                       </div>
                     </div>
 
@@ -438,7 +441,7 @@ export default function HeroSection({ rates }) {
                         className="p-2 rounded-xl bg-white dark:bg-[#0D1B2A] border border-slate-200/80 dark:border-white/5 hover:border-[#00E676]/40 cursor-pointer transition-all"
                       >
                         <div className="text-slate-500 dark:text-[#A8B3C2] text-[10px]">USD to PKR</div>
-                        <div className="font-mono font-bold text-slate-900 dark:text-white text-sm">₨{usdToPkr.toFixed(2)}</div>
+                        <div className="font-mono font-bold text-slate-900 dark:text-white text-sm">{usdToPkr !== null ? `₨${usdToPkr.toFixed(2)}` : 'N/A'}</div>
                       </div>
 
                       <div 
@@ -577,14 +580,14 @@ export default function HeroSection({ rates }) {
                         Karachi Sarafa Estimated Value ({goldQty} {goldUnit.toUpperCase()} of {goldPurity})
                       </span>
                       <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono flex items-baseline gap-2">
-                        <span>₨{goldCalcResult.finalPkr.toLocaleString()}</span>
+                        <span>{goldCalcResult.finalPkr !== null ? `₨${goldCalcResult.finalPkr.toLocaleString()}` : 'N/A'}</span>
                         <span className="text-sm font-normal text-slate-500 dark:text-[#A8B3C2]">
-                          (~${goldCalcResult.finalUsd.toLocaleString()} USD)
+                          {goldCalcResult.finalUsd !== null ? `(~$${goldCalcResult.finalUsd.toLocaleString()} USD)` : '(Verified price unavailable)'}
                         </span>
                       </div>
                       <div className="text-xs text-slate-600 dark:text-[#A8B3C2] font-mono">
-                        Per Gram Benchmark: ₨{goldCalcResult.perGramPkr.toLocaleString()} • Total Weight: {goldCalcResult.weightInGrams.toFixed(2)}g
-                        {includeMaking && ` (Includes ₨${goldCalcResult.makingChargeAmount.toLocaleString()} making)`}
+                        Per Gram Benchmark: {goldCalcResult.perGramPkr !== null ? `₨${goldCalcResult.perGramPkr.toLocaleString()}` : 'N/A'} • Total Weight: {goldCalcResult.weightInGrams.toFixed(2)}g
+                        {includeMaking && goldCalcResult.makingChargeAmount !== null && ` (Includes illustrative ₨${goldCalcResult.makingChargeAmount.toLocaleString()} making)`}
                       </div>
                     </div>
 
@@ -613,13 +616,13 @@ export default function HeroSection({ rates }) {
 
                   <div className="space-y-2">
                     {[
-                      { name: 'US Dollar (Interbank)', code: 'USD/PKR', rate: `₨${usdToPkr.toFixed(2)}`, change: '+0.04%', up: true, link: '/rates' },
-                      { name: 'Gold 24K / Tola (Sarafa)', code: 'GOLD 24K', rate: `₨${goldPkrPerTola24K.toLocaleString()}`, change: '+0.42%', up: true, link: '/gold' },
-                      { name: 'Gold 22K / Tola (Jewelry)', code: 'GOLD 22K', rate: `₨${goldPkrPerTola22K.toLocaleString()}`, change: '+0.42%', up: true, link: '/gold' },
-                      { name: 'Euro (Interbank)', code: 'EUR/PKR', rate: `₨${eurToPkr}`, change: '+0.18%', up: true, link: '/rates' },
-                      { name: 'British Pound (Interbank)', code: 'GBP/PKR', rate: `₨${gbpToPkr}`, change: '-0.12%', up: false, link: '/rates' },
-                      { name: 'Saudi Riyal (Interbank)', code: 'SAR/PKR', rate: `₨${sarToPkr}`, change: '+0.01%', up: true, link: '/rates' },
-                      { name: 'UAE Dirham (Interbank)', code: 'AED/PKR', rate: `₨${aedToPkr}`, change: '+0.02%', up: true, link: '/rates' },
+                      { name: 'US Dollar (USD/PKR)', code: 'USD/PKR', rate: usdToPkr !== null ? `₨${usdToPkr.toFixed(2)}` : 'N/A', change: 'N/A', up: null, link: '/rates' },
+                      { name: 'Gold 24K / Tola (Indicative)', code: 'GOLD 24K', rate: goldPkrPerTola24K !== null ? `₨${goldPkrPerTola24K.toLocaleString()}` : 'N/A', change: 'N/A', up: null, link: '/gold' },
+                      { name: 'Gold 22K / Tola (Indicative)', code: 'GOLD 22K', rate: goldPkrPerTola22K !== null ? `₨${goldPkrPerTola22K.toLocaleString()}` : 'N/A', change: 'N/A', up: null, link: '/gold' },
+                      { name: 'Euro (EUR/PKR)', code: 'EUR/PKR', rate: eurToPkr !== 'N/A' ? `₨${eurToPkr}` : 'N/A', change: 'N/A', up: null, link: '/rates' },
+                      { name: 'British Pound (GBP/PKR)', code: 'GBP/PKR', rate: gbpToPkr !== 'N/A' ? `₨${gbpToPkr}` : 'N/A', change: 'N/A', up: null, link: '/rates' },
+                      { name: 'Saudi Riyal (SAR/PKR)', code: 'SAR/PKR', rate: sarToPkr !== 'N/A' ? `₨${sarToPkr}` : 'N/A', change: 'N/A', up: null, link: '/rates' },
+                      { name: 'UAE Dirham (AED/PKR)', code: 'AED/PKR', rate: aedToPkr !== 'N/A' ? `₨${aedToPkr}` : 'N/A', change: 'N/A', up: null, link: '/rates' },
                     ].map(item => (
                       <div
                         key={item.code}
@@ -640,7 +643,7 @@ export default function HeroSection({ rates }) {
                         <div className={`text-xs font-bold flex items-center gap-0.5 ${
                           item.up ? 'text-emerald-500 dark:text-[#00E676]' : 'text-rose-500'
                         }`}>
-                          {item.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                          {item.up !== null && (item.up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />)}
                           <span>{item.change}</span>
                         </div>
                       </div>
@@ -678,11 +681,11 @@ export default function HeroSection({ rates }) {
               >
                 <div className="flex items-center justify-between text-xs mb-1">
                   <span className="font-bold text-slate-700 dark:text-slate-300">Gold 24K / Tola</span>
-                  <span className="text-amber-500 font-mono font-bold text-[11px]">+0.42%</span>
+                  <span className="text-amber-500 font-mono font-bold text-[11px]">Change N/A</span>
                 </div>
                 <div className="flex items-baseline justify-between">
                   <div className="text-lg font-black text-slate-900 dark:text-white font-mono group-hover:text-amber-500 transition-colors">
-                    ₨{goldPkrPerTola24K.toLocaleString()}
+                    {goldPkrPerTola24K !== null ? `₨${goldPkrPerTola24K.toLocaleString()}` : 'N/A'}
                   </div>
                   <span className="text-[11px] text-slate-400">Karachi Sarafa</span>
                 </div>
@@ -699,9 +702,9 @@ export default function HeroSection({ rates }) {
                 </div>
                 <div className="flex items-baseline justify-between">
                   <div className="text-lg font-black text-slate-900 dark:text-white font-mono group-hover:text-[#00E676] transition-colors">
-                    ₨{usdToPkr.toFixed(2)}
+                    {usdToPkr !== null ? `₨${usdToPkr.toFixed(2)}` : 'N/A'}
                   </div>
-                  <span className="text-[11px] text-slate-400">Open: ~₨278.45</span>
+                  <span className="text-[11px] text-slate-400">Quote reference</span>
                 </div>
               </div>
 
@@ -712,11 +715,11 @@ export default function HeroSection({ rates }) {
               >
                 <div className="flex items-center justify-between text-xs mb-1">
                   <span className="font-bold text-slate-700 dark:text-slate-300">PSX KSE-100 Index</span>
-                  <span className="text-blue-500 font-mono font-bold text-[11px]">+1.18%</span>
+                  <span className="text-blue-500 font-mono font-bold text-[11px]">Change N/A</span>
                 </div>
                 <div className="flex items-baseline justify-between">
                   <div className="text-lg font-black text-slate-900 dark:text-white font-mono group-hover:text-blue-500 transition-colors">
-                    114,850 pts
+                    N/A
                   </div>
                   <span className="text-[11px] text-slate-400">Karachi Floor</span>
                 </div>
@@ -733,7 +736,7 @@ export default function HeroSection({ rates }) {
                 </div>
                 <div className="flex items-baseline justify-between">
                   <div className="text-lg font-black text-slate-900 dark:text-white font-mono group-hover:text-amber-500 transition-colors">
-                    ${goldPriceUsd.toLocaleString()}
+                    {goldPriceUsd !== null ? `$${goldPriceUsd.toLocaleString()}` : 'N/A'}
                   </div>
                   <span className="text-[11px] text-slate-400">Per Troy Oz</span>
                 </div>

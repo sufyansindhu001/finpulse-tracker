@@ -1,8 +1,5 @@
-// api/metals.js - Real-Time Precious Metals (Gold XAU & Silver XAG) Serverless Endpoint
-// Ingests live commodity quotes concurrently from institutional financial feeds:
-// 1. Binance PAXG 24hr Ticker (Paxos Gold spot, LBMA 1:1 allocated physical gold)
-// 2. Open Currency & Metals CDN Feeder (usd.xau & usd.xag real-time spot rates)
-// 3. Yahoo Finance Commodity Futures (GC=F / SI=F) with multi-host fallback
+// Commodity reference endpoint: Yahoo futures, a PAXG token price, and FX-metal references.
+// These sources do not provide official LBMA fixings or Karachi Sarafa retail rates.
 
 export default async function handler(req, res) {
   // CORS Headers
@@ -16,16 +13,18 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Realistic live baseline benchmarks
-  let goldPrice = 2650.00;
-  let goldChange = 0.32;
-  let goldHigh = 2665.00;
-  let goldLow = 2640.00;
+  // Never publish an old static price as a current quote.
+  let goldPrice = null;
+  let goldChange = null;
+  let goldHigh = null;
+  let goldLow = null;
 
-  let silverPrice = 31.50;
-  let silverChange = 0.45;
-  let silverHigh = 31.85;
-  let silverLow = 31.15;
+  let silverPrice = null;
+  let silverChange = null;
+  let silverHigh = null;
+  let silverLow = null;
+  let goldSource = null;
+  let silverSource = null;
 
   try {
     const controller = new AbortController();
@@ -69,23 +68,30 @@ export default async function handler(req, res) {
       const parsed = Number(meta.regularMarketPrice);
       if (!isNaN(parsed) && parsed > 500) {
         goldPrice = Number(parsed.toFixed(2));
-        const prev = Number(meta.chartPreviousClose) || goldPrice;
-        goldChange = Number((((goldPrice - prev) / prev) * 100).toFixed(2));
-        goldHigh = Number((meta.regularMarketDayHigh || goldPrice * 1.008).toFixed(2));
-        goldLow = Number((meta.regularMarketDayLow || goldPrice * 0.992).toFixed(2));
+        goldSource = 'Yahoo Finance GC=F gold futures';
+        const prev = Number(meta.chartPreviousClose);
+        goldChange = (!isNaN(prev) && prev > 0) ? Number((((goldPrice - prev) / prev) * 100).toFixed(2)) : null;
+        goldHigh = (typeof meta.regularMarketDayHigh === 'number' && meta.regularMarketDayHigh > 0) ? Number(meta.regularMarketDayHigh.toFixed(2)) : null;
+        goldLow = (typeof meta.regularMarketDayLow === 'number' && meta.regularMarketDayLow > 0) ? Number(meta.regularMarketDayLow.toFixed(2)) : null;
       }
     } else if (paxgData?.lastPrice) {
       const parsed = parseFloat(paxgData.lastPrice);
       if (!isNaN(parsed) && parsed > 500) {
         goldPrice = Number(parsed.toFixed(2));
-        goldChange = Number(parseFloat(paxgData.priceChangePercent || '0').toFixed(2));
-        goldHigh = Number(parseFloat(paxgData.highPrice || (goldPrice * 1.008)).toFixed(2));
-        goldLow = Number(parseFloat(paxgData.lowPrice || (goldPrice * 0.992)).toFixed(2));
+        goldSource = 'Binance PAXG/USDT token quote';
+        const pChange = parseFloat(paxgData.priceChangePercent);
+        goldChange = !isNaN(pChange) ? Number(pChange.toFixed(2)) : null;
+        const pHigh = parseFloat(paxgData.highPrice);
+        goldHigh = (!isNaN(pHigh) && pHigh > 0) ? Number(pHigh.toFixed(2)) : null;
+        const pLow = parseFloat(paxgData.lowPrice);
+        goldLow = (!isNaN(pLow) && pLow > 0) ? Number(pLow.toFixed(2)) : null;
       }
     } else if (cdnData?.usd?.xau && typeof cdnData.usd.xau === 'number' && cdnData.usd.xau > 0) {
       goldPrice = Number((1 / cdnData.usd.xau).toFixed(2));
-      goldHigh = Number((goldPrice * 1.008).toFixed(2));
-      goldLow = Number((goldPrice * 0.992).toFixed(2));
+      goldSource = 'Currency API USD/XAU reference';
+      goldChange = null;
+      goldHigh = null;
+      goldLow = null;
     }
 
     // --- Resolve Live Silver Spot ---
@@ -94,24 +100,31 @@ export default async function handler(req, res) {
       const parsed = Number(meta.regularMarketPrice);
       if (!isNaN(parsed) && parsed > 5) {
         silverPrice = Number(parsed.toFixed(2));
-        const prev = Number(meta.chartPreviousClose) || silverPrice;
-        silverChange = Number((((silverPrice - prev) / prev) * 100).toFixed(2));
-        silverHigh = Number((meta.regularMarketDayHigh || silverPrice * 1.012).toFixed(2));
-        silverLow = Number((meta.regularMarketDayLow || silverPrice * 0.988).toFixed(2));
+        silverSource = 'Yahoo Finance SI=F silver futures';
+        const prev = Number(meta.chartPreviousClose);
+        silverChange = (!isNaN(prev) && prev > 0) ? Number((((silverPrice - prev) / prev) * 100).toFixed(2)) : null;
+        silverHigh = (typeof meta.regularMarketDayHigh === 'number' && meta.regularMarketDayHigh > 0) ? Number(meta.regularMarketDayHigh.toFixed(2)) : null;
+        silverLow = (typeof meta.regularMarketDayLow === 'number' && meta.regularMarketDayLow > 0) ? Number(meta.regularMarketDayLow.toFixed(2)) : null;
       }
     } else if (cdnData?.usd?.xag && typeof cdnData.usd.xag === 'number' && cdnData.usd.xag > 0) {
       silverPrice = Number((1 / cdnData.usd.xag).toFixed(2));
-      silverHigh = Number((silverPrice * 1.012).toFixed(2));
-      silverLow = Number((silverPrice * 0.988).toFixed(2));
+      silverSource = 'Currency API USD/XAG reference';
+      silverChange = null;
+      silverHigh = null;
+      silverLow = null;
+    }
+
+    if (goldPrice === null && silverPrice === null) {
+      return res.status(503).json({ success: false, message: 'Verified bullion quotes are temporarily unavailable.' });
     }
 
     return res.status(200).json({
       success: true,
-      source: 'Global Bullion & Commodity Desk (Live)',
+      source: [goldSource, silverSource].filter(Boolean).join(' / '),
       lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
       gold: {
         symbol: 'XAU/USD',
-        name: 'Gold Spot (Troy Ounce)',
+        name: 'Gold Commodity Reference (Troy Ounce)',
         price: goldPrice,
         change: goldChange,
         high: goldHigh,
@@ -120,7 +133,7 @@ export default async function handler(req, res) {
       },
       silver: {
         symbol: 'XAG/USD',
-        name: 'Silver Spot (Troy Ounce)',
+        name: 'Silver Commodity Reference (Troy Ounce)',
         price: silverPrice,
         change: silverChange,
         high: silverHigh,
@@ -128,38 +141,12 @@ export default async function handler(req, res) {
         unit: 'troy oz'
       },
       rates: {
-        XAU: Number((1 / goldPrice).toFixed(8)),
-        XAG: Number((1 / silverPrice).toFixed(8))
+        ...(goldPrice !== null ? { XAU: 1 / goldPrice } : {}),
+        ...(silverPrice !== null ? { XAG: 1 / silverPrice } : {})
       }
     });
   } catch (err) {
-    console.warn('Metals endpoint notice (serving resilient baseline):', err.message);
-    return res.status(200).json({
-      success: true,
-      source: 'Global Bullion & Commodity Desk (Baseline)',
-      lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      gold: {
-        symbol: 'XAU/USD',
-        name: 'Gold Spot (Troy Ounce)',
-        price: goldPrice,
-        change: goldChange,
-        high: goldHigh,
-        low: goldLow,
-        unit: 'troy oz'
-      },
-      silver: {
-        symbol: 'XAG/USD',
-        name: 'Silver Spot (Troy Ounce)',
-        price: silverPrice,
-        change: silverChange,
-        high: silverHigh,
-        low: silverLow,
-        unit: 'troy oz'
-      },
-      rates: {
-        XAU: Number((1 / goldPrice).toFixed(8)),
-        XAG: Number((1 / silverPrice).toFixed(8))
-      }
-    });
+    console.warn('Metals endpoint feed failure:', err.message);
+    return res.status(503).json({ success: false, message: 'Verified bullion quotes are temporarily unavailable.' });
   }
 }

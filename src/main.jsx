@@ -27,14 +27,11 @@ const app = (
   </StrictMode>
 );
 
-if (rootElement && rootElement.hasChildNodes()) {
-  try {
-    hydrateRoot(rootElement, app);
-  } catch (err) {
-    console.warn('[Hydration] Hydration fallback to client render:', err);
-    createRoot(rootElement).render(app);
-  }
-} else if (rootElement) {
+// In this SSG-to-SPA architecture, static HTML inside #root is pre-rendered at build time
+// to serve complete semantic markup, meta tags, and schema to Googlebot and web crawlers.
+// On the client, routes are dynamically code-split with React.lazy; mounting cleanly via
+// createRoot ensures reliable SPA lifecycle management without React #418 DOM tree reconciliation errors.
+if (rootElement) {
   createRoot(rootElement).render(app);
 }
 

@@ -161,7 +161,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
   };
 
   // Base currency rates calculations
-  const usdToPkr = (typeof rates?.PKR === 'number' && !isNaN(rates.PKR) && isFinite(rates.PKR) && rates.PKR > 0) ? rates.PKR : 277.10;
+  const usdToPkr = Number.isFinite(rates?.PKR) && rates.PKR > 0 ? rates.PKR : null;
 
   // Format currency list - strictly authentic ISO-4217 sovereign fiat currencies, no crypto tokens
   const currencyRows = useMemo(() => {
@@ -181,19 +181,15 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
         const upper = code.toUpperCase();
         const info = getCurrencyInfo(upper);
         // Calculate rate against USD and rate against PKR
-        const rateToPkr = upper === 'USD' ? usdToPkr : (usdToPkr / val);
-        // Simulated 24h delta based on pseudo hash for stable display
-        const charCodeSum = upper.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-        const pseudoDelta = (((charCodeSum % 30) - 14) / 10).toFixed(2);
-        const isPositive = parseFloat(pseudoDelta) >= 0;
+        const rateToPkr = usdToPkr !== null ? (upper === 'USD' ? usdToPkr : usdToPkr / val) : null;
 
         return {
           code: upper,
           name: info.name || `${upper} Currency`,
           rateUsd: val,
           ratePkr: rateToPkr,
-          change: `${isPositive ? '+' : ''}${pseudoDelta}%`,
-          isPositive,
+          change: 'N/A',
+          isPositive: null,
           lastUpdated: 'Live Feed',
           flagUrl: getCurrencyFlagUrl(upper)
         };
@@ -205,25 +201,17 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
   // Format crypto list
   const cryptoRows = useMemo(() => {
-    const defaultCrypto = [
-      { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', current_price: 96420, price_change_percentage_24h: 2.84, market_cap: 1890000000000, total_volume: 42500000000 },
-      { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', current_price: 2745.5, price_change_percentage_24h: 1.92, market_cap: 330000000000, total_volume: 21400000000 },
-      { id: 'solana', symbol: 'SOL', name: 'Solana', current_price: 194.5, price_change_percentage_24h: 5.12, market_cap: 92000000000, total_volume: 6800000000 },
-      { id: 'binancecoin', symbol: 'BNB', name: 'BNB', current_price: 648.2, price_change_percentage_24h: 1.10, market_cap: 95000000000, total_volume: 1800000000 },
-      { id: 'ripple', symbol: 'XRP', name: 'XRP', current_price: 2.34, price_change_percentage_24h: -0.85, market_cap: 132000000000, total_volume: 8500000000 },
-      { id: 'cardano', symbol: 'ADA', name: 'Cardano', current_price: 0.82, price_change_percentage_24h: 3.40, market_cap: 29000000000, total_volume: 1200000000 },
-      { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin', current_price: 0.28, price_change_percentage_24h: -1.25, market_cap: 41000000000, total_volume: 2900000000 },
-      { id: 'tron', symbol: 'TRX', name: 'TRON', current_price: 0.24, price_change_percentage_24h: 0.65, market_cap: 21000000000, total_volume: 980000000 },
-    ];
+    if (!Array.isArray(cryptoList) || cryptoList.length === 0) {
+      return [];
+    }
 
-    const source = (cryptoList && cryptoList.length > 0) ? cryptoList : defaultCrypto;
-    return source.map(c => ({
+    return cryptoList.map(c => ({
       id: c.id,
       symbol: (c.symbol || '').toUpperCase(),
       name: c.name,
       price: c.current_price,
-      change: c.price_change_percentage_24h || 0,
-      isPositive: (c.price_change_percentage_24h || 0) >= 0,
+      change: typeof c.price_change_percentage_24h === 'number' ? c.price_change_percentage_24h : null,
+      isPositive: typeof c.price_change_percentage_24h === 'number' ? c.price_change_percentage_24h >= 0 : null,
       marketCap: c.market_cap || 0,
       volume: c.total_volume || 0,
       image: c.image
@@ -232,12 +220,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
   // Gold benchmarks
   const goldRows = useMemo(() => {
-    const goldOzUsd = (rates.XAU && rates.XAU > 0)
-      ? Number((1 / rates.XAU).toFixed(2))
-      : (metalsData.gold?.price || 3898.90);
-    const silverOzUsd = (rates.XAG && rates.XAG > 0)
-      ? Number((1 / rates.XAG).toFixed(2))
-      : (metalsData.silver?.price || 49.28);
+    const goldOzUsd = Number.isFinite(metalsData.gold?.price) && metalsData.gold.price > 0
+      ? metalsData.gold.price : (rates.XAU > 0 ? Number((1 / rates.XAU).toFixed(2)) : null);
+    const silverOzUsd = Number.isFinite(metalsData.silver?.price) && metalsData.silver.price > 0
+      ? metalsData.silver.price : (rates.XAG > 0 ? Number((1 / rates.XAG).toFixed(2)) : null);
 
     const goldMetrics = calculateGoldLocalMetrics(goldOzUsd, usdToPkr, true);
     const goldPerTola24K = goldMetrics.pricePerTola24K;
@@ -248,11 +234,11 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
     const goldPerTola21K = goldMetrics.pricePerTola21K;
     const goldPerTola18K = goldMetrics.pricePerTola18K;
 
-    const goldChange = (metalsData.gold?.change ?? -0.56);
-    const silverChange = (metalsData.silver?.change ?? -0.17);
+    const goldChange = Number.isFinite(metalsData.gold?.change) ? metalsData.gold.change : null;
+    const silverChange = Number.isFinite(metalsData.silver?.change) ? metalsData.silver.change : null;
 
-    return [
-      { purity: '24K Gold (Karachi Sarafa Bullion)', unit: 'Per Tola (11.66g)', ratePkr: goldPerTola24K, rateUsd: (goldPerTola24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
+    const rows = [
+      { purity: '24K Gold (Indicative Spot Parity)', unit: 'Per Tola (11.66g)', ratePkr: goldPerTola24K, rateUsd: (goldPerTola24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
       { purity: '24K Gold (Pure Bullion 99.9%)', unit: 'Per 10 Grams', ratePkr: goldPer10g24K, rateUsd: (goldPer10g24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
       { purity: '24K Gold (Pure Bullion 99.9%)', unit: 'Per 1 Gram', ratePkr: goldPerGram24K, rateUsd: (goldPerGram24K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
       { purity: '24K Gold Spot (LBMA International)', unit: '1 Troy Ounce (oz)', ratePkr: Math.round(goldOzUsd * usdToPkr), rateUsd: goldOzUsd, change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
@@ -262,6 +248,18 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       { purity: '18K Gold (Italian Standard 75.0%)', unit: 'Per Tola', ratePkr: goldPerTola18K, rateUsd: (goldPerTola18K / usdToPkr), change: `${goldChange >= 0 ? '+' : ''}${goldChange}%`, isPositive: goldChange >= 0 },
       { purity: 'Silver Spot (XAG/USD International)', unit: '1 Troy Ounce (oz)', ratePkr: Math.round(silverOzUsd * usdToPkr), rateUsd: silverOzUsd, change: `${silverChange >= 0 ? '+' : ''}${silverChange}%`, isPositive: silverChange >= 0 },
     ];
+    return rows.map((row, idx) => {
+      const isSilver = idx === 8;
+      const available = usdToPkr !== null && (isSilver ? silverOzUsd !== null : goldOzUsd !== null);
+      const change = isSilver ? silverChange : goldChange;
+      return {
+        ...row,
+        ratePkr: available ? row.ratePkr : null,
+        rateUsd: available ? row.rateUsd : null,
+        change: change === null ? 'N/A' : `${change >= 0 ? '+' : ''}${change}%`,
+        isPositive: change === null ? null : change >= 0
+      };
+    });
   }, [rates.XAU, rates.XAG, metalsData, usdToPkr]);
 
   // Filtered Currencies
@@ -465,18 +463,24 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                         </div>
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 font-bold text-slate-900 dark:text-white text-sm font-tabular whitespace-nowrap">
-                        ₨ {c.ratePkr.toFixed(2)}
+                        {c.ratePkr !== null ? `₨ ${c.ratePkr.toFixed(2)}` : 'N/A'}
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-semibold font-tabular whitespace-nowrap">
                         ${c.rateUsd.toFixed(4)}
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
-                          c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
-                        }`}>
-                          {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                          <span>{c.change}</span>
-                        </span>
+                        {c.change !== 'N/A' && c.isPositive !== null ? (
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                            c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
+                          }`}>
+                            {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            <span>{c.change}</span>
+                          </span>
+                        ) : (
+                          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 font-tabular">
+                            N/A
+                          </span>
+                        )}
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
                         <button
@@ -563,61 +567,69 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                {filteredCrypto.map((c) => {
-                  const isHighlighted = highlightedAsset === c.symbol.toUpperCase();
-                  return (
-                    <tr 
-                      key={c.symbol} 
-                      id={`rate-row-${c.symbol.toUpperCase()}`}
-                      className={`transition-all duration-300 ${
-                        isHighlighted 
-                          ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
-                          : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
-                      }`}
-                    >
-                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
-                          {c.image ? (
-                            <img src={c.image} alt={c.name} width="28" height="28" decoding="async" loading="lazy" className="w-7 h-7 rounded-full" />
-                          ) : (
-                            <div className="w-7 h-7 rounded-full bg-[#00E676]/10 text-[#00E676] font-black flex items-center justify-center text-xs">
-                              {c.symbol.slice(0, 2)}
+                {filteredCrypto.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="py-8 text-center text-slate-500 dark:text-slate-400 font-medium">
+                      Cryptocurrency market data is temporarily unavailable.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCrypto.map((c) => {
+                    const isHighlighted = highlightedAsset === c.symbol.toUpperCase();
+                    return (
+                      <tr 
+                        key={c.symbol} 
+                        id={`rate-row-${c.symbol.toUpperCase()}`}
+                        className={`transition-all duration-300 ${
+                          isHighlighted 
+                            ? 'bg-[#00E676]/20 ring-2 ring-[#00E676] shadow-lg shadow-[#00E676]/20' 
+                            : 'hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
+                        }`}
+                      >
+                        <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            {c.image ? (
+                              <img src={c.image} alt={c.name} width="28" height="28" decoding="async" loading="lazy" className="w-7 h-7 rounded-full" />
+                            ) : (
+                              <div className="w-7 h-7 rounded-full bg-[#00E676]/10 text-[#00E676] font-black flex items-center justify-center text-xs">
+                                {c.symbol.slice(0, 2)}
+                              </div>
+                            )}
+                            <div>
+                              <span className="font-extrabold text-slate-900 dark:text-white text-sm">{c.symbol}</span>
+                              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">{c.name}</span>
                             </div>
-                          )}
-                          <div>
-                            <span className="font-extrabold text-slate-900 dark:text-white text-sm">{c.symbol}</span>
-                            <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">{c.name}</span>
                           </div>
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-3.5 sm:px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular whitespace-nowrap">
-                        ${c.price.toLocaleString()}
-                      </td>
-                      <td className="py-3.5 px-3.5 sm:px-6 text-[#00E676] font-bold font-tabular whitespace-nowrap">
-                        ₨ {(c.price * usdToPkr).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                      </td>
-                      <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
-                          c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
-                        }`}>
-                          {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                          <span>{c.change.toFixed(2)}%</span>
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular whitespace-nowrap">
-                        ${(c.volume / 1e9).toFixed(2)}B
-                      </td>
-                      <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
-                        <button
-                          onClick={() => navigate(`/charts?asset=${c.symbol}`)}
-                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer touch-manipulation"
-                        >
-                          Chart
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        </td>
+                        <td className="py-3.5 px-3.5 sm:px-6 font-extrabold text-slate-900 dark:text-white text-sm font-tabular whitespace-nowrap">
+                          ${c.price.toLocaleString()}
+                        </td>
+                        <td className="py-3.5 px-3.5 sm:px-6 text-[#00E676] font-bold font-tabular whitespace-nowrap">
+                          {usdToPkr !== null ? `₨ ${(c.price * usdToPkr).toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'N/A'}
+                        </td>
+                        <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                            c.isPositive ? 'bg-[#00E676]/10 text-[#00E676]' : 'bg-rose-500/10 text-rose-400'
+                          }`}>
+                            {c.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            <span>{c.change !== null ? `${c.change.toFixed(2)}%` : 'N/A'}</span>
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3.5 sm:px-6 text-slate-600 dark:text-[#A8B3C2] font-tabular whitespace-nowrap">
+                          ${(c.volume / 1e9).toFixed(2)}B
+                        </td>
+                        <td className="py-3.5 px-3.5 sm:px-6 text-right whitespace-nowrap">
+                          <button
+                            onClick={() => navigate(`/charts?asset=${c.symbol}`)}
+                            className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs transition-colors cursor-pointer touch-manipulation"
+                          >
+                            Chart
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
@@ -666,14 +678,14 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                         {g.unit}
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 font-extrabold text-[#00E676] text-sm font-tabular whitespace-nowrap">
-                        ₨ {Math.round(g.ratePkr).toLocaleString()}
+                        {g.ratePkr !== null ? `₨ ${Math.round(g.ratePkr).toLocaleString()}` : 'N/A'}
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 text-slate-700 dark:text-white font-tabular whitespace-nowrap">
-                        ${g.rateUsd.toFixed(2)}
+                        {g.rateUsd !== null ? `$${g.rateUsd.toFixed(2)}` : 'N/A'}
                       </td>
                       <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[#00E676]/10 text-[#00E676]">
-                          <TrendingUp className="w-3 h-3" />
+                          {g.isPositive !== null && <TrendingUp className="w-3 h-3" />}
                           <span>{g.change}</span>
                         </span>
                       </td>

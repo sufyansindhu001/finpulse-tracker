@@ -16,6 +16,7 @@ import { supabase, normalizeArticle } from '../lib/supabase';
 import { compressImageFile } from '../utils/imageCompressor';
 import GalleryModal from './GalleryModal';
 import { ARTICLES_CACHE_KEY, updateArticlesCache, PURGED_SLUG_SET } from '../services/articlesService';
+import { savePublishedArticle, verifyPublicArticle } from '../services/articlePublishingService';
 
 const STORAGE_KEY = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
 const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
@@ -35,6 +36,9 @@ export default function ArticleManager() {
   const [articleForm, setArticleForm] = useState(INITIAL_FORM_STATE);
   const [editingArticleId, setEditingArticleId] = useState(null);
   const [articleSaved, setArticleSaved] = useState(false);
+  const [publishError, setPublishError] = useState('');
+  const [publishWarning, setPublishWarning] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -155,6 +159,10 @@ export default function ArticleManager() {
   // 2. Publish / Edit Submission Handler
   const handleArticleSubmit = async (e) => {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    if (isSaving) return;
+    setPublishError('');
+    setPublishWarning('');
+    setArticleSaved(false);
     const rawTitle = (articleForm.title || '').trim();
     if (!rawTitle) {
       alert('Please enter an article title.');
@@ -200,6 +208,9 @@ export default function ArticleManager() {
       }
     }
 
+    setIsSaving(true);
+    try {
+    let publishedSlug = '';
     if (editingArticleId) {
       // NOTE: Supabase articles schema contains ONLY 'image' column (NO 'cover_image' column!)
       const dbUpdatePayload = {
@@ -213,17 +224,8 @@ export default function ArticleManager() {
         read_time
       };
 
-      try {
-        const { error } = await supabase
-          .from('articles')
-          .update(dbUpdatePayload)
-          .or(`id.eq.${editingArticleId},slug.eq.${editingArticleId}`);
-        if (error) {
-          console.error('[ArticleManager] Supabase update error:', error);
-        }
-      } catch (err) {
-        console.warn('[ArticleManager] Supabase update error:', err);
-      }
+      const saved = await savePublishedArticle(supabase, { article: dbUpdatePayload, existing: currentArticle });
+      publishedSlug = saved.slug;
 
       const updatedList = articles.map(art => {
         if (art.id === editingArticleId || art.slug === editingArticleId) {
@@ -258,14 +260,8 @@ export default function ArticleManager() {
         created_at: new Date().toISOString()
       };
 
-      try {
-        const { error } = await supabase.from('articles').insert([newDbArticle]);
-        if (error) {
-          console.error('[ArticleManager] Supabase insert error:', error);
-        }
-      } catch (err) {
-        console.warn('[ArticleManager] Supabase insert error:', err);
-      }
+      const saved = await savePublishedArticle(supabase, { article: newDbArticle });
+      publishedSlug = saved.slug;
 
       const normalized = normalizeArticle({
         ...newDbArticle,
@@ -278,8 +274,19 @@ export default function ArticleManager() {
     }
 
     setArticleForm(INITIAL_FORM_STATE);
-    setArticleSaved(true);
-    setTimeout(() => setArticleSaved(false), 3000);
+    if (await verifyPublicArticle(publishedSlug)) {
+      setArticleSaved(true);
+      setTimeout(() => setArticleSaved(false), 5000);
+    } else {
+      setPublishWarning(`Saved to Supabase, but public access to /blog/${publishedSlug} could not yet be verified. Do not publish the same article again; ask the site administrator to check public read permissions.`);
+    }
+    } catch (err) {
+      console.error('[ArticleManager] Cloud publication failed:', err);
+      setPublishError(err?.message || 'Article publication failed. Please try again.');
+      // Keep the entire form and its image intact for retry from the same device.
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Edit action
@@ -309,12 +316,15 @@ export default function ArticleManager() {
     if (!window.confirm('Are you sure you want to permanently delete this article?')) return;
     
     try {
-      await supabase
+      const { error } = await supabase
         .from('articles')
         .delete()
         .or(`id.eq.${targetId},slug.eq.${targetId}`);
+      if (error) throw error;
     } catch (err) {
       console.warn('[ArticleManager] Supabase delete error:', err);
+      setPublishError('Delete failed on the server. Article remains published.');
+      return;
     }
 
     try {
@@ -444,7 +454,7 @@ export default function ArticleManager() {
               <span>{editingArticleId ? 'Edit Article' : 'Publish New Financial Article'}</span>
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Articles published here are permanently saved to <code className="text-blue-500 font-mono">fgc_portal_articles</code> and immediately live on <code className="text-blue-500 font-mono">/blog</code>.
+              Articles are published to Supabase for worldwide access. A browser cache alone never counts as a successful publication.
             </p>
           </div>
 
@@ -462,7 +472,19 @@ export default function ArticleManager() {
         {articleSaved && (
           <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2 text-xs font-bold text-emerald-400 animate-in fade-in">
             <Check className="w-4 h-4" />
-            <span>Article successfully saved to localStorage and live on /blog!</span>
+            <span>Article saved successfully to Supabase. It can now be read on other devices.</span>
+          </div>
+        )}
+
+        {publishError && (
+          <div role="alert" className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-sm font-semibold text-red-600 dark:text-red-300">
+            Not published: {publishError} Your draft is still in this form; please retry after the issue is resolved.
+          </div>
+        )}
+
+        {publishWarning && (
+          <div role="status" className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-sm font-semibold text-amber-700 dark:text-amber-300">
+            {publishWarning}
           </div>
         )}
 
@@ -683,10 +705,11 @@ export default function ArticleManager() {
           <div className="flex items-center gap-3">
             <button
               type="submit"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer flex items-center gap-2"
+              disabled={isSaving || isUploadingImage}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <Check className="w-4 h-4" />
-              <span>{editingArticleId ? 'Save Changes' : 'Publish Article'}</span>
+              <span>{isSaving ? 'Saving to Supabase...' : (editingArticleId ? 'Save Changes' : 'Publish Article')}</span>
             </button>
 
             {editingArticleId && (
