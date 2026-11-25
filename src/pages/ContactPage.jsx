@@ -110,8 +110,8 @@ export default function ContactPage() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 dark:text-[#A8B3C2]">
-            <Link to="/author/sufyan-saleem" className="hover:text-[#00E676] underline underline-offset-2 transition-colors">
-              Author Desk (Sufyan Saleem)
+            <Link to="/author/sufyan-sindhu" className="hover:text-[#00E676] underline underline-offset-2 transition-colors">
+              Author Desk (Sufyan Sindhu)
             </Link>
             <span className="text-slate-400">•</span>
             <Link to="/editorial-policy" className="hover:text-[#00E676] underline underline-offset-2 transition-colors">

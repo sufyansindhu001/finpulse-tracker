@@ -128,7 +128,7 @@ export function AppProvider({ children }) {
       title: rawTitle,
       date: newArticle.date || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       readTime: newArticle.readTime || `${Math.max(1, Math.ceil(((newArticle.content || '').split(' ').length) / 200))} min read`,
-      author: newArticle.author || 'Sufyan Saleem (Financial Research Desk)',
+      author: newArticle.author || 'Sufyan Sindhu',
       summary: newArticle.summary || newArticle.excerpt || '',
       excerpt: newArticle.excerpt || newArticle.summary || '',
       image: newArticle.image || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&fm=webp&q=75',

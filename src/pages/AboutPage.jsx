@@ -68,7 +68,7 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Founded by fintech engineers and quantitative researchers, {siteSettings?.websiteName || 'FGC Spot'} was engineered to eliminate opacity in international exchange calculations and cross-border commerce. Whether you are monitoring major currency corridors (USD/PKR, EUR/PKR, GBP/USD), tracking digital assets (BTC, ETH, SOL), or calculating gold purity benchmarks, our mission is to deliver zero-latency calculation transparency.
+            {siteSettings?.websiteName || 'FGC Spot'} is an independent financial information and education project. Whether you are comparing currency corridors (USD/PKR, EUR/PKR, GBP/USD), tracking digital assets (BTC, ETH, SOL), or learning how gold purity conversions work, our goal is to explain available market information and its limitations clearly.
           </p>
 
           {/* Feature Grid */}
@@ -81,7 +81,7 @@ export default function AboutPage() {
                   <span>Central Bank Forex</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
-                  Real-time rates ingested from interbank institutional feeds covering 160+ fiat currencies without retail markups.
+                  Currency reference rates from public market-data providers, with clear differences from retail quotes and bank spreads.
                 </p>
               </div>
 
@@ -91,7 +91,7 @@ export default function AboutPage() {
                   <span>Multi-Exchange Crypto</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
-                  Live order book streaming, 24-hour volume metrics, and capitalization rankings via multi-exchange aggregation.
+                  Public cryptocurrency price, volume, and market-cap information, subject to upstream provider availability.
                 </p>
               </div>
 
@@ -118,8 +118,8 @@ export default function AboutPage() {
               {[
                 '100% Free Public Access: No mandatory paywalls or account creation required.',
                 'Interbank Mid-Market Transparency: Calculating rates without retail bank spreads.',
-                'AdSense & Privacy Compliant: Strictly adhering to GDPR, CCPA, and publisher standards.',
-                'Sub-Second Ticks: Low latency WebSocket and API feeds.'
+                'Privacy & Editorial Policies: Public information about data use, sources, and corrections.',
+                'Provider-Dependent Updates: Refresh intervals and availability vary by market and upstream feed.'
               ].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 text-xs sm:text-sm">
                   <CheckCircle2 className="w-4 h-4 text-[#00E676] shrink-0 mt-0.5" />
@@ -136,10 +136,10 @@ export default function AboutPage() {
                 Editorial Desk &amp; Authorship
               </span>
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                Analytical Leadership &amp; Financial Governance
+                Publisher &amp; Editorial Information
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed mt-1">
-                Every research article, conversion guide, and market calculation on FGC Spot is produced under strict editorial oversight and published by our verified analytical team.
+                FGC Spot is independently maintained. Its articles and tools are intended to explain financial topics, not to imply an institutional research team or regulated financial-adviser status.
               </p>
             </div>
 
@@ -148,7 +148,7 @@ export default function AboutPage() {
               <div className="flex items-start sm:items-center gap-4">
                 <img
                   src="/sufyan-author.jpg"
-                  alt="Sufyan Saleem — Lead Financial Analyst"
+                  alt="Sufyan Sindhu — Publisher and Editor"
                   className="w-16 h-16 rounded-2xl object-cover border-2 border-[#00E676]/40 shadow-sm shrink-0"
                   width="64"
                   height="64"
@@ -160,20 +160,20 @@ export default function AboutPage() {
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                      Sufyan Saleem
+                      Sufyan Sindhu
                     </h3>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20">
-                      Lead Financial Analyst
+                      Publisher &amp; Editor
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-xl">
-                    Lead macro strategist and columnist at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX equity valuation, and remittance tax structures.
+                    Publisher and editor of FGC Spot, covering currency markets, gold calculations, equities, and practical remittance explainers for a global audience.
                   </p>
                 </div>
               </div>
 
               <Link
-                to="/author/sufyan-saleem"
+                to="/author/sufyan-sindhu"
                 className="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-xs shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
                 <span>View Full Profile</span>

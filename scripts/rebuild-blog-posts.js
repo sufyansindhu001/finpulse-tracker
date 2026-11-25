@@ -47,7 +47,7 @@ async function run() {
       ...p,
       slug,
       title,
-      author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
+      author: 'Sufyan Sindhu',
       date: p.date || 'October 24, 2026',
       created_at: p.created_at || '2026-10-24T12:00:00Z',
       updated_at: '2026-10-25T10:00:00Z',
@@ -61,7 +61,7 @@ async function run() {
     slug: 'freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained',
     title: 'Freelance Remittances & Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Retention Accounts Explained',
     category: 'Banking & Remittances',
-    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
+    author: 'Sufyan Sindhu',
     readTime: '6 min read',
     date: 'October 24, 2026',
     created_at: '2026-10-24T12:00:00Z',
@@ -173,7 +173,7 @@ By structuring your freelance banking with an Exporters Special Foreign Currency
   const fileContent = `/**
  * FGC Spot Analytical Blog & Research Post Database
  * Authoritative, high-utility financial guides covering Forex, Gold Bullion, Equities, and Remittances.
- * Maintained by Sufyan Saleem, Lead Financial Analyst & Macro Strategist.
+ * Maintained by Sufyan Sindhu.
  */
 
 export const BLOG_POSTS = ${JSON.stringify(upgraded, null, 2)};

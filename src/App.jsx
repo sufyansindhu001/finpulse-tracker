@@ -490,13 +490,14 @@ export default function App() {
               </div>
             } />
 
-            {/* ROUTE 14: AUTHOR PROFILE PAGE (/author/sufyan-saleem) */}
-            <Route path="/author/sufyan-saleem" element={
+            {/* ROUTE 14: AUTHOR PROFILE PAGE (/author/sufyan-sindhu) */}
+            <Route path="/author/sufyan-sindhu" element={
               <div className="w-full animate-in fade-in duration-300">
                 <AuthorPage />
               </div>
             } />
-            <Route path="/author" element={<Navigate to="/author/sufyan-saleem" replace />} />
+            <Route path="/author" element={<Navigate to="/author/sufyan-sindhu" replace />} />
+            <Route path="/author/sufyan-saleem" element={<Navigate to="/author/sufyan-sindhu" replace />} />
             <Route path="/author/:name" element={
               <div className="w-full animate-in fade-in duration-300">
                 <AuthorPage />

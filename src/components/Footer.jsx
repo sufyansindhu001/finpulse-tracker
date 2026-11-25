@@ -208,7 +208,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  to="/author/sufyan-saleem"
+                  to="/author/sufyan-sindhu"
                   className="hover:text-[#00E676] flex items-center gap-2 transition-colors font-medium cursor-pointer"
                 >
                   <BookOpen className="w-3.5 h-3.5" />

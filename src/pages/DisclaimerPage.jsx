@@ -142,7 +142,7 @@ export default function DisclaimerPage() {
               <span>Limitation of Liability</span>
             </h2>
             <p>
-              To the fullest extent permitted by applicable law, FGC Spot, its publisher, contributing analysts (including Sufyan Saleem), developers, and officers disclaim all liability for any direct, indirect, incidental, punitive, or consequential financial losses, investment losses, or lost profits incurred by any individual or entity acting on information, tools, or data available on this website.
+              To the fullest extent permitted by applicable law, FGC Spot, its publisher, contributing analysts (including Sufyan Sindhu), developers, and officers disclaim all liability for any direct, indirect, incidental, punitive, or consequential financial losses, investment losses, or lost profits incurred by any individual or entity acting on information, tools, or data available on this website.
             </p>
           </div>
 

@@ -21,6 +21,7 @@ import { getRelatedArticles } from '../utils/relatedArticles';
 import { getCategoryFallbackImage } from '../services/newsService';
 import OptimizedImage from '../components/OptimizedImage';
 import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR, ARTICLES_CACHE_KEY, updateArticlesCache } from '../services/articlesService';
+import { displayAuthorName, DEFAULT_EDITOR_ROLE } from '../utils/authorIdentity';
 
 function getBaseLikes(seed) {
   if (!seed) return 42;
@@ -430,7 +431,7 @@ function BlogDetailPageContent() {
     if (!article?.title) return;
     const activeSlug = article?.slug || targetIdentifier;
     const canonicalUrl = `https://www.fgcspot.com/blog/${activeSlug}`;
-    const authorName = article.author || 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist';
+    const authorName = displayAuthorName(article.author);
     const datePublished = article.created_at || '2026-10-24T12:00:00Z';
     const dateModified = article.updated_at || datePublished;
     const imageUrl = article.image || article.coverImage || article.featuredImage || 'https://www.fgcspot.com/logo.png';
@@ -447,8 +448,8 @@ function BlogDetailPageContent() {
         {
           '@type': 'Person',
           'name': authorName,
-          'jobTitle': 'Lead Financial Analyst & Macro Strategist',
-          'url': 'https://www.fgcspot.com/author/sufyan-saleem/'
+          'jobTitle': DEFAULT_EDITOR_ROLE,
+          'url': 'https://www.fgcspot.com/author/sufyan-sindhu/'
         }
       ],
       'publisher': {
@@ -669,10 +670,10 @@ function BlogDetailPageContent() {
 
         {/* Author Bio Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-white/10 mb-8 gap-4">
-          <Link to="/author/sufyan-saleem" className="flex items-center gap-3.5 group cursor-pointer">
+          <Link to="/author/sufyan-sindhu" className="flex items-center gap-3.5 group cursor-pointer">
             <img
               src="/sufyan-author.jpg"
-              alt="Sufyan Saleem - Lead Financial Analyst"
+              alt="Sufyan Sindhu - Publisher and Editor"
               className="w-11 h-11 rounded-full object-cover border-2 border-slate-200 dark:border-[#00E676]/40 shadow-xs shrink-0 group-hover:border-[#00E676] transition-colors"
               width="44"
               height="44"
@@ -684,13 +685,13 @@ function BlogDetailPageContent() {
             />
             <div>
               <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors flex items-center gap-2">
-                <span>{article.author || 'Sufyan Saleem'}</span>
+                <span>{displayAuthorName(article.author)}</span>
                 <span className="text-[10px] text-[#00E676] font-semibold bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">
                   Author Profile &rarr;
                 </span>
               </div>
               <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">
-                Lead Financial Analyst &amp; Macro Strategist • FGC Spot
+                Publisher &amp; Editor • FGC Spot
               </div>
             </div>
           </Link>
@@ -962,10 +963,10 @@ function BlogDetailPageContent() {
         {/* Author Bio Card & Editorial Oversight */}
         <div className="mt-10 p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <Link to="/author/sufyan-saleem" className="flex items-center gap-4 group cursor-pointer">
+            <Link to="/author/sufyan-sindhu" className="flex items-center gap-4 group cursor-pointer">
               <img
                 src="/sufyan-author.jpg"
-                alt="Sufyan Saleem - Lead Financial Analyst"
+                alt="Sufyan Sindhu - Publisher and Editor"
                 className="w-14 h-14 rounded-2xl object-cover border-2 border-[#00E676]/50 shadow-sm shrink-0 group-hover:scale-105 transition-transform"
                 width="56"
                 height="56"
@@ -978,20 +979,20 @@ function BlogDetailPageContent() {
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-base font-bold text-slate-900 dark:text-white group-hover:text-[#00E676] transition-colors">
-                    {article.author || 'Sufyan Saleem'}
+                    {displayAuthorName(article.author)}
                   </span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">
-                    Lead Analyst &amp; Strategist
+                    Publisher &amp; Editor
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
-                  Financial analyst covering Pakistan foreign exchange corridors, gold bullion assay benchmarks, PSX valuation multiples, and freelance export tax regimes.
+                  FGC Spot publisher covering currency exchange, gold purity calculations, equities, and educational remittance explainers.
                 </p>
               </div>
             </Link>
             <div className="flex items-center gap-2 shrink-0">
               <Link 
-                to="/author/sufyan-saleem"
+                to="/author/sufyan-sindhu"
                 className="px-3.5 py-1.5 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <span>View Author Profile</span>

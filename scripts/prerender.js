@@ -355,7 +355,7 @@ function renderFooter() {
             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">Trust & Governance</h4>
             <ul class="space-y-2">
               <li><a href="/about" class="hover:text-[#00E676] transition-colors">About Us</a></li>
-              <li><a href="/author/sufyan-saleem" class="hover:text-[#00E676] transition-colors">Author &amp; Research Desk</a></li>
+              <li><a href="/author/sufyan-sindhu" class="hover:text-[#00E676] transition-colors">Author &amp; Research Desk</a></li>
               <li><a href="/editorial-policy" class="hover:text-[#00E676] transition-colors">Editorial Policy</a></li>
               <li><a href="/data-sources" class="hover:text-[#00E676] transition-colors">Data Sources &amp; Governance</a></li>
               <li><a href="/contact" class="hover:text-[#00E676] transition-colors">Contact Support</a></li>
@@ -379,7 +379,7 @@ function renderFooter() {
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-[#A8B3C2] pt-4">
           <p>&copy; ${new Date().getFullYear()} FGC Spot. All institutional rights reserved.</p>
           <div class="flex flex-wrap items-center gap-4">
-            <a href="/author/sufyan-saleem" class="hover:text-[#00E676] transition-colors">Author Desk</a>
+            <a href="/author/sufyan-sindhu" class="hover:text-[#00E676] transition-colors">Author Desk</a>
             <a href="/editorial-policy" class="hover:text-[#00E676] transition-colors">Editorial Policy</a>
             <a href="/data-sources" class="hover:text-[#00E676] transition-colors">Data Sources</a>
             <a href="/privacy-policy" class="hover:text-[#00E676] transition-colors">Privacy</a>
@@ -433,7 +433,7 @@ function renderHomePage() {
               </span>
             </h1>
             <p class="text-base sm:text-lg text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-2xl">
-              Track live interbank currency exchange rates, Karachi Sarafa Association gold bullion benchmarks, KSE-100 stock valuations, and cryptocurrency metrics with zero latency.
+              Explore public foreign-exchange reference rates, indicative gold conversions, stock-market information, and cryptocurrency metrics. Updates depend on external data providers.
             </p>
             <div class="flex flex-wrap items-center gap-4 pt-2">
               <a href="/rates" class="px-6 py-3 rounded-2xl bg-[#00E676] hover:bg-emerald-400 text-[#06111F] font-bold text-sm transition-all shadow-lg shadow-[#00E676]/20">
@@ -560,7 +560,7 @@ function renderHomePage() {
             <div class="space-y-2">
               <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Flagship Research</span>
               <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Original Financial Research & Analytical Guides</h2>
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2]">In-depth investigative reports authored by financial researchers and macro strategists.</p>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2]">Educational explainers on currency markets, investing concepts, remittances, and gold calculations.</p>
             </div>
             <a href="/blog" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-[#00E676] text-xs font-bold text-slate-900 dark:text-white transition-colors">
               Browse All 20 Articles &rarr;
@@ -581,7 +581,7 @@ function renderHomePage() {
                 </p>
               </div>
               <div class="pt-4 border-t border-slate-200 dark:border-white/10 text-[11px] text-slate-500 flex items-center justify-between">
-                <span>By Sufyan Saleem</span>
+                <span>By Sufyan Sindhu</span>
                 <a href="/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide" class="font-bold text-[#00E676]">Read Guide &rarr;</a>
               </div>
             </article>
@@ -599,7 +599,7 @@ function renderHomePage() {
                 </p>
               </div>
               <div class="pt-4 border-t border-slate-200 dark:border-white/10 text-[11px] text-slate-500 flex items-center justify-between">
-                <span>By Sufyan Saleem</span>
+                <span>By Sufyan Sindhu</span>
                 <a href="/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained" class="font-bold text-[#00E676]">Read Guide &rarr;</a>
               </div>
             </article>
@@ -617,7 +617,7 @@ function renderHomePage() {
                 </p>
               </div>
               <div class="pt-4 border-t border-slate-200 dark:border-white/10 text-[11px] text-slate-500 flex items-center justify-between">
-                <span>By Sufyan Saleem</span>
+                <span>By Sufyan Sindhu</span>
                 <a href="/blog/pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide" class="font-bold text-[#00E676]">Read Guide &rarr;</a>
               </div>
             </article>
@@ -1277,7 +1277,7 @@ function renderBlogIndexPage(articles = []) {
         </p>
       </div>
       <div class="pt-4 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-500">
-        <span>By ${escapeHtml(art.author ? art.author.split(',')[0] : 'Sufyan Saleem')}</span>
+        <span>By ${escapeHtml(art.author ? art.author.split(',')[0] : 'Sufyan Sindhu')}</span>
         <a href="/blog/${art.slug}" class="font-bold text-[#00E676] hover:underline">Read Article &rarr;</a>
       </div>
     </article>
@@ -1348,7 +1348,7 @@ function renderArticleDetailPage(article, allArticles = []) {
             <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/30">
               ${escapeHtml(article.category || 'Macroeconomic Research')}
             </span>
-            <span class="text-xs text-slate-500 font-medium">● Institutional Peer Review Verified</span>
+            <span class="text-xs text-slate-500 font-medium">● Educational analysis</span>
           </div>
 
           <h1 class="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
@@ -1357,9 +1357,9 @@ function renderArticleDetailPage(article, allArticles = []) {
 
           {/* Author Byline & Date */}
           <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-[#A8B3C2] pt-2">
-            <a href="/author/sufyan-saleem" class="flex items-center gap-2.5 hover:text-[#00E676] transition-colors">
-              <img src="/sufyan-author.jpg" alt="Sufyan Saleem" class="w-8 h-8 rounded-full object-cover border border-[#00E676]/40" />
-              <span class="font-semibold text-slate-900 dark:text-white hover:text-[#00E676]">${escapeHtml(article.author || 'Sufyan Saleem, Lead Financial Analyst')}</span>
+            <a href="/author/sufyan-sindhu" class="flex items-center gap-2.5 hover:text-[#00E676] transition-colors">
+              <img src="/sufyan-author.jpg" alt="Sufyan Sindhu" class="w-8 h-8 rounded-full object-cover border border-[#00E676]/40" />
+              <span class="font-semibold text-slate-900 dark:text-white hover:text-[#00E676]">${escapeHtml((article.author || 'Sufyan Sindhu').split(',')[0])}</span>
             </a>
             <span>•</span>
             <time datetime="${escapeHtml(article.created_at || TODAY)}">Published: ${escapeHtml(article.date || 'October 2026')}</time>
@@ -1397,20 +1397,20 @@ function renderArticleDetailPage(article, allArticles = []) {
         {/* Author Bio Box */}
         <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 mt-8">
           <div class="flex items-center gap-4">
-            <img src="/sufyan-author.jpg" alt="Sufyan Saleem" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#00E676]/40 shrink-0" />
+            <img src="/sufyan-author.jpg" alt="Sufyan Sindhu" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#00E676]/40 shrink-0" />
             <div class="space-y-1">
               <div class="flex items-center gap-2">
                 <h3 class="text-base font-bold text-slate-900 dark:text-white">
-                  <a href="/author/sufyan-saleem" class="hover:text-[#00E676] transition-colors">Sufyan Saleem</a>
+                  <a href="/author/sufyan-sindhu" class="hover:text-[#00E676] transition-colors">Sufyan Sindhu</a>
                 </h3>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">Verified Author</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">FGC Spot Publisher</span>
               </div>
               <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                Lead Financial Analyst and Macro Strategist at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX valuation multiples, and freelance export tax regimes.
+                Publisher and Editor at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX valuation multiples, and freelance export tax regimes.
               </p>
             </div>
           </div>
-          <a href="/author/sufyan-saleem" class="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shrink-0">
+          <a href="/author/sufyan-sindhu" class="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shrink-0">
             View Author Profile &rarr;
           </a>
         </div>
@@ -1468,14 +1468,14 @@ function renderAboutPage() {
             FGC Spot was founded with a singular, unambiguous mission: to eliminate predatory pricing markups, currency exchange obscurity, and information asymmetry across Pakistani and regional financial corridors.
           </p>
           <p>
-            In frontier economies, everyday citizens, freelancers, and businesses consistently lose significant portions of their capital due to hidden banking spreads, outdated gold jewelry quotations, and opaque cross-border remittance mechanisms. FGC Spot bridges this gap by engineering zero-latency institutional market terminals accessible to everyone.
+            FGC Spot helps readers compare currency rates, understand gold valuation formulas, and learn about market concepts. Rates are indicative and depend on publicly available upstream sources.
           </p>
 
           <h2 class="text-xl font-bold text-slate-900 dark:text-white pt-4">Our Core Pillars</h2>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
             <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
-              <h3 class="font-bold text-slate-900 dark:text-white text-sm">Zero Latency Data</h3>
-              <p class="text-xs text-slate-600 dark:text-[#A8B3C2]">Direct feeds from global interbank liquidity providers and local Sarafa market fixing desks.</p>
+              <h3 class="font-bold text-slate-900 dark:text-white text-sm">Public Data Sources</h3>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2]">Reference data from third-party market feeds, with availability and limitations described.</p>
             </div>
             <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
               <h3 class="font-bold text-slate-900 dark:text-white text-sm">Empirical Research</h3>
@@ -1483,27 +1483,27 @@ function renderAboutPage() {
             </div>
             <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
               <h3 class="font-bold text-slate-900 dark:text-white text-sm">Editorial Integrity</h3>
-              <p class="text-xs text-slate-600 dark:text-[#A8B3C2]">Strict peer-review procedures, transparent calculation methodologies, and complete regulatory compliance.</p>
+              <p class="text-xs text-slate-600 dark:text-[#A8B3C2]">Transparent calculation methods, source attribution, and a public corrections contact.</p>
             </div>
           </div>
 
           {/* Author Spotlight */}
           <div class="pt-6 border-t border-slate-200 dark:border-white/10 space-y-4">
-            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Editorial Leadership &amp; Financial Governance</h2>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Publisher &amp; Editorial Information</h2>
             <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
               <div class="flex items-center gap-4">
-                <img src="/sufyan-author.jpg" alt="Sufyan Saleem" class="w-16 h-16 rounded-2xl object-cover border-2 border-[#00E676]/40 shrink-0" />
+                <img src="/sufyan-author.jpg" alt="Sufyan Sindhu" class="w-16 h-16 rounded-2xl object-cover border-2 border-[#00E676]/40 shrink-0" />
                 <div class="space-y-1">
                   <div class="flex items-center gap-2">
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Sufyan Saleem</h3>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">Lead Financial Analyst</span>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Sufyan Sindhu</h3>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2 py-0.5 rounded-full border border-[#00E676]/20">Publisher and Editor</span>
                   </div>
                   <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-xl">
-                    Lead macro strategist and columnist at FGC Spot. Author of comprehensive empirical research guides covering Pakistan interbank forex, Karachi Sarafa gold benchmarks, PSX valuation multiples, and freelance export tax regimes.
+                    Publisher and editor of FGC Spot, covering currency markets, gold calculations, equities, and remittances for an international audience.
                   </p>
                 </div>
               </div>
-              <a href="/author/sufyan-saleem" class="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shrink-0">
+              <a href="/author/sufyan-sindhu" class="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-[#06111F] text-xs font-bold rounded-xl transition-all shrink-0">
                 View Full Profile &rarr;
               </a>
             </div>
@@ -1546,7 +1546,7 @@ function renderContactPage() {
         <header class="space-y-2 pb-6 border-b border-slate-200 dark:border-white/10">
           <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Institutional Desk</span>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Contact FGC Spot</h1>
-          <p class="text-sm text-slate-600 dark:text-[#A8B3C2]">Connect with our financial analysts, editorial board, and developer support desk.</p>
+          <p class="text-sm text-slate-600 dark:text-[#A8B3C2]">Send questions, corrections, or feedback to the FGC Spot editorial contact.</p>
         </header>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -1563,7 +1563,7 @@ function renderContactPage() {
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-500 dark:text-[#A8B3C2] py-2">
-          <a href="/author/sufyan-saleem" class="hover:text-[#00E676] underline">Author Desk (Sufyan Saleem)</a>
+          <a href="/author/sufyan-sindhu" class="hover:text-[#00E676] underline">Author Desk (Sufyan Sindhu)</a>
           <span>•</span>
           <a href="/editorial-policy" class="hover:text-[#00E676] underline">Editorial Policy &amp; Corrections</a>
           <span>•</span>
@@ -1605,7 +1605,7 @@ function renderPrivacyPolicyPage() {
         <header class="space-y-2 pb-6 border-b border-slate-200 dark:border-white/10">
           <span class="text-xs font-bold uppercase tracking-wider text-[#00E676]">Legal & Compliance</span>
           <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Privacy Policy</h1>
-          <p class="text-xs text-slate-500">Last updated: October 2026 • Compliant with Google AdSense, GDPR & CCPA</p>
+          <p class="text-xs text-slate-500">Last updated: November 2026 • Privacy and cookie information</p>
         </header>
 
         <div class="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
@@ -1616,12 +1616,12 @@ function renderPrivacyPolicyPage() {
 
           <h2 class="text-base font-bold text-slate-900 dark:text-white">2. Google AdSense & Cookies</h2>
           <p>
-            Google, as a third-party vendor, uses cookies to serve ads on FGC Spot. Google's use of advertising cookies enables it and its partners to serve ads to our users based on their visit to our site and/or other sites on the Internet. Users may opt out of personalized advertising by visiting Google's Ads Settings (www.google.com/settings/ads).
+            If Google advertising is enabled in the future, Google and its partners may use cookies to deliver and measure ads. FGC Spot will update its disclosures and consent options when advertising features are enabled.
           </p>
 
           <h2 class="text-base font-bold text-slate-900 dark:text-white">3. Log Files & Analytics Telemetry</h2>
           <p>
-            Like many other websites, FGC Spot makes use of log files and privacy-focused serverless telemetry. The information inside the log files includes internet protocol (IP) addresses, type of browser, Internet Service Provider (ISP), date/time stamps, referring/exit pages, and number of clicks. This data is non-personally identifiable and used exclusively to administer the site, analyze trends, and maintain sub-40ms terminal response times.
+            FGC Spot uses hosting logs and analytics telemetry to understand site reliability and visitor activity. Depending on the service, records may include IP addresses, browser type, visit times, referring pages, and navigation events. Contact us for privacy questions or data requests.
           </p>
 
           <h2 class="text-base font-bold text-slate-900 dark:text-white">4. User Rights & Inquiries</h2>
@@ -1752,7 +1752,7 @@ function renderAuthorPage(articles = []) {
         <span>/</span>
         <a href="/about" class="hover:text-[#00E676] transition-colors">About</a>
         <span>/</span>
-        <span class="text-slate-900 dark:text-white font-semibold">Author Profile: Sufyan Saleem</span>
+        <span class="text-slate-900 dark:text-white font-semibold">Author Profile: Sufyan Sindhu</span>
       </nav>
 
       {/* Author Profile Header Card */}
@@ -1760,7 +1760,7 @@ function renderAuthorPage(articles = []) {
         <div class="flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8 pb-8 border-b border-slate-200 dark:border-white/10">
           <img 
             src="/sufyan-author.jpg" 
-            alt="Sufyan Saleem — Lead Financial Analyst" 
+            alt="Sufyan Sindhu — Publisher and Editor" 
             width="128" 
             height="128" 
             class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-slate-100 dark:border-white/10 shadow-md ring-2 ring-[#00E676]/30"
@@ -1768,21 +1768,21 @@ function renderAuthorPage(articles = []) {
           <div class="space-y-3 flex-1">
             <div class="flex flex-wrap items-center gap-2">
               <span class="text-xs font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20">
-                Lead Financial Analyst &amp; Macro Strategist
+                Publisher &amp; Editor
               </span>
               <span class="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full">
-                ● Verified Author
+                ● FGC Spot Publisher
               </span>
             </div>
             <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              Sufyan Saleem
+              Sufyan Sindhu
             </h1>
             <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-3xl">
-              Sufyan Saleem serves as the Lead Financial Analyst and Macro Strategist at FGC Spot. He is the author of FGC Spot's empirical market research series, focusing on South Asian foreign exchange architecture, physical bullion pricing mechanics, Pakistan Stock Exchange equity valuation multiples, and cross-border remittance banking compliance.
+              Sufyan Sindhu publishes and edits FGC Spot, an independent financial information website. Its educational guides cover currency exchange, gold calculations, equities, and remittance banking; they are not personal investment or tax advice.
             </p>
             <div class="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-500 dark:text-[#A8B3C2]">
               <a href="mailto:fgcspot4@gmail.com" class="font-semibold text-[#00E676] hover:underline">
-                fgcspot4@gmail.com (Attn: Sufyan Saleem)
+                fgcspot4@gmail.com (Attn: Sufyan Sindhu)
               </a>
               <span>•</span>
               <span>${articles.length} Published Research Guides</span>
@@ -1846,7 +1846,7 @@ function renderAuthorPage(articles = []) {
               Published Research Guides (${articles.length})
             </h2>
             <p class="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
-              Comprehensive empirical analyses authored by Sufyan Saleem on FGC Spot
+              Comprehensive empirical analyses authored by Sufyan Sindhu on FGC Spot
             </p>
           </div>
           <a href="/blog" class="text-xs text-[#00E676] hover:underline font-bold">
@@ -1905,7 +1905,7 @@ function renderEditorialPolicyPage() {
               2. Research Methodology &amp; Primary Sources
             </h2>
             <p>
-              All original research authored by our analytical desk (led by Sufyan Saleem) is grounded strictly in verified primary documentation: SBP Foreign Exchange Manual and BPRD circulars; FBR Income Tax Ordinance 2001; SECP company filings; APSGJA daily Sarafa rate cards; and LBMA clearing benchmarks. We do not rely on rumors or marketing releases.
+              Our editorial goal is to reference publicly available documents where relevant, including SBP and FBR publications, exchange disclosures, and market-provider methodologies. Readers should verify time-sensitive rules with the issuing authority.
             </p>
           </div>
 
@@ -1941,7 +1941,7 @@ function renderEditorialPolicyPage() {
               6. Separation of Original Research vs. Syndicated News
             </h2>
             <p>
-              FGC Spot maintains an unambiguous boundary between original editorial research and third-party news syndication. Our Research &amp; Analysis Portal (/blog) contains 100% original, empirical long-form analysis written by Sufyan Saleem. Our Market News Wire (/news) aggregates headlines from external publishers under fair-use excerpts with explicit external source links.
+              The Research &amp; Analysis Portal (/blog) contains educational articles and commentary published by FGC Spot. The Market News Wire (/news) links to external publishers for the original reporting.
             </p>
           </div>
 
@@ -2169,9 +2169,9 @@ async function prerenderAll() {
       render: () => renderDisclaimerPage()
     },
     {
-      route: '/author/sufyan-saleem',
-      title: 'Sufyan Saleem — Lead Financial Analyst & Macro Strategist | FGC Spot',
-      description: 'Author profile and verified financial publications by Sufyan Saleem, Lead Financial Analyst at FGC Spot covering Pakistan forex, gold bullion, PSX equities, and remittance tax regimes.',
+      route: '/author/sufyan-sindhu',
+      title: 'Sufyan Sindhu — Publisher & Editor | FGC Spot',
+      description: 'Author profile and educational financial guides by Sufyan Sindhu, Publisher and Editor at FGC Spot covering Pakistan forex, gold bullion, PSX equities, and remittance tax regimes.',
       render: () => renderAuthorPage(articles)
     },
     {
@@ -2233,9 +2233,9 @@ async function prerenderAll() {
             'image': art.image || art.coverImage || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
             'author': {
               '@type': 'Person',
-              'name': art.author ? art.author.split(',')[0].trim() : 'Sufyan Saleem',
-              'jobTitle': 'Lead Financial Analyst & Macro Strategist',
-              'url': 'https://www.fgcspot.com/author/sufyan-saleem'
+              'name': art.author ? art.author.split(',')[0].trim() : 'Sufyan Sindhu',
+              'jobTitle': 'Publisher & Editor',
+              'url': 'https://www.fgcspot.com/author/sufyan-sindhu'
             },
             'publisher': {
               '@type': 'Organization',
@@ -2281,8 +2281,8 @@ async function prerenderAll() {
       schemaJsonLd = JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Person',
-        'name': 'Sufyan Saleem',
-        'jobTitle': 'Lead Financial Analyst & Macro Strategist',
+        'name': 'Sufyan Sindhu',
+        'jobTitle': 'Publisher & Editor',
         'worksFor': {
           '@type': 'Organization',
           'name': 'FGC Spot',
@@ -2387,7 +2387,8 @@ async function prerenderAll() {
     { from: 'matrix', to: '/converter' },
     { from: 'tools', to: '/converter' },
     { from: 'research', to: '/blog' },
-    { from: 'author', to: '/author/sufyan-saleem' },
+    { from: 'author', to: '/author/sufyan-sindhu' },
+    { from: 'author/sufyan-saleem', to: '/author/sufyan-sindhu' },
     { from: 'privacy', to: '/privacy-policy' },
     { from: 'terms-of-service', to: '/terms' },
     // 16 Legacy Articles smoothly redirected to new comprehensive guides

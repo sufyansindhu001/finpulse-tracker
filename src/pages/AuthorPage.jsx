@@ -22,9 +22,9 @@ import { getCategoryFallbackImage } from '../services/newsService';
 
 export default function AuthorPage() {
   useSEO({
-    title: 'Sufyan Saleem — Lead Financial Analyst & Macro Strategist | FGC Spot',
-    description: 'Author profile and verified financial publications by Sufyan Saleem, Lead Financial Analyst at FGC Spot covering Pakistan forex, gold bullion, PSX equities, and remittance tax regimes.',
-    canonical: '/author/sufyan-saleem/'
+    title: 'Sufyan Sindhu — Publisher & Editor | FGC Spot',
+    description: 'About Sufyan Sindhu, publisher and editor of FGC Spot, and the site’s educational guides covering currency exchange, gold, equities, and remittances.',
+    canonical: '/author/sufyan-sindhu/'
   });
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function AuthorPage() {
         <ChevronRight className="w-3.5 h-3.5" />
         <Link to="/about" className="hover:text-[#00E676] transition-colors font-medium">About</Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-900 dark:text-white font-semibold">Author Profile: Sufyan Saleem</span>
+        <span className="text-slate-900 dark:text-white font-semibold">Author Profile: Sufyan Sindhu</span>
       </nav>
 
       {/* Author Profile Header Card */}
@@ -76,7 +76,7 @@ export default function AuthorPage() {
           <div className="relative shrink-0">
             <img 
               src="/sufyan-author.jpg" 
-              alt="Sufyan Saleem — Lead Financial Analyst" 
+              alt="Sufyan Sindhu — Publisher and Editor" 
               width="128" 
               height="128"
               className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-slate-100 dark:border-white/10 shadow-md ring-2 ring-[#00E676]/30"
@@ -85,7 +85,7 @@ export default function AuthorPage() {
                 e.currentTarget.src = '/logo.png';
               }}
             />
-            <div className="absolute -bottom-2 -right-2 bg-[#00E676] text-[#06111F] p-1.5 rounded-xl shadow-md border-2 border-white dark:border-[#0A1726]" title="Verified Editorial Author">
+            <div className="absolute -bottom-2 -right-2 bg-[#00E676] text-[#06111F] p-1.5 rounded-xl shadow-md border-2 border-white dark:border-[#0A1726]" title="FGC Spot publisher">
               <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
@@ -94,19 +94,19 @@ export default function AuthorPage() {
           <div className="space-y-3 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-3 py-1 rounded-full border border-[#00E676]/20">
-                Lead Financial Analyst &amp; Macro Strategist
+                Publisher &amp; Editor
               </span>
               <span className="text-xs text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#00E676]" /> Verified Author
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#00E676]" /> FGC Spot Publisher
               </span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              Sufyan Saleem
+              Sufyan Sindhu
             </h1>
 
             <p className="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-3xl">
-              Sufyan Saleem serves as the Lead Financial Analyst and Macro Strategist at FGC Spot. He is the author of FGC Spot's empirical market research series, focusing on South Asian foreign exchange architecture, physical bullion pricing mechanics, Pakistan Stock Exchange equity valuation multiples, and cross-border remittance banking compliance.
+              Sufyan Sindhu publishes and edits FGC Spot, an independent financial information website. The site offers educational explainers on currency exchange, gold pricing calculations, equities, and remittance banking. Material is provided for general information, not personal financial or tax advice.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-1 text-xs">
@@ -116,7 +116,7 @@ export default function AuthorPage() {
                 title="Direct Editorial Inquiries"
               >
                 <Mail className="w-3.5 h-3.5" />
-                <span>fgcspot4@gmail.com (Attn: Sufyan Saleem)</span>
+                <span>fgcspot4@gmail.com (Attn: Sufyan Sindhu)</span>
               </a>
               <span className="text-slate-400">•</span>
               <span className="text-slate-500 dark:text-[#A8B3C2]">
@@ -140,7 +140,7 @@ export default function AuthorPage() {
               Areas of Editorial Focus &amp; Financial Coverage
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed max-w-3xl">
-              Sufyan’s research is grounded strictly in primary regulatory statutes, central bank policy bulletins, and mathematical parity calculations. His analytical publications span five core pillars:
+              FGC Spot's editorial coverage includes regulatory guidance, market-data limitations, and explanatory calculations. Readers should check linked official sources for current rules and rates. The site covers five core topics:
             </p>
           </div>
 
@@ -170,13 +170,13 @@ export default function AuthorPage() {
               <span>Editorial Integrity &amp; Transparency Statement</span>
             </h3>
             <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-              In accordance with FGC Spot's Editorial Policy, all articles authored by Sufyan Saleem are subject to strict primary-source verification against State Bank of Pakistan (SBP) circulars, Federal Board of Revenue (FBR) tax schedules, and Karachi Sarafa market fixings. The author does not accept paid token promotions, sponsored cryptocurrency shilling, or undisclosed commercial sponsorships. All analytical opinions are objective, educational, and grounded in empirical data.
+              FGC Spot aims to cite original public documents and clearly distinguish calculations from official quotes. Tax rules and market data can change; please verify information with official issuers before making decisions. Readers can report corrections through the contact address above.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Published Research Guides by Sufyan Saleem */}
+      {/* Published Research Guides by Sufyan Sindhu */}
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-200 dark:border-white/10">
           <div>
@@ -185,7 +185,7 @@ export default function AuthorPage() {
               <span>Published Research Guides ({articles.length})</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
-              Comprehensive empirical analyses authored by Sufyan Saleem on FGC Spot
+              Comprehensive empirical analyses authored by Sufyan Sindhu on FGC Spot
             </p>
           </div>
           <Link 

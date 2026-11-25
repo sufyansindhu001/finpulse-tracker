@@ -1,7 +1,7 @@
 /**
  * FGC Spot Analytical Blog & Research Post Database
  * Authoritative, high-utility financial guides covering Forex, Gold Bullion, Equities, and Remittances.
- * Maintained by Sufyan Saleem, Lead Financial Analyst & Macro Strategist.
+ * Maintained by Sufyan Sindhu.
  * Last Updated: November 22, 2026
  */
 
@@ -11,7 +11,7 @@ export const BLOG_POSTS = [
     "slug": "freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained",
     "title": "Freelance Remittances & Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Retention Accounts Explained",
     "category": "Banking & Remittances",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "readTime": "8 min read",
     "date": "October 24, 2026",
     "created_at": "2026-10-24T12:00:00Z",
@@ -39,7 +39,7 @@ export const BLOG_POSTS = [
     "slug": "buying-gold-in-pakistan-tola-karat-making-charges-guide",
     "title": "Buying Gold in Pakistan: Complete Investor Guide to Tola, Karat Purity, Making Charges, and Sarafa Bazaar Rates",
     "category": "Precious Metals & Bullion",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Gold Investment",
       "Pakistan Gold Rates",
@@ -65,7 +65,7 @@ export const BLOG_POSTS = [
     "slug": "pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide",
     "title": "Pakistan Stock Exchange (PSX) vs Global Equities: KSE-100 Valuation Multiples, Dividend Yields, and S&P 500 Comparison Guide",
     "category": "Equities & Capital Markets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Pakistan Stock Exchange",
       "PSX",
@@ -92,7 +92,7 @@ export const BLOG_POSTS = [
     "slug": "the-architecture-of-forex-order-types-how-limit-stop-and-trailing-orders-protect-capital",
     "title": "The Architecture of Forex Order Types: How Limit, Stop, and Trailing Orders Protect Capital",
     "category": "Forex & Currency Markets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Forex Orders",
       "Limit Order",
@@ -117,7 +117,7 @@ export const BLOG_POSTS = [
     "slug": "understanding-gold-liquidity-physical-bullion-etfs-and-digital-gold-compared",
     "title": "Understanding Gold Liquidity: Physical Bullion, ETFs, and Digital Gold Compared",
     "category": "Precious Metals & Bullion",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Gold Bullion",
       "Gold ETFs",
@@ -141,7 +141,7 @@ export const BLOG_POSTS = [
     "slug": "hedging-against-inflation-cash-devaluation-purchasing-power-and-modern-wealth-preservation",
     "title": "Hedging Against Inflation: Cash Devaluation, Purchasing Power, and Modern Wealth Preservation",
     "category": "Personal Finance & Wealth Management",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Inflation Hedge",
       "Cash Devaluation",
@@ -165,7 +165,7 @@ export const BLOG_POSTS = [
     "slug": "understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex",
     "title": "Understanding the Carry Trade: How Japanese Yen Differentials Move Global Forex",
     "category": "Macroeconomics & Monetary Policy",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Yen Carry Trade",
       "Bank of Japan",
@@ -189,7 +189,7 @@ export const BLOG_POSTS = [
     "slug": "central-bank-digital-currencies-vs-decentralized-crypto-the-battle-for-global-liquidity",
     "title": "Central Bank Digital Currencies vs Decentralized Crypto: The Battle for Global Liquidity",
     "category": "Cryptocurrency & Digital Assets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "CBDC",
       "Cryptocurrency",
@@ -214,7 +214,7 @@ export const BLOG_POSTS = [
     "slug": "forex-risk-management-why-most-retail-traders-blow-up-accounts-and-how-to-prevent-it",
     "title": "Forex Risk Management: Why Most Retail Traders Blow Up Accounts and How to Prevent It",
     "category": "Forex & Currency Markets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Forex Trading",
       "Risk Management",
@@ -238,7 +238,7 @@ export const BLOG_POSTS = [
     "slug": "gold-vs-the-us-dollar-how-safe-haven-dynamics-drive-global-liquidity-and-forex-trends",
     "title": "Gold vs the US Dollar: How Safe-Haven Dynamics Drive Global Liquidity and Forex Trends",
     "category": "Macroeconomics & Monetary Policy",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Gold",
       "US Dollar",
@@ -262,7 +262,7 @@ export const BLOG_POSTS = [
     "slug": "global-energy-markets-commodity-supercycles-how-crude-oil-brent-vs-wti-shapes-the-world-economy",
     "title": "Global Energy Markets & Commodity Supercycles: How Crude Oil (Brent vs WTI) Shapes the World Economy",
     "category": "Macroeconomics & Monetary Policy",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Crude Oil",
       "Brent",
@@ -289,7 +289,7 @@ export const BLOG_POSTS = [
     "slug": "the-s-p-500-global-index-investing-why-90-of-active-fund-managers-fail-to-beat-the-market",
     "title": "The S&P 500 & Global Index Investing: Why 90% of Active Fund Managers Fail to Beat the Market",
     "category": "Equities & Capital Markets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "S&P 500",
       "Index Funds",
@@ -315,7 +315,7 @@ export const BLOG_POSTS = [
     "slug": "the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies",
     "title": "The US Federal Reserve & Global Markets: How Interest Rate Cycles Move Stocks, Gold, and Emerging Currencies",
     "category": "Macroeconomics & Monetary Policy",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Federal Reserve",
       "Interest Rates",
@@ -341,7 +341,7 @@ export const BLOG_POSTS = [
     "slug": "understanding-roshan-digital-account-rda-naya-pakistan-certificates-repatriation-rules-tax-shields",
     "title": "Understanding Roshan Digital Account (RDA): Naya Pakistan Certificates, Repatriation Rules & Tax Shields",
     "category": "Banking & Remittances",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Roshan Digital Account",
       "RDA",
@@ -367,7 +367,7 @@ export const BLOG_POSTS = [
     "slug": "spotting-fake-gold-hallmarking-standards-the-complete-investor-guide-to-bullion-bars-vs-jewelry",
     "title": "Spotting Fake Gold & Hallmarking Standards: The Complete Investor Guide to Bullion Bars vs Jewelry",
     "category": "Precious Metals & Bullion",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Gold",
       "Bullion Bars",
@@ -392,7 +392,7 @@ export const BLOG_POSTS = [
     "slug": "stock-market-vs-real-estate-in-pakistan-which-asset-truly-builds-wealth-over-10-years",
     "title": "Stock Market vs Real Estate in Pakistan: Which Asset Truly Builds Wealth Over 10 Years?",
     "category": "Equities & Capital Markets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "PSX",
       "Real Estate",
@@ -417,7 +417,7 @@ export const BLOG_POSTS = [
     "slug": "beating-inflation-why-keeping-cash-in-a-savings-account-is-losing-you-money-and-better-alternatives",
     "title": "Beating Inflation: Why Keeping Cash in a Savings Account is Losing You Money (And Better Alternatives)",
     "category": "Personal Finance & Wealth Management",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Inflation",
       "Mutual Funds",
@@ -442,7 +442,7 @@ export const BLOG_POSTS = [
     "slug": "remittances-forex-spread-the-hidden-costs-of-sending-money-to-pakistan-and-how-to-get-real-rates",
     "title": "Remittances & Forex Spread: The Hidden Costs of Sending Money to Pakistan (And How to Get Real Rates)",
     "category": "Banking & Remittances",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Forex",
       "Remittances",
@@ -467,7 +467,7 @@ export const BLOG_POSTS = [
     "slug": "storing-crypto-safely-exchanges-vs-wallets-guide",
     "title": "Storing Crypto Safely: Why Leaving Funds on Centralized Exchanges is a Ticking Clock (And How to Protect Yourself)",
     "category": "Cryptocurrency & Digital Assets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "Crypto Security",
       "Hardware Wallets",
@@ -491,7 +491,7 @@ export const BLOG_POSTS = [
     "slug": "usd-to-pkr-interbank-vs-open-market-guide",
     "title": "Understanding USD to PKR Live Rates: Interbank vs Open Market Explained",
     "category": "Forex & Currency Markets",
-    "author": "Sufyan Saleem, Lead Financial Analyst & Macro Strategist",
+    "author": "Sufyan Sindhu",
     "tags": [
       "USDPKR",
       "FOREX",
