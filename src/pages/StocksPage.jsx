@@ -1057,7 +1057,7 @@ export default function StocksPage() {
             Valuation Architecture: Analyzing P/E Compression, Dividend Reinvestment, and Currency-Adjusted Returns
           </h2>
           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-mono">
-            Authored by Sufyan Saleem (Senior Financial Analyst, FGC Spot) • Updated Institutional Edition
+            Published by Sufyan Sindhu (FGC Spot Editor) • Educational reference
           </p>
         </div>
 

@@ -88,7 +88,7 @@ export default function EditorialPolicyPage() {
               <span>Research Methodology &amp; Primary Sources</span>
             </h2>
             <p>
-              All original research authored by our analytical desk (led by Sufyan Saleem) is grounded strictly in verified primary documentation:
+              Our editorial goal is to support financial explainers with publicly accessible primary documentation, including where relevant:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
               <li><strong>Statutory Authorities:</strong> State Bank of Pakistan (SBP) Foreign Exchange Manual and BPRD circulars; Federal Board of Revenue (FBR) Income Tax Ordinance 2001; Securities and Exchange Commission of Pakistan (SECP) circulars.</li>
@@ -159,7 +159,7 @@ export default function EditorialPolicyPage() {
               FGC Spot maintains an unambiguous boundary between original editorial research and third-party news syndication:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-              <li><strong>Research &amp; Analysis Portal (`/blog`):</strong> 100% original, empirical long-form analysis written by our in-house analyst Sufyan Saleem. Zero third-party syndicated copy is published here.</li>
+              <li><strong>Research &amp; Analysis Portal (`/blog`):</strong> Educational articles and commentary published by FGC Spot. Sources and methodology should be attributed where specific external facts are discussed.</li>
               <li><strong>Market News Wire (`/news`):</strong> An automated indexing service that aggregates breaking headlines and short fair-use summaries from external newsrooms (including MarketWatch, CNBC, Business Recorder, Profit Pakistan, and Cointelegraph). The feed carries prominent wire syndication disclosures and links out directly to the originating publisher.</li>
             </ul>
           </div>
@@ -206,7 +206,7 @@ export default function EditorialPolicyPage() {
               <span className="text-slate-500">Attention: Editorial Review Board</span>
             </div>
             <div className="pt-2 flex flex-wrap gap-3">
-              <Link to="/author/sufyan-saleem/" className="text-xs font-bold text-[#00E676] hover:underline flex items-center gap-1">
+              <Link to="/author/sufyan-sindhu/" className="text-xs font-bold text-[#00E676] hover:underline flex items-center gap-1">
                 <span>View Author Profile</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>

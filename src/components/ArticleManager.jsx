@@ -17,6 +17,7 @@ import { compressImageFile } from '../utils/imageCompressor';
 import GalleryModal from './GalleryModal';
 import { ARTICLES_CACHE_KEY, updateArticlesCache, PURGED_SLUG_SET } from '../services/articlesService';
 import { savePublishedArticle, verifyPublicArticle } from '../services/articlePublishingService';
+import { displayAuthorName } from '../utils/authorIdentity';
 
 const STORAGE_KEY = ARTICLES_CACHE_KEY || 'fgc_portal_articles_v3';
 const LEGACY_STORAGE_KEY = 'fgc_spot_blog_posts';
@@ -25,7 +26,7 @@ const INITIAL_FORM_STATE = {
   title: '',
   category: 'Stocks & Equities',
   image: '',
-  author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
+  author: 'Sufyan Sindhu',
   summary: '',
   content: '',
   tags: 'Stocks, Equities, Market'
@@ -181,7 +182,7 @@ export default function ArticleManager() {
 
     const content = articleForm.content || '';
     const read_time = `${Math.max(1, Math.ceil(content.split(' ').length / 200))} min read`;
-    const author = articleForm.author || 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist';
+    const author = displayAuthorName(articleForm.author);
     const excerpt = articleForm.summary || articleForm.excerpt || '';
     const category = articleForm.category || 'Stocks & Equities';
 
@@ -298,7 +299,7 @@ export default function ArticleManager() {
       title: art.title || '',
       category: art.category || 'Stocks & Equities',
       image: existingImg,
-      author: art.author || 'Sufyan Saleem (Financial Research Desk)',
+      author: displayAuthorName(art.author),
       summary: art.summary || art.excerpt || '',
       content: art.content || '',
       tags: Array.isArray(art.tags) ? art.tags.join(', ') : (art.tags || '')
@@ -538,7 +539,7 @@ export default function ArticleManager() {
                 required
                 value={articleForm.author}
                 onChange={(e) => setArticleForm(prev => ({ ...prev, author: e.target.value }))}
-                placeholder="e.g. Sufyan Saleem"
+                placeholder="e.g. Sufyan Sindhu"
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500"
               />
             </div>

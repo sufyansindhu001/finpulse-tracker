@@ -16,7 +16,7 @@ const staticFiles = [
   'dist/privacy-policy/index.html',
   'dist/terms/index.html',
   'dist/disclaimer/index.html',
-  'dist/author/sufyan-saleem/index.html',
+  'dist/author/sufyan-sindhu/index.html',
   'dist/editorial-policy/index.html',
   'dist/data-sources/index.html'
 ];

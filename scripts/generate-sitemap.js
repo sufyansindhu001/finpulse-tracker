@@ -22,7 +22,7 @@ const STATIC_PAGES = [
   { url: `${BASE_URL}/privacy-policy`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/terms`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
   { url: `${BASE_URL}/disclaimer`, changefreq: 'monthly', priority: '0.5', lastmod: TODAY },
-  { url: `${BASE_URL}/author/sufyan-saleem`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
+  { url: `${BASE_URL}/author/sufyan-sindhu`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/editorial-policy`, changefreq: 'monthly', priority: '0.7', lastmod: TODAY },
   { url: `${BASE_URL}/data-sources`, changefreq: 'monthly', priority: '0.7', lastmod: TODAY },
   // Tools, Stocks & News

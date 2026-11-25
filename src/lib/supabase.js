@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { displayAuthorName } from '../utils/authorIdentity';
 
 const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
@@ -152,7 +153,7 @@ export function normalizeArticle(raw) {
     slug: raw.slug || raw.id,
     title: stripSpanMarkup(raw.title) || 'Untitled Financial Guide',
     category: raw.category || 'Market Updates',
-    author: raw.author || 'Sufyan Saleem (Financial Research Desk)',
+    author: displayAuthorName(raw.author),
     readTime: readTimeStr,
     read_time: readTimeStr,
     date: dateFormatted,

@@ -16,7 +16,7 @@ const sampleRoutes = [
   { path: 'stocks/index.html', name: 'PSX & Global Stocks' },
   { path: 'converter/index.html', name: 'Currency Converter' },
   { path: 'blog/index.html', name: 'Research Hub' },
-  { path: 'author/sufyan-saleem/index.html', name: 'Author Profile' },
+  { path: 'author/sufyan-sindhu/index.html', name: 'Author Profile' },
   { path: 'blog/buying-gold-in-pakistan-tola-karat-making-charges-guide/index.html', name: 'Article: Buying Gold' },
   { path: 'blog/usd-to-pkr-interbank-vs-open-market-guide/index.html', name: 'Article: USD to PKR' },
   { path: '404.html', name: '404 Error Page' }

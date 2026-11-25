@@ -51,10 +51,10 @@ export default function ArticleModal({ article, onClose }) {
 
         {/* Author info */}
         <div className="flex items-center gap-3 pb-6 border-b border-slate-800 mb-6">
-          {article.author?.includes('Sufyan Saleem') ? (
+          {article.author?.includes('Sufyan Sindhu') ? (
             <img
               src="/sufyan-author.jpg"
-              alt="Sufyan Saleem - Financial Analyst"
+              alt="Sufyan Sindhu - FGC Spot publisher"
               className="w-10 h-10 rounded-full object-cover border-2 border-slate-700/80 shadow-xs shrink-0"
               width="40"
               height="40"

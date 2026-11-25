@@ -12,7 +12,7 @@ const FEATURED_ARTICLES = [
     category: 'Equity Research',
     readTime: '6 min read',
     date: 'October 19, 2026',
-    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
+    author: 'Sufyan Sindhu',
     image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
     tags: ['PSX', 'KSE-100', 'S&P 500', 'Dividend Yield', 'P/E Compression']
   },
@@ -23,7 +23,7 @@ const FEATURED_ARTICLES = [
     category: 'Precious Metals',
     readTime: '5 min read',
     date: 'October 20, 2026',
-    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
+    author: 'Sufyan Sindhu',
     image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80',
     tags: ['Gold Bullion', 'Tola', 'Karat', 'Sarafa Bazaar', 'Hedging']
   },
@@ -34,7 +34,7 @@ const FEATURED_ARTICLES = [
     category: 'Banking & Remittances',
     readTime: '5 min read',
     date: 'October 20, 2026',
-    author: 'Sufyan Saleem, Lead Financial Analyst & Macro Strategist',
+    author: 'Sufyan Sindhu',
     image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80',
     tags: ['Freelance Banking', 'FBR Tax', 'PSEB', 'Remittances', 'Forex']
   }
@@ -59,7 +59,7 @@ export default function FeaturedResearchSection() {
               </span>
             </h2>
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-              Exhaustive investigations authored by FGC Spot financial analysts dissecting equity multiples, physical precious metals mechanics, and cross-border currency regulations.
+              Educational guides published by FGC Spot covering equity valuations, physical precious metals, and cross-border currency topics.
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export default function FeaturedResearchSection() {
                   <div className="flex items-center gap-2">
                     <img 
                       src="/sufyan-author.jpg" 
-                      alt="Sufyan Saleem - Financial Analyst" 
+                      alt="Sufyan Sindhu - FGC Spot publisher" 
                       width="24"
                       height="24"
                       loading="lazy"

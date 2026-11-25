@@ -1,3 +1,5 @@
+import { displayAuthorName } from '../src/utils/authorIdentity.js';
+
 /**
  * Public, server-rendered page for articles published after the static build.
  * The Vercel rewrite reaches this function only when a pre-rendered file is
@@ -79,7 +81,8 @@ export function renderArticleHtml(article) {
   const title = escapeHtml(article.title || 'Financial Research Article');
   const desc = escapeHtml(article.excerpt || article.summary || String(article.content || '').slice(0, 155));
   const category = escapeHtml(article.category || 'Financial Research');
-  const author = escapeHtml(article.author || 'FGC Spot Research Desk');
+  const authorName = displayAuthorName(article.author);
+  const author = escapeHtml(authorName);
   const slug = encodeURIComponent(article.slug);
   const canonical = `${SITE_URL}/blog/${slug}`;
   const cover = safeCoverImage(article.image || article.cover_image || '');
@@ -89,7 +92,7 @@ export function renderArticleHtml(article) {
   const schema = JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Article',
     headline: article.title, description: article.excerpt || article.summary || '',
-    mainEntityOfPage: canonical, author: { '@type': 'Person', name: article.author || 'FGC Spot Research Desk' },
+    mainEntityOfPage: canonical, author: { '@type': 'Person', name: authorName, url: `${SITE_URL}/author/sufyan-sindhu` },
     publisher: { '@type': 'Organization', name: 'FGC Spot', url: SITE_URL },
     ...(published ? { datePublished: published } : {}),
     ...(updated ? { dateModified: updated } : {}),
@@ -163,3 +166,4 @@ export default async function handler(req, res) {
     return res.status(503).send('Article service temporarily unavailable. Please retry shortly.');
   }
 }
+

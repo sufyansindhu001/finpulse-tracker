@@ -43,7 +43,7 @@ export default function PrivacyPolicyPage() {
               Privacy Policy & Cookie Disclosure
             </h1>
             <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-1 font-medium">
-              Effective Date: September 2026 • Compliant with GDPR, CCPA & Google Publisher Guidelines
+              Updated: November 2026 • Privacy and cookie information
             </p>
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
             1. Google DoubleClick DART Cookies & Third-Party Advertising
           </h2>
           <p>
-            Google is a third-party vendor on our site. Google uses cookies, specifically known as <strong className="text-slate-900 dark:text-white">DART cookies</strong>, to serve advertisements to visitors based on their visit to {siteSettings?.websiteName || 'FGC Spot'} and other websites across the Internet. 
+            If Google advertising is enabled in the future, Google and its partners may use cookies to serve and measure ads. Current cookie use and visitor choices should be disclosed before any new advertising features are enabled.
           </p>
           <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-[#A8B3C2] space-y-2">
             <p>
