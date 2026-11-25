@@ -15,7 +15,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';
-import { WORLD_COUNTRIES, getStocksForCountry } from '../data/stocksData';
+import { WORLD_COUNTRIES } from '../data/stocksData';
 import { fetchLiveStocks } from '../services/stocksService';
 import ScreensModal from '../components/ScreensModal';
 import CountrySelectorDropdown from '../components/CountrySelectorDropdown';
@@ -92,10 +92,10 @@ export default function StocksPage() {
   const [sortDirection, setSortDirection] = useState('desc');
 
   // Live stock data stream state
-  const [liveStocks, setLiveStocks] = useState(() => getStocksForCountry(selectedCountry));
+  const [liveStocks, setLiveStocks] = useState([]);
   const [isLiveLoading, setIsLiveLoading] = useState(false);
   const [lastMarketUpdate, setLastMarketUpdate] = useState(() => new Date().toLocaleTimeString());
-  const [liveDataSource, setLiveDataSource] = useState('Global Market Feeds (Live)');
+  const [liveDataSource, setLiveDataSource] = useState('Loading verified market quotes');
 
   const loadStocks = useCallback(async (country, force = false) => {
     setIsLiveLoading(true);
@@ -115,6 +115,7 @@ export default function StocksPage() {
 
   // Fetch when selectedCountry changes & auto refresh every 30s
   useEffect(() => {
+    setLiveStocks([]);
     loadStocks(selectedCountry, false);
 
     const interval = setInterval(() => {
@@ -127,8 +128,7 @@ export default function StocksPage() {
   // Load raw stocks for active country (backed by live streaming data)
   const rawCountryStocks = useMemo(() => {
     if (Array.isArray(liveStocks) && liveStocks.length > 0) return liveStocks;
-    const base = getStocksForCountry(selectedCountry);
-    return Array.isArray(base) && base.length > 0 ? base : (PAKISTAN_PSX_DATASET || []);
+    return [];
   }, [liveStocks, selectedCountry]);
 
   const activeCountryObj = useMemo(() => {
@@ -218,75 +218,87 @@ export default function StocksPage() {
       if (filters.equityType && filters.equityType !== 'Any' && stock.equityType !== filters.equityType) return false;
 
       // Market Cap filter
-      const mcap = Number(stock.marketCapNum) || 0;
+      const mcap = Number.isFinite(stock.marketCapNum) ? stock.marketCapNum : null;
+      if (filters.marketCap !== 'Any' && mcap === null) return false;
       if (filters.marketCap === 'Mega' && mcap < 200) return false;
       if (filters.marketCap === 'Large' && (mcap < 100 || mcap >= 200)) return false;
       if (filters.marketCap === 'Mid' && (mcap < 20 || mcap >= 100)) return false;
       if (filters.marketCap === 'Small' && mcap >= 20) return false;
 
       // Last Price filter
-      const pr = Number(stock.price) || 0;
+      const pr = Number.isFinite(stock.price) ? stock.price : null;
+      if (filters.lastPrice !== 'Any' && pr === null) return false;
       if (filters.lastPrice === 'under50' && pr >= 50) return false;
       if (filters.lastPrice === '50-200' && (pr < 50 || pr > 200)) return false;
       if (filters.lastPrice === '200-500' && (pr < 200 || pr > 500)) return false;
       if (filters.lastPrice === 'over500' && pr <= 500) return false;
 
       // P/E Ratio filter
-      const pe = Number(stock.peRatio) || 0;
+      const pe = Number.isFinite(stock.peRatio) ? stock.peRatio : null;
+      if (filters.peRatio !== 'Any' && pe === null) return false;
       if (filters.peRatio === 'low5' && pe > 5.0) return false;
       if (filters.peRatio === 'value10' && pe > 10.0) return false;
       if (filters.peRatio === 'mod10-25' && (pe < 10.0 || pe > 25.0)) return false;
       if (filters.peRatio === 'high25' && pe <= 25.0) return false;
 
       // Dividend Yield filter
-      const div = Number(stock.dividendYield) || 0;
+      const div = Number.isFinite(stock.dividendYield) ? stock.dividendYield : null;
+      if (filters.dividendYield !== 'Any' && div === null) return false;
       if (filters.dividendYield === 'over5' && div < 5.0) return false;
       if (filters.dividendYield === 'over10' && div < 10.0) return false;
       if (filters.dividendYield === 'over14' && div < 14.0) return false;
 
       // Price / Book filter
-      const pb = Number(stock.pbRatio) || 0;
+      const pb = Number.isFinite(stock.pbRatio) ? stock.pbRatio : null;
+      if (filters.pbRatio !== 'Any' && pb === null) return false;
       if (filters.pbRatio === 'below1' && pb >= 1.0) return false;
       if (filters.pbRatio === '1-3' && (pb < 1.0 || pb > 3.0)) return false;
       if (filters.pbRatio === 'above3' && pb <= 3.0) return false;
 
       // EV/EBITDA
-      const ev = Number(stock.evEbitda) || 5.0;
+      const ev = Number.isFinite(stock.evEbitda) ? stock.evEbitda : null;
+      if (filters.evEbitda !== 'Any' && ev === null) return false;
       if (filters.evEbitda === 'low5' && ev >= 5.0) return false;
       if (filters.evEbitda === '5-10' && (ev < 5.0 || ev > 10.0)) return false;
       if (filters.evEbitda === 'over10' && ev <= 10.0) return false;
 
       // RSI filter
-      const rsi = Number(stock.rsi14) || 55;
+      const rsi = Number.isFinite(stock.rsi14) ? stock.rsi14 : null;
+      if (filters.rsi !== 'Any' && rsi === null) return false;
       if (filters.rsi === 'oversold' && rsi >= 35) return false;
       if (filters.rsi === 'neutral' && (rsi < 35 || rsi > 70)) return false;
       if (filters.rsi === 'overbought' && rsi <= 70) return false;
 
       // Piotroski filter
-      const piot = Number(stock.piotroski) || 7;
+      const piot = Number.isFinite(stock.piotroski) ? stock.piotroski : null;
+      if (filters.piotroski !== 'Any' && piot === null) return false;
       if (filters.piotroski === 'high7' && piot < 7) return false;
       if (filters.piotroski === 'moderate' && (piot < 5 || piot > 6)) return false;
 
       // 1-Year Price Change
-      const ch1y = parseFloat(stock.change1Y) || 0;
+      const ch1y = parseFloat(stock.change1Y);
+      if (filters.change1Y !== 'Any' && !Number.isFinite(ch1y)) return false;
       if (filters.change1Y === 'positive' && ch1y <= 0) return false;
       if (filters.change1Y === 'over20' && ch1y < 20) return false;
       if (filters.change1Y === 'over50' && ch1y < 50) return false;
 
       // Volume
-      const vol = parseFloat(stock.volume3M) || 1.5;
+      const vol = parseFloat(stock.volume3M);
+      if (filters.volume !== 'Any' && !Number.isFinite(vol)) return false;
       if (filters.volume === 'over1m' && vol < 1.0) return false;
       if (filters.volume === 'over3m' && vol < 3.0) return false;
       if (filters.volume === 'over5m' && vol < 5.0) return false;
 
       // Fair Value Upside
-      const fv = parseFloat(stock.fairValueUpside) || 15;
+      const fv = parseFloat(stock.fairValueUpside);
+      if (filters.fairValue !== 'Any' && !Number.isFinite(fv)) return false;
       if (filters.fairValue === 'over10' && fv < 10) return false;
       if (filters.fairValue === 'over20' && fv < 20) return false;
       if (filters.fairValue === 'over30' && fv < 30) return false;
 
       // Analyst Upside
-      const au = parseFloat(stock.analystUpside) || 12;
+      const au = parseFloat(stock.analystUpside);
+      if (filters.analystUpside !== 'Any' && !Number.isFinite(au)) return false;
       if (filters.analystUpside === 'over10' && au < 10) return false;
       if (filters.analystUpside === 'over20' && au < 20) return false;
       if (filters.analystUpside === 'over30' && au < 30) return false;
@@ -297,13 +309,15 @@ export default function StocksPage() {
       }
 
       // Altman Z-Score
-      const az = Number(stock.altmanZ) || 3.2;
+      const az = Number.isFinite(stock.altmanZ) ? stock.altmanZ : null;
+      if (filters.altmanZ !== 'Any' && az === null) return false;
       if (filters.altmanZ === 'safe3' && az < 3.0) return false;
       if (filters.altmanZ === 'grey' && (az < 1.8 || az >= 3.0)) return false;
 
       // 52-Week Range Proximity
-      const low = Number(stock.low52) || (pr * 0.75);
-      const high = Number(stock.high52) || (pr * 1.35);
+      const low = Number.isFinite(stock.low52) ? stock.low52 : null;
+      const high = Number.isFinite(stock.high52) ? stock.high52 : null;
+      if (filters.range52 !== 'Any' && (low === null || high === null || pr === null)) return false;
       const spread = high - low || 1;
       const prox = ((pr - low) / spread) * 100;
       if (filters.range52 === 'nearHigh' && prox < 80) return false;
@@ -483,16 +497,16 @@ export default function StocksPage() {
           {/* Scrollable Pills Track (5-6 visible at once, scrollable horizontally) */}
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1 px-1 flex-1 pr-3 scroll-smooth touch-pan-x">
             {[
-              { title: 'Near 52-Week High', ret: '+68.9%', type: 'near52w' },
-              { title: 'Momentum Masters', ret: '+57.3%', type: 'momentum' },
-              { title: "Piotroski's Picks", ret: '+38.6%', type: 'piotroski' },
-              { title: 'Small-Cap Growth Rockets', ret: '+7.9%', type: 'smallCap' },
-              { title: 'High ROE Compounders', ret: '+42.1%', type: 'roe' },
-              { title: 'Dividend Bulls', ret: '+18.2%', type: 'dividend' },
-              { title: 'Undervalued Cash Cows', ret: '+14.5%', type: 'value' },
-              { title: 'Export Revenue Leaders', ret: '+34.2%', type: 'export' },
-              { title: 'Free Cash Flow Champions', ret: '+21.3%', type: 'fcf' },
-              { title: 'Low Debt Defensives', ret: '+12.4%', type: 'lowDebt' }
+              { title: 'Near 52-Week High', type: 'near52w' },
+              { title: 'Momentum Masters', type: 'momentum' },
+              { title: "Piotroski's Picks", type: 'piotroski' },
+              { title: 'Small-Cap Growth Rockets', type: 'smallCap' },
+              { title: 'High ROE Compounders', type: 'roe' },
+              { title: 'Dividend Bulls', type: 'dividend' },
+              { title: 'Undervalued Cash Cows', type: 'value' },
+              { title: 'Export Revenue Leaders', type: 'export' },
+              { title: 'Free Cash Flow Champions', type: 'fcf' },
+              { title: 'Low Debt Defensives', type: 'lowDebt' }
             ].map(pill => {
               const isActive = activeScreenTitle === pill.title;
               return (
@@ -506,9 +520,6 @@ export default function StocksPage() {
                   }`}
                 >
                   <span>{pill.title}</span>
-                  <span className={`font-mono text-[11px] font-bold ${isActive ? 'text-blue-100' : 'text-[#00E676]'}`}>
-                    ({pill.ret})
-                  </span>
                 </button>
               );
             })}
@@ -732,7 +743,7 @@ export default function StocksPage() {
 
                       {/* Market Cap */}
                       <td className="py-3 px-3 text-right font-mono font-bold text-gray-800 dark:text-gray-200 whitespace-nowrap">
-                        {stock.marketCap}
+                        {stock.marketCap || 'N/A'}
                       </td>
 
                       {/* P/E Ratio (Green for positive, red for negative) */}
@@ -749,13 +760,14 @@ export default function StocksPage() {
 
                       {/* Last Trade Price */}
                       <td className="py-3 px-4 text-right font-mono font-black text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                        {activeCountryObj?.symbol || ''}{typeof stock.price === 'number' && !isNaN(stock.price) ? stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (stock.price || '0.00')}
+                        {stock.hasVerifiedQuote && Number.isFinite(stock.price) ? `${activeCountryObj?.symbol || ''}${stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
                       </td>
 
                       {/* 24h Change % */}
                       <td className="py-3 px-3 text-right font-mono font-bold whitespace-nowrap">
                         {(() => {
-                          const cp = typeof stock.changePercent === 'number' && !isNaN(stock.changePercent) ? stock.changePercent : 0;
+                          const cp = stock.hasVerifiedQuote && Number.isFinite(stock.changePercent) ? stock.changePercent : null;
+                          if (cp === null) return <span className="text-gray-500">N/A</span>;
                           return (
                             <span className={`inline-flex items-center gap-0.5 ${cp >= 0 ? 'text-[#00E676]' : 'text-rose-500'}`}>
                               {cp >= 0 ? '+' : ''}{cp.toFixed(2)}%
@@ -768,18 +780,18 @@ export default function StocksPage() {
                       {/* Dynamic Columns based on active View Tab */}
                       {activeViewTab === 'Returns' && (
                         <td className="py-3 px-3 text-right font-mono font-bold text-[#00E676] whitespace-nowrap">
-                          {stock.change1Y}
+                          {stock.change1Y ?? 'N/A'}
                         </td>
                       )}
                       {activeViewTab === 'Valuation' && (
                         <td className="py-3 px-3 text-right font-mono font-bold text-blue-500 whitespace-nowrap">
-                          {stock.fairValueUpside}
+                          {stock.fairValueUpside ?? 'N/A'}
                         </td>
                       )}
                       {activeViewTab === 'Technical' && (
                         <td className="py-3 px-3 text-center font-mono whitespace-nowrap">
                           <span className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 font-bold text-gray-800 dark:text-gray-200">
-                            {stock.rsi14}
+                            {stock.rsi14 ?? 'N/A'}
                           </span>
                         </td>
                       )}
@@ -802,8 +814,10 @@ export default function StocksPage() {
 
                 {paginatedStocks.length === 0 && (
                   <tr>
-                    <td colSpan={12} className="py-12 text-center text-gray-500 dark:text-gray-400 text-sm font-medium">
-                      No companies match the active screening criteria. Try adjusting or resetting your filters.
+                    <td colSpan={12} className="py-12 text-center text-gray-500 dark:text-gray-400 text-sm font-medium px-4">
+                      {rawCountryStocks.length === 0
+                        ? `Market coverage for ${activeCountryObj?.name || 'this country'} is coming soon. Please select one of our supported flagship exchanges (Pakistan PSX, United States, United Kingdom, Saudi Arabia, UAE, India, Japan, Germany, France, Canada, Australia, or China/HK).`
+                        : 'No companies match the active screening criteria. Try adjusting or resetting your filters.'}
                     </td>
                   </tr>
                 )}

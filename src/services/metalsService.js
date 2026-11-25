@@ -8,35 +8,40 @@
 export const TROY_OUNCE_TO_GRAMS = 31.1034768;
 export const TOLA_TO_GRAMS = 11.664; // Standard Sarafa Association tola weight (11.664 grams)
 
-// Calibration benchmarks for local Pakistani Sarafa Association
-// Formula: (Spot_Gold / 31.1034768) * USD_PKR * 11.664 * Import_Tariff_Assay_Multiplier
-export const SARAFA_CALIBRATION_SPOT_USD = 2650.00;
-export const SARAFA_CALIBRATION_USD_PKR = 277.10;
-export const SARAFA_BENCHMARK_BASE_TOLA_24K = Math.round((SARAFA_CALIBRATION_SPOT_USD / TROY_OUNCE_TO_GRAMS) * SARAFA_CALIBRATION_USD_PKR * TOLA_TO_GRAMS * 1.033);
-export const SARAFA_BASE_MULTIPLIER = 1.033; // ~3.3% local market physical import, assay & Karachi Sarafa premium
+// No unverified Sarafa premium is inserted into the reference conversion.
+// Actual retail or association rate cards require separately sourced observations.
+export const SARAFA_BASE_MULTIPLIER = 1;
 
 export const DEFAULT_METALS = {
   gold: {
     symbol: 'XAU/USD',
     name: 'Gold Spot (Troy Ounce)',
-    price: 2650.00,
-    change: 0.32,
-    high: 2665.00,
-    low: 2640.00,
+    price: null,
+    change: null,
+    high: null,
+    low: null,
     unit: 'troy oz'
   },
   silver: {
     symbol: 'XAG/USD',
     name: 'Silver Spot (Troy Ounce)',
-    price: 31.50,
-    change: 0.45,
-    high: 31.85,
-    low: 31.15,
+    price: null,
+    change: null,
+    high: null,
+    low: null,
     unit: 'troy oz'
   },
-  source: 'International Bullion Feeds (LBMA/PAXG) & Karachi Sarafa',
-  lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  source: 'Awaiting verified commodity quotes',
+  lastUpdated: null
 };
+
+const NO_METRICS = Object.freeze({
+  pricePerOunceLocal: null, pricePerGram24K: null, pricePerTola24K: null,
+  pricePer10Gram24K: null, pricePer10Gram22K: null, pricePerTola22K: null,
+  pricePerGram22K: null, pricePer10Gram21K: null, pricePerTola21K: null,
+  pricePerGram21K: null, pricePer10Gram18K: null, pricePerTola18K: null,
+  pricePerGram18K: null, sarafaAdjustment: null
+});
 
 /**
  * Calculates dynamic local gold benchmarks (e.g. in PKR, AED, SAR, INR).
@@ -46,15 +51,13 @@ export const DEFAULT_METALS = {
  * As international spot ($/oz) and interbank USD/PKR fluctuate, domestic rates move dynamically in exact real-time parity.
  * Automatically derives 22K, 21K, and 18K purity grades using exact proportional multipliers.
  */
-export function calculateGoldLocalMetrics(goldPriceUsd = 2650.00, localRateAgainstUsd = 277.10, isPakistan = true) {
+export function calculateGoldLocalMetrics(goldPriceUsd, localRateAgainstUsd, isPakistan = true) {
   try {
-    const cleanGoldUsd = (typeof goldPriceUsd === 'number' && !isNaN(goldPriceUsd) && isFinite(goldPriceUsd) && goldPriceUsd > 0)
-      ? goldPriceUsd
-      : 2650.00;
-
-    const cleanRate = (typeof localRateAgainstUsd === 'number' && !isNaN(localRateAgainstUsd) && isFinite(localRateAgainstUsd) && localRateAgainstUsd > 0)
-      ? localRateAgainstUsd
-      : 277.10;
+    if (!Number.isFinite(goldPriceUsd) || goldPriceUsd <= 0 || !Number.isFinite(localRateAgainstUsd) || localRateAgainstUsd <= 0) {
+      return NO_METRICS;
+    }
+    const cleanGoldUsd = goldPriceUsd;
+    const cleanRate = localRateAgainstUsd;
 
     const multiplier = isPakistan ? SARAFA_BASE_MULTIPLIER : 1.0;
 
@@ -100,26 +103,11 @@ export function calculateGoldLocalMetrics(goldPriceUsd = 2650.00, localRateAgain
     };
   } catch (err) {
     console.warn('[metalsService] calculateGoldLocalMetrics error:', err);
-    return {
-      pricePerOunceLocal: 1079021,
-      pricePerGram24K: 34691,
-      pricePerTola24K: 404640,
-      pricePer10Gram24K: 346913,
-      pricePer10Gram22K: 317998,
-      pricePerTola22K: 370920,
-      pricePerGram22K: 31800,
-      pricePer10Gram21K: 303549,
-      pricePerTola21K: 354060,
-      pricePerGram21K: 30355,
-      pricePer10Gram18K: 260185,
-      pricePerTola18K: 303480,
-      pricePerGram18K: 26018,
-      sarafaAdjustment: 0
-    };
+    return NO_METRICS;
   }
 }
 
-export const METALS_CACHE_KEY = 'fgc_spot_metals_cache';
+export const METALS_CACHE_KEY = 'fgc_spot_verified_metals_cache_v2';
 const METALS_CACHE_TTL_MS = 60 * 1000; // 1 minute fresh cache TTL
 
 let inMemoryMetalsCache = null;
@@ -133,11 +121,6 @@ function getCachedMetals() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.data && (Date.now() - parsed.timestamp < METALS_CACHE_TTL_MS)) {
-        // Purge old stale 4158 cache if present
-        if (parsed.data.gold?.price && parsed.data.gold.price > 4100) {
-          localStorage.removeItem(METALS_CACHE_KEY);
-          return null;
-        }
         inMemoryMetalsCache = parsed;
         return parsed.data;
       }
@@ -175,16 +158,18 @@ export async function fetchLiveMetals(forceFresh = false) {
 
     if (res.ok) {
       const data = await res.json();
-      if (data && data.gold && data.silver && typeof data.gold.price === 'number' && data.gold.price > 500) {
+      if (data && data.success === true && data.gold && data.silver &&
+          ((Number.isFinite(data.gold.price) && data.gold.price > 500) ||
+           (Number.isFinite(data.silver.price) && data.silver.price > 5))) {
         const result = {
           success: true,
           gold: data.gold,
           silver: data.silver,
           rates: data.rates || {
-            XAU: 1 / data.gold.price,
-            XAG: 1 / data.silver.price
+            ...(data.gold.price > 0 ? { XAU: 1 / data.gold.price } : {}),
+            ...(data.silver.price > 0 ? { XAG: 1 / data.silver.price } : {})
           },
-          source: data.source || 'Global Bullion & Commodity Desk (Live)',
+          source: data.source || 'Commodity reference feed',
           lastUpdated: data.lastUpdated || new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         };
         saveCachedMetals(result);
@@ -195,7 +180,7 @@ export async function fetchLiveMetals(forceFresh = false) {
     // Continue to direct public fallbacks
   }
 
-  // 2. Direct public fallbacks: Binance PAXG 24hr + jsdelivr Currency-API
+  // 2. Direct public sources: Binance PAXG 24hr + jsdelivr Currency-API
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3500);
@@ -209,12 +194,12 @@ export async function fetchLiveMetals(forceFresh = false) {
     const paxg = paxgRes.status === 'fulfilled' ? paxgRes.value : null;
     const cdn = cdnRes.status === 'fulfilled' ? cdnRes.value : null;
 
-    let goldPrice = DEFAULT_METALS.gold.price;
+    let goldPrice = null;
     let goldChange = DEFAULT_METALS.gold.change;
     let goldHigh = DEFAULT_METALS.gold.high;
     let goldLow = DEFAULT_METALS.gold.low;
 
-    let silverPrice = DEFAULT_METALS.silver.price;
+    let silverPrice = null;
     let silverChange = DEFAULT_METALS.silver.change;
     let silverHigh = DEFAULT_METALS.silver.high;
     let silverLow = DEFAULT_METALS.silver.low;
@@ -223,27 +208,33 @@ export async function fetchLiveMetals(forceFresh = false) {
       const parsed = parseFloat(paxg.lastPrice);
       if (!isNaN(parsed) && parsed > 500) {
         goldPrice = Number(parsed.toFixed(2));
-        goldChange = Number(parseFloat(paxg.priceChangePercent || '0').toFixed(2));
-        goldHigh = Number(parseFloat(paxg.highPrice || (goldPrice * 1.008)).toFixed(2));
-        goldLow = Number(parseFloat(paxg.lowPrice || (goldPrice * 0.992)).toFixed(2));
+        const pChange = parseFloat(paxg.priceChangePercent);
+        goldChange = !isNaN(pChange) ? Number(pChange.toFixed(2)) : null;
+        const pHigh = parseFloat(paxg.highPrice);
+        goldHigh = (!isNaN(pHigh) && pHigh > 0) ? Number(pHigh.toFixed(2)) : null;
+        const pLow = parseFloat(paxg.lowPrice);
+        goldLow = (!isNaN(pLow) && pLow > 0) ? Number(pLow.toFixed(2)) : null;
       }
     } else if (cdn?.usd?.xau && typeof cdn.usd.xau === 'number' && cdn.usd.xau > 0) {
       goldPrice = Number((1 / cdn.usd.xau).toFixed(2));
-      goldHigh = Number((goldPrice * 1.008).toFixed(2));
-      goldLow = Number((goldPrice * 0.992).toFixed(2));
+      goldChange = null;
+      goldHigh = null;
+      goldLow = null;
     }
 
     if (cdn?.usd?.xag && typeof cdn.usd.xag === 'number' && cdn.usd.xag > 0) {
       silverPrice = Number((1 / cdn.usd.xag).toFixed(2));
-      silverHigh = Number((silverPrice * 1.012).toFixed(2));
-      silverLow = Number((silverPrice * 0.988).toFixed(2));
+      silverChange = null;
+      silverHigh = null;
+      silverLow = null;
     }
 
+    if (goldPrice === null && silverPrice === null) throw new Error('No verified metal quote returned');
     const result = {
       success: true,
       gold: {
         symbol: 'XAU/USD',
-        name: 'Gold Spot (Troy Ounce)',
+        name: 'Gold Commodity Reference (Troy Ounce)',
         price: goldPrice,
         change: goldChange,
         high: goldHigh,
@@ -252,7 +243,7 @@ export async function fetchLiveMetals(forceFresh = false) {
       },
       silver: {
         symbol: 'XAG/USD',
-        name: 'Silver Spot (Troy Ounce)',
+        name: 'Silver Commodity Reference (Troy Ounce)',
         price: silverPrice,
         change: silverChange,
         high: silverHigh,
@@ -260,10 +251,10 @@ export async function fetchLiveMetals(forceFresh = false) {
         unit: 'troy oz'
       },
       rates: {
-        XAU: Number((1 / goldPrice).toFixed(8)),
-        XAG: Number((1 / silverPrice).toFixed(8))
+        ...(goldPrice !== null ? { XAU: 1 / goldPrice } : {}),
+        ...(silverPrice !== null ? { XAG: 1 / silverPrice } : {})
       },
-      source: paxg?.lastPrice ? 'Binance PAXG LBMA Gold Feed (Live)' : 'Global Bullion & Commodity Desk (Live)',
+      source: paxg?.lastPrice ? 'Binance PAXG/USDT token quote' : 'Currency API metal reference',
       lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
     };
 
@@ -271,15 +262,12 @@ export async function fetchLiveMetals(forceFresh = false) {
     return result;
   } catch {}
 
-  // 3. Fallback baseline
+  // 3. Honest unavailable state (never give a static quote a fresh timestamp).
   return {
-    success: true,
+    success: false,
     gold: DEFAULT_METALS.gold,
     silver: DEFAULT_METALS.silver,
-    rates: {
-      XAU: 1 / DEFAULT_METALS.gold.price,
-      XAG: 1 / DEFAULT_METALS.silver.price
-    },
+    rates: {},
     source: DEFAULT_METALS.source,
     lastUpdated: DEFAULT_METALS.lastUpdated
   };

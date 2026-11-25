@@ -140,7 +140,7 @@ export default function App() {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
   
-  // Market data states initialized with valid cached rates or reliable DEFAULT_RATES (~277.10 PKR)
+  // Market data states initialized with verified cached rates or USD unit reference only.
   const [rates, setRates] = useState(() => {
     const cached = getCachedRates();
     return cached?.rates || DEFAULT_RATES;
@@ -394,6 +394,7 @@ export default function App() {
                   cryptoList={cryptoList}
                   isLoading={isCryptoLoading}
                   error={cryptoError}
+                  rates={rates}
                   onRefresh={() => loadLiveData(true)}
                   onOpenConvert={(coin) => setSelectedCryptoForConvert(coin)}
                 />

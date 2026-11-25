@@ -1196,24 +1196,6 @@ function renderChartsPage() {
 }
 
 function renderNewsPage() {
-  const newsItems = [
-    { title: 'State Bank of Pakistan Maintains Monetary Policy Rate at Current Baseline', category: 'Central Banks', time: '2 hours ago', source: 'Business Recorder', excerpt: 'The Monetary Policy Committee noted stabilizing inflation trends and positive current account balance figures over the trailing quarter.' },
-    { title: 'Karachi Sarafa Association Announces New 24K Bullion Benchmarks Following LBMA Movement', category: 'Precious Metals', time: '4 hours ago', source: 'Profit Pakistan', excerpt: 'Local gold prices rose in tandem with international spot prices as global central bank bullion reserves continued to expand.' },
-    { title: 'PSX KSE-100 Closes Up 1,130 Points Led by Commercial Banking and Fertilizer Blue Chips', category: 'Equities', time: '6 hours ago', source: 'MarketWatch', excerpt: 'Strong institutional and local mutual fund buying pushed the benchmark index to fresh multi-month valuation heights.' },
-    { title: 'Freelance IT Exporter Remittances Cross Key Milestone Under SBP 50% Retention Facility', category: 'Economy', time: '8 hours ago', source: 'CNBC', excerpt: 'Digital export revenues demonstrated resilience as simplified tax registration and retention accounts reduced offshore friction.' }
-  ];
-
-  const newsCards = newsItems.map(n => `
-    <article class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-2 shadow-xs">
-      <div class="flex items-center justify-between text-[11px] text-slate-500">
-        <span class="font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full">${n.category}</span>
-        <span>${n.source} &bull; ${n.time}</span>
-      </div>
-      <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${n.title}</h2>
-      <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">${n.excerpt}</p>
-    </article>
-  `).join('');
-
   return `
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
@@ -1226,11 +1208,15 @@ function renderNewsPage() {
 
       {/* Header */}
       <div class="space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E676]/10 text-[#00E676] text-xs font-semibold uppercase tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
+          <span>Live Financial Wire</span>
+        </div>
         <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
           Real-Time Financial News Wire & Macroeconomic Intelligence
         </h1>
         <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] max-w-3xl leading-relaxed">
-          Curated coverage of central bank monetary policy updates, foreign exchange reserve changes, Pakistan Stock Exchange movements, and global commodity trends.
+          Real-time syndicated market intelligence covering monetary policy updates, foreign exchange reserve changes, Pakistan Stock Exchange movements, and global commodity trends.
         </p>
       </div>
 
@@ -1243,7 +1229,7 @@ function renderNewsPage() {
           </div>
           <h2 class="text-sm font-bold text-slate-900 dark:text-white">Third-Party News Syndicate Attribution</h2>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Headlines and summaries on this feed are aggregated from external publishers (MarketWatch, CNBC, Business Recorder, Profit Pakistan, Cointelegraph) under fair use. For FGC Spot's original, empirical research articles, explore our research library.
+            Headlines and summaries on this live wire are syndicated from independent external publications (MarketWatch, CNBC, Business Recorder, Profit Pakistan, Cointelegraph) under fair use with full attribution to original publishers. For FGC Spot's original, empirical research articles, explore our research library.
           </p>
         </div>
         <a href="/blog" class="px-5 py-2.5 rounded-xl bg-[#00E676] text-[#06111F] font-bold text-xs shrink-0">
@@ -1251,8 +1237,23 @@ function renderNewsPage() {
         </a>
       </div>
 
-      {/* News Feed Grid */}
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${newsCards}</div>
+      {/* Live Wire Real-Time Container */}
+      <div class="p-8 rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-center space-y-4">
+        <div class="w-10 h-10 rounded-2xl bg-[#00E676]/10 text-[#00E676] flex items-center justify-center mx-auto">
+          <span class="w-3 h-3 rounded-full bg-[#00E676] animate-pulse"></span>
+        </div>
+        <div class="space-y-1 max-w-lg mx-auto">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white">Connecting to Real-Time Financial Wire</h2>
+          <p class="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+            Incoming dispatches, market quotes, and monetary announcements are fetched and verified in real time directly from upstream financial feeds.
+          </p>
+        </div>
+        <div class="pt-2">
+          <a href="/blog" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold transition-all">
+            Explore FGC Spot Research Hub &rarr;
+          </a>
+        </div>
+      </div>
 
     </div>
   `;
@@ -2360,6 +2361,23 @@ async function prerenderAll() {
     fs.writeFileSync(outFilePath, html, 'utf8');
     renderedCount++;
   }
+
+  // /admin is intentionally absent from the public canonical route list and sitemap.
+  // It still needs a real static entry file: without one, direct navigation or a
+  // browser refresh on /admin returns Vercel's 404 before React Router can start.
+  // The client replaces this loading shell with the Supabase-protected login UI.
+  const adminHtml = baseHtml
+    .replace(/<title>.*?<\/title>/i, '<title>Admin Control Portal | FGC Spot</title>')
+    .replace(/<meta name="title" content=".*?" \/>/i, '<meta name="title" content="Admin Control Portal | FGC Spot" />')
+    .replace(/<meta name="description" content=".*?" \/>/i, '<meta name="description" content="Secure FGC Spot administrator sign-in." />')
+    .replace(/<meta name="robots" content=".*?" \/>/i, '<meta name="robots" content="noindex, nofollow" />')
+    .replace(/<link rel="canonical" href=".*?" \/>/i, `<link rel="canonical" href="${BASE_URL}/admin" />`)
+    .replace(/<meta property="og:url" content=".*?" \/>/i, `<meta property="og:url" content="${BASE_URL}/admin" />`)
+    .replace(/<meta property="twitter:url" content=".*?" \/>/i, `<meta property="twitter:url" content="${BASE_URL}/admin" />`)
+    .replace('<div id="root"></div>', '<div id="root"><main role="status" class="min-h-screen bg-[#06111F] text-white flex items-center justify-center"><p>Loading secure FGC Spot admin sign-in...</p></main></div>');
+  const adminDir = path.join(distDir, 'admin');
+  fs.mkdirSync(adminDir, { recursive: true });
+  fs.writeFileSync(path.join(adminDir, 'index.html'), adminHtml, 'utf8');
 
   // Generate Clean Redirect Aliases and Legacy Article Redirects
   const redirects = [

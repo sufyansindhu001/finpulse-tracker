@@ -3,7 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 
 /**
  * Strips raw AI grounding/citation markers (e.g., [span_3](start_span), [citation:1])
@@ -55,11 +61,27 @@ export function parseTags(rawTags) {
   return cleaned.length > 0 ? cleaned : ['Market'];
 }
 
-function stripSpanMarkup(text) {
+export function stripSpanMarkup(text) {
   if (!text || typeof text !== 'string') return text || '';
   return text
+    // 1. Remove dangerous script/iframe tags and unsafe HTML tags
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<\/?[a-z][^>]*>/gi, '')
+    // 2. Remove AI grounding span annotation tokens like [span_3](start_span), [span_0](end_span)
     .replace(/\[[^\]]*span[^\]]*\](?:\([^)]*\))?/gi, '')
     .replace(/\b(?:start_span|end_span|span_\d+)\b/gi, '')
+    // 3. Preserve genuine citation information in clean, safe [cite: ...] format
+    .replace(/\[(?:cite|citation):\s*([^\]]+)\]/gi, (match, citationBody) => {
+      const cleanBody = citationBody
+        .replace(/\[[^\]]*span[^\]]*\](?:\([^)]*\))?/gi, '')
+        .replace(/\b(?:start_span|end_span|span_\d+)\b/gi, '')
+        .trim();
+      return cleanBody ? ` [cite: ${cleanBody}]` : '';
+    })
+    // 4. Clean excess whitespace while preserving sentence structure
+    .replace(/\s+([.,;:])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
     .trim();
 }
 

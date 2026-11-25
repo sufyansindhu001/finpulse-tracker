@@ -1,40 +1,8 @@
-export const DEFAULT_RATES = {
-  USD: 1.0,
-  PKR: 276.75, // Live mid-market interbank benchmark: 1 USD = ~276.75 PKR
-  EUR: 0.8955,
-  GBP: 0.7720,
-  INR: 84.85,
-  AED: 3.6725,
-  SAR: 3.75,
-  CAD: 1.39,
-  AUD: 1.54,
-  JPY: 153.20,
-  CHF: 0.88,
-  CNY: 7.24,
-  TRY: 35.80,
-  SGD: 1.34,
-  MYR: 4.45,
-  BRL: 5.85,
-  ZAR: 18.20,
-  KWD: 0.308,
-  QAR: 3.64,
-  NZD: 1.70,
-  MXN: 20.35,
-  IDR: 15950.0,
-  THB: 34.60,
-  PHP: 58.70,
-  BDT: 120.40,
-  EGP: 49.50,
-  OMR: 0.385,
-  BHD: 0.377,
-  NGN: 1650.0,
-  KRW: 1390.0,
-  VND: 25400.0,
-  XAU: 1 / 2650.00, // 1 Troy Oz Gold Spot Benchmark in USD ($2,650.00)
-  XAG: 1 / 31.50    // 1 Troy Oz Silver Spot Benchmark in USD ($31.50)
-};
+// USD is the definition of the USD-base reference, not a market quote.
+// Missing exchange rates must stay missing until a real feed responds.
+export const DEFAULT_RATES = { USD: 1 };
 
-export const RATES_CACHE_KEY = 'fgc_spot_forex_rates';
+export const RATES_CACHE_KEY = 'fgc_spot_verified_forex_rates_v2';
 export const CACHE_TTL_MS = 120 * 1000; // 2 minutes live fresh client-side cache TTL
 export const SWR_MAX_AGE_MS = 600 * 1000; // 10 minutes stale-while-revalidate TTL
 
@@ -103,8 +71,8 @@ export function saveRatesToCache(data) {
  * Robust live exchange rates fetcher:
  * 1. Checks memory & localStorage cache (bypassed if forceFresh is true).
  * 2. Fetches open.er-api.com and floatrates.com concurrently with SWR deduplication.
- * 3. Incorporates low-latency mid-market rates (accurately reflecting ~277.10 PKR).
- * 4. Gracefully merges live quotes with reliable DEFAULT_RATES baseline.
+ * 3. Incorporates low-latency mid-market rates when supplied by providers.
+ * 4. Never substitutes hardcoded market quotes on upstream failure.
  */
 export async function fetchLiveExchangeRates(forceFresh = false) {
   if (!forceFresh) {
@@ -157,6 +125,10 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
     const jsData = (jsDelivrRes.status === 'fulfilled' && jsDelivrRes.value) ? jsDelivrRes.value : (cloudflareRes.status === 'fulfilled' ? cloudflareRes.value : null);
     const floatData = floatRes.status === 'fulfilled' ? floatRes.value : null;
     const metals = metalsRes.status === 'fulfilled' ? metalsRes.value : null;
+
+    if (!erData?.rates && !jsData?.usd && !floatData) {
+      throw new Error('All verified forex feeds are unavailable');
+    }
 
     const mergedRates = {
       ...DEFAULT_RATES,
@@ -224,13 +196,13 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
     saveRatesToCache(result);
     return result;
   } catch (err) {
-    console.warn('Live forex fetch warning (using default rates baseline):', err?.message);
+    console.warn('Live forex fetch unavailable:', err?.message);
     return {
       success: false,
       rates: DEFAULT_RATES,
       base: 'USD',
-      lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-      source: 'Interbank Baseline Rates'
+      lastUpdated: null,
+      source: 'Verified FX quotes temporarily unavailable'
     };
   }
   })();
@@ -254,15 +226,14 @@ export function convertCurrency(amount, fromCurrency, toCurrency, rates = DEFAUL
     if (isNaN(num) || !isFinite(num) || num <= 0) return 0;
     if (fromCurrency === toCurrency) return num;
 
-    const rateFrom = parseFloat(currentRates[fromCurrency] || DEFAULT_RATES[fromCurrency] || 1);
-    const rateTo = parseFloat(currentRates[toCurrency] || DEFAULT_RATES[toCurrency] || 1);
-    if (!rateFrom || isNaN(rateFrom) || !isFinite(rateFrom)) return 0;
-    if (!rateTo || isNaN(rateTo) || !isFinite(rateTo)) return 0;
+    const rateFrom = Number(currentRates[fromCurrency]);
+    const rateTo = Number(currentRates[toCurrency]);
+    if (!Number.isFinite(rateFrom) || rateFrom <= 0 || !Number.isFinite(rateTo) || rateTo <= 0) return Number.NaN;
 
     const res = (num / rateFrom) * rateTo;
-    return isFinite(res) && !isNaN(res) ? res : 0;
+    return isFinite(res) && !isNaN(res) ? res : Number.NaN;
   } catch {
-    return 0;
+    return Number.NaN;
   }
 }
 
@@ -274,15 +245,14 @@ export function getExchangeRate(fromCurrency, toCurrency, rates = DEFAULT_RATES)
     const currentRates = (rates && typeof rates === 'object' && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
     if (fromCurrency === toCurrency) return 1;
 
-    const rateFrom = parseFloat(currentRates[fromCurrency] || DEFAULT_RATES[fromCurrency] || 1);
-    const rateTo = parseFloat(currentRates[toCurrency] || DEFAULT_RATES[toCurrency] || 1);
-    if (!rateFrom || isNaN(rateFrom) || !isFinite(rateFrom)) return 1;
-    if (!rateTo || isNaN(rateTo) || !isFinite(rateTo)) return 1;
+    const rateFrom = Number(currentRates[fromCurrency]);
+    const rateTo = Number(currentRates[toCurrency]);
+    if (!Number.isFinite(rateFrom) || rateFrom <= 0 || !Number.isFinite(rateTo) || rateTo <= 0) return Number.NaN;
 
     const rate = rateTo / rateFrom;
-    return isFinite(rate) && !isNaN(rate) ? rate : 1;
+    return isFinite(rate) && !isNaN(rate) ? rate : Number.NaN;
   } catch {
-    return 1;
+    return Number.NaN;
   }
 }
 

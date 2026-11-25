@@ -13,7 +13,6 @@ export const PORTAL_KEYS = {
   MESSAGES: 'fgc_portal_messages',
   SUBSCRIBERS: 'fgc_portal_subscribers',
   SETTINGS: 'fgc_portal_settings',
-  CREDENTIALS: 'fgc_portal_credentials',
   DELETED_MESSAGES: 'fgc_portal_deleted_messages',
   DELETED_ARTICLES: 'fgc_portal_deleted_articles'
 };
@@ -26,55 +25,9 @@ const DEFAULT_SETTINGS = {
   tagline: 'Real-Time Forex & Crypto Terminal'
 };
 
-const DEFAULT_MESSAGES = [
-  {
-    id: 'msg_welcome_01',
-    name: 'Dr. Tariq Mahmood',
-    email: 'tariq.mahmood@finconsult.com',
-    subject: 'Forex API Integration & Commercial License',
-    message: 'Greetings FGC Spot desk, we are developing an institutional treasury portal and would like to license your real-time interbank PKR and AED feed APIs.',
-    timestamp: '2026-09-28T09:15:00.000Z',
-    status: 'New'
-  },
-  {
-    id: 'msg_welcome_02',
-    name: 'Ayesha Khan',
-    email: 'ayesha.k@karachitraders.pk',
-    subject: 'Sarafa Gold Rate Calculation Query',
-    message: 'Hello, your gold tola calculator is extremely helpful! Could you also add 21K jewelry calculations for Italian designs?',
-    timestamp: '2026-09-28T11:42:00.000Z',
-    status: 'In Progress'
-  }
-];
+const DEFAULT_MESSAGES = [];
 
-const DEFAULT_SUBSCRIBERS = [
-  {
-    id: 'sub_001',
-    email: 'sufyansindhu001@gmail.com',
-    source: 'Direct Portal',
-    date: '2026-09-27',
-    status: 'Active'
-  },
-  {
-    id: 'sub_002',
-    email: 'market.analyst@fgcspot.com',
-    source: 'Newsletter Widget',
-    date: '2026-09-28',
-    status: 'Active'
-  },
-  {
-    id: 'sub_003',
-    email: 'treasury@karachifx.org',
-    source: 'Daily FX Alert',
-    date: '2026-09-28',
-    status: 'Active'
-  }
-];
-
-const DEFAULT_ADMIN_CREDENTIALS = {
-  email: 'Sufyansindhu001@gmail.com',
-  password: 'Sindhu@101'
-};
+const DEFAULT_SUBSCRIBERS = [];
 
 export function AppProvider({ children }) {
   // -------------------------------------------------------------
@@ -445,98 +398,201 @@ export function AppProvider({ children }) {
   };
 
   // -------------------------------------------------------------
-  // 5. ADMIN CREDENTIALS PERSISTENCE (Key: fgc_portal_credentials)
+  // 5. SUPABASE AUTHENTICATION & SECURE RBAC SESSION MANAGEMENT
   // -------------------------------------------------------------
-  const [adminCredentials, setAdminCredentials] = useState(() => {
+  const [adminUser, setAdminUser] = useState(null);
+  const [adminRole, setAdminRole] = useState(null);
+  const [isAdminAuth, setIsAdminAuth] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  /**
+   * Verifies whether an authenticated user is explicitly authorized in the database
+   * administrator registry (public.admin_users) or via check_is_admin RPC.
+   * Ordinary authenticated users without an admin_users entry are strictly denied.
+   */
+  const verifyAdminAuthorization = useCallback(async (user) => {
+    if (!user || !user.id) return { isAuthorized: false, role: null };
+
     try {
-      const saved = localStorage.getItem(PORTAL_KEYS.CREDENTIALS) || localStorage.getItem('fgc_spot_admin_credentials');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.email && parsed.password && parsed.email.toLowerCase() !== 'admin@fgcspot.com') {
-          const creds = {
-            email: parsed.email.trim(),
-            password: parsed.password
-          };
-          localStorage.setItem(PORTAL_KEYS.CREDENTIALS, JSON.stringify(creds));
-          return creds;
+      // 1. Primary check: Server-side check_is_admin RPC (security definer)
+      const { data: isRpcAdmin, error: rpcErr } = await supabase.rpc('check_is_admin');
+      if (!rpcErr && typeof isRpcAdmin === 'boolean') {
+        if (isRpcAdmin) {
+          return { isAuthorized: true, role: 'admin' };
         }
+        return { isAuthorized: false, role: null };
       }
-    } catch (e) {
-      console.warn('[AppContext] Error reading credentials:', e);
-    }
-    try {
-      localStorage.setItem(PORTAL_KEYS.CREDENTIALS, JSON.stringify(DEFAULT_ADMIN_CREDENTIALS));
-    } catch {}
-    return DEFAULT_ADMIN_CREDENTIALS;
-  });
 
-  const updateAdminCredentials = (newEmail, newPassword) => {
-    const updated = {
-      email: (newEmail || '').trim(),
-      password: newPassword
-    };
-    setAdminCredentials(updated);
-    try {
-      localStorage.setItem(PORTAL_KEYS.CREDENTIALS, JSON.stringify(updated));
-      localStorage.setItem('fgc_spot_admin_credentials', JSON.stringify(updated));
-    } catch (e) {
-      console.warn('[AppContext] Error saving credentials:', e);
-    }
-    return { success: true };
-  };
+      // 2. Direct RLS query on public.admin_users (users may only view their own record)
+      const { data: adminRecord, error: tableErr } = await supabase
+        .from('admin_users')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-  // -------------------------------------------------------------
-  // 6. ADMIN AUTHENTICATION SESSION GATE
-  // -------------------------------------------------------------
-  const [isAdminAuth, setIsAdminAuth] = useState(() => {
-    try {
-      return sessionStorage.getItem('fgc_spot_admin_logged_in') === 'true';
-    } catch {
+      if (!tableErr && adminRecord && (adminRecord.role === 'admin' || adminRecord.role === 'super_admin')) {
+        return { isAuthorized: true, role: adminRecord.role };
+      }
+
+      return { isAuthorized: false, role: null };
+    } catch (err) {
+      console.warn('[AppContext] Authorization verification error:', err);
+      return { isAuthorized: false, role: null };
+    }
+  }, []);
+
+  const checkAndSetUser = useCallback(async (user) => {
+    if (!user) {
+      setAdminUser(null);
+      setAdminRole(null);
+      setIsAdminAuth(false);
       return false;
     }
-  });
 
-  const loginAdmin = useCallback((inputEmail, inputPassword) => {
-    const cleanInputEmail = (inputEmail || '').trim().toLowerCase();
-    const cleanSavedEmail = (adminCredentials?.email || DEFAULT_ADMIN_CREDENTIALS.email || '').trim().toLowerCase();
-    const cleanInputPass = (inputPassword || '').trim();
-    const exactInputPass = inputPassword || '';
-    const cleanSavedPass = (adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password || '').trim();
-    const exactSavedPass = adminCredentials?.password || DEFAULT_ADMIN_CREDENTIALS.password;
-
-    const isPasswordMatch = exactInputPass === exactSavedPass || cleanInputPass === cleanSavedPass;
-
-    if (cleanInputEmail === cleanSavedEmail && isPasswordMatch) {
+    const { isAuthorized, role } = await verifyAdminAuthorization(user);
+    if (isAuthorized) {
+      setAdminUser(user);
+      setAdminRole(role);
       setIsAdminAuth(true);
-      try {
-        sessionStorage.setItem('fgc_spot_admin_logged_in', 'true');
-      } catch (err) {
-        console.warn('sessionStorage is unavailable:', err);
-      }
-      return { success: true };
+      return true;
+    } else {
+      setAdminUser(user);
+      setAdminRole(null);
+      setIsAdminAuth(false);
+      return false;
     }
+  }, [verifyAdminAuthorization]);
 
-    if (cleanInputEmail !== cleanSavedEmail) {
+  useEffect(() => {
+    let isMounted = true;
+
+    // Check existing active Supabase Auth session on mount
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (isMounted) {
+        if (session?.user) {
+          await checkAndSetUser(session.user);
+        } else {
+          setAdminUser(null);
+          setAdminRole(null);
+          setIsAdminAuth(false);
+        }
+        setAuthLoading(false);
+      }
+    }).catch(err => {
+      console.warn('[AppContext] Supabase getSession error:', err);
+      if (isMounted) setAuthLoading(false);
+    });
+
+    // Listen to real-time auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (isMounted) {
+        if (session?.user) {
+          await checkAndSetUser(session.user);
+        } else {
+          setAdminUser(null);
+          setAdminRole(null);
+          setIsAdminAuth(false);
+        }
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
+  }, [checkAndSetUser]);
+
+  const loginAdmin = useCallback(async (inputEmail, inputPassword) => {
+    const cleanEmail = (inputEmail || '').trim();
+    const cleanPass = inputPassword || '';
+
+    if (!cleanEmail || !cleanPass) {
       return { 
         success: false, 
-        message: 'Invalid Admin Email address. Please check your email.' 
+        message: 'Please provide both your administrator email and password.' 
       };
     }
 
-    return { 
-      success: false, 
-      message: 'Invalid Admin Password. Please check your password.' 
-    };
-  }, [adminCredentials]);
-
-  const logoutAdmin = useCallback(() => {
-    setIsAdminAuth(false);
     try {
-      sessionStorage.removeItem('fgc_spot_admin_logged_in');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: cleanPass
+      });
+
+      if (error) {
+        return { 
+          success: false, 
+          message: error.message || 'Invalid administrator credentials. Authentication failed.' 
+        };
+      }
+
+      if (data?.user) {
+        // Enforce database-level administrator role verification
+        const isAuthorized = await checkAndSetUser(data.user);
+        if (isAuthorized) {
+          return { success: true, user: data.user };
+        } else {
+          // User is authenticated in Supabase Auth, but NOT an authorized administrator
+          await supabase.auth.signOut();
+          setAdminUser(null);
+          setAdminRole(null);
+          setIsAdminAuth(false);
+          return { 
+            success: false, 
+            message: 'Access Denied: This account is authenticated, but is not registered in the database administrator registry (public.admin_users). Please contact the website owner.' 
+          };
+        }
+      }
+
+      return { success: false, message: 'Authentication failed. Please try again.' };
     } catch (err) {
-      console.warn('sessionStorage is unavailable:', err);
+      return { success: false, message: err?.message || 'Unexpected authentication error.' };
+    }
+  }, [checkAndSetUser]);
+
+  const logoutAdmin = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn('[AppContext] Supabase signOut error:', err);
+    } finally {
+      setAdminUser(null);
+      setAdminRole(null);
+      setIsAdminAuth(false);
+      try {
+        sessionStorage.removeItem('fgc_spot_admin_logged_in');
+      } catch {}
     }
   }, []);
+
+  const updateAdminCredentials = useCallback(async (newEmail, newPassword) => {
+    try {
+      const updateData = {};
+      if (newEmail && newEmail.trim()) {
+        updateData.email = newEmail.trim();
+      }
+      if (newPassword && newPassword.trim()) {
+        updateData.password = newPassword.trim();
+      }
+
+      const { data, error } = await supabase.auth.updateUser(updateData);
+      if (error) {
+        return { success: false, message: error.message || 'Failed to update admin credentials.' };
+      }
+
+      if (data?.user) {
+        setAdminUser(data.user);
+      }
+      return { success: true, message: 'Administrator credentials updated successfully in Supabase Auth.' };
+    } catch (err) {
+      return { success: false, message: err?.message || 'Error updating credentials.' };
+    }
+  }, []);
+
+  // Backwards-compatible credential object for components reading adminCredentials?.email
+  const adminCredentials = {
+    email: adminUser?.email || ''
+  };
 
   return (
     <AppContext.Provider value={{
@@ -562,9 +618,12 @@ export function AppProvider({ children }) {
       addSubscriber,
       deleteSubscriber,
       // Admin Credentials & Auth
+      adminUser,
+      adminRole,
       adminCredentials,
       updateAdminCredentials,
       isAdminAuth,
+      authLoading,
       loginAdmin,
       logoutAdmin
     }}>

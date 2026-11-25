@@ -24,7 +24,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
   // Quick amount buttons
   const amountPresets = [10, 50, 100, 250, 500, 1000, 5000];
 
-  // Guaranteed rates object with 1 USD = ~277.10 PKR fallback baseline
+  // USD is a unit reference. Market conversion rates come from verified feeds only.
   const activeRates = useMemo(() => {
     return (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
   }, [rates]);
@@ -46,7 +46,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
       firstRender.current = false;
       return;
     }
-    if (numericAmount <= 0) return;
+    if (numericAmount <= 0 || !Number.isFinite(convertedValue)) return;
     const timer = setTimeout(() => {
       try {
         recordConversion(baseCurrency, targetCurrency, numericAmount, convertedValue);
@@ -73,7 +73,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
 
   // Copy result
   const handleCopy = () => {
-    if (convertedValue <= 0) return;
+    if (!Number.isFinite(convertedValue) || convertedValue <= 0) return;
     const text = `${numericAmount} ${baseCurrency} = ${convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} ${targetCurrency}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -242,14 +242,14 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
               </div>
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tabular-nums tracking-tight">
-                  {targetObj.symbol} {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+                  {Number.isFinite(convertedValue) ? `${targetObj.symbol} ${convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : 'N/A'}
                 </span>
                 <span className="text-lg sm:text-2xl font-bold text-emerald-400 tracking-wide">
                   {targetCurrency}
                 </span>
               </div>
               <div className="text-xs text-slate-300 dark:text-slate-400 mt-2.5 tabular-nums font-medium">
-                {numericAmount.toLocaleString()} {baseCurrency} = {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {targetCurrency}
+                {numericAmount.toLocaleString()} {baseCurrency} = {Number.isFinite(convertedValue) ? convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : 'N/A'} {targetCurrency}
               </div>
             </div>
 
@@ -269,13 +269,13 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
               <TrendingUp className="w-4 h-4 text-blue-400 shrink-0" />
               <span className="text-slate-400">Direct Rate:</span>
               <span className="text-white font-bold tabular-nums">
-                1 {baseCurrency} = {directRate < 0.001 ? directRate.toFixed(6) : directRate.toFixed(4)} {targetCurrency}
+                1 {baseCurrency} = {Number.isFinite(directRate) ? (directRate < 0.001 ? directRate.toFixed(6) : directRate.toFixed(4)) : 'N/A'} {targetCurrency}
               </span>
             </div>
             <div className="flex items-center gap-2 sm:justify-end">
               <span className="text-slate-400">Inverse Rate:</span>
               <span className="text-white font-bold tabular-nums">
-                1 {targetCurrency} = {inverseRate < 0.001 ? inverseRate.toFixed(6) : inverseRate.toFixed(4)} {baseCurrency}
+                1 {targetCurrency} = {Number.isFinite(inverseRate) ? (inverseRate < 0.001 ? inverseRate.toFixed(6) : inverseRate.toFixed(4)) : 'N/A'} {baseCurrency}
               </span>
             </div>
           </div>
@@ -309,10 +309,10 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{dest.code}</span>
                   </div>
                   <div className="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">
-                    {dest.symbol} {dest.converted.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    {Number.isFinite(dest.converted) ? `${dest.symbol} ${dest.converted.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : 'N/A'}
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 truncate tabular-nums font-medium">
-                    1 {baseCurrency} = {dest.rate < 0.01 ? dest.rate.toFixed(4) : dest.rate.toFixed(2)}
+                    1 {baseCurrency} = {Number.isFinite(dest.rate) ? (dest.rate < 0.01 ? dest.rate.toFixed(4) : dest.rate.toFixed(2)) : 'N/A'}
                   </div>
                 </div>
               ))}

@@ -130,13 +130,8 @@ export default function ScreensModal({ isOpen, onClose, onApplyScreen, activeCou
                     <span className="px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold">
                       {activeCountry?.flag || '🇵🇰'} {activeCountry?.code || 'PK'}
                     </span>
-                    <span className="text-[#00E676] font-bold flex items-center gap-1">
-                      <span>3M Return {screen.return3M}</span>
-                    </span>
+                    <span className="text-gray-500 font-medium">Strategy filters only — no performance claim</span>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
-                    {screen.riskLevel}
-                  </span>
                 </div>
               </div>
             ))}

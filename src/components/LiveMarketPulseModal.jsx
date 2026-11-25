@@ -21,7 +21,6 @@ export default function LiveMarketPulseModal({
   lastUpdated = ''
 }) {
   const navigate = useNavigate();
-  const [pulseTick, setPulseTick] = useState(0);
   const [syncedToast, setSyncedToast] = useState(false);
   const [timeString, setTimeString] = useState(() => new Date().toLocaleTimeString());
 
@@ -47,12 +46,11 @@ export default function LiveMarketPulseModal({
     };
   }, [isOpen]);
 
-  // Live clock and subtle price micro-ticker
+  // Update the local clock without modifying market prices.
   useEffect(() => {
     if (!isOpen) return;
     const clockInterval = setInterval(() => {
       setTimeString(new Date().toLocaleTimeString());
-      setPulseTick(t => t + 1);
     }, 2000);
     return () => clearInterval(clockInterval);
   }, [isOpen]);
@@ -72,86 +70,77 @@ export default function LiveMarketPulseModal({
     navigate(path);
   };
 
-  const usdPkr = rates.PKR || 276.75;
-  const eurPkr = ((usdPkr) / (rates.EUR || 0.8955)).toFixed(2);
-  const goldOzUsd = (rates.XAU && rates.XAU > 0) ? Number((1 / rates.XAU).toFixed(2)) : 3898.90;
-  const silverOzUsd = (rates.XAG && rates.XAG > 0) ? Number((1 / rates.XAG).toFixed(2)) : 49.28;
-  const goldTola24K = Math.round((goldOzUsd / 31.1035) * 11.6638 * usdPkr);
-
-  // Micro-fluctuation delta for live simulation
-  const microDelta = (pulseTick % 2 === 0 ? 0.02 : -0.01);
+  const valid = value => Number.isFinite(Number(value)) && Number(value) > 0;
+  const usdPkr = valid(rates.PKR) ? Number(rates.PKR) : null;
+  const eurPkr = usdPkr !== null && valid(rates.EUR) ? usdPkr / Number(rates.EUR) : null;
+  const goldOzUsd = valid(rates.XAU) ? 1 / Number(rates.XAU) : null;
+  const silverOzUsd = valid(rates.XAG) ? 1 / Number(rates.XAG) : null;
+  const goldTola24K = goldOzUsd !== null && usdPkr !== null
+    ? Math.round((goldOzUsd / 31.1035) * 11.6638 * usdPkr) : null;
 
   const pulseAssets = [
     {
       id: 'usd-pkr',
       name: 'USD / PKR',
       category: 'Interbank Forex',
-      price: `₨${(usdPkr + (pulseTick % 3 === 0 ? 0.05 : 0)).toFixed(2)}`,
-      change: '+0.04%',
-      isPositive: true,
+      price: usdPkr !== null ? `₨${usdPkr.toFixed(2)}` : 'N/A',
+      change: '24h: N/A',
       path: '/rates'
     },
     {
       id: 'gold-xau',
       name: 'Spot Gold (XAU/USD)',
       category: 'Precious Metals',
-      price: `$${(goldOzUsd + microDelta * 12).toFixed(2)}`,
-      change: `${microDelta >= 0 ? '+' : ''}${(0.38 + microDelta).toFixed(2)}%`,
-      isPositive: microDelta >= 0,
+      price: goldOzUsd !== null ? `$${goldOzUsd.toFixed(2)}` : 'N/A',
+      change: '24h: N/A',
       path: '/gold'
     },
     {
       id: 'gold-tola',
       name: 'Gold 24K (Tola)',
-      category: 'Sarafa Karachi',
-      price: `₨${goldTola24K.toLocaleString()}`,
-      change: '+0.42%',
-      isPositive: true,
+      category: 'Indicative currency parity',
+      price: goldTola24K !== null ? `₨${goldTola24K.toLocaleString()}` : 'N/A',
+      change: '24h: N/A',
       path: '/gold'
     },
     {
       id: 'silver-xag',
       name: 'Spot Silver (XAG/USD)',
       category: 'Precious Metals',
-      price: `$${silverOzUsd.toFixed(2)}`,
-      change: '+0.25%',
-      isPositive: true,
+      price: silverOzUsd !== null ? `$${silverOzUsd.toFixed(2)}` : 'N/A',
+      change: '24h: N/A',
       path: '/gold'
     },
     {
       id: 'eur-pkr',
       name: 'EUR / PKR',
       category: 'Euro Currency',
-      price: `₨${eurPkr}`,
-      change: '+0.18%',
-      isPositive: true,
+      price: eurPkr !== null ? `₨${eurPkr.toFixed(2)}` : 'N/A',
+      change: '24h: N/A',
       path: '/rates'
     },
     {
       id: 'dxy-index',
       name: 'US Dollar Index (DXY)',
       category: 'Macro Benchmark',
-      price: `${(104.35 + (pulseTick % 2 === 0 ? 0.04 : -0.02)).toFixed(2)}`,
-      change: '+0.08%',
-      isPositive: true,
+      price: 'N/A',
+      change: 'No verified DXY feed',
       path: '/charts'
     },
     {
       id: 'btc-usd',
       name: 'Bitcoin (BTC/USD)',
       category: 'Digital Assets',
-      price: `$${(88450 + (pulseTick % 2 === 0 ? 35 : -25)).toLocaleString()}`,
-      change: '+2.14%',
-      isPositive: true,
+      price: 'N/A',
+      change: 'Open crypto feed for quotes',
       path: '/crypto'
     },
     {
       id: 'kse-100',
       name: 'KSE-100 Index',
       category: 'PSX Equities',
-      price: '92,450.12',
-      change: '+0.65%',
-      isPositive: true,
+      price: 'N/A',
+      change: 'Open stocks for available quotes',
       path: '/stocks'
     }
   ];
@@ -209,18 +198,18 @@ export default function LiveMarketPulseModal({
               <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-sans">Status</span>
               <span className="text-[#00E676] font-bold flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]" />
-                Connected
+                    {usdPkr !== null ? 'FX rate available' : 'Quotes pending'}
               </span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 space-y-0.5">
               <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-sans">Latency</span>
-              <span className="text-slate-900 dark:text-white font-bold">&lt; 40ms</span>
+              <span className="text-slate-900 dark:text-white font-bold">Not measured</span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 space-y-0.5">
               <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-sans">Sync Interval</span>
-              <span className="text-cyan-500 font-bold">45s / Real-Time</span>
+              <span className="text-cyan-500 font-bold">On refresh</span>
             </div>
 
             <div className="p-2.5 rounded-xl bg-white dark:bg-[#0A1726] border border-slate-200/80 dark:border-white/5 space-y-0.5">
@@ -238,7 +227,7 @@ export default function LiveMarketPulseModal({
               <span>Streaming Spot Benchmarks</span>
             </span>
             <span className="text-[10px] text-slate-500 font-mono">
-              Last synced: {lastUpdated || 'Sub-second live'}
+              Last synced: {lastUpdated || 'Not yet available'}
             </span>
           </div>
 
@@ -265,11 +254,6 @@ export default function LiveMarketPulseModal({
                   <div className={`text-[10px] font-mono font-semibold flex items-center justify-end gap-0.5 ${
                     asset.isPositive ? 'text-emerald-500' : 'text-rose-500'
                   }`}>
-                    {asset.isPositive ? (
-                      <TrendingUp className="w-2.5 h-2.5" />
-                    ) : (
-                      <TrendingDown className="w-2.5 h-2.5" />
-                    )}
                     <span>{asset.change}</span>
                   </div>
                 </div>
@@ -284,7 +268,7 @@ export default function LiveMarketPulseModal({
               <span>Multi-Source Ingestion Verification</span>
             </span>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-              Forex pairs ingested from global interbank mid-market indices and SBP. Gold bullion verified against Binance PAXG 24hr LBMA-backed physical gold tokens and open currency feeds.
+              Available values are taken from current rate feeds. Missing DXY, cryptocurrency, and stock data are not estimated or simulated in this panel.
             </p>
           </div>
         </div>

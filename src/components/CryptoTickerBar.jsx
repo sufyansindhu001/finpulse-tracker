@@ -1,52 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { DEFAULT_CRYPTO_BENCHMARKS } from '../services/cryptoService';
 import { DEFAULT_RATES } from '../services/forexService';
-import { DEFAULT_METALS, calculateGoldLocalMetrics } from '../services/metalsService';
+import { calculateGoldLocalMetrics, fetchLiveMetals } from '../services/metalsService';
 
 export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES, onSelectCoin }) {
   const navigate = useNavigate();
 
-  // State to track dynamic micro-ticks (simulating real-time socket price delta fluctuations)
-  const [ticks, setTicks] = useState({});
+  const [metalsData, setMetalsData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchLiveMetals().then(res => {
+      if (isMounted && res) {
+        setMetalsData(res);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
 
   const activeRates = (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
-  const usdToPkr = activeRates.PKR || 277.10;
-  const eurVal = activeRates.EUR || 0.92;
-  const gbpVal = activeRates.GBP || 0.79;
-  const aedVal = activeRates.AED || 3.6725;
-  const sarVal = activeRates.SAR || 3.75;
+  const usdToPkr = Number.isFinite(activeRates.PKR) && activeRates.PKR > 0 ? activeRates.PKR : null;
+  const eurVal = activeRates.EUR || null;
+  const gbpVal = activeRates.GBP || null;
+  const aedVal = activeRates.AED || null;
+  const sarVal = activeRates.SAR || null;
 
-  const eurToPkr = usdToPkr / eurVal;
-  const gbpToPkr = usdToPkr / gbpVal;
-  const aedToPkr = usdToPkr / aedVal;
-  const sarToPkr = usdToPkr / sarVal;
+  const eurToPkr = usdToPkr !== null && eurVal ? usdToPkr / eurVal : null;
+  const gbpToPkr = usdToPkr !== null && gbpVal ? usdToPkr / gbpVal : null;
+  const aedToPkr = usdToPkr !== null && aedVal ? usdToPkr / aedVal : null;
+  const sarToPkr = usdToPkr !== null && sarVal ? usdToPkr / sarVal : null;
 
-  const goldSpotUsd = (activeRates.XAU && activeRates.XAU > 0)
-    ? Number((1 / activeRates.XAU).toFixed(2))
-    : DEFAULT_METALS.gold.price;
+  const goldSpotUsd = Number.isFinite(metalsData?.gold?.price) && metalsData.gold.price > 0
+    ? metalsData.gold.price
+    : (activeRates.XAU > 0 ? Number((1 / activeRates.XAU).toFixed(2)) : null);
 
-  const silverSpotUsd = (activeRates.XAG && activeRates.XAG > 0)
-    ? Number((1 / activeRates.XAG).toFixed(2))
-    : (DEFAULT_METALS?.silver?.price || 33.45);
+  const silverSpotUsd = Number.isFinite(metalsData?.silver?.price) && metalsData.silver.price > 0
+    ? metalsData.silver.price
+    : (activeRates.XAG > 0 ? Number((1 / activeRates.XAG).toFixed(2)) : null);
 
   const goldMetrics = calculateGoldLocalMetrics(goldSpotUsd, usdToPkr, true);
-  const gold24kTola = goldMetrics?.pricePerTola24K || 404640;
-  const gold22kTola = goldMetrics?.pricePerTola22K || 370920;
+  const gold24kTola = goldMetrics?.pricePerTola24K ?? null;
+  const gold22kTola = goldMetrics?.pricePerTola22K ?? null;
 
-  // Curated Multi-Asset Ticker Strip (DXY, Gold Bullion, Silver, Forex Interbank & PSX Equities)
+  const goldChange = typeof metalsData?.gold?.change === 'number' ? metalsData.gold.change : null;
+  const silverChange = typeof metalsData?.silver?.change === 'number' ? metalsData.silver.change : null;
+
+  // Curated Multi-Asset Ticker Strip (Gold Bullion, Silver & Forex Interbank)
   const baseMultiAssetItems = [
-    {
-      id: 'dxy-index',
-      type: 'index',
-      symbol: 'DXY',
-      badge: 'USD Index',
-      basePrice: 104.32,
-      formatPrice: (p) => p.toFixed(2),
-      baseChange: 0.08,
-      onClick: () => navigate('/rates')
-    },
     {
       id: 'gold-24k-tola',
       type: 'gold',
@@ -54,7 +55,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Tola',
       basePrice: gold24kTola,
       formatPrice: (p) => `₨${Math.round(p).toLocaleString()}`,
-      baseChange: 0.42,
+      baseChange: goldChange,
       onClick: () => navigate('/gold')
     },
     {
@@ -64,7 +65,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Jewelry',
       basePrice: gold22kTola,
       formatPrice: (p) => `₨${Math.round(p).toLocaleString()}`,
-      baseChange: 0.42,
+      baseChange: goldChange,
       onClick: () => navigate('/gold')
     },
     {
@@ -74,7 +75,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Spot Oz',
       basePrice: goldSpotUsd,
       formatPrice: (p) => `$${p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      baseChange: 0.38,
+      baseChange: goldChange,
       onClick: () => navigate('/gold')
     },
     {
@@ -84,18 +85,8 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Silver Oz',
       basePrice: silverSpotUsd,
       formatPrice: (p) => `$${p.toFixed(2)}`,
-      baseChange: 0.55,
+      baseChange: silverChange,
       onClick: () => navigate('/gold')
-    },
-    {
-      id: 'kse-100-index',
-      type: 'index',
-      symbol: 'KSE-100',
-      badge: 'PSX Index',
-      basePrice: 92485,
-      formatPrice: (p) => `${Math.round(p).toLocaleString()} pts`,
-      baseChange: 0.62,
-      onClick: () => navigate('/stocks')
     },
     {
       id: 'fx-usd-pkr',
@@ -104,7 +95,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Interbank',
       basePrice: usdToPkr,
       formatPrice: (p) => `₨${p.toFixed(2)}`,
-      baseChange: 0.04,
+      baseChange: null,
       onClick: () => navigate('/rates')
     },
     {
@@ -114,7 +105,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Euro',
       basePrice: eurToPkr,
       formatPrice: (p) => `₨${p.toFixed(2)}`,
-      baseChange: 0.18,
+      baseChange: null,
       onClick: () => navigate('/rates')
     },
     {
@@ -124,7 +115,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Pound',
       basePrice: gbpToPkr,
       formatPrice: (p) => `₨${p.toFixed(2)}`,
-      baseChange: -0.12,
+      baseChange: null,
       onClick: () => navigate('/rates')
     },
     {
@@ -134,7 +125,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Dirham',
       basePrice: aedToPkr,
       formatPrice: (p) => `₨${p.toFixed(2)}`,
-      baseChange: 0.02,
+      baseChange: null,
       onClick: () => navigate('/rates')
     },
     {
@@ -144,13 +135,13 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       badge: 'Riyal',
       basePrice: sarToPkr,
       formatPrice: (p) => `₨${p.toFixed(2)}`,
-      baseChange: 0.01,
+      baseChange: null,
       onClick: () => navigate('/rates')
     }
   ];
 
   const hasLiveCoins = Array.isArray(cryptoList) && cryptoList.length > 0;
-  const activeCrypto = hasLiveCoins ? cryptoList.slice(0, 8) : DEFAULT_CRYPTO_BENCHMARKS.slice(0, 8);
+  const activeCrypto = hasLiveCoins ? cryptoList.slice(0, 8) : [];
 
   const baseCryptoItems = activeCrypto.map(coin => ({
     id: `crypto-${coin.id}`,
@@ -161,75 +152,27 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
     formatPrice: (p) => `$${p < 1 
       ? p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
       : p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-    baseChange: coin.price_change_percentage_24h || 0,
+    baseChange: typeof coin.price_change_percentage_24h === 'number' ? coin.price_change_percentage_24h : null,
     image: coin.image,
     onClick: () => onSelectCoin ? onSelectCoin(coin) : navigate('/crypto')
   }));
 
   const allAvailableItems = [...baseMultiAssetItems, ...baseCryptoItems];
 
-  // Dynamic live tick interval: updates prices by ±0.01% - 0.04% every 2.6 seconds with green/red flash
-  useEffect(() => {
-    const tickInterval = setInterval(() => {
-      // Pick 1 or 2 random assets to tick
-      const count = Math.random() > 0.4 ? 2 : 1;
-      const targetIndices = new Set();
-      while (targetIndices.size < count && targetIndices.size < allAvailableItems.length) {
-        const idx = Math.floor(Math.random() * allAvailableItems.length);
-        targetIndices.add(idx);
-      }
-
-      setTicks(prevTicks => {
-        const nextTicks = { ...prevTicks };
-        const now = Date.now();
-
-        targetIndices.forEach(idx => {
-          const item = allAvailableItems[idx];
-          if (!item) return;
-
-          // Generate micro-delta between -0.03% and +0.04%
-          const isUp = Math.random() > 0.45;
-          const deltaMagnitude = +(Math.random() * 0.03 + 0.01).toFixed(3);
-          const deltaPercent = isUp ? deltaMagnitude : -deltaMagnitude;
-
-          const currentAccum = prevTicks[item.id]?.accumDelta || 0;
-          // Keep cumulative delta tightly bound within ±0.15% so values stay realistic
-          const newAccum = Math.max(-0.15, Math.min(0.15, currentAccum + deltaPercent));
-
-          nextTicks[item.id] = {
-            accumDelta: newAccum,
-            direction: isUp ? 'up' : 'down',
-            lastTicked: now
-          };
-        });
-
-        return nextTicks;
-      });
-    }, 2600);
-
-    return () => clearInterval(tickInterval);
-  }, [allAvailableItems.length]);
-
-  // Compute final item presentation with live ticks
-  const now = Date.now();
   const renderedItems = allAvailableItems.map(item => {
-    const tick = ticks[item.id];
-    const accumDelta = tick?.accumDelta || 0;
-    const isFlashing = tick && (now - tick.lastTicked < 1600);
-    const flashDirection = tick?.direction || (item.baseChange >= 0 ? 'up' : 'down');
-
-    // Dynamic price calculation
-    const calculatedPrice = item.basePrice * (1 + accumDelta / 100);
-    const calculatedChange = item.baseChange + accumDelta;
-    const isPositive = calculatedChange >= 0;
+    const hasChange = typeof item.baseChange === 'number' && !isNaN(item.baseChange);
+    const isPositive = hasChange ? item.baseChange >= 0 : null;
+    const displayChange = hasChange
+      ? `${isPositive ? '+' : ''}${item.baseChange.toFixed(2)}%`
+      : 'N/A';
 
     return {
       ...item,
-      displayPrice: item.formatPrice(calculatedPrice),
-      displayChange: `${isPositive ? '+' : ''}${calculatedChange.toFixed(2)}%`,
+      displayPrice: Number.isFinite(item.basePrice) ? item.formatPrice(item.basePrice) : 'N/A',
+      displayChange,
       isPositive,
-      isFlashing,
-      flashDirection
+      isFlashing: false,
+      flashDirection: isPositive ? 'up' : 'down'
     };
   });
 
@@ -320,20 +263,27 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
               </span>
 
               {/* Dynamic Percentage & Up/Down Indicator */}
-              <span
-                className={`inline-flex items-center gap-0.5 text-[10px] font-semibold font-mono tabular-nums px-1.5 py-0.2 rounded-full transition-all duration-200 ${
-                  item.isPositive 
-                    ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
-                    : 'text-rose-500 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20'
-                }`}
-              >
-                {item.isPositive ? (
-                  <TrendingUp className="w-2.5 h-2.5 stroke-[2.5]" />
-                ) : (
-                  <TrendingDown className="w-2.5 h-2.5 stroke-[2.5]" />
-                )}
-                {item.displayChange}
-              </span>
+              {/* Dynamic Percentage & Up/Down Indicator or N/A */}
+              {item.isPositive !== null ? (
+                <span
+                  className={`inline-flex items-center gap-0.5 text-[10px] font-semibold font-mono tabular-nums px-1.5 py-0.2 rounded-full transition-all duration-200 ${
+                    item.isPositive 
+                      ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
+                      : 'text-rose-500 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20'
+                  }`}
+                >
+                  {item.isPositive ? (
+                    <TrendingUp className="w-2.5 h-2.5 stroke-[2.5]" />
+                  ) : (
+                    <TrendingDown className="w-2.5 h-2.5 stroke-[2.5]" />
+                  )}
+                  {item.displayChange}
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 px-1.5 py-0.2">
+                  N/A
+                </span>
+              )}
             </div>
           );
         })}

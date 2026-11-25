@@ -57,11 +57,30 @@ export default function MarketNewsWire({ limit = 6 }) {
         setMeta({
           source: res.source,
           lastUpdated: res.lastUpdated,
-          isLive: Boolean(res.isLive)
+          isLive: Boolean(res.isLive),
+          isCached: Boolean(res.isCached),
+          isOutdated: Boolean(res.isOutdated),
+          isUnavailable: false
         });
+      } else {
+        if (news.length === 0) {
+          setMeta(prev => ({
+            ...prev,
+            source: res?.source || 'Financial News Wire',
+            isLive: false,
+            isUnavailable: true
+          }));
+        }
       }
     } catch (err) {
       console.error('Failed to load news wire:', err);
+      if (news.length === 0) {
+        setMeta(prev => ({
+          ...prev,
+          isLive: false,
+          isUnavailable: true
+        }));
+      }
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -174,9 +193,9 @@ export default function MarketNewsWire({ limit = 6 }) {
 
           {/* Wire Controls & Source Status */}
           <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
-            <span className="text-xs text-[#00E676] bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
-              <span className="truncate max-w-[150px] sm:max-w-none">{meta.source}</span>
+            <span className={`text-xs ${meta.isUnavailable ? 'text-amber-500' : 'text-[#00E676]'} bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 px-3 py-1.5 rounded-xl font-semibold flex items-center gap-2 shadow-xs`}>
+              <span className={`w-2 h-2 rounded-full ${meta.isUnavailable ? 'bg-amber-500' : 'bg-[#00E676] animate-pulse'}`}></span>
+              <span className="truncate max-w-[150px] sm:max-w-none">{meta.isUnavailable ? 'Wire Temporarily Offline' : meta.source}</span>
             </span>
 
             <button
@@ -214,6 +233,30 @@ export default function MarketNewsWire({ limit = 6 }) {
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div key={n} className="h-36 bg-slate-200/50 dark:bg-[#0A1726] rounded-xl border border-slate-200 dark:border-white/10" />
             ))}
+          </div>
+        ) : displayItems.length === 0 ? (
+          <div className="py-12 text-center rounded-2xl bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 p-6 space-y-3 shadow-xs">
+            <Newspaper className="w-8 h-8 text-slate-400 dark:text-[#A8B3C2] mx-auto opacity-50" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">Live financial news is temporarily unavailable.</h3>
+            <p className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-md mx-auto leading-relaxed">
+              Real-time syndicated market news wire feeds are currently unreachable. You can retry connection or explore FGC Spot original empirical financial research.
+            </p>
+            <div className="flex items-center justify-center gap-3 pt-1">
+              <button
+                onClick={() => loadNews(activeCategory, true)}
+                disabled={isRefreshing}
+                className="px-3.5 py-1.5 rounded-xl bg-[#00E676] text-slate-950 text-xs font-bold hover:bg-[#00FF88] transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <RefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span>Retry Sync</span>
+              </button>
+              <Link
+                to="/blog"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-white text-xs font-bold hover:bg-slate-200 dark:hover:bg-white/15 transition-all"
+              >
+                View Research
+              </Link>
+            </div>
           </div>
         ) : (
           /* Responsive 3-column grid on desktop and clean vertical stack on mobile */

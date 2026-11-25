@@ -3,3 +3,4 @@ Allow: /
 Disallow: /admin
 
 Sitemap: https://www.fgcspot.com/sitemap.xml
+Sitemap: https://www.fgcspot.com/api/live-sitemap

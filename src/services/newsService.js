@@ -196,32 +196,68 @@ export function getCategoryFallbackSvg(category = '') {
 }
 
 /**
- * Strict HTML Entity Decoder
- * Converts all decimal (&#8217;), hex (&#x2018;), and named entities (&quot;, &apos;, &amp;, etc.)
- * so no raw unparsed entity codes ever appear in titles or snippets.
+ * Robust HTML-to-Plain-Text Converter
+ * Completely strips HTML tags, handles CDATA, unclosed tags, attributes, and decodes HTML entities.
+ * Prefers standard browser DOMParser when available, with a bulletproof scanner state machine.
  */
-export function decodeHtmlEntities(str) {
-  if (!str || typeof str !== 'string') return '';
+export function cleanHtmlToPlainText(input) {
+  if (!input || typeof input !== 'string') return '';
 
-  // 1. Decode numeric decimal entities: &#1234;
-  let decoded = str.replace(/&#(\d+);/g, (match, dec) => {
+  // 1. Unwrap CDATA wrappers
+  let text = input.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/gi, '$1');
+
+  // 2. Remove script and style elements and comments entirely
+  text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
+  text = text.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
+  text = text.replace(/<!--[\s\S]*?-->/g, ' ');
+
+  // 3. Browser DOMParser fast-path if available
+  if (typeof DOMParser !== 'undefined') {
     try {
-      return String.fromCodePoint(parseInt(dec, 10));
-    } catch {
-      return match;
-    }
-  });
+      const doc = new DOMParser().parseFromString(text, 'text/html');
+      text = doc.body.textContent || text;
+    } catch {}
+  }
 
-  // 2. Decode numeric hex entities: &#x2018; or &#X201C;
-  decoded = decoded.replace(/&#x([0-9a-fA-F]+);/g, (match, hex) => {
-    try {
-      return String.fromCodePoint(parseInt(hex, 16));
-    } catch {
-      return match;
-    }
-  });
+  // 4. Robust tag scanner / state machine (handles multiline tags, attributes, and unclosed tags at EOF)
+  let out = '';
+  let inTag = false;
+  let quoteChar = null;
 
-  // 3. Named HTML entities dictionary
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (!inTag) {
+      if (char === '<') {
+        inTag = true;
+        quoteChar = null;
+      } else {
+        out += char;
+      }
+    } else {
+      if (quoteChar) {
+        if (char === quoteChar) {
+          quoteChar = null;
+        }
+      } else {
+        if (char === '"' || char === "'") {
+          quoteChar = char;
+        } else if (char === '>') {
+          inTag = false;
+          out += ' ';
+        }
+      }
+    }
+  }
+
+  // 5. Decode numeric decimal, hex, and named HTML entities
+  let decoded = out
+    .replace(/&#(\d+);/g, (m, dec) => {
+      try { return String.fromCodePoint(parseInt(dec, 10)); } catch { return m; }
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, (m, hex) => {
+      try { return String.fromCodePoint(parseInt(hex, 16)); } catch { return m; }
+    });
+
   const namedEntities = {
     '&quot;': '"',
     '&apos;': "'",
@@ -263,21 +299,59 @@ export function decodeHtmlEntities(str) {
     decoded = decoded.replaceAll(entity, char);
   }
 
-  // 4. Browser DOM fallback for residual named entities
-  if (typeof document !== 'undefined' && decoded.includes('&')) {
-    try {
-      const txt = document.createElement('textarea');
-      txt.innerHTML = decoded;
-      decoded = txt.value;
-    } catch {}
+  // 6. Catch any residual encoded tags and strip trailing unclosed tags
+  if (decoded.includes('<') && decoded.includes('>')) {
+    decoded = decoded.replace(/<[^>]*>/g, ' ');
   }
+  decoded = decoded.replace(/<[^>]*$/g, '');
 
-  // 5. Strip any leftover HTML tags and collapse whitespace
-  return decoded.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  return decoded.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Safely cleans and truncates RSS news descriptions without ever exposing raw HTML tags.
+ */
+export function cleanNewsDescription(rawHtml, maxLength = 240) {
+  const plain = cleanHtmlToPlainText(rawHtml);
+  if (!plain) return '';
+  if (plain.length <= maxLength) return plain;
+  return plain.slice(0, maxLength).replace(/[,;:\s]+$/, '') + '...';
+}
+
+/**
+ * Enhanced HTML entity decoder that guarantees complete tag stripping and entity decoding.
+ */
+export function decodeHtmlEntities(str) {
+  return cleanHtmlToPlainText(str);
 }
 
 // Backward-compatibility alias
 export const decodeHTMLEntities = decodeHtmlEntities;
+
+/**
+ * Targeted Editorial Relevance Filter
+ * Drops non-financial relationship advice drama, celebrity gossip, crime blotters, and entertainment.
+ * NOTE: Preserves legitimate financial stories about retirement policies, 401(k), pensions, Social Security, and taxes.
+ */
+const IRRELEVANT_PATTERNS = [
+  /\b(the moneyist|help me retire|dear penny)\b/i,
+  /\b(my husband|my wife|my girlfriend|my boyfriend|my mother-in-law|my father-in-law|my brother-in-law|my sister-in-law|my stepchild|my stepchildren|my stepdaughter|my stepson|my roommate|my fiance|my ex-wife|my ex-husband)\b/i,
+  /\b(divorce settlement|cheating spouse|dating app|tinder|bumble)\b/i,
+  /\b(kardashian|hollywood|celebrity|oscar nomination|grammy award|box office|movie review|netflix series|reality tv|pop star|red carpet)\b/i,
+  /\b(powerball jackpot|mega millions winner|lottery numbers|scratch-off)\b/i,
+  /\b(horoscope|zodiac sign|weight loss diet|skincare routine)\b/i,
+  /\b(nfl draft|nba playoffs|premier league score|champions league final)\b/i,
+  /\b(murder suspect|homicide investigation|armed robbery suspect|hit-and-run driver|deadly shooting at)\b/i
+];
+
+export function isEditorialRelevant(headline = '', summary = '') {
+  if (!headline || typeof headline !== 'string') return false;
+  const combined = `${headline} ${summary}`.toLowerCase();
+  for (const regex of IRRELEVANT_PATTERNS) {
+    if (regex.test(combined)) return false;
+  }
+  return true;
+}
 
 
 /**
@@ -313,14 +387,14 @@ export function matchesCategory(itemCategory = '', targetCategory = 'all') {
 // Live Free Public Financial & Equity RSS Feeds
 const LIVE_FEEDS = {
   all: [
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC', defaultCategory: 'Global Stocks' },
     { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'Global Stocks' },
-    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC Markets', defaultCategory: 'Global Stocks' },
     { url: 'https://www.brecorder.com/feeds/latest-news/', source: 'Business Recorder', defaultCategory: 'Local Stocks (PSX)' },
     { url: 'https://profit.pakistantoday.com.pk/feed/', source: 'Profit Pakistan', defaultCategory: 'Local Stocks (PSX)' },
     { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', defaultCategory: 'Cryptocurrency' },
     { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk', defaultCategory: 'Cryptocurrency' },
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance Commodities', defaultCategory: 'Gold & Commodities' },
-    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258', source: 'CNBC Economy', defaultCategory: 'Economy & Central Banks' }
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000846', source: 'CNBC', defaultCategory: 'Gold & Commodities' },
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258', source: 'CNBC', defaultCategory: 'Economy & Central Banks' }
   ],
   'local-stocks': [
     { url: 'https://www.brecorder.com/feeds/latest-news/', source: 'Business Recorder', defaultCategory: 'Local Stocks (PSX)' },
@@ -328,25 +402,23 @@ const LIVE_FEEDS = {
   ],
   'global-stocks': [
     { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664', source: 'CNBC', defaultCategory: 'Global Stocks' },
-    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'Global Stocks' },
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Finance', defaultCategory: 'Global Stocks' }
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'Global Stocks' }
   ],
   'crypto': [
     { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', defaultCategory: 'Cryptocurrency' },
     { url: 'https://www.coindesk.com/arc/outboundfeeds/rss/', source: 'CoinDesk', defaultCategory: 'Cryptocurrency' }
   ],
   'forex': [
-    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069', source: 'CNBC Forex Desk', defaultCategory: 'Markets & Forex' },
-    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch Currencies', defaultCategory: 'Markets & Forex' },
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Forex Wire', defaultCategory: 'Markets & Forex' }
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069', source: 'CNBC', defaultCategory: 'Markets & Forex' },
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'Markets & Forex' }
   ],
   'commodities': [
-    { url: 'https://finance.yahoo.com/news/rssindex', source: 'Yahoo Commodities Desk', defaultCategory: 'Gold & Commodities' },
-    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch Commodities', defaultCategory: 'Gold & Commodities' }
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000846', source: 'CNBC', defaultCategory: 'Gold & Commodities' },
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'Gold & Commodities' }
   ],
   'economy': [
-    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258', source: 'CNBC Economy', defaultCategory: 'Economy & Central Banks' },
-    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch Macro', defaultCategory: 'Economy & Central Banks' }
+    { url: 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258', source: 'CNBC', defaultCategory: 'Economy & Central Banks' },
+    { url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', source: 'MarketWatch', defaultCategory: 'Economy & Central Banks' }
   ]
 };
 
@@ -450,9 +522,14 @@ async function fetchRssFeed(feedConfig, categoryIndex = 0) {
       const parsedTime = Date.parse(item.pubDate);
       const unixSec = !isNaN(parsedTime) ? Math.floor(parsedTime / 1000) : Math.floor(Date.now() / 1000);
 
-      const headline = decodeHtmlEntities(item.title);
-      const summary = decodeHtmlEntities(item.description || item.content || '').slice(0, 240) + '...';
-      const author = item.author ? decodeHtmlEntities(item.author) : feedConfig.source;
+      const headline = cleanHtmlToPlainText(item.title);
+      const summary = cleanNewsDescription(item.description || item.content || '', 240);
+      const author = item.author ? cleanHtmlToPlainText(item.author) : feedConfig.source;
+
+      // Filter out non-financial drama, celebrity gossip, and crime blotters
+      if (!isEditorialRelevant(headline, summary)) {
+        return null;
+      }
 
       return {
         id: item.guid || `${feedConfig.source}-${idx}-${unixSec}`,
@@ -460,13 +537,13 @@ async function fetchRssFeed(feedConfig, categoryIndex = 0) {
         source: item.author ? `${feedConfig.source} (${author})` : feedConfig.source,
         author,
         category,
-        summary,
+        summary: summary || 'Institutional market intelligence update from real-time financial wire.',
         url: item.link,
         image: img,
         datetime: unixSec,
         pubDate: item.pubDate || new Date(unixSec * 1000).toISOString()
       };
-    });
+    }).filter(Boolean);
   } catch {
     return [];
   }
@@ -503,14 +580,16 @@ export async function fetchLiveMarketNews(category = 'all') {
     if (apiRes.ok) {
       const payload = await apiRes.json();
       if (payload && Array.isArray(payload.data) && payload.data.length > 0) {
-        // Guarantee clean decoded entities and image fallbacks
-        const sanitizedData = payload.data.map((item, idx) => ({
-          ...item,
-          headline: decodeHtmlEntities(item.headline),
-          summary: decodeHtmlEntities(item.summary),
-          author: decodeHtmlEntities(item.author || item.source),
-          image: item.image || getCategoryFallbackImage(item.category, idx)
-        }));
+        // Guarantee clean decoded entities, editorial relevance, and image fallbacks
+        const sanitizedData = payload.data
+          .filter(item => item && isEditorialRelevant(item.headline, item.summary))
+          .map((item, idx) => ({
+            ...item,
+            headline: cleanHtmlToPlainText(item.headline),
+            summary: cleanNewsDescription(item.summary, 240),
+            author: cleanHtmlToPlainText(item.author || item.source),
+            image: item.image || getCategoryFallbackImage(item.category, idx)
+          }));
 
         newsCache = {
           data: sanitizedData,
@@ -522,7 +601,9 @@ export async function fetchLiveMarketNews(category = 'all') {
           data: sanitizedData,
           source: payload.source || 'Live Financial News Wire',
           lastUpdated: payload.lastUpdated || new Date().toLocaleTimeString(),
-          isLive: true
+          isLive: Boolean(payload.isLive),
+          isCached: Boolean(payload.isCached),
+          isOutdated: Boolean(payload.isOutdated)
         };
       }
     }
@@ -569,29 +650,36 @@ export async function fetchLiveMarketNews(category = 'all') {
         data: unique,
         source: 'Live Institutional RSS Wire',
         lastUpdated: new Date().toLocaleTimeString(),
-        isLive: true
+        isLive: true,
+        isCached: false
       };
     }
   } catch (err) {
     console.warn('Live news aggregation error:', err);
   }
 
-  // 3. Fallback to cached items if available
+  // 3. Fallback to genuine previously fetched cached items ONLY if available
   if (newsCache.data.length > 0) {
+    const isOutdated = (Date.now() - newsCache.timestamp) > 15 * 60 * 1000;
     return {
       success: true,
       data: newsCache.data,
-      source: 'Cached Live Dispatches',
+      source: isOutdated ? 'Cached Wire Dispatches (Outdated)' : 'Cached Live Dispatches',
       lastUpdated: new Date(newsCache.timestamp).toLocaleTimeString(),
-      isLive: true
+      isLive: !isOutdated,
+      isCached: true,
+      isOutdated
     };
   }
 
+  // 4. Honest unavailable response when no genuine articles are reachable
   return {
     success: false,
     data: [],
+    message: 'Live financial news is temporarily unavailable.',
     source: 'Financial News Wire',
     lastUpdated: new Date().toLocaleTimeString(),
-    isLive: false
+    isLive: false,
+    isUnavailable: true
   };
 }

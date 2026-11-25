@@ -4,7 +4,7 @@
 
 import { getStocksForCountry } from '../data/stocksData.js';
 
-const STOCKS_CACHE_KEY_PREFIX = 'fgc_stocks_live_';
+const STOCKS_CACHE_KEY_PREFIX = 'fgc_stocks_verified_v2_';
 const STOCKS_CACHE_TTL_MS = 30 * 1000; // 30 seconds
 
 /**
@@ -46,7 +46,34 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
   let baseStocks = [];
   try {
     const raw = getStocksForCountry(countryId);
-    baseStocks = Array.isArray(raw) && raw.length > 0 ? raw : [];
+    // Country datasets provide company identity/category metadata, not verified live quotes.
+    // Never expose their historical placeholder fundamentals or prices as current data.
+    baseStocks = Array.isArray(raw) ? raw.map(stock => ({
+      ...stock,
+      price: null,
+      change24h: null,
+      changePercent: null,
+      marketCap: null,
+      marketCapNum: null,
+      peRatio: null,
+      pbRatio: null,
+      dividendYield: null,
+      high52: null,
+      low52: null,
+      rsi14: null,
+      change1Y: null,
+      fairValueUpside: null,
+      analystUpside: null,
+      volume3M: null,
+      evEbitda: null,
+      piotroski: null,
+      altmanZ: null,
+      technicalRating: null,
+      fundamentals: null,
+      hasVerifiedQuote: false,
+      verifiedFundamentals: false,
+      verifiedFinancialHistory: false
+    })) : [];
   } catch (err) {
     baseStocks = [];
   }
@@ -63,7 +90,7 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
             data: cached.data,
             lastUpdated: cached.lastUpdated || new Date().toLocaleTimeString(),
             source: `${cached.source || 'Market Feeds'} (Cache Active)`,
-            isLive: true
+            isLive: cached.data.some(stock => stock?.hasVerifiedQuote === true)
           };
         }
       }
@@ -103,9 +130,9 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
           quotes[`${stock.ticker}.AE`] ||
           quotes[`${stock.ticker}.HK`];
 
-        if (!quote || typeof quote !== 'object') return stock;
+        if (!quote || typeof quote !== 'object' || !Number.isFinite(quote.price) || quote.price <= 0) return stock;
 
-        const updated = { ...stock };
+        const updated = { ...stock, hasVerifiedQuote: true };
 
         if (typeof quote.price === 'number' && !isNaN(quote.price) && isFinite(quote.price) && quote.price > 0) {
           updated.price = quote.price;
@@ -151,8 +178,8 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
         success: true,
         data: merged,
         lastUpdated: payload?.lastUpdated || new Date().toLocaleTimeString(),
-        source: hasLiveQuotes ? (payload?.source || 'Global Institutional Feeds (Live)') : 'Global Institutional Feeds (Intraday Stream)',
-        isLive: true
+        source: hasLiveQuotes ? (payload?.source || 'Exchange quotes (partial coverage)') : 'Quotes temporarily unavailable',
+        isLive: hasLiveQuotes
       };
 
       // Save to client cache
@@ -176,8 +203,8 @@ export async function fetchLiveStocks(countryId = 'pk', forceFresh = false) {
     success: true,
     data: baseStocks,
     lastUpdated: new Date().toLocaleTimeString(),
-    source: 'Institutional Base Profiles (Live Intraday Mode)',
-    isLive: true
+    source: 'Company directory (quotes unavailable)',
+    isLive: false
   };
 }
 

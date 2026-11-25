@@ -27,7 +27,7 @@ export default function GoldPage({ rates = {} }) {
   });
 
   const [searchParams] = useSearchParams();
-  const usdToPkr = rates.PKR || 277.10;
+  const usdToPkr = Number.isFinite(rates.PKR) && rates.PKR > 0 ? rates.PKR : null;
   const [selectedUnit, setSelectedUnit] = useState('tola'); // 'tola' | '10g' | 'gram' | 'oz'
   const [calcPurity, setCalcPurity] = useState('24K');
   const [calcWeight, setCalcWeight] = useState(1);
@@ -92,14 +92,13 @@ export default function GoldPage({ rates = {} }) {
     }
   }, [searchParams]);
 
-  // Live Benchmark spot prices (fallback to metalsData)
-  const goldSpotOzUsd = (rates.XAU && rates.XAU > 0)
-    ? Number((1 / rates.XAU).toFixed(2))
-    : (metalsData.gold?.price || 2650.00);
-
-  const silverSpotOzUsd = (rates.XAG && rates.XAG > 0)
-    ? Number((1 / rates.XAG).toFixed(2))
-    : (metalsData.silver?.price || 31.50);
+  // Prioritize the same metals service as the global ticker; do not synthesize a quote.
+  const goldSpotOzUsd = Number.isFinite(metalsData.gold?.price) && metalsData.gold.price > 0
+    ? metalsData.gold.price
+    : (Number.isFinite(rates.XAU) && rates.XAU > 0 ? Number((1 / rates.XAU).toFixed(2)) : null);
+  const silverSpotOzUsd = Number.isFinite(metalsData.silver?.price) && metalsData.silver.price > 0
+    ? metalsData.silver.price
+    : (Number.isFinite(rates.XAG) && rates.XAG > 0 ? Number((1 / rates.XAG).toFixed(2)) : null);
 
   // Base calculations with calibrated Karachi Sarafa Association dynamic formula
   const goldMetrics = useMemo(() => {
@@ -152,6 +151,9 @@ export default function GoldPage({ rates = {} }) {
 
   // Helper to get price based on active unit
   const getPriceForPurity = (factor, karat) => {
+    if (goldMetrics.pricePerTola24K === null || usdToPkr === null) {
+      return { pkr: null, usd: null, label: selectedUnit === 'tola' ? 'Per Tola (11.66g)' : selectedUnit === '10g' ? 'Per 10 Grams' : selectedUnit === 'gram' ? 'Per 1 Gram' : 'Per Troy Oz (31.10g)' };
+    }
     switch (selectedUnit) {
       case 'tola':
         if (karat === '24K') {
@@ -269,6 +271,7 @@ export default function GoldPage({ rates = {} }) {
   // Calculator computation
   const calculatedTotal = useMemo(() => {
     try {
+      if (goldGram24K_Pkr === null || usdToPkr === null) return { totalPkr: null, totalUsd: null, grams: 'N/A' };
       const purityObj = purities.find(p => p.karat === calcPurity) || purities[0];
       let grams = 0;
       if (calcUnit === 'tola') grams = calcWeight * 11.664;
@@ -277,11 +280,11 @@ export default function GoldPage({ rates = {} }) {
       else if (calcUnit === 'oz') grams = calcWeight * 31.1034768;
 
       const totalPkr = Math.round(grams * goldGram24K_Pkr * purityObj.factor);
-      const totalUsd = Math.round(totalPkr / (usdToPkr || 276.75));
+      const totalUsd = Math.round(totalPkr / usdToPkr);
 
       return { totalPkr, totalUsd, grams: grams.toFixed(2) };
     } catch {
-      return { totalPkr: 404640, totalUsd: 1462, grams: '11.66' };
+      return { totalPkr: null, totalUsd: null, grams: 'N/A' };
     }
   }, [calcPurity, calcWeight, calcUnit, goldGram24K_Pkr, usdToPkr]);
 
@@ -307,10 +310,10 @@ export default function GoldPage({ rates = {} }) {
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-            Certified Live Gold Rates
+            Indicative Gold &amp; Silver Rates
           </h1>
           <p className="text-sm text-slate-600 dark:text-[#A8B3C2] mt-2 max-w-2xl leading-relaxed">
-            Real-time bullion benchmark prices for 24K, 22K, 21K, and 18K purity grades calculated dynamically from London Bullion Market (LBMA) spot quotes, live USD/PKR interbank parity, and Karachi Sarafa Association official import tariff adjustments.
+            Indicative bullion conversions for 24K, 22K, 21K, and 18K gold from available commodity references and USD/PKR currency feeds. These are not official Karachi Sarafa retail price quotations.
           </p>
         </div>
 
@@ -318,19 +321,17 @@ export default function GoldPage({ rates = {} }) {
         <div className="flex flex-wrap gap-3">
           <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0A1726] border border-amber-500/20 text-right shadow-xs">
             <div className="text-[11px] text-amber-500 dark:text-amber-400 uppercase font-bold">Gold Spot (XAU/USD)</div>
-            <div className="text-lg font-black text-slate-900 dark:text-white font-tabular">${goldSpotOzUsd.toLocaleString()}</div>
+            <div className="text-lg font-black text-slate-900 dark:text-white font-tabular">{goldSpotOzUsd !== null ? `$${goldSpotOzUsd.toLocaleString()}` : 'N/A'}</div>
             <div className="text-[10px] text-[#00E676] font-semibold flex items-center justify-end gap-0.5">
-              <TrendingUp className="w-3 h-3" />
-              <span>{(metalsData.gold?.change ?? 0.45) >= 0 ? '+' : ''}{metalsData.gold?.change ?? 0.45}% 24h</span>
+              <span>{Number.isFinite(metalsData.gold?.change) ? `${metalsData.gold.change >= 0 ? '+' : ''}${metalsData.gold.change}% 24h` : '24h change N/A'}</span>
             </div>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-right shadow-xs">
             <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">Silver Spot (XAG/USD)</div>
-            <div className="text-lg font-black text-slate-900 dark:text-white font-tabular">${silverSpotOzUsd.toFixed(2)}</div>
+            <div className="text-lg font-black text-slate-900 dark:text-white font-tabular">{silverSpotOzUsd !== null ? `$${silverSpotOzUsd.toFixed(2)}` : 'N/A'}</div>
             <div className="text-[10px] text-[#00E676] font-semibold flex items-center justify-end gap-0.5">
-              <TrendingUp className="w-3 h-3" />
-              <span>{(metalsData.silver?.change ?? 0.87) >= 0 ? '+' : ''}{metalsData.silver?.change ?? 0.87}% 24h</span>
+              <span>{Number.isFinite(metalsData.silver?.change) ? `${metalsData.silver.change >= 0 ? '+' : ''}${metalsData.silver.change}% 24h` : '24h change N/A'}</span>
             </div>
           </div>
         </div>
@@ -405,10 +406,10 @@ export default function GoldPage({ rates = {} }) {
               <div className="pt-4 border-t border-slate-100 dark:border-white/10 space-y-1">
                 <div className="text-[11px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">{price.label}</div>
                 <div className="text-2xl font-black text-[#00E676] font-tabular">
-                  ₨ {price.pkr.toLocaleString()}
+                  {price.pkr !== null ? `₨ ${price.pkr.toLocaleString()}` : 'N/A — quote unavailable'}
                 </div>
                 <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-semibold font-tabular">
-                  ≈ ${price.usd.toLocaleString()} USD
+                  {price.usd !== null ? `≈ $${price.usd.toLocaleString()} USD` : 'Verified benchmark pending'}
                 </div>
               </div>
             </div>
@@ -483,13 +484,13 @@ export default function GoldPage({ rates = {} }) {
                 Total Estimated Value ({calculatedTotal.grams}g)
               </div>
               <div className="text-xl sm:text-2xl font-black text-[#00E676] font-tabular">
-                ₨ {calculatedTotal.totalPkr.toLocaleString()}
+                {calculatedTotal.totalPkr !== null ? `₨ ${calculatedTotal.totalPkr.toLocaleString()}` : 'N/A'}
               </div>
             </div>
             <div className="text-right">
               <div className="text-[10px] text-slate-500 dark:text-[#A8B3C2]">USD Equiv.</div>
               <div className="text-sm font-bold text-slate-900 dark:text-white font-tabular">
-                ${calculatedTotal.totalUsd.toLocaleString()}
+                {calculatedTotal.totalUsd !== null ? `$${calculatedTotal.totalUsd.toLocaleString()}` : 'N/A'}
               </div>
             </div>
           </div>
@@ -521,7 +522,7 @@ export default function GoldPage({ rates = {} }) {
             <span>1. What This Tool Does</span>
           </h3>
           <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
-            The FGC Spot Gold &amp; Bullion Terminal calculates the wholesale monetary value of physical gold and silver across all recognized purity grades (24K, 22K, 21K, 18K) and standard South Asian and metric units: Tola (11.664g), 10 Grams, 1 Gram, and Troy Ounce (31.1035g). It translates global commodity spot prices in US Dollars ($USD/oz) into Pakistani Rupees (PKR) and local currencies with zero markup.
+            The FGC Spot Gold &amp; Bullion Terminal converts available international commodity reference quotes into indicative bullion parity values by weight and purity. These calculated values are not official local wholesale or retail quotes. When a feed is unavailable, the related price is shown as N/A.
           </p>
         </div>
 
@@ -535,10 +536,10 @@ export default function GoldPage({ rates = {} }) {
             <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-2">
               <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">24K Pure Bullion Base Formula</span>
               <div className="font-mono text-xs sm:text-sm bg-white dark:bg-[#0D1B2A] p-3 rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200">
-                Rate / Tola (24K) = (Spot_USD / 31.1035) &times; USD_PKR &times; 11.664 &times; (1 + Sarafa_Premium)
+                Indicative 24K / Tola = (Reference_USD / 31.1035) &times; USD_PKR &times; 11.664
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Where 1 Troy Ounce = exactly 31.1034768 grams, 1 Tola = 11.664 grams, and the local Sarafa premium covers legal import duties, shipping insurance, and refinery assay tolerances.
+                Uses a 31.1034768g troy ounce and a 11.664g tola. No unsourced local premium, taxes, or fabrication charges are included.
               </p>
             </div>
 
@@ -566,15 +567,15 @@ export default function GoldPage({ rates = {} }) {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>International Spot:</strong> Aggregated from public LBMA commodity tracking feeds and Paxos Gold (PAXG) physical vault reserve tokens.</span>
+                <span><strong>International References:</strong> Available observations can come from Yahoo commodity futures, PAXG trading quotes, or currency-metal references. These are not interchangeable with an LBMA fixing or a local jeweller quote.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Currency Translation:</strong> Live interbank mid-market USD/PKR exchange rates verified via Open Exchange Rates and SBP closing data.</span>
+                <span><strong>Currency Translation:</strong> USD/PKR observations are requested from public exchange-rate providers; the display is unavailable if an adequate FX observation is missing.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Sarafa Calibration:</strong> Cross-checked against All Pakistan Sarafa Gems and Jewellers Association (APSGJA) daily closing sheets in Karachi.</span>
+                <span><strong>Local Retail Quotes:</strong> No automated verification against APSGJA closing sheets is implemented. Contact a licensed local dealer for a transaction-ready Sarafa quote.</span>
               </li>
             </ul>
           </div>
@@ -587,15 +588,15 @@ export default function GoldPage({ rates = {} }) {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Global Spot Feeds:</strong> Refresh every 45 to 60 seconds during active international commodity trading sessions (Sunday evening through Friday evening GMT).</span>
+                <span><strong>Market References:</strong> Values refresh when the source endpoint is requested; updates and outages depend on the upstream provider.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Domestic Sarafa Rates:</strong> Published once or twice daily (afternoon initial and evening final fixings) following local market consensus.</span>
+                <span><strong>Domestic Sarafa Rates:</strong> This page does not ingest official association rate sheets. Its PKR amounts are mathematical estimates only.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Client Caching:</strong> Cached in browser memory for 2 minutes with automated background revalidation to ensure zero page load lag.</span>
+                <span><strong>Client Caching:</strong> Previously received values may be reused briefly (up to one minute) before requesting another observation.</span>
               </li>
             </ul>
           </div>
@@ -634,7 +635,7 @@ export default function GoldPage({ rates = {} }) {
               <li><strong>Transparent Target Total:</strong> Rs. 651,980 + Rs. 5,000 = <strong>Rs. 656,980</strong>.</li>
             </ol>
             <p className="text-xs text-emerald-600 dark:text-[#00E676] font-semibold pt-1">
-              &check; Transparent Result: If the shop quoted Rs. 730,000, you are being overcharged by over Rs. 73,000 in hidden retail markup!
+              ✓ Transparent Result: If the shop quoted Rs. 730,000, you are being overcharged by over Rs. 73,000 in hidden retail markup!
             </p>
           </div>
         </div>

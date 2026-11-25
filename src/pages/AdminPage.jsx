@@ -59,6 +59,9 @@ export default function AdminPage() {
     deleteSubscriber,
     deleteMessage,
     adminCredentials,
+    adminUser,
+    adminRole,
+    authLoading,
     updateAdminCredentials,
     isAdminAuth,
     loginAdmin,
@@ -77,6 +80,7 @@ export default function AdminPage() {
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // --- Navigation Tabs: 'analytics' | 'audit' | 'inbox' | 'settings' | 'articles' ---
   const [activeTab, setActiveTab] = useState('analytics');
@@ -238,18 +242,24 @@ export default function AdminPage() {
 
   // --- Change Admin Credentials Form State ---
   const [credForm, setCredForm] = useState(() => ({
-    email: adminCredentials?.email || '',
-    currentPassword: '',
+    email: adminUser?.email || adminCredentials?.email || '',
     newPassword: '',
     confirmPassword: ''
   }));
-  const [showCurrentPass, setShowCurrentPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
   const [credError, setCredError] = useState('');
   const [credSuccess, setCredSuccess] = useState('');
+  const [isUpdatingCreds, setIsUpdatingCreds] = useState(false);
 
-  // Handle Login with Email & Password
-  const handleLoginSubmit = (e) => {
+  // Sync credForm email if adminUser loads later
+  useEffect(() => {
+    if (adminUser?.email) {
+      setCredForm(prev => ({ ...prev, email: adminUser.email }));
+    }
+  }, [adminUser]);
+
+  // Handle Login with Email & Password via Supabase Auth
+  const handleLoginSubmit = async (e) => {
     if (e && typeof e.preventDefault === 'function') e.preventDefault();
     setLoginError('');
 
@@ -265,13 +275,20 @@ export default function AdminPage() {
       return false;
     }
 
-    const res = loginAdmin(cleanEmail, cleanPass);
-    if (!res || !res.success) {
-      setLoginError(res?.message || 'Invalid email or password. Please verify your credentials.');
-    } else {
-      setLoginError('');
-      setPasswordInput('');
-      refreshTelemetry();
+    setIsAuthenticating(true);
+    try {
+      const res = await loginAdmin(cleanEmail, cleanPass);
+      if (!res || !res.success) {
+        setLoginError(res?.message || 'Invalid administrator credentials. Please verify your credentials.');
+      } else {
+        setLoginError('');
+        setPasswordInput('');
+        refreshTelemetry();
+      }
+    } catch (err) {
+      setLoginError(err?.message || 'Authentication error.');
+    } finally {
+      setIsAuthenticating(false);
     }
     return false;
   };
@@ -284,16 +301,12 @@ export default function AdminPage() {
     setTimeout(() => setSettingsSaved(false), 3000);
   };
 
-  // Handle Update Admin Credentials
-  const handleUpdateCredentials = (e) => {
+  // Handle Update Admin Credentials via Supabase Auth
+  const handleUpdateCredentials = async (e) => {
     e.preventDefault();
     setCredError('');
     setCredSuccess('');
 
-    if (credForm.currentPassword !== adminCredentials.password) {
-      setCredError('Current password does not match your active administrator password.');
-      return;
-    }
     if (!credForm.newPassword || credForm.newPassword.length < 6) {
       setCredError('New password must be at least 6 characters long.');
       return;
@@ -302,20 +315,30 @@ export default function AdminPage() {
       setCredError('New password and confirmation do not match.');
       return;
     }
-    if (!credForm.email.includes('@')) {
+    if (credForm.email && !credForm.email.includes('@')) {
       setCredError('Please enter a valid administrator email address.');
       return;
     }
 
-    updateAdminCredentials(credForm.email, credForm.newPassword);
-    setCredSuccess('Admin email and password successfully updated! New credentials are now active.');
-    setCredForm(prev => ({
-      ...prev,
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    }));
-    setTimeout(() => setCredSuccess(''), 4000);
+    setIsUpdatingCreds(true);
+    try {
+      const res = await updateAdminCredentials(credForm.email, credForm.newPassword);
+      if (res && res.success) {
+        setCredSuccess(res.message || 'Administrator credentials successfully updated in Supabase Auth.');
+        setCredForm(prev => ({
+          ...prev,
+          newPassword: '',
+          confirmPassword: ''
+        }));
+        setTimeout(() => setCredSuccess(''), 4000);
+      } else {
+        setCredError(res?.message || 'Failed to update administrator credentials.');
+      }
+    } catch (err) {
+      setCredError(err?.message || 'An unexpected error occurred while updating credentials.');
+    } finally {
+      setIsUpdatingCreds(false);
+    }
   };
 
   // Filtered Events
@@ -341,6 +364,15 @@ export default function AdminPage() {
   // -------------------------------------------------------------
   // VIEW 1: AUTHENTICATION LOGIN GATE
   // -------------------------------------------------------------
+  if (authLoading) {
+    return (
+      <div className="w-full max-w-md mx-auto py-24 px-4 text-center">
+        <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-xs font-mono text-slate-400">Verifying administrator session...</p>
+      </div>
+    );
+  }
+
   if (!isAdminAuth) {
     return (
       <div className="w-full max-w-md mx-auto py-16 px-4 animate-in fade-in duration-300">
@@ -417,16 +449,26 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer flex items-center justify-center gap-2 mt-2"
+              disabled={isAuthenticating}
+              className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/30 cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-60"
             >
-              <Lock className="w-4 h-4" />
-              <span>Sign In to Terminal</span>
+              {isAuthenticating ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>Sign In to Terminal</span>
+                </>
+              )}
             </button>
           </form>
 
           <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
             <p className="text-[11px] text-slate-400">
-              Protected by SHA-256 session token gate &bull; Auto-locks on browser exit.
+              Secured by Supabase Auth &bull; Session auto-refresh &bull; Zero hardcoded credentials.
             </p>
           </div>
         </div>
@@ -1555,7 +1597,7 @@ export default function AdminPage() {
 
                 <div className="px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-400 flex items-center gap-1.5 shrink-0">
                   <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
-                  <span>Active: {adminCredentials?.email}</span>
+                  <span>Active: {adminUser?.email || adminCredentials?.email || 'Authenticated'} {adminRole ? `(${adminRole})` : ''}</span>
                 </div>
               </div>
 
@@ -1577,7 +1619,7 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                      Admin Login Email *
+                      Admin Email *
                     </label>
                     <div className="relative">
                       <input
@@ -1592,32 +1634,6 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
-                      Current Password (Verification) *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showCurrentPass ? 'text' : 'password'}
-                        required
-                        value={credForm.currentPassword}
-                        onChange={(e) => setCredForm({ ...credForm, currentPassword: e.target.value })}
-                        placeholder="Enter current password"
-                        className="w-full pl-10 pr-10 py-2.5 bg-slate-50 dark:bg-[#07090E] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 font-medium"
-                      />
-                      <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                      <button
-                        type="button"
-                        onClick={() => setShowCurrentPass(!showCurrentPass)}
-                        className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white cursor-pointer"
-                      >
-                        {showCurrentPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
                       New Password * (Min. 6 chars)
@@ -1641,7 +1657,9 @@ export default function AdminPage() {
                       </button>
                     </div>
                   </div>
+                </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
                       Confirm New Password *
@@ -1663,10 +1681,20 @@ export default function AdminPage() {
                 <div className="pt-1">
                   <button
                     type="submit"
-                    className="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer flex items-center gap-2"
+                    disabled={isUpdatingCreds}
+                    className="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer flex items-center gap-2 disabled:opacity-60"
                   >
-                    <KeyRound className="w-4 h-4" />
-                    <span>Update Credentials</span>
+                    {isUpdatingCreds ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>Updating in Supabase Auth...</span>
+                      </>
+                    ) : (
+                      <>
+                        <KeyRound className="w-4 h-4" />
+                        <span>Update Credentials</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </form>

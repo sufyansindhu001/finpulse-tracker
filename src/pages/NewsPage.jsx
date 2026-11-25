@@ -4,17 +4,12 @@ import {
   Search, 
   ExternalLink, 
   Clock, 
-  Sparkles, 
-  Coins, 
-  Globe, 
-  TrendingUp, 
-  Filter, 
   ChevronRight,
   X,
-  Share2,
   BookOpen,
   ArrowUpRight,
-  RefreshCw
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { fetchLiveMarketNews, matchesCategory, getLiveTimeAgo, getCategoryFallbackImage, getCategoryFallbackSvg, decodeHtmlEntities } from '../services/newsService';
@@ -34,6 +29,10 @@ export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeArticle, setActiveArticle] = useState(null);
+  const [isUnavailable, setIsUnavailable] = useState(false);
+  const [wireSource, setWireSource] = useState('Live Institutional RSS Wire');
+  const [isCached, setIsCached] = useState(false);
+  const [isOutdated, setIsOutdated] = useState(false);
 
   const loadNews = async (cat = selectedCategory, isManual = false) => {
     if (isManual) {
@@ -45,6 +44,10 @@ export default function NewsPage() {
       const res = await fetchLiveMarketNews(cat);
       const items = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
       if (items.length > 0) {
+        setIsUnavailable(false);
+        setIsCached(Boolean(res?.isCached));
+        setIsOutdated(Boolean(res?.isOutdated));
+        if (res?.source) setWireSource(res.source);
         setNewsItems(prev => {
           if (prev.length === 0) return items;
           const map = new Map();
@@ -60,9 +63,16 @@ export default function NewsPage() {
           });
           return Array.from(map.values()).sort((a, b) => (b.datetime || 0) - (a.datetime || 0));
         });
+      } else {
+        if (newsItems.length === 0) {
+          setIsUnavailable(true);
+        }
       }
     } catch (e) {
       console.warn('Failed to load live news wire:', e);
+      if (newsItems.length === 0) {
+        setIsUnavailable(true);
+      }
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -167,9 +177,11 @@ export default function NewsPage() {
 
         {/* Live Feed Pill & Sync Button */}
         <div className="flex items-center gap-3 self-start md:self-auto">
-          <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs text-[#00E676] font-semibold shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
-            <span>Live Financial Wire &bull; Real-Time</span>
+          <div className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 text-xs font-semibold shadow-xs">
+            <span className={`w-2 h-2 rounded-full ${isUnavailable ? 'bg-amber-500' : 'bg-[#00E676] animate-pulse'}`}></span>
+            <span className={isUnavailable ? 'text-amber-600 dark:text-amber-400' : 'text-[#00E676]'}>
+              {isUnavailable ? 'Wire Temporarily Offline' : isOutdated ? 'Cached Wire Dispatches' : 'Live Financial Wire \u2022 Real-Time'}
+            </span>
           </div>
 
           <button
@@ -255,6 +267,14 @@ export default function NewsPage() {
         </div>
       </div>
 
+      {/* Outdated Cache Alert Banner */}
+      {isCached && isOutdated && filteredNews.length > 0 && (
+        <div className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-400">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>Live wire feeds are temporarily unreachable. Displaying previously verified dispatches ({wireSource}).</span>
+        </div>
+      )}
+
       {/* News Grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -267,41 +287,74 @@ export default function NewsPage() {
           ))}
         </div>
       ) : filteredNews.length === 0 ? (
-        <div className="py-20 text-center rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-4 shadow-sm p-6">
-          <Newspaper className="w-10 h-10 text-slate-400 dark:text-[#A8B3C2] mx-auto opacity-50" />
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">No Matching Wire Dispatches</h3>
-            <p className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-md mx-auto">
-              No articles found in &ldquo;{categories.find(c => c.id === selectedCategory)?.label || selectedCategory}&rdquo; {searchQuery ? `matching "${searchQuery}"` : ''}.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            {searchQuery && (
+        newsItems.length === 0 ? (
+          <div className="py-20 text-center rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-4 shadow-sm p-6 max-w-xl mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto">
+              <AlertCircle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Live financial news is temporarily unavailable.</h3>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] leading-relaxed">
+                External syndicated news feeds are currently unreachable or undergoing maintenance. Please retry synchronization or explore our original empirical financial research.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => setSearchQuery('')}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
+                onClick={() => loadNews(selectedCategory, true)}
+                disabled={isRefreshing}
+                className="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-sm shadow-[#00E676]/20 disabled:opacity-60"
               >
-                Clear Search Query
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span>Retry Live Wire</span>
               </button>
-            )}
-            {selectedCategory !== 'all' && (
-              <button
-                type="button"
-                onClick={() => setSelectedCategory('all')}
-                className="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm shadow-[#00E676]/20"
+              <Link
+                to="/blog"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1.5"
               >
-                Show All Categories
-              </button>
-            )}
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>FGC Spot Research</span>
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="py-20 text-center rounded-3xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-4 shadow-sm p-6">
+            <Newspaper className="w-10 h-10 text-slate-400 dark:text-[#A8B3C2] mx-auto opacity-50" />
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">No Matching Wire Dispatches</h3>
+              <p className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-md mx-auto">
+                No articles found in &ldquo;{categories.find(c => c.id === selectedCategory)?.label || selectedCategory}&rdquo; {searchQuery ? `matching "${searchQuery}"` : ''}.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
+                >
+                  Clear Search Query
+                </button>
+              )}
+              {selectedCategory !== 'all' && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('all')}
+                  className="px-4 py-2 bg-[#00E676] hover:bg-[#00FF88] text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm shadow-[#00E676]/20"
+                >
+                  Show All Categories
+                </button>
+              )}
+            </div>
+          </div>
+        )
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNews.map((item, idx) => {
             const headline = decodeHtmlEntities(item.headline);
             const summary = decodeHtmlEntities(item.summary);
             const author = decodeHtmlEntities(item.author || item.source);
+            const category = decodeHtmlEntities(item.category);
             const fallbackImg = getOptimizedImageUrl(getCategoryFallbackImage(item.category, idx), { width: 400, format: 'webp' });
             const svgFallback = getCategoryFallbackSvg(item.category);
             const rawImg = item.image || fallbackImg;
@@ -343,9 +396,9 @@ export default function NewsPage() {
                         <span className="font-bold text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full border border-[#00E676]/20 truncate max-w-[140px]">
                           {item.source || 'Wire Feed'}
                         </span>
-                        {item.category && (
-                          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(item.category)} truncate max-w-[150px]`}>
-                            {item.category}
+                        {category && (
+                          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(category)} truncate max-w-[150px]`}>
+                            {category}
                           </span>
                         )}
                       </div>
@@ -426,8 +479,8 @@ export default function NewsPage() {
                   {activeArticle.source}
                 </span>
                 {activeArticle.category && (
-                  <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(activeArticle.category)}`}>
-                    {activeArticle.category}
+                  <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getCategoryBadgeStyle(decodeHtmlEntities(activeArticle.category))}`}>
+                    {decodeHtmlEntities(activeArticle.category)}
                   </span>
                 )}
                 {activeArticle.author && (

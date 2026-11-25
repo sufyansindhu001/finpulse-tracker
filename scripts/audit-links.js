@@ -30,6 +30,19 @@ export function runLinkAudit() {
   const htmlFiles = getAllHtmlFiles(distDir);
   console.log(`[audit-links] Scanning ${htmlFiles.length} pre-rendered HTML files in dist/...`);
 
+  const adminEntry = path.join(distDir, 'admin', 'index.html');
+  if (!fs.existsSync(adminEntry)) {
+    console.error('[audit-links] FAIL: /admin has no direct-entry HTML file.');
+    return false;
+  }
+  const adminHtml = fs.readFileSync(adminEntry, 'utf8');
+  if (!/<meta name="robots" content="noindex, nofollow"\s*\/>/i.test(adminHtml)
+      || !/<div id="root">/i.test(adminHtml)) {
+    console.error('[audit-links] FAIL: /admin must provide a non-indexed React app entry.');
+    return false;
+  }
+  console.log('[audit-links] PASS: /admin direct entry exists and is noindex, nofollow.');
+
   const internalLinks = new Set();
   const brokenLinks = [];
 

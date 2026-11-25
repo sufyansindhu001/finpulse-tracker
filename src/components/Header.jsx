@@ -158,7 +158,7 @@ export default function Header({
             </div>
 
             {/* Center: Desktop Navigation Links */}
-            <nav className="hidden xl:flex items-center gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md shrink-0">
+            <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 bg-slate-100/90 dark:bg-[#0A1726]/80 p-1 lg:p-1.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-md shrink-0">
               {navLinks.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.match(currentPath);
@@ -168,7 +168,7 @@ export default function Header({
                     to={item.path}
                     onMouseEnter={() => preloadRoute(item.path)}
                     onTouchStart={() => preloadRoute(item.path)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                    className={`flex items-center gap-1 xl:gap-1.5 px-2.5 xl:px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                       isActive
                         ? 'bg-[#00E676] text-[#06111F] shadow-sm shadow-[#00E676]/30 font-bold'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-[#A8B3C2] dark:hover:text-white dark:hover:bg-white/[0.05]'
@@ -223,7 +223,7 @@ export default function Header({
               {/* Mobile/Tablet Hamburger Toggle Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="xl:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none transition-colors"
+                className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 dark:bg-[#0A1726] dark:hover:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-[#A8B3C2] hover:text-slate-900 dark:hover:text-white cursor-pointer shrink-0 touch-manipulation select-none transition-colors"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -236,7 +236,7 @@ export default function Header({
 
       {/* Mobile/Tablet Slide-Out Drawer Overlay & Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 xl:hidden flex justify-end">
+        <div className="fixed inset-0 z-50 lg:hidden flex justify-end">
           {/* Backdrop blur overlay */}
           <div 
             className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
