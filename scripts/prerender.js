@@ -2362,6 +2362,23 @@ async function prerenderAll() {
     renderedCount++;
   }
 
+  // /admin is intentionally absent from the public canonical route list and sitemap.
+  // It still needs a real static entry file: without one, direct navigation or a
+  // browser refresh on /admin returns Vercel's 404 before React Router can start.
+  // The client replaces this loading shell with the Supabase-protected login UI.
+  const adminHtml = baseHtml
+    .replace(/<title>.*?<\/title>/i, '<title>Admin Control Portal | FGC Spot</title>')
+    .replace(/<meta name="title" content=".*?" \/>/i, '<meta name="title" content="Admin Control Portal | FGC Spot" />')
+    .replace(/<meta name="description" content=".*?" \/>/i, '<meta name="description" content="Secure FGC Spot administrator sign-in." />')
+    .replace(/<meta name="robots" content=".*?" \/>/i, '<meta name="robots" content="noindex, nofollow" />')
+    .replace(/<link rel="canonical" href=".*?" \/>/i, `<link rel="canonical" href="${BASE_URL}/admin" />`)
+    .replace(/<meta property="og:url" content=".*?" \/>/i, `<meta property="og:url" content="${BASE_URL}/admin" />`)
+    .replace(/<meta property="twitter:url" content=".*?" \/>/i, `<meta property="twitter:url" content="${BASE_URL}/admin" />`)
+    .replace('<div id="root"></div>', '<div id="root"><main role="status" class="min-h-screen bg-[#06111F] text-white flex items-center justify-center"><p>Loading secure FGC Spot admin sign-in...</p></main></div>');
+  const adminDir = path.join(distDir, 'admin');
+  fs.mkdirSync(adminDir, { recursive: true });
+  fs.writeFileSync(path.join(adminDir, 'index.html'), adminHtml, 'utf8');
+
   // Generate Clean Redirect Aliases and Legacy Article Redirects
   const redirects = [
     { from: 'psx', to: '/stocks' },
