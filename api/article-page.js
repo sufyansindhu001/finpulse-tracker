@@ -1,4 +1,7 @@
 import { displayAuthorName } from '../src/utils/authorIdentity.js';
+import { publishedDateISO, modifiedDateISO } from '../src/utils/articleDates.js';
+import { applyLegacyArticleCorrections } from '../src/utils/legacyArticleCorrections.js';
+import { getArticleReferences } from '../src/data/articleReferences.js';
 
 /**
  * Public, server-rendered page for articles published after the static build.
@@ -78,6 +81,9 @@ export function renderMarkdown(content = '') {
 }
 
 export function renderArticleHtml(article) {
+  // Vercel can serve this function instead of the static article, so the
+  // public HTML must receive the same corrections as the React client.
+  article = applyLegacyArticleCorrections(article);
   const title = escapeHtml(article.title || 'Financial Research Article');
   const desc = escapeHtml(article.excerpt || article.summary || String(article.content || '').slice(0, 155));
   const category = escapeHtml(article.category || 'Financial Research');
@@ -87,8 +93,11 @@ export function renderArticleHtml(article) {
   const canonical = `${SITE_URL}/blog/${slug}`;
   const cover = safeCoverImage(article.image || article.cover_image || '');
   const shareImage = safeUrl(cover);
-  const published = article.created_at && !Number.isNaN(Date.parse(article.created_at)) ? new Date(article.created_at).toISOString() : null;
-  const updated = article.updated_at && !Number.isNaN(Date.parse(article.updated_at)) ? new Date(article.updated_at).toISOString() : published;
+  const relevantSources = getArticleReferences(article).map(({ label, url }) =>
+    `<li><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>`
+  ).join('');
+  const published = publishedDateISO(article);
+  const updated = modifiedDateISO(article);
   const schema = JSON.stringify({
     '@context': 'https://schema.org', '@type': 'Article',
     headline: article.title, description: article.excerpt || article.summary || '',
@@ -118,6 +127,8 @@ ${shareImage ? `<meta property="og:image" content="${escapeHtml(shareImage)}">` 
   h1{color:white;line-height:1.22;font-size:clamp(1.7rem,4vw,2.9rem)}h2,h3,h4{color:white;line-height:1.35;margin:1.7em 0 .65em}
   .byline{color:#a0afc1;font-size:.85rem;margin-bottom:24px}.cover{width:100%;max-height:430px;object-fit:cover;border-radius:12px}
   .summary{border-left:4px solid #00e676;padding:16px 20px;background:#0d2c2a;border-radius:5px;margin:26px 0}
+  .sources{border:1px solid #25445a;background:#091d2e;border-radius:12px;padding:18px 22px;margin-top:32px}
+  .sources h2{font-size:1.1rem;margin:0 0 12px}.sources p{font-size:.85rem;color:#a0afc1}
   .body{overflow-wrap:anywhere}.body p,.body ul,.body ol{margin:1.25em 0}.body li{margin:.4em 0}
   .body blockquote{border-left:3px solid #00e676;padding-left:18px;margin-left:0;color:#d4e1eb}
   .table-scroll{max-width:100%;overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem}th,td{border:1px solid #294156;padding:9px 13px;text-align:left}th{background:#123248;color:#fff}
@@ -132,6 +143,7 @@ ${shareImage ? `<meta property="og:image" content="${escapeHtml(shareImage)}">` 
 ${cover ? `<img class="cover" src="${escapeHtml(cover)}" alt="${title}" loading="eager">` : ''}
 ${desc ? `<div class="summary">${desc}</div>` : ''}
 <div class="body">${renderMarkdown(article.content || '')}</div>
+${relevantSources ? `<section class="sources" aria-label="Relevant source documents"><h2>Sources &amp; Further Reading</h2><p>Official documents and original research relevant to this topic. These links do not independently verify every illustrative figure or forecast. Confirm current data with the issuing authority.</p><ul>${relevantSources}</ul></section>` : ''}
 </article><p><a href="/blog">← More financial research from FGC Spot</a></p></main>
 <footer>© FGC Spot · Independent financial research · <a href="/editorial-policy">Editorial policy</a> · <a href="/disclaimer">Disclaimer</a></footer>
 </body></html>`;
