@@ -14,6 +14,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getArticleReferences } from '../src/data/articleReferences.js';
+import { publishedDateISO, modifiedDateISO } from '../src/utils/articleDates.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1326,6 +1328,9 @@ function renderArticleDetailPage(article, allArticles = []) {
   `).join('');
 
   const bodyHtml = renderMarkdownContent(article.content || '');
+  const sourceLinksHtml = getArticleReferences(article)
+    .map(ref => `<li><a href="${escapeHtml(ref.url)}" target="_blank" rel="noopener noreferrer" class="text-[#00E676] hover:underline font-semibold">${escapeHtml(ref.label)}</a></li>`)
+    .join('');
 
   return `
     <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-8">
@@ -1362,7 +1367,7 @@ function renderArticleDetailPage(article, allArticles = []) {
               <span class="font-semibold text-slate-900 dark:text-white hover:text-[#00E676]">${escapeHtml((article.author || 'Sufyan Sindhu').split(',')[0])}</span>
             </a>
             <span>•</span>
-            <time datetime="${escapeHtml(article.created_at || TODAY)}">Published: ${escapeHtml(article.date || 'October 2026')}</time>
+            <time datetime="${escapeHtml(publishedDateISO(article) || '')}">Published: ${escapeHtml(article.date || (publishedDateISO(article) || '').slice(0, 10))}</time>
             ${article.updated_at ? `<span>•</span><span class="text-[#00E676] font-medium">Updated: ${escapeHtml(article.updated_at.split('T')[0])}</span>` : ''}
             <span>•</span>
             <span>${escapeHtml(article.readTime || '6 min read')}</span>
@@ -1415,20 +1420,14 @@ function renderArticleDetailPage(article, allArticles = []) {
           </a>
         </div>
 
-        {/* Regulatory References & Policy Documentation */}
-        <div class="p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#0D1B2A]/60 border border-slate-200 dark:border-white/10 space-y-3">
-          <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
-            <span>Primary Regulatory References &amp; Statutory Authorities</span>
-          </div>
-          <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            All analytical claims, conversion mechanisms, and rate dynamics cited in this research article are referenced against primary documentation from recognized statutory authorities: SBP Foreign Exchange Manual, FBR Income Tax Ordinance 2001 (Sections 154A, 236Y), APSGJA Karachi Sarafa daily rate cards, and SECP listed company quarterly filings.
-          </p>
-          <div class="pt-1 flex flex-wrap gap-4 text-xs">
-            <a href="/data-sources" class="text-[#00E676] hover:underline font-semibold">Inspect Complete Data Governance &amp; Calculation Methodologies &rarr;</a>
-            <span class="text-slate-400">•</span>
-            <a href="/editorial-policy" class="hover:underline text-slate-500">Editorial Policy &amp; Standards &rarr;</a>
-          </div>
-        </div>
+        ${sourceLinksHtml ? `
+        {/* Topical reading links, not a generic claim of independent verification */}
+        <section aria-label="Relevant source documents" class="p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#0D1B2A]/60 border border-slate-200 dark:border-white/10 space-y-3">
+          <h2 class="text-slate-900 dark:text-white font-bold text-sm uppercase tracking-wider">Sources &amp; Further Reading</h2>
+          <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">These official documents and original research sources provide context for this topic. They do not independently verify every illustrative figure or forecast above. Confirm current rates and rules with the issuing authority.</p>
+          <ul class="list-disc pl-5 text-xs leading-relaxed space-y-2">${sourceLinksHtml}</ul>
+          <a href="/editorial-policy" class="text-xs text-[#00E676] hover:underline font-semibold">Read our Editorial Policy</a>
+        </section>` : ''}
 
         {/* Related Articles Section */}
         ${relatedHtml ? `
@@ -2245,8 +2244,8 @@ async function prerenderAll() {
                 'url': 'https://www.fgcspot.com/logo.png'
               }
             },
-            'datePublished': art.created_at || TODAY,
-            'dateModified': art.updated_at || TODAY,
+            'datePublished': publishedDateISO(art) || TODAY,
+            'dateModified': modifiedDateISO(art) || TODAY,
             'mainEntityOfPage': {
               '@type': 'WebPage',
               '@id': canonicalUrl
