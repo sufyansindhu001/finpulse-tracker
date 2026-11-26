@@ -58,6 +58,15 @@ for (const article of BLOG_POSTS) {
 }
 console.log('[PASS] All 20 existing research guides retain author identity, substantial text and topical references.');
 
+const freelancerGuide = BLOG_POSTS.find(article => article.slug.startsWith('freelance-remittances-banking-in-pakistan'));
+assert.ok(freelancerGuide);
+assert.doesNotMatch(freelancerGuide.summary, /PSEB tax exemptions/i);
+assert.match(freelancerGuide.summary, /conditional 0\.25% Section 154A tax rate/i);
+assert.match(freelancerGuide.content, /FBR Finance Act 2026 salient features/);
+assert.match(freelancerGuide.content, /0\.25% concession.*Tax Year 2029/);
+assert.doesNotMatch(freelancerGuide.content, /saves \*\*PKR 126,000 in immediate taxes\*\* every single year|Most major banks now issue digital e-PRCs within 24 to 48 hours/i);
+console.log('[PASS] Featured remittances guide accurately distinguishes conditional tax concessions from exemptions.');
+
 for (const route of ['/about', '/contact', '/editorial-policy', '/data-sources', '/privacy-policy', '/terms']) {
   assert.match(read('src/App.jsx'), new RegExp(`path=["']${route}["']`), `Missing trust/support route ${route}`);
 }
