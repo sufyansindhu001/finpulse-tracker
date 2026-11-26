@@ -30,7 +30,7 @@ const FEATURED_ARTICLES = [
   {
     slug: 'freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained',
     title: 'Freelance Remittances & Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Foreign Currency Exporter Retention Accounts',
-    excerpt: 'Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, PRC certificate issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.',
+    excerpt: 'Practical guide to Pakistani exporter retention accounts, e-PRC documentation, conditional tax treatment and transfer-fee comparisons.',
     category: 'Banking & Remittances',
     readTime: '5 min read',
     date: 'October 20, 2026',
