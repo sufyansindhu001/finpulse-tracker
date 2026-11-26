@@ -111,9 +111,9 @@ export default function EditorialPolicyPage() {
               Before publishing mathematical formulas, calculation examples, or ticker models:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
-              <li>All conversion formulas (such as triangular cross-currency parity or 24K tola gold conversions) are cross-checked against live SBP weighted closing benchmarks.</li>
+              <li>Currency cross-rate and gold-weight formulas are checked through offline mathematical regression tests. Public provider quotes are not presented as official SBP closing rates.</li>
               <li>Calculators and screening tools are tested with boundary conditions, edge cases, and historical data to prevent calculation errors.</li>
-              <li>Data limitations—such as 15-minute stock delays, retail making charges, or cross-border card fees—are explicitly disclosed adjacent to calculations.</li>
+              <li>Provider-dependent quote delays, retail making charges and possible cross-border card fees are disclosed near relevant calculations.</li>
             </ul>
           </div>
 
