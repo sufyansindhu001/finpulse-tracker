@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency } from '../services/forexService';
+import { CALCULATOR_LIMITS, boundedDecimalInput, readBoundedAmount } from '../utils/calculatorMath';
 import { X } from 'lucide-react';
 import CurrencyFlag from './CurrencyFlag';
 import CurrencySelect from './CurrencySelect';
@@ -11,7 +12,7 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
 
   const fiatObj = useMemo(() => getCurrencyInfo(fiatCurrency), [fiatCurrency]);
 
-  const numAmount = parseFloat(cryptoAmount) || 0;
+  const numAmount = readBoundedAmount(cryptoAmount, CALCULATOR_LIMITS.cryptoQuantity) ?? 0;
   
   // Coin price is in USD from CoinGecko live feed
   const totalUsdValue = Number.isFinite(Number(coin?.current_price)) && coin.current_price > 0
@@ -80,10 +81,11 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
             <input
               type="number"
               min="0"
+              max={CALCULATOR_LIMITS.cryptoQuantity}
               step="any"
               value={cryptoAmount}
-              onChange={(e) => setCryptoAmount(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-100/90 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] rounded-xl text-slate-900 dark:text-white font-bold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-lg tabular-nums"
+              onChange={(e) => setCryptoAmount(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.cryptoQuantity))}
+              className="w-full min-w-0 px-4 py-2.5 bg-slate-100/90 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] rounded-xl text-slate-900 dark:text-white font-bold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-lg tabular-nums"
               placeholder="1.0"
             />
           </div>
@@ -126,10 +128,10 @@ export default function CryptoConverterModal({ coin, rates, onClose }) {
             <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-semibold">
               Live Converted Total
             </span>
-            <div className="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight">
+            <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight [overflow-wrap:anywhere]">
               {Number.isFinite(convertedFiat) ? `${fiatObj.symbol} ${convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'}
             </div>
-            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 tabular-nums font-medium">
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 tabular-nums font-medium [overflow-wrap:anywhere]">
               {numAmount} {coin.symbol.toUpperCase()} = {Number.isFinite(convertedFiat) ? convertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'} {fiatCurrency}
             </div>
           </div>
