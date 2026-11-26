@@ -2,10 +2,12 @@
  * FGC Spot Analytical Blog & Research Post Database
  * Authoritative, high-utility financial guides covering Forex, Gold Bullion, Equities, and Remittances.
  * Maintained by Sufyan Sindhu.
- * Last Updated: November 22, 2026
+ * Last Updated: November 27, 2026
  */
 
-export const BLOG_POSTS = [
+import { applyArticleFactChecks } from './articleFactChecks.js';
+
+const ORIGINAL_BLOG_POSTS = [
   {
     "id": "freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained",
     "slug": "freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained",
@@ -492,3 +494,14 @@ export const BLOG_POSTS = [
     "readTime": "8 min read"
   }
 ];
+
+// Editorial corrections are applied to the bundled, public-facing articles.
+// They do not write to Supabase or override later edits published by the owner.
+export const BLOG_POSTS = ORIGINAL_BLOG_POSTS.map(article => {
+  const content = applyArticleFactChecks(article.slug, article.content);
+  return {
+    ...article,
+    content,
+    updated_at: content !== article.content ? '2026-11-27T09:00:00Z' : article.updated_at
+  };
+});
