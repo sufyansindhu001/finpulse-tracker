@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { displayAuthorName } from '../utils/authorIdentity';
+import { applyLegacyArticleCorrections } from '../utils/legacyArticleCorrections';
 
 const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
@@ -118,6 +119,9 @@ export function withImageVersion(url, timestamp) {
  */
 export function normalizeArticle(raw) {
   if (!raw) return null;
+  // Correct the bundled legacy guides without overwriting newer Supabase
+  // edits or altering the user's production database records.
+  raw = applyLegacyArticleCorrections(raw);
   const createdAt = raw.created_at ? new Date(raw.created_at) : new Date();
   const dateFormatted = raw.date || (isNaN(createdAt.getTime())
     ? 'September 28, 2026'
