@@ -17,7 +17,7 @@ export default function WhatWeOffer() {
       title: 'Currency Rates',
       route: '/rates',
       tag: '160+ FIAT PAIRS',
-      desc: 'Real-time central bank and interbank foreign exchange rates with live mid-market corridor benchmarks and transparent zero-spread quotes.',
+      desc: 'Indicative foreign exchange reference rates and cross-currency calculations sourced from public market-data providers. Actual bank quotes may differ.',
       icon: Globe,
       accent: '#00E676',
       badge: 'Real-Time FX'
@@ -26,7 +26,7 @@ export default function WhatWeOffer() {
       title: 'Crypto Rates',
       route: '/crypto',
       tag: 'DIGITAL ASSETS',
-      desc: 'High-frequency streaming prices for Bitcoin, Ethereum, Solana, and top crypto assets with 24h volume, market cap, and liquidity metrics.',
+      desc: 'Available cryptocurrency price observations for Bitcoin, Ethereum, Solana, and other assets, with reported 24h volume and market-cap metrics.',
       icon: Coins,
       accent: '#00FF88',
       badge: 'Multi-Exchange'
@@ -35,10 +35,10 @@ export default function WhatWeOffer() {
       title: 'Gold Rates',
       route: '/gold',
       tag: 'BULLION & COMMODITIES',
-      desc: 'Certified precious metals pricing across 24K, 22K, 21K, and 18K purity grades with dynamic Tola, 10-Gram, Gram, and Troy Ounce conversions.',
+      desc: 'Indicative precious-metals estimates across 24K, 22K, 21K, and 18K purity grades, with Tola, 10-Gram, Gram, and Troy Ounce conversions.',
       icon: Sparkles,
       accent: '#F59E0B',
-      badge: 'Official Karats'
+      badge: 'Indicative Values'
     },
     {
       title: 'Interactive Charts',

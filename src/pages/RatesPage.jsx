@@ -31,7 +31,7 @@ const VALID_FIAT_CODES = new Set(
 const ratesFaqs = [
   {
     q: "How frequently are foreign exchange rates updated on FGC Spot?",
-    a: "Our interbank foreign exchange rates sync in real-time directly with institutional financial APIs and market data feeds. During active market trading hours (Monday through Friday), rates update continuously as global currency pairs fluctuate, while official central bank fixing benchmarks are updated at the close of every business day."
+    a: "FGC Spot fetches indicative currency quotes from public exchange-rate providers and may temporarily reuse cached observations while refreshing. Provider update schedules and market availability differ, so a displayed reference quote is not a continuously executable bank price."
   },
   {
     q: "Why is there a discrepancy between interbank rates and open market cash rates?",
@@ -43,7 +43,7 @@ const ratesFaqs = [
   },
   {
     q: "What is an Electronic Proceeds Realisation Certificate (e-PRC)?",
-    a: "An e-PRC is an official digital verification issued by authorized commercial banks confirming that foreign currency was legitimately remitted from abroad and converted into Pakistani Rupees. It provides statutory exemption evidence for freelancers and exporters during tax filing with the FBR."
+    a: "An e-PRC is a digital certificate issued by an authorized bank documenting an eligible inward remittance. It can support records for the FBR, but does not automatically make income tax-exempt; applicable treatment depends on current tax law and the nature of the receipt."
   },
   {
     q: "How are cross-currency rates (e.g., EUR/PKR, GBP/PKR) computed?",
@@ -333,7 +333,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
             Live Financial Rates Matrix
           </h1>
           <p className="text-sm text-slate-600 dark:text-[#A8B3C2] mt-1">
-            Real-time interbank quotes, cryptocurrency rankings, and certified precious metals benchmarks.
+            Indicative FX reference quotes, cryptocurrency market data, and calculated precious-metals benchmarks from available external feeds.
           </p>
         </div>
 
@@ -844,7 +844,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
               3. Compliance, SBP Regulations, and Electronic Inward Remittances
             </h3>
             <p>
-              Under SBP Foreign Exchange Manual guidelines, all foreign currency inflows into Pakistan must comply with stringent Anti-Money Laundering (AML) and Countering Financing of Terrorism (CFT) frameworks. For freelance technology professionals, exporters, and overseas Pakistani workers, routing earnings through official banking channels guarantees receipt of an <em>Electronic Proceeds Realisation Certificate (e-PRC)</em>, which serves as statutory proof of untaxed foreign exchange income for Federal Board of Revenue (FBR) income tax filings.
+              SBP-authorized banks are subject to AML/CFT requirements and can issue an <em>Electronic Proceeds Realisation Certificate (e-PRC)</em> to document eligible inward remittances. That certificate is a record of funds received, not a guarantee that the underlying income is tax-free. Freelancers, exporters, and families should confirm the applicable tax rules with the FBR and their bank. See the <a href="https://www.sbp.org.pk/circulars/fe-circular-no-05-of-2022" target="_blank" rel="noopener noreferrer" className="text-[#00E676] underline">SBP e-PRC guidance</a>.
             </p>
           </div>
         </div>

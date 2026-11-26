@@ -27,15 +27,15 @@ import { CALCULATOR_LIMITS, boundedDecimalInput, readBoundedAmount } from '../ut
 const converterFaqs = [
   {
     q: "What is the difference between the mid-market rate and commercial bank retail rates?",
-    a: "The mid-market (or interbank) rate is the midpoint between global buy and sell orders on electronic institutional currency networks. Commercial banks and retail credit card issuers typically add an undisclosed markup or margin (ranging between 1.5% and 4.5% above the mid-market rate) as an implicit conversion fee."
+    a: "A mid-market rate is the midpoint between a currency pair's buy and sell quotes at a particular time. Reference exchange-rate feeds are indicative, not executable wholesale bids or retail bank offers. Banks and card issuers may apply their own spreads and fees; compare the quoted payout before sending money."
   },
   {
     q: "How does routing remittances through official SBP channels protect freelancers and overseas workers?",
-    a: "Remitting funds through SBP-authorized commercial banking channels or the Roshan Digital Account (RDA) provides automatic generation of the Electronic Proceeds Realisation Certificate (e-PRC). Under Section 154A of the Income Tax Ordinance, e-PRC verification grants tax exemptions or concessionary tax rates for IT and IT-enabled export services."
+    a: "SBP-authorized banks can issue electronic Proceeds Realisation Certificates (e-PRCs) documenting qualifying inward remittances. An e-PRC proves receipt; it does not automatically exempt income from tax. Eligibility for any IT-export concession under Section 154A depends on current FBR law, registration and transaction-specific conditions."
   },
   {
     q: "Are inward foreign remittances subjected to taxes or withholding deductions in Pakistan?",
-    a: "Legitimate home remittances sent by overseas Pakistani workers for household maintenance via formal banking channels or foreign exchange companies are 100% tax-free under Pakistani tax law and exempt from withholding tax. Freelancers receiving business revenue require e-PRC documentation to claim export tax concessions."
+    a: "Tax treatment depends on the source and purpose of funds and the recipient's circumstances. A family remittance is not automatically the same as taxable business or export income. Preserve banking records and e-PRCs, and check the current FBR requirements or seek qualified tax advice before claiming an exemption or concession."
   },
   {
     q: "When is the optimal time of day or week to execute foreign currency conversions?",
@@ -148,14 +148,14 @@ export default function ConverterPage({ rates = {} }) {
         <div className="flex items-center gap-2 mb-1">
           <span className="w-2 h-2 rounded-full bg-[#00E676] animate-pulse"></span>
           <span className="text-xs uppercase font-bold tracking-widest text-[#00E676]">
-            ZERO-MARKUP CALCULATION ENGINE
+            REFERENCE-RATE CALCULATION ENGINE
           </span>
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
           Real-Time Currency Converter
         </h1>
         <p className="text-sm text-slate-600 dark:text-[#A8B3C2] max-w-2xl">
-          Instantly calculate cross-currency conversions using authentic institutional mid-market rates without hidden bank markups.
+          Estimate cross-currency values using available public market-rate feeds. This calculator adds no fee, but bank and transfer-provider rates may differ.
         </p>
       </div>
 
@@ -336,17 +336,17 @@ export default function ConverterPage({ rates = {} }) {
 
           <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-4 font-normal">
             <p>
-              Every international transaction—from paying an overseas supplier to converting remote freelance software earnings—relies on foreign exchange mathematics. However, retail consumers, importers, and remote professionals frequently lose between 2% and 5% of their total transferred capital due to hidden exchange rate markups and intermediary correspondent bank deductions.
+              Every international transaction—from paying an overseas supplier to converting freelance earnings—relies on foreign exchange mathematics. Retail rates may differ from reference feeds because banks and transfer providers apply spreads, commissions, and correspondent-bank charges. Compare the final amount received rather than assuming a fixed industry-wide fee percentage.
             </p>
 
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
               1. The Anatomy of the Mid-Market Exchange Rate
             </h3>
             <p>
-              The <strong>mid-market rate</strong> (also called the interbank or spot rate) is the exact mathematical midpoint between global buy (bid) and sell (ask) quotes across international wholesale forex markets. It represents the purest, unmanipulated value of one currency relative to another, free from retail margins. Financial institutions access this rate when trading billions of dollars between themselves.
+              A <strong>mid-market rate</strong> is the midpoint between the bid and ask prices for a currency pair at a given time and venue. The public exchange-rate feeds used by FGC Spot provide indicative reference values; they are not a guaranteed executable quote from a bank or wholesale trading venue.
             </p>
             <p>
-              When commercial retail banks advertise &quot;0% Commission Currency Exchange,&quot; they typically build their profit directly into an inflated exchange rate. If the mid-market rate is \$1 = ₨ 277.50, a retail commercial bank might sell US Dollars at ₨ 282.00 and buy them at ₨ 273.00, quietly capturing a ₨ 4.50-per-dollar spread. FGC Spot utilizes real-time institutional mid-market rates to provide transparent, unskewed parity.
+              A &quot;0% commission&quot; offer can still include a currency spread. For illustration only, if a reference USD/PKR rate were Rs. 277.50, one bank might quote Rs. 282.00 to sell dollars and Rs. 273.00 to buy them. FGC Spot calculates mathematical cross-rates from available external feeds without adding a transaction markup; actual bank quotes may vary.
             </p>
 
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
@@ -356,16 +356,19 @@ export default function ConverterPage({ rates = {} }) {
               In Pakistan, the State Bank of Pakistan (SBP) oversees inward foreign currency remittances to safeguard macroeconomic stability and ensure FATF compliance:
             </p>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li><strong>Roshan Digital Accounts (RDA):</strong> Established for Non-Resident Pakistanis (NRPs) to facilitate seamless, fee-free inward remittances, residential real estate investment, and sovereign bond subscriptions (Naya Pakistan Certificates).</li>
-              <li><strong>Home Remittances:</strong> Inward remittances sent by overseas Pakistani workers for household maintenance via formal banking channels or authorized exchange companies are 100% tax-exempt.</li>
-              <li><strong>Electronic Proceeds Realisation Certificate (e-PRC):</strong> For freelance technology professionals, exporters, and software consultancies, banks issue an electronic PRC. Under SBP regulations and FBR tax rules, the e-PRC is mandatory statutory proof that foreign funds entered through formal banking rails, unlocking concessionary 0.25%–1% final tax regime (FTR) treatment under Section 154A of the Income Tax Ordinance.</li>
+              <li><strong>Roshan Digital Accounts (RDA):</strong> Offer eligible non-resident Pakistanis banking and investment facilities. Eligibility, exchange rates and charges depend on the account, bank and transaction.</li>
+              <li><strong>Home Remittances:</strong> Inward family transfers and payments for business or exported services can have different tax treatment. Do not assume every transfer received from abroad is tax-exempt.</li>
+              <li><strong>Electronic Proceeds Realisation Certificate (e-PRC):</strong> Authorized banks provide a digital record of qualifying funds received from abroad. This evidence supports reporting but does not by itself establish an income-tax exemption or a concession under Section 154A.</li>
             </ul>
+            <p>
+              Verify the current rules with the <a href="https://www.sbp.org.pk/circulars/fe-circular-no-05-of-2022" target="_blank" rel="noopener noreferrer" className="text-[#00E676] underline">SBP e-PRC circular</a> and <a href="https://www.fbr.gov.pk/Budget2026-27/SalientFeatures/Salient-Feature.pdf" target="_blank" rel="noopener noreferrer" className="text-[#00E676] underline">FBR Finance Act 2026–27 summary</a> before relying on any tax calculation.
+            </p>
 
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-4">
               3. Strategies to Avoid Hidden Transfer Fees and SWIFT Markups
             </h3>
             <p>
-              Traditional cross-border telegraphic transfers (SWIFT wire transfers) often route funds through one or two intermediary correspondent banks, each deducting \$15 to \$35 in handling fees. To avoid these deductions, tech freelancers and exporters utilize multi-currency digital accounts that connect directly to local clearing systems (such as SEPA in the EU, ACH in the US, Faster Payments in the UK, and Raast in Pakistan), ensuring near-instantaneous transfers with maximum dollar retention.
+              Some cross-border SWIFT transfers pass through intermediary banks that can deduct handling fees. Multi-currency accounts and local clearing options (such as SEPA, ACH or Faster Payments) may reduce costs for eligible corridors, but neither zero fees nor a specific delivery time is guaranteed. Compare the provider's full price and settlement terms.
             </p>
           </div>
         </div>
@@ -602,20 +605,20 @@ export default function ConverterPage({ rates = {} }) {
           </h3>
           <div className="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-3 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
             <p>
-              Compare sending $1,000 USD to a family bank account in Pakistan when the live interbank mid-market rate is <strong>Rs. 277.10</strong>:
+              Hypothetical comparison only: sending $1,000 USD at an assumed reference rate of <strong>Rs. 277.10</strong> (not a live quotation):
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 font-mono text-xs">
               <div className="p-4 rounded-xl bg-white dark:bg-[#0D1B2A] border border-emerald-500/30 space-y-1">
-                <span className="text-emerald-500 font-bold uppercase tracking-wider text-[10px]">SBP Compliant Bank Remittance</span>
+                <span className="text-emerald-500 font-bold uppercase tracking-wider text-[10px]">Illustrative Fee-Free Scenario</span>
                 <div className="text-slate-900 dark:text-white font-bold text-sm">Payout: Rs. 277,100 PKR</div>
-                <div className="text-slate-500 text-[11px]">&bull; 0% fee (covered by SBP incentive scheme)</div>
-                <div className="text-slate-500 text-[11px]">&bull; Automatic e-PRC tax shield issued</div>
+                <div className="text-slate-500 text-[11px]">&bull; Assumes no transfer fee or exchange spread</div>
+                <div className="text-slate-500 text-[11px]">&bull; Ask the receiving bank about e-PRC documentation</div>
               </div>
               <div className="p-4 rounded-xl bg-white dark:bg-[#0D1B2A] border border-rose-500/30 space-y-1">
-                <span className="text-rose-500 font-bold uppercase tracking-wider text-[10px]">Opaque Transfer Service (3% Markup)</span>
+                <span className="text-rose-500 font-bold uppercase tracking-wider text-[10px]">Illustrative Service (3% Markup)</span>
                 <div className="text-slate-900 dark:text-white font-bold text-sm">Payout: Rs. 268,787 PKR</div>
-                <div className="text-slate-500 text-[11px]">&bull; Hidden spread: Rs. 8,313 lost on conversion</div>
-                <div className="text-slate-500 text-[11px]">&bull; No official e-PRC tax exemption</div>
+                <div className="text-slate-500 text-[11px]">&bull; Assumed spread: Rs. 8,313 versus reference</div>
+                <div className="text-slate-500 text-[11px]">&bull; Tax treatment depends on the actual transaction</div>
               </div>
             </div>
           </div>
