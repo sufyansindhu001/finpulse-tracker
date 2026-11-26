@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { displayAuthorName } from '../utils/authorIdentity';
-import { applyLegacyArticleCorrections } from '../utils/legacyArticleCorrections';
+import { displayAuthorName } from '../utils/authorIdentity.js';
+import { applyLegacyArticleCorrections } from '../utils/legacyArticleCorrections.js';
 
 const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const supabaseAnonKey = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
