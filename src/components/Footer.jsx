@@ -321,7 +321,7 @@ export default function Footer() {
                 Freelance Remittances &amp; Banking in Pakistan: FBR Tax Regimes
               </h4>
               <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2] line-clamp-1 mt-0.5">
-                Guide to 50% retention foreign currency accounts, e-PRC issuance, and 0.25% PSEB tax exemptions.
+                Explains exporter retention accounts, e-PRC documents and the conditions for concessional IT-export tax treatment.
               </p>
             </Link>
 
@@ -346,7 +346,7 @@ export default function Footer() {
         {/* Financial & AdSense Compliance Banner */}
         <div className="py-6 border-b border-slate-200 dark:border-white/10 text-xs leading-relaxed text-slate-600 dark:text-[#A8B3C2] font-medium">
           <p>
-            <strong className="text-slate-900 dark:text-white font-bold">Financial Disclosure:</strong> Foreign exchange rates and cryptocurrency market values fluctuate constantly. All figures displayed on {siteSettings?.websiteName || 'FGC Spot'} are based on interbank institutional benchmarks and are intended for computational and informational reference.
+            <strong className="text-slate-900 dark:text-white font-bold">Financial Disclosure:</strong> Currency, metals and cryptocurrency values fluctuate. Figures on {siteSettings?.websiteName || 'FGC Spot'} are indicative data from available public feeds, not guaranteed executable interbank prices, licensed-dealer offers or investment advice. Provider timestamps, availability, spreads and transaction charges may differ.
           </p>
         </div>
 
