@@ -19,6 +19,7 @@ for (const article of BLOG_POSTS) {
     assert.ok(!parsed.hostname.includes('fgcspot'), `${article.slug}: sources must be independent`);
   }
   assert.equal(article.likes, undefined, `${article.slug}: seeded popularity`);
+  assert.equal(article.author, 'Sufyan Sindhu', `${article.slug}: inconsistent author byline`);
   assert.ok(publishedDateISO(article), `${article.slug}: missing publication date`);
   assert.ok(modifiedDateISO(article), `${article.slug}: missing modified date`);
 }
@@ -47,6 +48,30 @@ assert.match(inflation.content, /Qualitative Comparison/);
 assert.doesNotMatch(inflation.content, /\+22\.4% Annualized/);
 console.log('PASS 2: critical 2026 tax, PSX, SBP, SPIVA and financial math claims corrected.');
 
+const forex = bySlug('forex-risk-management-why-most-retail-traders-blow-up-accounts-and-how-to-prevent-it');
+assert.match(forex.content, /0\.20 Standard Lots \(2\.0 Mini Lots\)/);
+assert.match(forex.content, /0\.12 standard lots \(1\.2 mini lots\)/);
+assert.doesNotMatch(forex.content, /Probability of Account Survival|0\.20 Mini Lots|0\.12 mini lot/);
+const rda = bySlug('understanding-roshan-digital-account-rda-naya-pakistan-certificates-repatriation-rules-tax-shields');
+assert.match(rda.content, /10% at source on NPC profit/);
+assert.doesNotMatch(rda.content, /\*\*15\.00%\*\*|\*\*7\.20%\*\*|completely exempt from filing/);
+const equity = bySlug('pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide');
+assert.match(equity.content, /1,762,342/);
+assert.doesNotMatch(equity.content, /Commercial Banks \(30%\)|20\.0x - 26\.0x/);
+const assay = bySlug('spotting-fake-gold-hallmarking-standards-the-complete-investor-guide-to-bullion-bars-vs-jewelry');
+assert.match(assay.content, /Limited penetration cannot establish/);
+assert.doesNotMatch(assay.content, /Flawless for Bullion/);
+const wire = bySlug('remittances-forex-spread-the-hidden-costs-of-sending-money-to-pakistan-and-how-to-get-real-rates');
+assert.match(wire.content, /an in-app receipt is not always an SBP e-PRC/);
+assert.doesNotMatch(wire.content, /\*\*0\.20% - 0\.50%\*\*/);
+const spivaFactCheck = bySlug('the-s-p-500-global-index-investing-why-90-of-active-fund-managers-fail-to-beat-the-market');
+assert.doesNotMatch(spivaFactCheck.content, /\*\*94\.8%\*\*|\*\*92\.2%\*\*/);
+const cryp = bySlug('storing-crypto-safely-exchanges-vs-wallets-guide');
+assert.doesNotMatch(cryp.content, /Absolute Zero|Core Long-Term Wealth \(> 90%\)/);
+const carryFactCheck = bySlug('understanding-the-carry-trade-how-japanese-yen-differentials-move-global-forex');
+assert.doesNotMatch(carryFactCheck.content, /\*\*4\.50%\*\* \| \*\*\+4\.00%\*\*/);
+console.log('PASS 3: unsupported finance rates, custody absolutes, synthetic percentages and lot arithmetic corrected.');
+
 const oldRecord = {
   ...property,
   title: 'Outdated remote property headline',
@@ -58,7 +83,7 @@ const futureEdit = { ...oldRecord, updated_at: '2026-11-27T12:00:00Z', title: 'O
 assert.equal(applyLegacyArticleCorrections(futureEdit), futureEdit);
 const newArticle = { ...oldRecord, slug: 'a-new-article-from-mobile' };
 assert.equal(applyLegacyArticleCorrections(newArticle), newArticle);
-console.log('PASS 3: old Supabase guides receive corrections; future owner edits remain untouched.');
+console.log('PASS 4: old Supabase guides receive corrections; future owner edits remain untouched.');
 
 const html = renderArticleHtml(oldRecord);
 assert.ok(html.includes('Section 7E omitted under Finance Act 2026'));
@@ -71,7 +96,7 @@ const newHtml = renderArticleHtml({
 });
 assert.ok(newHtml.includes('Owner New Article'));
 assert.ok(!newHtml.includes('Sources &amp; Further Reading'));
-console.log('PASS 4: Vercel live article fallback uses corrected HTML and preserves new posts.');
+console.log('PASS 5: Vercel live article fallback uses corrected HTML and preserves new posts.');
 
 const prerendered = readFileSync(new URL(`../dist/blog/${property.slug}/index.html`, import.meta.url), 'utf8');
 assert.ok(prerendered.includes('Sources &amp; Further Reading'));
@@ -80,6 +105,9 @@ assert.ok(prerendered.includes('https://www.fbr.gov.pk/Budget2026-27/'));
 assert.ok(!prerendered.includes('Outdated remote property headline'));
 const parsedPubDate = publishedDateISO(property);
 assert.ok(prerendered.includes(parsedPubDate));
-console.log('PASS 5: static Google-visible article matches revised facts, dated schema, and source links.');
+const forexRendered = readFileSync(new URL(`../dist/blog/${forex.slug}/index.html`, import.meta.url), 'utf8');
+assert.ok(forexRendered.includes('0.20 Standard Lots'));
+assert.ok(!forexRendered.includes('Probability of Account Survival'));
+console.log('PASS 6: static Google-visible articles match revised facts, dated schema, and source links.');
 
-console.log('All 5 editorial integrity checks passed.');
+console.log('All 6 editorial integrity checks passed.');
