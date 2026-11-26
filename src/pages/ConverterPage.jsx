@@ -256,7 +256,7 @@ export default function ConverterPage({ rates = {} }) {
         {/* Live Exchange Rate Math Banner */}
         <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-left">
-            <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">Interbank Mid-Market Exchange Rate</div>
+            <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-medium">Indicative Public FX Reference Rate</div>
             <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white font-tabular">
               1 {fromCurrency} = {Number.isFinite(unitRate) ? unitRate.toLocaleString(undefined, { maximumFractionDigits: 4 }) : 'N/A'} {toCurrency}
             </div>

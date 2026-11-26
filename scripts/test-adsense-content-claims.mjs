@@ -12,6 +12,9 @@ const offerings = read('src/components/WhatWeOffer.jsx');
 const methodology = read('src/components/WhyFGCSpot.jsx');
 const staticHtml = read('scripts/prerender.js');
 const forexService = read('src/services/forexService.js');
+const disclosurePage = read('src/pages/DataSourcesPage.jsx');
+const homeMethodology = read('src/components/MarketIntelligenceMethodology.jsx');
+const editorialPolicy = read('src/pages/EditorialPolicyPage.jsx');
 
 assert.doesNotMatch(converter, /100% tax-free|100% tax-exempt|Automatic e-PRC tax shield|No official e-PRC tax exemption|authentic institutional mid-market rates without hidden bank markups/i);
 assert.doesNotMatch(converter, /SBP Benchmark Parity|pure mid-market interbank exchange rates|Updates every 45 to 60 seconds|Commercial banks add 1\.5% to 3\.5%/i);
@@ -26,10 +29,14 @@ assert.doesNotMatch(footer, /Sub-Second Live Feeds/i);
 assert.doesNotMatch(offerings, /Certified precious metals pricing|zero-spread quotes/i);
 assert.doesNotMatch(methodology, /Direct socket aggregation|sub-second delta updates/i);
 assert.doesNotMatch(footer, /interbank institutional benchmarks|0\.25% PSEB tax exemptions/i);
+assert.doesNotMatch(disclosurePage, /Open Exchange Rates, FloatRates & State Bank of Pakistan|Volume-Weighted Average Price \(VWAP\) across global exchanges|Polled every 30 seconds during active market trading sessions/);
+assert.doesNotMatch(homeMethodology, /tier-one institutional interbank liquidity feeds|high-frequency WebSockets and REST APIs|official Karachi Sarafa Association import customs duties/);
+assert.doesNotMatch(editorialPolicy, /cross-checked against live SBP weighted closing benchmarks/i);
 assert.match(forexService, /source: 'Public FX Reference Feeds'/);
 console.log('[PASS] Public rate and tax copy identifies reference quotes, assumptions and tax limitations.');
 
 assert.doesNotMatch(staticHtml, /value: 'Rs\. 277\.10'|priceUSD: '\$96,420'|perTola: 'Rs\. 284,500'|interbankBuy: '277\.05'|Sub-40ms Interbank|PSEB tax exemptions \(0\.25% final tax\)/i);
+assert.doesNotMatch(staticHtml, /Polled every 60s during banking hours; SBP weighted closing|all conversion equations.*cross-checked against live SBP weighted closing/i);
 assert.match(staticHtml, /Fetching reference quote/);
 assert.match(staticHtml, /Awaiting verified FX reference feed/);
 assert.match(staticHtml, /certificate documents the receipt; it is not itself an automatic tax exemption/i);

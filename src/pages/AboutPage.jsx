@@ -117,7 +117,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
               {[
                 '100% Free Public Access: No mandatory paywalls or account creation required.',
-                'Interbank Mid-Market Transparency: Calculating rates without retail bank spreads.',
+                'Reference FX Transparency: Calculated cross-rates without added site transaction spreads.',
                 'Privacy & Editorial Policies: Public information about data use, sources, and corrections.',
                 'Provider-Dependent Updates: Refresh intervals and availability vary by market and upstream feed.'
               ].map((item, idx) => (

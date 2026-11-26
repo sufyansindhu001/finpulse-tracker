@@ -30,21 +30,21 @@ export default function DataSourcesPage() {
 
   const dataProviders = [
     {
-      tool: 'Interbank Foreign Exchange',
+      tool: 'Currency Reference Rates',
       route: '/rates',
-      provider: 'Open Exchange Rates, FloatRates & State Bank of Pakistan (SBP)',
-      dataType: 'Institutional Wholesale Interbank Mid-Market',
-      frequency: 'Live polling every 60s during banking hours; SBP weighted closing daily at 16:30 PKT',
-      methodology: 'Triangular cross-rate parity through US Dollar anchor to eliminate synthetic arbitrage: Rate(Base/Quote) = (USD/Quote) / (USD/Base).',
-      limitations: 'Wholesale book-entry rates exclude retail bank credit/debit card international cross-border fees (1.5%–3.5%) and advance tax under Section 236Y (5% for filers, 10% for non-filers).'
+      provider: 'open.er-api.com, FloatRates and public currency API mirrors',
+      dataType: 'Indicative Public FX Reference Quotes',
+      frequency: 'Fetched when needed, with a two-minute fresh cache and up to ten minutes of stale-while-revalidate availability; upstream update frequency varies',
+      methodology: 'Cross-rate calculation through a common USD base: Rate(Base/Quote) = (USD/Quote) / (USD/Base).',
+      limitations: 'Not official SBP closing rates or executable interbank quotations. Retail provider spreads, card fees and applicable taxes are separate; consult current bank and FBR terms.'
     },
     {
-      tool: 'Open Market Cash Forex',
+      tool: 'Open-Market Cash Exchange Context',
       route: '/converter',
-      provider: 'Exchange Companies Association of Pakistan (ECAP) & Representative Dealerships',
-      dataType: 'Retail Over-the-Counter Cash Banknotes',
-      frequency: 'Daily business session updates with intraday volatility adjustments',
-      methodology: 'Cash market bid-ask spread reflecting retail dealer transport, insurance, security, and customs handling expenses: Spread (%) = ((Ask - Bid) / Mid) * 100.',
+      provider: 'No direct live cash-dealer rate feed is integrated',
+      dataType: 'Educational Comparison Only',
+      frequency: 'No real-time ECAP or counter-quotation refresh is claimed',
+      methodology: 'If a licensed dealer provides buy/ask quotations, spread can be calculated as ((Ask - Bid) / Mid) * 100.',
       limitations: 'Physical cash exchange uses separately quoted retail rates and charges. An e-PRC is a bank-issued record of qualifying inward remittances, not an automatic income-tax exemption.'
     },
     {
@@ -69,26 +69,26 @@ export default function DataSourcesPage() {
       tool: 'Stock Screener & PSX Terminal',
       route: '/stocks',
       provider: 'Yahoo Finance Market API Proxy (api/stocks.js) & PSX Public Disclosures',
-      dataType: '15-Minute Delayed Market Quotes & Trailing Financials',
-      frequency: 'Polled every 30 seconds during active market trading sessions',
+      dataType: 'Provider-Available Stock Quotes & Company Metrics',
+      frequency: 'Updated when provider data is accessible; exchange, source and cache delays vary',
       methodology: 'Quantitative ratio calculation engine: Price-to-Earnings (P/E = Price/EPS), Dividend Yield (Annual DPS/Price), Piotroski F-Score (9-factor fundamental test).',
-      limitations: 'Quotes are delayed by at least 15 minutes per standard exchange dissemination rules. Financial ratios utilize trailing twelve months (TTM) corporate filings.'
+      limitations: 'Quotes and corporate ratios may be delayed or absent; fundamental metrics should be checked against dated exchange and issuer filings.'
     },
     {
       tool: 'Cryptocurrency Market Index',
       route: '/crypto',
       provider: 'CoinGecko Public Markets API (api.coingecko.com/api/v3/coins/markets)',
-      dataType: 'Volume-Weighted Average Price (VWAP) across global exchanges',
-      frequency: 'Polled every 60 seconds with resilient client-side caching',
-      methodology: 'Pakistani Rupee Counter-Value = Coin Spot Price (USD) * SBP Interbank USD/PKR benchmark.',
-      limitations: 'Excludes domestic peer-to-peer (P2P) cash premiums (typically 1.5% to 4.5% in Pakistan) and native blockchain network miner/gas fees. SBP Circular BPRD/2018-03 applies.'
+      dataType: 'CoinGecko-Reported Market Prices and Indicators',
+      frequency: 'Fetched on demand with two-minute client caching; actual upstream timestamp varies',
+      methodology: 'Indicative PKR Counter-Value = Public Coin Price (USD) * Available USD/PKR Reference Rate.',
+      limitations: 'Not independently computed VWAP or an executable exchange offer. Excludes trading spreads, on-chain network charges and local conversion costs; confirm current rules with regulators.'
     },
     {
       tool: 'Market News Wire',
       route: '/news',
       provider: 'Public RSS Feeds (MarketWatch, CNBC, Business Recorder, Profit Pakistan, Cointelegraph)',
       dataType: 'Syndicated Headlines & Excerpt Dispatches',
-      frequency: 'Aggregated hourly with background timestamp re-evaluation',
+      frequency: 'Fetched periodically when the news wire is used; timing and availability depend on upstream RSS publishers',
       methodology: 'Fair-use wire indexing extracting headline, category, publication timestamp, and short summary, redirecting readers directly to the original publisher.',
       limitations: 'FGC Spot does not claim copyright over external wire copy; full rights reside with originating publishers.'
     }

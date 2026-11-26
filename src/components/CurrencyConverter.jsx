@@ -291,7 +291,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                 Key Global Corridors for {numericAmount.toLocaleString()} {baseCurrency}
               </h3>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Interbank Feed
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Public FX Reference Feed
               </span>
             </div>
 

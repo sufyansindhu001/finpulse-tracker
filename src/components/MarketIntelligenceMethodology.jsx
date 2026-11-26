@@ -27,7 +27,7 @@ export default function MarketIntelligenceMethodology() {
             </span>
           </h2>
           <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-            How FGC Spot aggregates, verifies, and normalizes low-latency market data across Foreign Exchange corridors, physical gold bullion benchmarks, decentralized digital assets, and cross-border equity exchanges.
+            How FGC Spot uses available public reference feeds, transparent calculations and original research across foreign exchange, precious metals, digital assets and equity markets.
           </p>
         </div>
 
@@ -47,14 +47,14 @@ export default function MarketIntelligenceMethodology() {
 
             {/* Subtext Line Box */}
             <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
-              Interbank Mid-Market • DXY Basket • SBP Reserves Parity
+              Public FX Feeds • USD-Based Cross-Rates • Provider Timing
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              Foreign exchange rates on FGC Spot are derived from tier-one institutional interbank liquidity feeds, tracking over 160 sovereign currencies continuously. Our pricing engine cross-checks live quotes against the US Dollar Index (DXY), European Central Bank (ECB) fixings, and central bank clearing networks—including the State Bank of Pakistan (SBP) interbank settlement windows.
+              Currency references come from available public providers, including open.er-api.com, FloatRates and currency API mirrors. Cross-rates use a common USD base. FGC Spot does not claim a direct wholesale dealing-desk feed or official SBP and ECB closing quotes.
             </p>
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              In emerging economies characterized by two-tier currency markets (such as Pakistan and frontier South Asia), FGC Spot monitors both the formal Interbank Clearing Rate and the Open Market / Exchange Companies Association of Pakistan (ECAP) cash rate. By calculating the interbank-open market spread in real-time, our terminal equips treasurers, freelance earners, and remittance senders with transparent data to prevent predatory banking exchange fees and hidden corridor markups.
+              Banks and licensed cash dealers can offer rates that differ from a public FX reference, especially for physical currency and cross-border remittances. The calculator does not measure a dealer&apos;s executable cash spread unless independent bid-and-ask quotes are supplied. Compare final provider charges before transacting.
             </p>
 
             {/* Footer Action Box */}
@@ -79,14 +79,14 @@ export default function MarketIntelligenceMethodology() {
 
             {/* Subtext Line Box */}
             <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
-              LBMA Fixings • 11.6638g Karat Conversion • Sarafa Bazaar
+              Public Metals References • Troy Ounce • Tola &amp; Karat Conversion
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              Physical bullion and precious metals tracking on FGC Spot utilizes the international London Bullion Market Association (LBMA) spot gold benchmark (XAU/USD), quoted per fine troy ounce (31.1034768 grams). To bridge global commodity derivatives with local consumer and jeweler retail markets in South Asia and the GCC, our computational architecture applies dynamic unit conversion formulas.
+              FGC Spot uses available public spot and commodity reference prices for gold and silver; these are not official LBMA fixings. The calculator translates USD-per-troy-ounce observations into grams and tolas using a mathematical unit conversion.
             </p>
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              Domestic gold rates—including the traditional Pakistani and Indian <strong>Tola (11.6638 grams)</strong> and 10-Gram denominations—are mathematically computed from spot dollar metal prices, real-time USD/PKR interbank rates, plus official Karachi Sarafa Association import customs duties, logistics premia, and assay margins across 24-Karat, 22-Karat, and 18-Karat purity tiers. This mathematical transparency protects bullion investors against arbitrary local over-invoicing.
+              Indicative local values—including the traditional South Asian <strong>tola (approximately 11.664 grams)</strong> and 10-gram units—depend on actual spot and USD/PKR reference data. Karat percentages are applied proportionally, without invented Sarafa premiums. Real jeweler prices, taxes and making charges may differ.
             </p>
 
             {/* Footer Action Box */}
@@ -111,19 +111,19 @@ export default function MarketIntelligenceMethodology() {
 
             {/* Subtext Line Box */}
             <div className="bg-gray-50 dark:bg-gray-800/60 rounded-lg p-2.5 text-xs text-gray-600 dark:text-gray-300 font-mono border border-gray-100 dark:border-white/5">
-              Volume-Weighted Price Index (VWAP) • Order Book Depth
+              Public Crypto Prices • 24h Market Data • USD/PKR Conversion
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              Cryptocurrency valuations on FGC Spot are aggregated from premier spot exchanges (Binance, Coinbase, Kraken, OKX) through high-frequency WebSockets and REST APIs. Instead of relying on a single centralized order book, our analytics pipeline applies a Volume-Weighted Average Price (VWAP) algorithm to filter out localized slippage, flash-wick anomalies, and illiquid regional exchange premiums.
+              Available digital-asset quotes come from public market-data endpoints such as CoinGecko. FGC Spot does not run an exchange order book, institutional WebSocket aggregator or independent VWAP price engine. Provider availability and quote timestamps can vary.
             </p>
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              Our terminal continuously monitors 24-hour liquidity depth, market capitalization dominance (BTC, ETH, SOL), circulating token supply metrics, and fiat on-ramp pricing parity (USDT/PKR and USDC/USD). Users can execute instant cross-asset evaluations between digital assets, sovereign fiat, and physical precious metals without leaving the analytics viewport.
+              When published by a source, the terminal shows asset prices, market capitalizations, 24-hour changes and other available metrics. PKR equivalents use a public FX reference. These values are for comparison and education, not executable exchange or custody offers.
             </p>
 
             {/* Footer Action Box */}
             <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono bg-gray-50/80 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-              <span className="font-semibold text-gray-700 dark:text-gray-300">Real-Time Crypto Stream</span>
+              <span className="font-semibold text-gray-700 dark:text-gray-300">Provider-Sourced Crypto Data</span>
               <Link to="/crypto" className="hover:underline flex items-center gap-1 font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20 transition-all hover:bg-purple-500/20">
                 <span>Crypto Terminal</span> →
               </Link>
@@ -147,7 +147,7 @@ export default function MarketIntelligenceMethodology() {
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              FGC Spot’s Equity Intelligence Terminal tracks flagship blue-chip enterprises across the Pakistan Stock Exchange (PSX), Wall Street (NYSE/NASDAQ), London Stock Exchange (LSE), Saudi Tadawul, and Tokyo (TSE). We compile comprehensive corporate fundamentals—including Trailing Twelve Month (TTM) Price-to-Earnings (P/E), Return on Equity (ROE), Price-to-Book (P/B), and Debt-to-Equity ratios.
+              FGC Spot presents available quotes and company information for supported international markets, including Pakistan, the United States and other regions. Fundamental ratios are shown only when underlying provider data supports them; missing figures are marked unavailable.
             </p>
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
               By pairing available company metrics with qualitative research, FGC Spot explains how equity valuation ratios, actual dividend records, index methodology, foreign exchange movements and industry exposure affect comparisons across markets. Ratios and company weights must be checked against dated disclosures rather than treated as permanent market averages.
@@ -169,7 +169,7 @@ export default function MarketIntelligenceMethodology() {
           <div className="flex items-center gap-3">
             <CheckCircle2 className="w-5 h-5 text-[#00E676] shrink-0" />
             <span className="text-slate-700 dark:text-slate-300">
-              <strong>Institutional Rigor:</strong> All price feeds, benchmark rates, and analytical guides are continuously maintained by the FGC Spot Financial Research Desk to support informed personal finance decisions and capital allocation.
+              <strong>Source Transparency:</strong> Reference quotes depend on upstream publishers and can be delayed or unavailable. Our guides explain calculation methods, limitations and sources so readers can independently verify important decisions.
             </span>
           </div>
           <Link
