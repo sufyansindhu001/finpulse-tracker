@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
 import { WORLD_COUNTRIES } from '../data/stocksData';
+import FlagImage from './FlagImage';
+import { getCountryFlagUrls } from '../utils/currencyFlags';
 
 export default function CountrySelectorDropdown({ 
   selectedCountry, 
@@ -60,14 +62,11 @@ export default function CountrySelectorDropdown({
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <img
-          src={`https://flagcdn.com/w40/${activeIso}.png`}
-          alt={activeCountry.name}
-          width="20"
-          height="14"
-          decoding="async"
-          className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        <FlagImage
+          urls={getCountryFlagUrls(activeIso)}
+          alt={`${activeCountry.name} flag`}
+          fallbackLabel={activeCountry.code}
+          className="w-5 h-3.5"
         />
         <span className="font-mono tracking-wider font-bold">{activeCountry.code}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
@@ -99,14 +98,11 @@ export default function CountrySelectorDropdown({
               <div className="w-4 h-4 rounded-full border-2 border-blue-600 bg-white dark:bg-gray-900 flex items-center justify-center shrink-0">
                 <div className="w-2 h-2 rounded-full bg-blue-600" />
               </div>
-              <img
-                src={`https://flagcdn.com/w40/${activeIso}.png`}
-                alt={activeCountry.name}
-                width="20"
-                height="14"
-                decoding="async"
-                className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              <FlagImage
+                urls={getCountryFlagUrls(activeIso)}
+                alt={`${activeCountry.name} flag`}
+                fallbackLabel={activeCountry.code}
+                className="w-5 h-3.5"
               />
               <span className="text-xs font-bold text-gray-900 dark:text-gray-100">
                 {activeCountry.name}
@@ -158,14 +154,11 @@ export default function CountrySelectorDropdown({
                     }`}>
                       {isSelected && <div className="w-2 h-2 rounded-full bg-blue-600" />}
                     </div>
-                    <img
-                      src={`https://flagcdn.com/w40/${cIso}.png`}
-                      alt={c.name}
-                      width="20"
-                      height="14"
-                      decoding="async"
-                      className="w-5 h-3.5 object-cover rounded-xs shadow-xs shrink-0"
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    <FlagImage
+                      urls={getCountryFlagUrls(cIso)}
+                      alt={`${c.name} flag`}
+                      fallbackLabel={c.code}
+                      className="w-5 h-3.5"
                     />
                     <span className={`text-xs ${isSelected ? 'font-black text-blue-600 dark:text-blue-400' : 'font-semibold text-gray-800 dark:text-gray-200'}`}>
                       {c.name}
