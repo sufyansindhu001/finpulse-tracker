@@ -43,18 +43,18 @@ const converterFaqs = [
   },
   {
     q: "How can businesses minimize foreign wire transfer and intermediary correspondent bank fees?",
-    a: "To eliminate intermediary wire deductions, enterprises and remote professionals use multi-currency international accounts (such as Wise Business, Payoneer, or local digital export accounts) that clear via domestic local ACH/SEPA/Raast clearing rails rather than multi-hop SWIFT telegraphic transfers."
+    a: "Where supported, multi-currency accounts or local settlement routes may reduce intermediary bank fees compared with some SWIFT transfers. Compare each provider's actual exchange rate, transfer charges, eligibility and delivery terms; no route guarantees zero fees."
   },
   {
     q: "What is an Electronic Proceeds Realisation Certificate (e-PRC) and how do I download it?",
-    a: "An e-PRC is an electronically verifiable certificate issued by Pakistani commercial receiving banks verifying the inward remittance originator, sender bank, remittance amount, and conversion exchange rate. Recipients can generate and download their e-PRC directly from their bank's digital portal or the SBP e-PRC verification gateway."
+    a: "An e-PRC is a bank-issued record of an eligible inward remittance, including relevant transaction details. Ask the receiving bank how to obtain or verify the certificate; availability of online download varies by bank. The certificate does not by itself grant a tax exemption."
   }
 ];
 
 export default function ConverterPage({ rates = {} }) {
   useSEO({
     title: 'Real-Time Currency & Crypto Converter | FGC Spot',
-    description: 'Instant currency converter with live mid-market exchange rates for 160+ global currencies, gold, and digital assets on FGC Spot.',
+    description: 'Currency converter using public reference exchange-rate feeds for global currencies and supported metals, with clear data-source and fee limitations.',
     canonical: '/converter'
   });
 
@@ -383,7 +383,7 @@ export default function ConverterPage({ rates = {} }) {
               </span>
             </div>
             <Link to="/blog" className="text-xs font-bold text-slate-500 hover:text-[#00E676] transition-colors flex items-center gap-1">
-              <span>View All 30+ Guides</span>
+              <span>View All Research Guides</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -405,7 +405,7 @@ export default function ConverterPage({ rates = {} }) {
                   Freelance Remittances &amp; Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Retention Accounts Explained
                 </h3>
                 <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
-                  Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC certificate issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.
+                  An educational guide to Pakistani exporter retention accounts, e-PRC records, conditional tax treatment and how to compare exchange charges.
                 </p>
               </div>
               <div className="flex items-center justify-between text-xs font-bold text-[#00E676] pt-3 border-t border-slate-100 dark:border-white/5">
@@ -501,7 +501,7 @@ export default function ConverterPage({ rates = {} }) {
             <span>1. What This Tool Does</span>
           </h3>
           <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
-            The FGC Spot Currency Converter calculates real-time currency exchanges across 160+ sovereign fiat currencies and precious metals using pure mid-market interbank exchange rates. It eliminates the 2% to 5% hidden exchange markups commonly embedded in commercial bank calculators, allowing freelance exporters, corporate treasurers, and remittance senders to verify true baseline market value.
+            FGC Spot calculates indicative currency conversions from available public exchange-rate feeds and supported metals data. Results are mathematical references, not executable bank quotes or a promise of a particular payout. Compare a provider&apos;s quoted rate, fees and taxes before transferring money.
           </p>
         </div>
 
@@ -518,7 +518,7 @@ export default function ConverterPage({ rates = {} }) {
                 Converted Amount = Input Amount &times; (Rate_Target / Rate_Base)
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Where all exchange rates are pegged relative to the US Dollar (USD = 1.0) as the global clearing currency. For example, converting EUR to PKR divides the USD/PKR rate by the USD/EUR rate.
+                The rates dictionary is quoted against USD (USD = 1.0) as the calculation base. For example, converting EUR to PKR divides the USD/PKR reference rate by the USD/EUR reference rate.
               </p>
             </div>
 
@@ -546,11 +546,11 @@ export default function ConverterPage({ rates = {} }) {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Interbank Spot Feeds:</strong> Live quotes aggregated from Open Exchange Rates API (open.er-api.com) and FloatRates daily bank feeds.</span>
+                <span><strong>Public FX Reference Feeds:</strong> Currency data is fetched from open.er-api.com, FloatRates and public currency API mirrors when available. These sources are not guaranteed executable interbank quotes.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>SBP Benchmark Parity:</strong> Pakistani Rupee (PKR) quotes are calibrated against State Bank of Pakistan (SBP) weighted interbank clearing data.</span>
+                <span><strong>PKR Reference Rates:</strong> PKR is taken from an available public data provider. FGC Spot does not claim to reproduce the State Bank of Pakistan&apos;s official closing rate.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
@@ -567,15 +567,15 @@ export default function ConverterPage({ rates = {} }) {
             <ul className="space-y-2 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Continuous In-Session Sync:</strong> Updates every 45 to 60 seconds during live global foreign exchange trading windows (Sunday 22:00 GMT through Friday 22:00 GMT).</span>
+                <span><strong>Provider-Dependent Refresh:</strong> The site requests updated rates when needed, but actual quote timestamps and frequency depend on the upstream feeds and connectivity.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Weekend Rates:</strong> Over weekends, rates remain fixed at Friday's international market close.</span>
+                <span><strong>Weekend &amp; Holiday Data:</strong> Some providers may return older reference quotes outside active market sessions; users should check the quote date before transacting.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00E676] font-bold">&bull;</span>
-                <span><strong>Memory Cache:</strong> Clean client-side memory caching for 120 seconds prevents repetitive network queries.</span>
+                <span><strong>Client Cache:</strong> Recently fetched FX data is cached for two minutes. Previously fetched quotes may display for up to ten minutes while the app tries to refresh them.</span>
               </li>
             </ul>
           </div>
@@ -585,15 +585,15 @@ export default function ConverterPage({ rates = {} }) {
         <div className="p-5 sm:p-6 rounded-2xl bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/30 space-y-2">
           <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-xs sm:text-sm uppercase tracking-wider">
             <HelpCircle className="w-4 h-4" />
-            <span>5. Data Limitations: Mid-Market Wholesale Rates vs. Retail Bank Charges</span>
+            <span>5. Data Limitations: Reference Rates vs. Retail Bank Charges</span>
           </div>
           <p className="text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
-            The conversion results shown on this calculator use real-time mid-market rates. These are wholesale electronic rates traded between institutional banks. If you convert money at a retail commercial bank or with a credit/debit card, your final received amount will be lower due to:
+            Results use indicative public reference rates rather than quotes at which a bank or dealer is obliged to trade. The amount received in a real transaction may differ because of:
           </p>
           <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] space-y-1 pl-4 list-disc">
-            <li><strong>Retail Bank Spread:</strong> Commercial banks add 1.5% to 3.5% markup above the mid-market rate.</li>
-            <li><strong>Statutory Advance Tax (Section 236Y):</strong> In Pakistan, international card transactions carry a statutory advance withholding tax (5% for active FBR tax filers, 10% for non-filers).</li>
-            <li><strong>Correspondent Banking Fees:</strong> International multi-hop SWIFT wire transfers may incur intermediary deduction fees ($15 to $35 USD per transfer).</li>
+            <li><strong>Retail Bank Spread:</strong> Banks and exchange services set their own conversion margins; compare the final payable amount and effective rate.</li>
+            <li><strong>Applicable Taxes:</strong> Pakistani card transactions or remittances may have withholding obligations depending on current law and the transaction. Check the <a href="https://www.fbr.gov.pk/" target="_blank" rel="noopener noreferrer" className="underline">FBR</a> for current rates and applicability.</li>
+            <li><strong>Correspondent Banking Fees:</strong> International SWIFT payments can involve intermediary and receiving-bank deductions that vary by provider and route.</li>
           </ul>
         </div>
 
