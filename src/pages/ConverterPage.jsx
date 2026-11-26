@@ -22,6 +22,7 @@ import {
 import CurrencySelect from '../components/CurrencySelect';
 import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 import { useSEO } from '../hooks/useSEO';
+import { CALCULATOR_LIMITS, boundedDecimalInput, readBoundedAmount } from '../utils/calculatorMath';
 
 const converterFaqs = [
   {
@@ -61,7 +62,7 @@ export default function ConverterPage({ rates = {} }) {
 
   const [amount, setAmount] = useState(() => {
     const amt = searchParams.get('amount');
-    return amt && !isNaN(Number(amt)) ? Number(amt) : 100;
+    return amt && readBoundedAmount(amt, CALCULATOR_LIMITS.fiatAmount) !== null ? String(amt) : '100';
   });
   const [fromCurrency, setFromCurrency] = useState(searchParams.get('from')?.toUpperCase() || 'USD');
   const [toCurrency, setToCurrency] = useState(searchParams.get('to')?.toUpperCase() || 'PKR');
@@ -75,7 +76,7 @@ export default function ConverterPage({ rates = {} }) {
     const amt = searchParams.get('amount');
     if (from) setFromCurrency(from.toUpperCase());
     if (to) setToCurrency(to.toUpperCase());
-    if (amt && !isNaN(Number(amt))) setAmount(Number(amt));
+    if (amt && readBoundedAmount(amt, CALCULATOR_LIMITS.fiatAmount) !== null) setAmount(String(amt));
   }, [searchParams]);
 
   // Conversion math
@@ -85,7 +86,7 @@ export default function ConverterPage({ rates = {} }) {
     const valid = Number.isFinite(fromR) && fromR > 0 && Number.isFinite(toR) && toR > 0;
 
     // Amount in USD = amount / fromR
-    const inUsd = valid ? amount / fromR : Number.NaN;
+    const inUsd = valid ? (readBoundedAmount(amount, CALCULATOR_LIMITS.fiatAmount) ?? 0) / fromR : Number.NaN;
     const finalAmount = valid ? inUsd * toR : Number.NaN;
 
     const unit = valid ? toR / fromR : Number.NaN;
@@ -206,10 +207,11 @@ export default function ConverterPage({ rates = {} }) {
               <input
                 type="number"
                 min="0"
+                max={CALCULATOR_LIMITS.fiatAmount}
                 step="any"
                 value={amount}
-                onChange={(e) => setAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full mt-3 bg-transparent text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-tabular focus:outline-none"
+                onChange={(e) => setAmount(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.fiatAmount))}
+                className="w-full min-w-0 mt-3 bg-transparent text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-tabular focus:outline-none"
                 placeholder="100"
               />
             </div>
@@ -243,7 +245,7 @@ export default function ConverterPage({ rates = {} }) {
                 align="left"
               />
 
-              <div className="mt-3 text-3xl sm:text-4xl font-black text-[#00E676] font-tabular truncate">
+              <div className="mt-3 text-2xl sm:text-3xl font-black text-[#00E676] font-tabular [overflow-wrap:anywhere]">
                 {Number.isFinite(convertedAmount) ? convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}
               </div>
             </div>
