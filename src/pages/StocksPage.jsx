@@ -972,7 +972,7 @@ export default function StocksPage() {
             <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[#06111F] border border-gray-200 dark:border-gray-800 space-y-1.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-blue-500">Price-to-Earnings (P/E)</span>
               <p className="font-mono text-xs text-gray-900 dark:text-white font-bold">P/E = Market Price per Share / EPS (TTM)</p>
-              <p className="text-[11px] text-gray-500 leading-normal">Evaluates share price relative to Trailing Twelve Months earnings. Sub-5.0x multiples on PSX reflect frontier market risk premium.</p>
+              <p className="text-[11px] text-gray-500 leading-normal">Compares share price with Trailing Twelve Months earnings. A low multiple can reflect valuation, business risk, earnings cyclicality or data quality—verify each company’s latest results.</p>
             </div>
 
             <div className="p-4 rounded-2xl bg-gray-50 dark:bg-[#06111F] border border-gray-200 dark:border-gray-800 space-y-1.5">
@@ -1078,10 +1078,10 @@ export default function StocksPage() {
             2. The Mechanics of Dividend Reinvestment (DRIP) in High-Yield Regimes
           </h3>
           <p>
-            In mature developed markets, equity total return is predominantly generated through share price appreciation and corporate buyback programs, with index dividend yields typically averaging a modest <strong>1.2% to 1.8%</strong>. Conversely, the Pakistan Stock Exchange is one of the highest cash dividend-yielding equity complexes on earth, frequently offering market-wide dividend yields between <strong>10.5% and 14.5%</strong>.
+            Price appreciation, cash dividends and corporate actions can all affect total return. Dividend yields in both US and Pakistani equity markets change with share prices, corporate payouts and index composition; compare dated figures from the respective index providers before drawing conclusions.
           </p>
           <p>
-            When dividends are mechanically reinvested into equities trading at sub-5.0x P/E multiples, the investor systematically acquires a greater number of underlying productive shares during market sell-offs, accelerating exponential share count accumulation independent of macroeconomic headline sentiment.
+            Reinvesting eligible cash dividends may increase an investor's share count over time, but the result depends on dividend payments, actual purchase prices, taxes and dealing costs. A lower P/E multiple alone neither guarantees reinvestment profits nor protects against price declines.
           </p>
         </div>
 
