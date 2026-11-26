@@ -46,7 +46,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
   const goldChange = typeof metalsData?.gold?.change === 'number' ? metalsData.gold.change : null;
   const silverChange = typeof metalsData?.silver?.change === 'number' ? metalsData.silver.change : null;
 
-  // Curated Multi-Asset Ticker Strip (Gold Bullion, Silver & Forex Interbank)
+  // Curated Multi-Asset Ticker Strip (gold, silver and indicative public FX reference quotes)
   const baseMultiAssetItems = [
     {
       id: 'gold-24k-tola',
@@ -182,19 +182,19 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
   return (
     <div className="w-full max-w-full bg-slate-100 dark:bg-[#070A12] border-b border-slate-200 dark:border-white/[0.08] text-xs py-1.5 overflow-hidden select-none relative z-30">
       
-      {/* Sticky Left Live Feed Pill Badge */}
+      {/* Feed badge: crypto and metals may be newer than the daily public FX references */}
       <div className="absolute left-0 top-0 bottom-0 z-20 flex items-center pl-3 pr-6 bg-gradient-to-r from-slate-100 via-slate-100/90 to-transparent dark:from-[#070A12] dark:via-[#070A12]/90 dark:to-transparent pointer-events-auto">
         <button
           onClick={() => navigate('/rates')}
           className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold shadow-xs cursor-pointer transition-all"
-          title="Live market feed active — dynamic real-time price stream"
+          title="Market reference feeds have different refresh schedules; FX source updates may be daily"
         >
           <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
           </span>
-          <span className="hidden sm:inline">LIVE</span>
-          <span>FEED</span>
+          <span className="hidden sm:inline">MARKET</span>
+          <span>FEEDS</span>
         </button>
       </div>
 
@@ -215,7 +215,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
                     : 'bg-rose-500/15 border-rose-500/40 ring-1 ring-rose-500/30'
                   : 'bg-transparent hover:bg-slate-200/60 dark:hover:bg-white/[0.06] border-transparent hover:border-slate-300 dark:hover:border-white/[0.08]'
               }`}
-              title={`View ${item.symbol} live market rates`}
+              title={`View ${item.symbol} reference quote${item.isPositive === null ? '; verified 24h change unavailable' : ''}`}
             >
               {item.type === 'gold' && (
                 <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-500 text-[10px] font-black flex items-center justify-center shrink-0 border border-amber-500/30">

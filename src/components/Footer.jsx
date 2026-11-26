@@ -144,7 +144,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/rates" className="hover:text-[#00E676] cursor-pointer transition-colors block">
-                  Live Exchange Rates
+                  Exchange Reference Rates
                 </Link>
               </li>
               <li>
@@ -347,6 +347,11 @@ export default function Footer() {
         <div className="py-6 border-b border-slate-200 dark:border-white/10 text-xs leading-relaxed text-slate-600 dark:text-[#A8B3C2] font-medium">
           <p>
             <strong className="text-slate-900 dark:text-white font-bold">Financial Disclosure:</strong> Currency, metals and cryptocurrency values fluctuate. Figures on {siteSettings?.websiteName || 'FGC Spot'} are indicative data from available public feeds, not guaranteed executable interbank prices, licensed-dealer offers or investment advice. Provider timestamps, availability, spreads and transaction charges may differ.
+          </p>
+          <p className="mt-2">
+            <strong className="text-slate-900 dark:text-white font-bold">FX data attribution:</strong>{' '}
+            <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[#00E676]">Rates By Exchange Rate API</a>
+            {' '}and <a href="https://www.floatrates.com/json-feeds.html" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-[#00E676]">FloatRates</a> are among the public reference sources. Their free feeds typically refresh once per day and twice per day respectively; requesting a rate again does not guarantee a newer provider observation.
           </p>
         </div>
 

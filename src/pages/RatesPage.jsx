@@ -190,7 +190,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
           ratePkr: rateToPkr,
           change: 'N/A',
           isPositive: null,
-          lastUpdated: 'Live Feed',
+          lastUpdated: 'Public FX Reference',
           flagUrl: getCurrencyFlagUrl(upper)
         };
       });
@@ -330,7 +330,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Live Financial Rates Matrix
+            Financial Reference Rates Matrix
           </h1>
           <p className="text-sm text-slate-600 dark:text-[#A8B3C2] mt-1">
             Indicative FX reference quotes, cryptocurrency market data, and calculated precious-metals benchmarks from available external feeds.
@@ -406,6 +406,9 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
       {/* TAB 1: CURRENCIES TABLE */}
       {activeTab === 'currencies' && (
         <div className="rounded-3xl bg-white dark:bg-[#0A1726]/80 border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-2xl backdrop-blur-xl">
+          <p className="px-4 sm:px-6 py-3 text-xs leading-relaxed text-slate-600 dark:text-[#A8B3C2] bg-slate-50/80 dark:bg-[#06111F]/70 border-b border-slate-200 dark:border-white/10">
+            <strong className="text-slate-900 dark:text-white">About N/A:</strong> Currency prices are public reference quotes, not continuously traded bank offers. The free FX sources generally update every 12–24 hours and do not provide a verified 24-hour change for this table. That column stays N/A until comparable historical observations are available; the quoted rate itself can update when a provider publishes new data.
+          </p>
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
@@ -477,7 +480,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                             <span>{c.change}</span>
                           </span>
                         ) : (
-                          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 font-tabular">
+                          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 font-tabular" title="Verified 24-hour historical FX change is unavailable from the current reference feeds">
                             N/A
                           </span>
                         )}
@@ -755,7 +758,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   <span>Data Providers &amp; Refresh Frequency</span>
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  <strong>Public Reference Feeds:</strong> Available currency data comes from open.er-api.com, FloatRates and public currency API mirrors. Refreshes depend on upstream providers. The site caches FX quotes for two minutes and may briefly show earlier data while refreshing.
+                  <strong>Public Reference Feeds:</strong> Available currency data comes from open.er-api.com, FloatRates and public currency API mirrors. The free ExchangeRate-API source updates once daily and FloatRates approximately every 12 hours; a two-minute client cache only governs rechecking, not the provider's quote-update frequency. Earlier data may briefly remain visible while refreshing.
                 </p>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
                   <strong>Official Benchmarks:</strong> SBP publishes its own exchange-rate statistics separately. For regulatory, accounting or settlement purposes, consult the <a href="https://www.sbp.org.pk/ecodata/rates.asp" target="_blank" rel="noopener noreferrer" className="underline">SBP source</a> and the relevant institution; figures here are not represented as SBP-certified.
