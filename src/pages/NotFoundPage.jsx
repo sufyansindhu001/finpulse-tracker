@@ -25,7 +25,7 @@ export default function NotFoundPage() {
     { title: 'Gold Bullion Rates', desc: 'Sarafa bazaar 24K/22K tola & gram calculator', path: '/gold', icon: Coins, color: 'text-amber-500' },
     { title: 'PSX Equity Terminal', desc: 'KSE-100 stock screener & dividend yields', path: '/stocks', icon: Building2, color: 'text-blue-500' },
     { title: 'Crypto Terminal', desc: 'Real-time cryptocurrency tracking & PKR counter-values', path: '/crypto', icon: TrendingUp, color: 'text-purple-500' },
-    { title: 'Currency Converter', desc: 'Official cross-rate calculation engine with zero markups', path: '/converter', icon: Calculator, color: 'text-teal-500' },
+    { title: 'Currency Converter', desc: 'Indicative cross-rate calculator with no added fee', path: '/converter', icon: Calculator, color: 'text-teal-500' },
     { title: 'Research & Guides', desc: 'Authoritative Pakistani macroeconomic research guides', path: '/blog', icon: BookOpen, color: 'text-emerald-400' }
   ];
 
