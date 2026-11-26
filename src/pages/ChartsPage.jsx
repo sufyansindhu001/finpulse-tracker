@@ -603,10 +603,10 @@ export default function ChartsPage({ rates = {}, cryptoList = [] }) {
                   <span>Data Providers &amp; Historical Fixings</span>
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  <strong>Forex History:</strong> Sourced from Open Exchange Rates and daily SBP weighted-average closing benchmarks. Cross-pairs (EUR/PKR, GBP/PKR) are derived algorithmically through USD triangular parity.
+                  <strong>Forex History:</strong> Drawn from available public FX history providers when they return observations. Cross-pairs are calculated using common USD reference values where supported; no official SBP closing-rate history is claimed.
                 </p>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  <strong>Metals &amp; Crypto:</strong> Gold spot tracks Binance Paxos (PAXG) and LBMA fixing feeds; digital asset price histories reflect CoinGecko daily volume-weighted market closes.
+                  <strong>Metals &amp; Crypto:</strong> Historical series depend on the specific public commodity or digital-asset providers available to the chart. Gaps display an unavailable state; data is not represented as official LBMA fixings or independently calculated CoinGecko VWAP.
                 </p>
               </div>
 
