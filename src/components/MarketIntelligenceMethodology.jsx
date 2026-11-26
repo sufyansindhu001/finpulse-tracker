@@ -150,7 +150,7 @@ export default function MarketIntelligenceMethodology() {
               FGC Spot’s Equity Intelligence Terminal tracks flagship blue-chip enterprises across the Pakistan Stock Exchange (PSX), Wall Street (NYSE/NASDAQ), London Stock Exchange (LSE), Saudi Tadawul, and Tokyo (TSE). We compile comprehensive corporate fundamentals—including Trailing Twelve Month (TTM) Price-to-Earnings (P/E), Return on Equity (ROE), Price-to-Book (P/B), and Debt-to-Equity ratios.
             </p>
             <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed text-justify">
-              By pairing quantitative screener metrics with qualitative 150–250 word institutional company profiles and investment theses, FGC Spot highlights critical cross-border dynamics: such as deep frontier P/E multiple compression (sub-5.0x P/E on PSX vs 27x on S&P 500), sustainable double-digit dividend reinvestment yields (DRIP), and natural currency-hedging properties possessed by export-oriented and dollar-indexed natural resource concessionaires.
+              By pairing available company metrics with qualitative research, FGC Spot explains how equity valuation ratios, actual dividend records, index methodology, foreign exchange movements and industry exposure affect comparisons across markets. Ratios and company weights must be checked against dated disclosures rather than treated as permanent market averages.
             </p>
 
             {/* Footer Action Box */}

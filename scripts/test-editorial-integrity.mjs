@@ -72,6 +72,18 @@ const carryFactCheck = bySlug('understanding-the-carry-trade-how-japanese-yen-di
 assert.doesNotMatch(carryFactCheck.content, /\*\*4\.50%\*\* \| \*\*\+4\.00%\*\*/);
 console.log('PASS 3: unsupported finance rates, custody absolutes, synthetic percentages and lot arithmetic corrected.');
 
+for (const path of [
+  '../src/components/FeaturedResearchSection.jsx',
+  '../src/components/Footer.jsx',
+  '../src/components/MarketIntelligenceMethodology.jsx',
+  '../src/pages/StocksPage.jsx',
+  '../src/pages/AuthorPage.jsx'
+]) {
+  const page = readFileSync(new URL(path, import.meta.url), 'utf8');
+  assert.doesNotMatch(page, /sub-5\.0x|sub-5\.0x P\/E|11\.8%.*dividend|10\.5% and 14\.5%/i, `${path}: stale market statistic`);
+}
+console.log('PASS 4: homepage, stock terminal and author promotional copy avoids unsupported fixed market ratios.');
+
 const oldRecord = {
   ...property,
   title: 'Outdated remote property headline',
@@ -83,7 +95,7 @@ const futureEdit = { ...oldRecord, updated_at: '2026-11-27T12:00:00Z', title: 'O
 assert.equal(applyLegacyArticleCorrections(futureEdit), futureEdit);
 const newArticle = { ...oldRecord, slug: 'a-new-article-from-mobile' };
 assert.equal(applyLegacyArticleCorrections(newArticle), newArticle);
-console.log('PASS 4: old Supabase guides receive corrections; future owner edits remain untouched.');
+console.log('PASS 5: old Supabase guides receive corrections; future owner edits remain untouched.');
 
 const html = renderArticleHtml(oldRecord);
 assert.ok(html.includes('Section 7E omitted under Finance Act 2026'));
@@ -96,7 +108,7 @@ const newHtml = renderArticleHtml({
 });
 assert.ok(newHtml.includes('Owner New Article'));
 assert.ok(!newHtml.includes('Sources &amp; Further Reading'));
-console.log('PASS 5: Vercel live article fallback uses corrected HTML and preserves new posts.');
+console.log('PASS 6: Vercel live article fallback uses corrected HTML and preserves new posts.');
 
 const prerendered = readFileSync(new URL(`../dist/blog/${property.slug}/index.html`, import.meta.url), 'utf8');
 assert.ok(prerendered.includes('Sources &amp; Further Reading'));
@@ -108,6 +120,6 @@ assert.ok(prerendered.includes(parsedPubDate));
 const forexRendered = readFileSync(new URL(`../dist/blog/${forex.slug}/index.html`, import.meta.url), 'utf8');
 assert.ok(forexRendered.includes('0.20 Standard Lots'));
 assert.ok(!forexRendered.includes('Probability of Account Survival'));
-console.log('PASS 6: static Google-visible articles match revised facts, dated schema, and source links.');
+console.log('PASS 7: static Google-visible articles match revised facts, dated schema, and source links.');
 
-console.log('All 6 editorial integrity checks passed.');
+console.log('All 7 editorial integrity checks passed.');

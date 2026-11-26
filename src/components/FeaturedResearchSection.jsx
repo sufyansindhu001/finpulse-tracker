@@ -8,7 +8,7 @@ const FEATURED_ARTICLES = [
   {
     slug: 'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide',
     title: 'Pakistan Stock Exchange (PSX) vs Global Equities: KSE-100 Valuation Multiples, Dividend Yields, and S&P 500 Comparison Guide',
-    excerpt: 'An institutional comparative analysis evaluating the PSX KSE-100’s sub-5.0x P/E multiple compression, double-digit dividend reinvestment yields (11.8%), and real purchasing power returns against the S&P 500 and emerging market peers.',
+    excerpt: 'A source-aware comparison of PSX KSE-100 and S&P 500 index methodology, valuation measurement, dividend reinvestment illustrations, and currency-adjusted returns.',
     category: 'Equity Research',
     readTime: '6 min read',
     date: 'October 19, 2026',
