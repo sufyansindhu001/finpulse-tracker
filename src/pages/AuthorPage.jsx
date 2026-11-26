@@ -44,7 +44,7 @@ export default function AuthorPage() {
     },
     {
       title: 'Pakistan Stock Exchange (PSX KSE-100)',
-      desc: 'Equity multiple compression (P/E), double-digit dividend reinvestment yields (DRIP), corporate balance sheet solvency, and Piotroski F-Scores.'
+      desc: 'Comparing dated P/E valuations, verifiable dividend histories, reinvestment scenarios, balance-sheet risk, and equity screening methods.'
     },
     {
       title: 'Exporter & Freelance Remittance Banking',
