@@ -15,6 +15,7 @@ const forexService = read('src/services/forexService.js');
 const disclosurePage = read('src/pages/DataSourcesPage.jsx');
 const homeMethodology = read('src/components/MarketIntelligenceMethodology.jsx');
 const editorialPolicy = read('src/pages/EditorialPolicyPage.jsx');
+const ticker = read('src/components/CryptoTickerBar.jsx');
 
 assert.doesNotMatch(converter, /100% tax-free|100% tax-exempt|Automatic e-PRC tax shield|No official e-PRC tax exemption|authentic institutional mid-market rates without hidden bank markups/i);
 assert.doesNotMatch(converter, /SBP Benchmark Parity|pure mid-market interbank exchange rates|Updates every 45 to 60 seconds|Commercial banks add 1\.5% to 3\.5%/i);
@@ -33,6 +34,13 @@ assert.doesNotMatch(disclosurePage, /Open Exchange Rates, FloatRates & State Ban
 assert.doesNotMatch(homeMethodology, /tier-one institutional interbank liquidity feeds|high-frequency WebSockets and REST APIs|official Karachi Sarafa Association import customs duties/);
 assert.doesNotMatch(editorialPolicy, /cross-checked against live SBP weighted closing benchmarks/i);
 assert.match(forexService, /source: 'Public FX Reference Feeds'/);
+assert.match(footer, /https:\/\/www\.exchangerate-api\.com[^]*Rates By Exchange Rate API/);
+assert.match(footer, /https:\/\/www\.floatrates\.com\/json-feeds\.html/);
+assert.match(disclosurePage, /ExchangeRate-API open feed: once per day/);
+assert.match(disclosurePage, /FloatRates JSON feed: approximately every 12 hours/);
+assert.match(rates, /24-hour change[^]*stays N\/A until comparable historical observations/);
+assert.doesNotMatch(rates, /lastUpdated: 'Live Feed'/);
+assert.match(ticker, /verified 24h change unavailable/);
 console.log('[PASS] Public rate and tax copy identifies reference quotes, assumptions and tax limitations.');
 
 assert.doesNotMatch(staticHtml, /value: 'Rs\. 277\.10'|priceUSD: '\$96,420'|perTola: 'Rs\. 284,500'|interbankBuy: '277\.05'|Sub-40ms Interbank|PSEB tax exemptions \(0\.25% final tax\)/i);
