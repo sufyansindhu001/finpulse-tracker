@@ -15,19 +15,19 @@ export default function WhyFGCSpot({ onExploreMarkets, onLaunchConverter }) {
       icon: ShieldCheck,
       color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
       title: 'Deterministic Parity',
-      description: 'Transparent mid-market pricing calculated against live central bank benchmarks.'
+      description: 'Transparent cross-rate formulas using available public FX reference quotes.'
     },
     {
       icon: Globe,
       color: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
       title: 'Emerging Market Depth',
-      description: 'Real-time tracking of regional FX corridors including PKR, INR, AED, and SAR.'
+      description: 'Reference-rate coverage for regional FX corridors including PKR, INR, AED, and SAR.'
     },
     {
       icon: Zap,
       color: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-      title: 'Low-Latency Ingestion',
-      description: 'Direct socket aggregation across top liquidity pools with sub-second delta updates.'
+      title: 'Provider-Based Updates',
+      description: 'External market-data feeds are refreshed with short-term caching; source delays and outages are disclosed.'
     },
     {
       icon: Calculator,
