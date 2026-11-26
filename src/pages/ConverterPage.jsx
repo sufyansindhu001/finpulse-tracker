@@ -152,10 +152,13 @@ export default function ConverterPage({ rates = {} }) {
           </span>
         </div>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-          Real-Time Currency Converter
+          Currency Converter &amp; Reference Rates
         </h1>
         <p className="text-sm text-slate-600 dark:text-[#A8B3C2] max-w-2xl">
           Estimate cross-currency values using available public market-rate feeds. This calculator adds no fee, but bank and transfer-provider rates may differ.
+        </p>
+        <p className="text-xs text-slate-500 dark:text-[#A8B3C2] max-w-2xl">
+          Calculations respond instantly to your input; underlying public FX quotes usually update every 12–24 hours, depending on the provider. Check your bank's current rate before transacting.
         </p>
       </div>
 
