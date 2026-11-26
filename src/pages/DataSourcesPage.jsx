@@ -34,9 +34,9 @@ export default function DataSourcesPage() {
       route: '/rates',
       provider: 'open.er-api.com, FloatRates and public currency API mirrors',
       dataType: 'Indicative Public FX Reference Quotes',
-      frequency: 'Fetched when needed, with a two-minute fresh cache and up to ten minutes of stale-while-revalidate availability; upstream update frequency varies',
+      frequency: 'ExchangeRate-API open feed: once per day; FloatRates JSON feed: approximately every 12 hours; currency API mirrors: provider-dependent. The client rechecks with a two-minute fresh cache and up to ten minutes stale-while-revalidate, which does not make the upstream data real-time.',
       methodology: 'Cross-rate calculation through a common USD base: Rate(Base/Quote) = (USD/Quote) / (USD/Base).',
-      limitations: 'Not official SBP closing rates or executable interbank quotations. Retail provider spreads, card fees and applicable taxes are separate; consult current bank and FBR terms.'
+      limitations: 'No verified 24-hour change history is provided for the currency table, so movement shows N/A. These are not official SBP closing rates or executable interbank quotations. Retail provider spreads, card fees and applicable taxes are separate; consult current bank and FBR terms.'
     },
     {
       tool: 'Open-Market Cash Exchange Context',
