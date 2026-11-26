@@ -20,7 +20,10 @@ export default function NewsPage() {
   useSEO({
     title: 'Live Financial News Wire & Market Intelligence | FGC Spot',
     description: 'Breaking macroeconomic news, central bank policy updates, forex developments, and market intelligence on FGC Spot.',
-    canonical: '/news'
+    canonical: '/news',
+    // This is a useful third-party RSS wire, not original FGC Spot research.
+    // Keep links followable while focusing search indexing on original content.
+    robots: 'noindex, follow'
   });
 
   const [newsItems, setNewsItems] = useState([]);
