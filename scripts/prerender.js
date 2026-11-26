@@ -2126,6 +2126,7 @@ async function prerenderAll() {
       route: '/news',
       title: 'Live Financial News Wire — Forex, Crypto & Commodities | FGC Spot',
       description: 'Real-time institutional financial news wire, central bank announcements, macroeconomic events, and market-moving intelligence on FGC Spot.',
+      robots: 'noindex, follow',
       render: () => renderNewsPage()
     },
     {
@@ -2313,6 +2314,11 @@ async function prerenderAll() {
     
     // Update <meta name="description">
     html = html.replace(/<meta name="description" content=".*?" \/>/i, `<meta name="description" content="${escapeHtml(item.description)}" />`);
+
+    // Honor per-route indexation decisions in pre-rendered HTML, before JS runs.
+    if (item.robots) {
+      html = html.replace(/<meta name="robots" content=".*?" \/>/i, `<meta name="robots" content="${escapeHtml(item.robots)}" />`);
+    }
 
     // Update <link rel="canonical">
     html = html.replace(/<link rel="canonical" href=".*?" \/>/i, `<link rel="canonical" href="${escapeHtml(canonicalUrl)}" />`);
