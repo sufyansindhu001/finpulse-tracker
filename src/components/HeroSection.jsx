@@ -12,23 +12,9 @@ import {
   Check,
   ChevronRight
 } from 'lucide-react';
-// Module-level gold purity and weight conversion constants
-const PURITY_FACTORS = {
-  '24K': 1.0,
-  '22K': 22 / 24,
-  '21K': 21 / 24,
-  '18K': 18 / 24
-};
-
-const UNIT_WEIGHTS = {
-  tola: 11.6638,
-  '10g': 10.0,
-  gram: 1.0,
-  oz: 31.1035
-};
-
 import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
+import { boundedDecimalInput, calculateGoldEstimate, readBoundedAmount, CALCULATOR_LIMITS } from '../utils/calculatorMath';
 import CurrencySelect from './CurrencySelect';
 
 export default function HeroSection({ rates }) {
@@ -111,10 +97,9 @@ export default function HeroSection({ rates }) {
 
   const goldPkrPerTola24K = goldMetrics?.pricePerTola24K ?? null;
   const goldPkrPerTola22K = goldMetrics?.pricePerTola22K ?? null;
-  const goldGram24K = goldMetrics?.pricePerGram24K ?? null;
 
   // Currency Calculations
-  const numericAmount = parseFloat(fxAmount) || 0;
+  const numericAmount = readBoundedAmount(fxAmount, CALCULATOR_LIMITS.fiatAmount) ?? 0;
   const convertedFxValue = useMemo(() => {
     return convertCurrency(numericAmount, baseCurrency, targetCurrency, activeRates);
   }, [numericAmount, baseCurrency, targetCurrency, activeRates]);
@@ -142,27 +127,12 @@ export default function HeroSection({ rates }) {
 
   // Gold Calculations
   const goldCalcResult = useMemo(() => {
-    const qty = parseFloat(goldQty) || 0;
-    const factor = PURITY_FACTORS[goldPurity] || 1.0;
-    const weightInGrams = (UNIT_WEIGHTS[goldUnit] || 11.6638) * qty;
-    if (goldGram24K === null || usdToPkr === null) {
-      return { basePkr: null, makingChargeAmount: null, finalPkr: null, finalUsd: null, perGramPkr: null, weightInGrams };
-    }
-    const basePkr = Math.round(weightInGrams * goldGram24K * factor);
-    const makingChargeAmount = includeMaking ? Math.round(basePkr * 0.09) : 0; // ~9% standard jeweler making charge / katt
-    const finalPkr = basePkr + makingChargeAmount;
-    const finalUsd = Math.round(finalPkr / usdToPkr);
-    const perGramPkr = Math.round(goldGram24K * factor);
-
-    return {
-      basePkr,
-      makingChargeAmount,
-      finalPkr,
-      finalUsd,
-      perGramPkr,
-      weightInGrams
-    };
-  }, [goldQty, goldPurity, goldUnit, includeMaking, goldGram24K, usdToPkr]);
+    return calculateGoldEstimate({
+      spotUsdPerOunce: goldPriceUsd, usdToPkr,
+      quantity: goldQty, unit: goldUnit, purity: goldPurity,
+      makingPercent: includeMaking ? 9 : 0 // Optional illustration; not a published jeweler tariff.
+    });
+  }, [goldQty, goldPurity, goldUnit, includeMaking, goldPriceUsd, usdToPkr]);
 
   const fxPresets = [100, 500, 1000, 2500, 5000];
 
@@ -334,9 +304,10 @@ export default function HeroSection({ rates }) {
                         <input
                           type="number"
                           min="0"
+                          max={CALCULATOR_LIMITS.fiatAmount}
                           step="any"
                           value={fxAmount}
-                          onChange={(e) => setFxAmount(e.target.value)}
+                          onChange={(e) => setFxAmount(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.fiatAmount))}
                           placeholder="1000"
                           className="w-full px-3.5 py-3 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-mono font-bold text-lg focus:outline-none focus:border-[#00E676] transition-colors"
                         />
@@ -398,12 +369,12 @@ export default function HeroSection({ rates }) {
 
                   {/* Converted Output Display Card */}
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
+                    <div className="min-w-0 space-y-1">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#A8B3C2]">
                         Calculated Exchange Value
                       </span>
-                      <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono flex items-baseline gap-2">
-                        <span>{Number.isFinite(convertedFxValue) ? convertedFxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</span>
+                      <div className="min-w-0 text-xl sm:text-2xl xl:text-3xl font-black text-slate-900 dark:text-white font-mono flex flex-wrap items-baseline gap-2">
+                        <span className="min-w-0 [overflow-wrap:anywhere]">{Number.isFinite(convertedFxValue) ? convertedFxValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</span>
                         <span className="text-base sm:text-lg text-[#00E676] font-sans font-bold">{targetCurrency}</span>
                       </div>
                       <div className="text-xs text-slate-500 dark:text-[#A8B3C2] font-mono">
@@ -550,12 +521,14 @@ export default function HeroSection({ rates }) {
                       </label>
                       <input
                         type="number"
-                        min="0.1"
+                        min="0"
+                        max={CALCULATOR_LIMITS.goldQuantity}
                         step="any"
                         value={goldQty}
-                        onChange={(e) => setGoldQty(e.target.value)}
+                        onChange={(e) => setGoldQty(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.goldQuantity))}
                         className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-mono font-bold text-base focus:outline-none focus:border-amber-500 transition-colors"
                       />
+                      <p className="mt-1 text-[11px] text-slate-500 dark:text-[#A8B3C2]">Maximum: {CALCULATOR_LIMITS.goldQuantity.toLocaleString()} units</p>
                     </div>
 
                     <div className="pt-5 sm:pt-6">
@@ -567,7 +540,7 @@ export default function HeroSection({ rates }) {
                           className="w-4 h-4 rounded text-amber-500 border-slate-300 focus:ring-amber-500"
                         />
                         <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                          Include Jeweler Making Charges / Katt (~9%)
+                          Include illustrative 9% making charge (not a fixed market tariff)
                         </span>
                       </label>
                     </div>
@@ -575,18 +548,18 @@ export default function HeroSection({ rates }) {
 
                   {/* Calculated Output Card */}
                   <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <span className="block text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 [overflow-wrap:anywhere]">
                         Karachi Sarafa Estimated Value ({goldQty} {goldUnit.toUpperCase()} of {goldPurity})
                       </span>
-                      <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono flex items-baseline gap-2">
-                        <span>{goldCalcResult.finalPkr !== null ? `₨${goldCalcResult.finalPkr.toLocaleString()}` : 'N/A'}</span>
-                        <span className="text-sm font-normal text-slate-500 dark:text-[#A8B3C2]">
-                          {goldCalcResult.finalUsd !== null ? `(~$${goldCalcResult.finalUsd.toLocaleString()} USD)` : '(Verified price unavailable)'}
+                      <div className="min-w-0 text-xl sm:text-2xl xl:text-3xl font-black text-slate-900 dark:text-white font-mono flex flex-wrap items-baseline gap-2">
+                        <span className="min-w-0 [overflow-wrap:anywhere]">{goldCalcResult.totalPkr !== null ? `₨${goldCalcResult.totalPkr.toLocaleString()}` : 'N/A'}</span>
+                        <span className="min-w-0 text-sm font-normal text-slate-500 dark:text-[#A8B3C2] [overflow-wrap:anywhere]">
+                          {goldCalcResult.totalUsd !== null ? `(~$${goldCalcResult.totalUsd.toLocaleString()} USD)` : '(Verified price unavailable)'}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-600 dark:text-[#A8B3C2] font-mono">
-                        Per Gram Benchmark: {goldCalcResult.perGramPkr !== null ? `₨${goldCalcResult.perGramPkr.toLocaleString()}` : 'N/A'} • Total Weight: {goldCalcResult.weightInGrams.toFixed(2)}g
+                      <div className="text-xs text-slate-600 dark:text-[#A8B3C2] font-mono [overflow-wrap:anywhere]">
+                        Per Gram Benchmark: {goldCalcResult.perGramPkr !== null ? `₨${goldCalcResult.perGramPkr.toLocaleString()}` : 'N/A'} • Total Weight: {goldCalcResult.grams !== null ? goldCalcResult.grams.toLocaleString(undefined, { maximumFractionDigits: 6 }) : 'N/A'}g
                         {includeMaking && goldCalcResult.makingChargeAmount !== null && ` (Includes illustrative ₨${goldCalcResult.makingChargeAmount.toLocaleString()} making)`}
                       </div>
                     </div>
