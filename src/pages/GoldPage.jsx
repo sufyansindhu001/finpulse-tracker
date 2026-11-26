@@ -18,6 +18,7 @@ import {
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSEO } from '../hooks/useSEO';
 import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
+import { boundedDecimalInput, calculateGoldEstimate, CALCULATOR_LIMITS } from '../utils/calculatorMath';
 
 export default function GoldPage({ rates = {} }) {
   useSEO({
@@ -30,7 +31,7 @@ export default function GoldPage({ rates = {} }) {
   const usdToPkr = Number.isFinite(rates.PKR) && rates.PKR > 0 ? rates.PKR : null;
   const [selectedUnit, setSelectedUnit] = useState('tola'); // 'tola' | '10g' | 'gram' | 'oz'
   const [calcPurity, setCalcPurity] = useState('24K');
-  const [calcWeight, setCalcWeight] = useState(1);
+  const [calcWeight, setCalcWeight] = useState('1');
   const [calcUnit, setCalcUnit] = useState('tola');
   const [highlightedPurity, setHighlightedPurity] = useState(null);
 
@@ -268,25 +269,13 @@ export default function GoldPage({ rates = {} }) {
     }
   };
 
-  // Calculator computation
+  // Compute the quantity from the original ounce quote, rounding only the final value.
   const calculatedTotal = useMemo(() => {
-    try {
-      if (goldGram24K_Pkr === null || usdToPkr === null) return { totalPkr: null, totalUsd: null, grams: 'N/A' };
-      const purityObj = purities.find(p => p.karat === calcPurity) || purities[0];
-      let grams = 0;
-      if (calcUnit === 'tola') grams = calcWeight * 11.664;
-      else if (calcUnit === '10g') grams = calcWeight * 10;
-      else if (calcUnit === 'gram') grams = calcWeight;
-      else if (calcUnit === 'oz') grams = calcWeight * 31.1034768;
-
-      const totalPkr = Math.round(grams * goldGram24K_Pkr * purityObj.factor);
-      const totalUsd = Math.round(totalPkr / usdToPkr);
-
-      return { totalPkr, totalUsd, grams: grams.toFixed(2) };
-    } catch {
-      return { totalPkr: null, totalUsd: null, grams: 'N/A' };
-    }
-  }, [calcPurity, calcWeight, calcUnit, goldGram24K_Pkr, usdToPkr]);
+    return calculateGoldEstimate({
+      spotUsdPerOunce: goldSpotOzUsd, usdToPkr,
+      quantity: calcWeight, unit: calcUnit, purity: calcPurity
+    });
+  }, [calcPurity, calcWeight, calcUnit, goldSpotOzUsd, usdToPkr]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 animate-in fade-in duration-300">
@@ -428,14 +417,14 @@ export default function GoldPage({ rates = {} }) {
               Instant Bullion &amp; Jewelry Calculator
             </h2>
             <p className="text-xs text-slate-600 dark:text-[#A8B3C2]">
-              Calculate the exact Pakistani Rupee and US Dollar value for any weight or purity.
+              Calculate an indicative gold value from verified spot and FX quotes. Dealer charges are not included.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-end">
           
-          <div>
+          <div className="min-w-0 lg:col-span-4">
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-[#A8B3C2] mb-1.5">
               Gold Purity (Karat)
             </label>
@@ -451,23 +440,25 @@ export default function GoldPage({ rates = {} }) {
             </select>
           </div>
 
-          <div>
+          <div className="min-w-0 lg:col-span-4">
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-[#A8B3C2] mb-1.5">
               Weight &amp; Measurement Unit
             </label>
-            <div className="flex gap-2">
+            <div className="flex min-w-0 gap-2">
               <input
                 type="number"
-                min="0.01"
+                min="0"
+                max={CALCULATOR_LIMITS.goldQuantity}
                 step="any"
                 value={calcWeight}
-                onChange={(e) => setCalcWeight(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-2/3 px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-bold text-sm focus:outline-none focus:border-[#00E676]"
+                onChange={(e) => setCalcWeight(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.goldQuantity))}
+                aria-label="Gold weight"
+                className="min-w-0 flex-1 px-3 py-3 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-bold text-sm focus:outline-none focus:border-[#00E676]"
               />
               <select
                 value={calcUnit}
                 onChange={(e) => setCalcUnit(e.target.value)}
-                className="w-1/3 px-3 py-3 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-bold text-xs focus:outline-none focus:border-[#00E676]"
+                className="w-28 shrink-0 px-3 py-3 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-bold text-xs focus:outline-none focus:border-[#00E676]"
               >
                 <option value="tola">Tola</option>
                 <option value="gram">Grams</option>
@@ -475,21 +466,22 @@ export default function GoldPage({ rates = {} }) {
                 <option value="oz">Troy Oz</option>
               </select>
             </div>
+            <p className="mt-1 text-[11px] text-slate-500 dark:text-[#A8B3C2]">Maximum: {CALCULATOR_LIMITS.goldQuantity.toLocaleString()} units</p>
           </div>
 
           {/* Result Card */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-[#00E676]/30 flex items-center justify-between">
-            <div>
-              <div className="text-[10px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold">
-                Total Estimated Value ({calculatedTotal.grams}g)
+          <div className="min-w-0 lg:col-span-4 p-4 rounded-xl bg-slate-50 dark:bg-[#06111F] border border-[#00E676]/30 space-y-2">
+            <div className="min-w-0">
+              <div className="text-[10px] text-slate-500 dark:text-[#A8B3C2] uppercase font-bold break-words">
+                Total Estimated Value ({calculatedTotal.grams !== null ? calculatedTotal.grams.toLocaleString(undefined, { maximumFractionDigits: 6 }) : 'N/A'}g)
               </div>
-              <div className="text-xl sm:text-2xl font-black text-[#00E676] font-tabular">
+              <div className="text-lg xl:text-xl font-black text-[#00E676] tabular-nums leading-tight [overflow-wrap:anywhere]">
                 {calculatedTotal.totalPkr !== null ? `₨ ${calculatedTotal.totalPkr.toLocaleString()}` : 'N/A'}
               </div>
             </div>
-            <div className="text-right">
+            <div className="min-w-0 border-t border-slate-200 dark:border-white/10 pt-2">
               <div className="text-[10px] text-slate-500 dark:text-[#A8B3C2]">USD Equiv.</div>
-              <div className="text-sm font-bold text-slate-900 dark:text-white font-tabular">
+              <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums [overflow-wrap:anywhere]">
                 {calculatedTotal.totalUsd !== null ? `$${calculatedTotal.totalUsd.toLocaleString()}` : 'N/A'}
               </div>
             </div>
