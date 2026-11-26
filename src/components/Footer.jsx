@@ -60,7 +60,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-slate-600 dark:text-[#A8B3C2] text-xs leading-relaxed max-w-sm font-medium">
-              Real-time foreign exchange calculation matrix, institutional cryptocurrency market metrics, and physical gold bullion benchmark rates.
+              Public-reference currency conversions, sourced cryptocurrency market data, and indicative gold and silver calculations.
             </p>
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 dark:text-[#A8B3C2] pt-1">
               <span className="flex items-center gap-1.5 bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 px-2.5 py-1 rounded-full text-slate-800 dark:text-white shadow-xs">
