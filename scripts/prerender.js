@@ -1910,7 +1910,7 @@ function renderEditorialPolicyPage() {
               3. Financial Data Checking &amp; Model Validation
             </h2>
             <p>
-              Before publishing formulas or ticker models, all conversion equations (such as triangular cross-currency parity or tola gold conversions) are cross-checked against live SBP weighted closing benchmarks. Data limitations—such as 15-minute stock delays, retail making charges, or card remittance fees—are explicitly disclosed.
+              Cross-rate and gold-weight formulas are tested for mathematical accuracy and missing-data handling. FGC Spot does not certify public-provider values against official SBP closing rates. We disclose provider-dependent quote delays, retail making charges and possible transaction fees.
             </p>
           </div>
 
@@ -1988,63 +1988,63 @@ function renderDataSourcesPage() {
 
         <div class="space-y-6 text-xs sm:text-sm text-slate-700 dark:text-[#A8B3C2] leading-relaxed">
           <p class="text-sm sm:text-base font-medium text-slate-900 dark:text-white">
-            Financial transparency begins with data integrity. FGC Spot aggregates market intelligence from verified global APIs, central bank public bulletins, and provincial trade associations. We never fabricate financial metrics or invent fictional institutional liquidity feeds.
+            Financial transparency begins with data integrity. FGC Spot uses available public market-data endpoints and documented calculations. We distinguish these reference figures from official central-bank publications and executable dealer quotes.
           </p>
 
           <div class="space-y-4">
             <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
               <div class="flex items-center justify-between">
-                <h2 class="text-base font-bold text-slate-900 dark:text-white">1. Interbank Foreign Exchange (/rates)</h2>
-                <span class="text-xs text-[#00E676] font-bold">Wholesale Mid-Market</span>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">1. Currency Reference Rates (/rates)</h2>
+                <span class="text-xs text-[#00E676] font-bold">Indicative FX Data</span>
               </div>
-              <p><strong>Providers:</strong> Open Exchange Rates, FloatRates &amp; State Bank of Pakistan (SBP).</p>
-              <p><strong>Update Cadence:</strong> Polled every 60s during banking hours; SBP weighted closing daily at 16:30 PKT.</p>
+              <p><strong>Providers:</strong> open.er-api.com, FloatRates and public currency API mirrors.</p>
+              <p><strong>Update Cadence:</strong> Two-minute fresh cache, with earlier fetched values briefly available while revalidating; upstream timestamps may vary.</p>
               <p><strong>Methodology:</strong> Triangular cross-rate parity through USD anchor: Rate(Base/Quote) = (USD/Quote) / (USD/Base).</p>
-              <p><strong>Limitations:</strong> Wholesale book-entry rates exclude retail card cross-border markups (1.5%–3.5%) and advance tax under Section 236Y (5% filers / 10% non-filers).</p>
+              <p><strong>Limitations:</strong> Not official SBP closings or executable interbank quotes. Actual bank spreads, transaction charges and current tax rules vary.</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
               <div class="flex items-center justify-between">
-                <h2 class="text-base font-bold text-slate-900 dark:text-white">2. Open Market Cash Forex (/converter)</h2>
-                <span class="text-xs text-[#00E676] font-bold">Over-The-Counter Cash</span>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">2. Open-Market Cash Context (/converter)</h2>
+                <span class="text-xs text-[#00E676] font-bold">Educational Comparison</span>
               </div>
-              <p><strong>Providers:</strong> Exchange Companies Association of Pakistan (ECAP) &amp; representative dealerships.</p>
-              <p><strong>Update Cadence:</strong> Daily business session updates with intraday volatility adjustments.</p>
+              <p><strong>Providers:</strong> No direct real-time cash-dealer or ECAP quote integration.</p>
+              <p><strong>Update Cadence:</strong> Live retail counter quotes are not collected by this tool.</p>
               <p><strong>Methodology:</strong> Bid-ask spread reflecting dealer cash transport, insurance, security, and customs handling.</p>
-              <p><strong>Limitations:</strong> Physical cash notes carry a spread above wholesale electronic rates and do not generate digital e-PRC tax documentation.</p>
+              <p><strong>Limitations:</strong> Confirm the cash buy/sell price with a licensed dealer. An e-PRC documents qualifying bank remittances, not a general tax exemption.</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
               <div class="flex items-center justify-between">
                 <h2 class="text-base font-bold text-slate-900 dark:text-white">3. Gold &amp; Silver Bullion (/gold)</h2>
-                <span class="text-xs text-[#00E676] font-bold">Spot &amp; Sarafa Benchmarks</span>
+                <span class="text-xs text-[#00E676] font-bold">Indicative Spot Conversion</span>
               </div>
-              <p><strong>Providers:</strong> Binance PAXGUSDT (Paxos 1:1 Physical Gold), COMEX Futures (GC=F, SI=F), and APSGJA Karachi Sarafa.</p>
-              <p><strong>Update Cadence:</strong> International spot refreshed every 45s; APSGJA fixings published daily at ~16:30 PKT.</p>
-              <p><strong>Methodology:</strong> Rate per Tola (24K) = (Spot Gold USD / 31.1034768) * USD_PKR * 11.664 * 1.033 (domestic tariff factor).</p>
-              <p><strong>Limitations:</strong> International spot reflects unworked bullion; retail jewelry incurs artisan fabrication charges (Mazdoori) of Rs. 1,500–4,500/tola.</p>
+              <p><strong>Providers:</strong> Available public commodities feeds and metals reference sources.</p>
+              <p><strong>Update Cadence:</strong> Requested as needed with short client caching. No direct APSGJA association fixing is ingested.</p>
+              <p><strong>Methodology:</strong> Indicative tola value = (Spot Gold USD / 31.1034768) * USD_PKR * 11.664, with purity ratios for lower karats.</p>
+              <p><strong>Limitations:</strong> This is not an official LBMA or Karachi Sarafa retail quote; jewelers may apply market premiums and making charges.</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
               <div class="flex items-center justify-between">
                 <h2 class="text-base font-bold text-slate-900 dark:text-white">4. Stock Screener &amp; PSX Terminal (/stocks)</h2>
-                <span class="text-xs text-[#00E676] font-bold">15-Minute Delayed</span>
+                <span class="text-xs text-[#00E676] font-bold">Provider-Dependent Timing</span>
               </div>
               <p><strong>Providers:</strong> Market API Proxy (api/stocks.js) &amp; PSX listed company filings.</p>
-              <p><strong>Update Cadence:</strong> Polled every 30s during active trading sessions.</p>
+              <p><strong>Update Cadence:</strong> Quotes are updated according to provider availability and may be delayed or unavailable.</p>
               <p><strong>Methodology:</strong> P/E = Price/EPS, Dividend Yield = DPS/Price, Piotroski F-Score (9-factor fundamental test).</p>
-              <p><strong>Limitations:</strong> Quotes are delayed by 15 minutes per standard exchange dissemination rules.</p>
+              <p><strong>Limitations:</strong> Confirm current trading prices and company filings with the exchange or official issuer disclosures.</p>
             </div>
 
             <div class="p-5 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/5 space-y-2">
               <div class="flex items-center justify-between">
                 <h2 class="text-base font-bold text-slate-900 dark:text-white">5. Cryptocurrency Market Index (/crypto)</h2>
-                <span class="text-xs text-[#00E676] font-bold">Global VWAP Index</span>
+                <span class="text-xs text-[#00E676] font-bold">CoinGecko Public Data</span>
               </div>
               <p><strong>Providers:</strong> CoinGecko Public Markets API.</p>
-              <p><strong>Update Cadence:</strong> Polled every 60s with client-side caching.</p>
-              <p><strong>Methodology:</strong> PKR Counter-Value = Coin USD Spot * SBP Interbank USD/PKR benchmark.</p>
-              <p><strong>Limitations:</strong> Excludes domestic P2P cash premiums (1.5%–4.5%) and blockchain network gas fees. SBP Circular BPRD/2018-03 applies.</p>
+              <p><strong>Update Cadence:</strong> Fetched when needed with two-minute client caching; upstream timestamps vary.</p>
+              <p><strong>Methodology:</strong> Indicative PKR Counter-Value = Coin USD Reference * Public USD/PKR FX Reference.</p>
+              <p><strong>Limitations:</strong> Not an independently calculated VWAP or an executable offer. Market spreads, network fees and applicable regulations must be checked separately.</p>
             </div>
           </div>
         </div>
