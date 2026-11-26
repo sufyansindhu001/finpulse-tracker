@@ -21,8 +21,8 @@ const ORIGINAL_BLOG_POSTS = [
     "image": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
     "coverImage": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
     "featuredImage": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80",
-    "summary": "Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.",
-    "excerpt": "Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.",
+    "summary": "A practical guide to exporter foreign-currency retention, e-PRC documentation and the conditional 0.25% Section 154A tax rate for eligible PSEB-registered IT exporters, with official FBR and SBP references.",
+    "excerpt": "A practical guide to exporter foreign-currency retention, e-PRC documentation and the conditional 0.25% Section 154A tax rate for eligible PSEB-registered IT exporters, with official FBR and SBP references.",
     "tags": [
       "Freelance Banking",
       "FBR Tax",
