@@ -22,17 +22,8 @@ import { getCategoryFallbackImage } from '../services/newsService';
 import OptimizedImage from '../components/OptimizedImage';
 import { getCachedArticles, getCachedArticleBySlug, fetchArticlesSWR, ARTICLES_CACHE_KEY, updateArticlesCache } from '../services/articlesService';
 import { displayAuthorName, DEFAULT_EDITOR_ROLE } from '../utils/authorIdentity';
-
-function getBaseLikes(seed) {
-  if (!seed) return 42;
-  const str = String(seed);
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return 28 + Math.abs(hash % 38);
-}
+import { getArticleReferences } from '../data/articleReferences';
+import { publishedDateISO, modifiedDateISO } from '../utils/articleDates';
 
 function formatInlineText(text) {
   if (!text) return '';
@@ -163,39 +154,19 @@ function BlogDetailPageContent() {
   const likedStorageKey = `fgc_liked_article_${articleKey}`;
 
   const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(() => {
-    if (typeof initialMatch?.likes === 'number') return initialMatch.likes;
-    return getBaseLikes(initialMatch?.slug || targetIdentifier);
-  });
   const [isAnimating, setIsAnimating] = useState(false);
+  const articleReferences = getArticleReferences(article);
 
-  // Sync likes and user's voted state when article loads
+  // Local, personal feedback only: do not display or modify unverified legacy
+  // counters. The original seeded counts were not evidence of real readers.
   useEffect(() => {
     if (!articleKey) return;
     try {
-      const userHasLiked = localStorage.getItem(likedStorageKey) === 'true';
-      setIsLiked(userHasLiked);
-
-      let initialCount = typeof article?.likes === 'number' ? article.likes : null;
-      if (initialCount === null) {
-        try {
-          const storedArticles = JSON.parse(localStorage.getItem('fgc_portal_articles') || '[]');
-          const stored = storedArticles.find(a => (a.slug || a.id) === articleKey);
-          if (stored && typeof stored.likes === 'number') {
-            initialCount = stored.likes;
-          }
-        } catch {}
-      }
-
-      if (initialCount === null) {
-        initialCount = getBaseLikes(articleKey) + (userHasLiked ? 1 : 0);
-      }
-
-      setLikesCount(initialCount);
+      setIsLiked(localStorage.getItem(likedStorageKey) === 'true');
     } catch (e) {
-      console.warn('Error reading like state:', e);
+      console.warn('Error reading personal helpful state:', e);
     }
-  }, [articleKey, article?.likes, likedStorageKey]);
+  }, [articleKey, likedStorageKey]);
 
   const handleToggleLike = async () => {
     if (!articleKey) return;
@@ -204,12 +175,10 @@ function BlogDetailPageContent() {
     setTimeout(() => setIsAnimating(false), 400);
 
     const willLike = !isLiked;
-    const nextCount = willLike ? likesCount + 1 : Math.max(0, likesCount - 1);
-
     setIsLiked(willLike);
-    setLikesCount(nextCount);
 
-    // 1. Persist user's personal vote in localStorage to prevent repeat spam
+    // Personal, device-local feedback. No synthetic public count and no
+    // write to shared article records or production database.
     try {
       if (willLike) {
         localStorage.setItem(likedStorageKey, 'true');
@@ -217,36 +186,6 @@ function BlogDetailPageContent() {
         localStorage.removeItem(likedStorageKey);
       }
     } catch {}
-
-    // 2. Update fgc_portal_articles in localStorage
-    try {
-      const storedArticles = JSON.parse(localStorage.getItem('fgc_portal_articles') || '[]');
-      let updated = false;
-      const newArticles = storedArticles.map(a => {
-        if ((a.slug || a.id) === articleKey) {
-          updated = true;
-          return { ...a, likes: nextCount };
-        }
-        return a;
-      });
-      if (!updated && article) {
-        newArticles.push({ ...article, likes: nextCount });
-      }
-      localStorage.setItem('fgc_portal_articles', JSON.stringify(newArticles));
-      window.dispatchEvent(new Event('fgc_articles_updated'));
-    } catch {}
-
-    // 3. Sync to Supabase in background
-    try {
-      if (article?.id) {
-        await supabase
-          .from('articles')
-          .update({ likes: nextCount })
-          .eq('id', article.id);
-      }
-    } catch (err) {
-      console.warn('[HelpfulReaction] Supabase update notice (persisted locally):', err?.message);
-    }
   };
 
   // 1. Fetch exact article by slug from Supabase
@@ -432,8 +371,8 @@ function BlogDetailPageContent() {
     const activeSlug = article?.slug || targetIdentifier;
     const canonicalUrl = `https://www.fgcspot.com/blog/${activeSlug}`;
     const authorName = displayAuthorName(article.author);
-    const datePublished = article.created_at || '2026-10-24T12:00:00Z';
-    const dateModified = article.updated_at || datePublished;
+    const datePublished = publishedDateISO(article);
+    const dateModified = modifiedDateISO(article);
     const imageUrl = article.image || article.coverImage || article.featuredImage || 'https://www.fgcspot.com/logo.png';
 
     const schemaData = {
@@ -442,8 +381,8 @@ function BlogDetailPageContent() {
       'headline': article.title,
       'description': article.excerpt || article.summary || '',
       'image': [imageUrl],
-      'datePublished': datePublished,
-      'dateModified': dateModified,
+      ...(datePublished ? { 'datePublished': datePublished } : {}),
+      ...(dateModified ? { 'dateModified': dateModified } : {}),
       'author': [
         {
           '@type': 'Person',
@@ -623,12 +562,7 @@ function BlogDetailPageContent() {
             } ${isAnimating ? 'scale-110' : 'hover:-translate-y-0.5'}`}
           >
             <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? 'fill-[#00E676] text-[#00E676]' : 'text-[#00E676]'}`} />
-            <span>{isLiked ? 'Helpful' : 'Helpful'}</span>
-            <span className={`px-1.5 py-0.2 rounded-md font-tabular text-[11px] ${
-              isLiked ? 'bg-[#00E676]/20 text-[#00E676]' : 'bg-slate-200/60 dark:bg-white/10 text-slate-600 dark:text-slate-300'
-            }`}>
-              {likesCount}
-            </span>
+            <span>{isLiked ? 'Marked helpful' : 'Helpful'}</span>
           </button>
 
           <button
@@ -653,7 +587,7 @@ function BlogDetailPageContent() {
             <Calendar className="w-3.5 h-3.5 text-[#00E676]" /> Published: {article.date}
           </span>
           {article.updated_at && (
-            <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full" title="Fact-Checked & Updated">
+            <span className="text-slate-500 dark:text-[#A8B3C2] flex items-center gap-1 font-medium bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 rounded-full" title="Last recorded content update">
               <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
               Updated: {new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi' }).format(new Date(article.updated_at))}
             </span>
@@ -707,17 +641,12 @@ function BlogDetailPageContent() {
               } ${isAnimating ? 'scale-105' : 'hover:-translate-y-0.5'}`}
             >
               <ThumbsUp className={`w-3.5 h-3.5 ${isLiked ? 'fill-[#00E676] text-[#00E676]' : 'text-[#00E676]'}`} />
-              <span>{isLiked ? 'Helpful' : 'Helpful'}</span>
-              <span className={`px-2 py-0.5 rounded-full font-tabular text-[11px] font-bold ${
-                isLiked ? 'bg-[#00E676]/20 text-[#00E676]' : 'bg-slate-200/70 dark:bg-white/10 text-slate-600 dark:text-slate-300'
-              }`}>
-                {likesCount}
-              </span>
+              <span>{isLiked ? 'Marked helpful' : 'Helpful'}</span>
             </button>
 
             <div className="hidden md:flex items-center gap-1.5 text-xs text-[#00E676] bg-[#00E676]/10 px-3 py-1.5 rounded-full border border-[#00E676]/20 font-semibold">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Editorial Verified</span>
+              <span>FGC Spot Editorial</span>
             </div>
           </div>
         </div>
@@ -942,11 +871,6 @@ function BlogDetailPageContent() {
             >
               <ThumbsUp className={`w-4 h-4 shrink-0 ${isLiked ? 'fill-[#06111F]' : 'text-[#00E676]'}`} />
               <span>{isLiked ? 'Marked as Helpful' : 'Helpful'}</span>
-              <span className={`px-2 py-0.5 rounded-lg text-xs font-tabular font-bold shrink-0 ${
-                isLiked ? 'bg-[#06111F]/20 text-[#06111F]' : 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-[#00E676]'
-              }`}>
-                {likesCount}
-              </span>
             </button>
 
             <button
@@ -1012,54 +936,25 @@ function BlogDetailPageContent() {
           </div>
         </div>
 
-        {/* Primary Regulatory References & Policy Documentation */}
-        <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#0D1B2A]/60 border border-slate-200 dark:border-white/10 space-y-3">
-          <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
-            <BookOpen className="w-4 h-4 text-[#00E676]" />
-            <span>Primary Regulatory References &amp; Statutory Authorities</span>
-          </div>
-          <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            All analytical claims, conversion mechanisms, and rate dynamics cited in this research article are referenced against primary documentation from recognized statutory authorities:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs">
-            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
-              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
-                State Bank of Pakistan (SBP)
-              </span>
-              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
-                Foreign Exchange Operations Department, SBP FE Manual &amp; Daily Weighted Closing Benchmarks.
-              </span>
+        {/* Topic-specific, checkable references (never a blanket certification) */}
+        {articleReferences.length > 0 && (
+          <section aria-label="Relevant source documents" className="mt-6 p-5 sm:p-6 rounded-2xl bg-slate-50/70 dark:bg-[#0D1B2A]/60 border border-slate-200 dark:border-white/10 space-y-3">
+            <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-xs uppercase tracking-wider">
+              <BookOpen className="w-4 h-4 text-[#00E676]" />
+              <span>Sources &amp; Further Reading</span>
             </div>
-            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
-              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
-                Federal Board of Revenue (FBR)
-              </span>
-              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
-                Income Tax Ordinance 2001 (Section 154A IT Export Regimes &amp; Section 236Y Card Remittance Taxes).
-              </span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
-              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
-                APSGJA Karachi Sarafa
-              </span>
-              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
-                All Pakistan Sarafa Gems &amp; Jewellers Association official daily provincial bullion rate cards.
-              </span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-white dark:bg-[#06111F] border border-slate-200/80 dark:border-white/5 space-y-0.5">
-              <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E676]"></span>
-                Securities &amp; Exchange Commission (SECP)
-              </span>
-              <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">
-                Pakistan Stock Exchange (PSX) listed company quarterly disclosures and audited financial filings.
-              </span>
-            </div>
-          </div>
-        </div>
+            <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
+              These official documents and original research sources provide context for this topic. They do not independently verify every illustrative figure or forecast above. Confirm current rates and rules with the issuing authority.
+            </p>
+            <ul className="list-disc pl-5 text-xs leading-relaxed space-y-2 text-slate-700 dark:text-[#A8B3C2]">
+              {articleReferences.map(({ url, label }) => (
+                <li key={url}>
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-[#00A958] dark:text-[#00E676] hover:underline font-semibold">{label}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* Standard Financial Risk Disclaimer & Regulatory Notice */}
         <div className="mt-6 p-5 sm:p-6 rounded-2xl bg-amber-500/5 dark:bg-[#06111F] border border-amber-500/20 text-xs text-slate-600 dark:text-[#A8B3C2] space-y-2.5">
