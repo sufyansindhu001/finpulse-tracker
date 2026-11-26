@@ -337,7 +337,7 @@ export default function Footer() {
                 PSX vs Global Equities: KSE-100 Valuation &amp; Dividends
               </h4>
               <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2] line-clamp-1 mt-0.5">
-                Comparative analysis of KSE-100 sub-5.0x P/E multiples and double-digit dividend reinvestment.
+                Compare KSE-100 and S&amp;P 500 index methods, valuations, dividends and currency risk.
               </p>
             </Link>
           </div>
