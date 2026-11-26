@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
 import { recordConversion } from '../utils/telemetry';
+import { boundedDecimalInput, readBoundedAmount, calculateUsdForexRisk, CALCULATOR_LIMITS } from '../utils/calculatorMath';
 import { 
   Calculator, 
   ArrowLeftRight, 
@@ -45,7 +46,7 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
   }, [rates]);
 
   // Calculations for Tool 1 (Forex)
-  const numForexAmount = parseFloat(forexAmount) || 0;
+  const numForexAmount = readBoundedAmount(forexAmount, CALCULATOR_LIMITS.fiatAmount) ?? 0;
   const forexConverted = useMemo(() => {
     return convertCurrency(numForexAmount, forexBase, forexTarget, activeRates);
   }, [numForexAmount, forexBase, forexTarget, activeRates]);
@@ -74,48 +75,25 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
   // Calculations for Tool 2 (Crypto)
   const selectedCoin = useMemo(() => {
     return cryptoList.find(c => c.id === cryptoToken || c.symbol.toLowerCase() === cryptoToken.toLowerCase()) || {
-      name: 'Bitcoin', symbol: 'BTC', current_price: 96850
+      name: 'Bitcoin', symbol: 'BTC', current_price: null
     };
   }, [cryptoList, cryptoToken]);
 
-  const numCryptoQty = parseFloat(cryptoQty) || 0;
-  const cryptoTotalUsd = numCryptoQty * (selectedCoin.current_price || 0);
+  const numCryptoQty = readBoundedAmount(cryptoQty, CALCULATOR_LIMITS.cryptoQuantity) ?? 0;
+  const cryptoTotalUsd = Number.isFinite(selectedCoin.current_price) && selectedCoin.current_price > 0
+    ? numCryptoQty * selectedCoin.current_price : Number.NaN;
   const cryptoConvertedFiat = useMemo(() => {
-    return convertCurrency(cryptoTotalUsd, 'USD', cryptoFiat, activeRates);
+    return Number.isFinite(cryptoTotalUsd) ? convertCurrency(cryptoTotalUsd, 'USD', cryptoFiat, activeRates) : Number.NaN;
   }, [cryptoTotalUsd, cryptoFiat, activeRates]);
   const fiatObj = useMemo(() => getCurrencyInfo(cryptoFiat), [cryptoFiat]);
 
   // Calculations for Tool 3 (Pip Risk Calculator)
-  const numBalance = parseFloat(accountBalance) || 0;
-  const numRiskPct = parseFloat(riskPercent) || 0;
-  const numPips = parseFloat(stopLossPips) || 0;
+  const numBalance = readBoundedAmount(accountBalance, CALCULATOR_LIMITS.accountBalance) ?? 0;
+  const numRiskPct = readBoundedAmount(riskPercent, CALCULATOR_LIMITS.riskPercent) ?? 0;
+  const numPips = readBoundedAmount(stopLossPips, CALCULATOR_LIMITS.stopLossPips) ?? 0;
 
   const riskCalculations = useMemo(() => {
-    const moneyAtRisk = (numBalance * numRiskPct) / 100;
-    
-    // Standard pip calculation: for EUR/USD, 1 standard lot (100,000 units) = $10 / pip
-    // Pip value per lot varies slightly for JPY pairs (e.g., $6.50 - $7.00 depending on USD/JPY rate)
-    let pipValuePerLot = 10;
-    if (tradingPair.includes('JPY')) {
-      const jpyRate = activeRates.JPY || 153.2;
-      pipValuePerLot = (1000 / jpyRate);
-    }
-
-    const lotSize = numPips > 0 && pipValuePerLot > 0 
-      ? moneyAtRisk / (numPips * pipValuePerLot) 
-      : 0;
-
-    const totalUnits = lotSize * 100000;
-    const pipValueForPosition = lotSize * pipValuePerLot;
-
-    return {
-      moneyAtRisk,
-      lotSize: lotSize.toFixed(2),
-      miniLots: (lotSize * 10).toFixed(1),
-      microLots: (lotSize * 100).toFixed(0),
-      totalUnits: Math.round(totalUnits).toLocaleString(),
-      pipValueForPosition: pipValueForPosition.toFixed(2)
-    };
+    return calculateUsdForexRisk({ balance: numBalance, riskPercent: numRiskPct, stopPips: numPips, pair: tradingPair, rates: activeRates });
   }, [numBalance, numRiskPct, numPips, tradingPair, activeRates]);
 
   const handleCopyResult = (text) => {
@@ -193,10 +171,11 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 <input
                   type="number"
                   min="0"
+                  max={CALCULATOR_LIMITS.fiatAmount}
                   step="any"
                   value={forexAmount}
-                  onChange={(e) => setForexAmount(e.target.value)}
-                  className="w-full bg-transparent text-3xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
+                  onChange={(e) => setForexAmount(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.fiatAmount))}
+                  className="w-full min-w-0 bg-transparent text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                   placeholder="100.00"
                 />
               </div>
@@ -244,21 +223,22 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
 
             {/* Result Display */}
             <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
-              <div>
+              <div className="min-w-0 flex-1">
                 <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <CurrencyFlag code={forexTarget} className="w-4 h-4" />
                   <span>Exchange Value Output</span>
                 </div>
-                <div className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tabular-nums">
-                  {getCurrencyInfo(forexTarget).symbol} {forexConverted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} <span className="text-emerald-600 dark:text-emerald-400 text-xl font-bold">{forexTarget}</span>
+                <div className="text-xl sm:text-3xl xl:text-4xl font-black text-slate-900 dark:text-white tabular-nums [overflow-wrap:anywhere]">
+                  {Number.isFinite(forexConverted) ? `${getCurrencyInfo(forexTarget).symbol} ${forexConverted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : 'N/A'} <span className="text-emerald-600 dark:text-emerald-400 text-xl font-bold">{forexTarget}</span>
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 tabular-nums">
-                  1 {forexBase} = {forexDirectRate < 0.001 ? forexDirectRate.toFixed(6) : forexDirectRate.toFixed(4)} {forexTarget}
+                  1 {forexBase} = {Number.isFinite(forexDirectRate) ? (forexDirectRate < 0.001 ? forexDirectRate.toFixed(6) : forexDirectRate.toFixed(4)) : 'N/A'} {forexTarget}
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyResult(`${numForexAmount} ${forexBase} = ${forexConverted.toFixed(2)} ${forexTarget}`)}
+                onClick={() => { if (Number.isFinite(forexConverted)) handleCopyResult(`${numForexAmount} ${forexBase} = ${forexConverted.toFixed(2)} ${forexTarget}`); }}
+                disabled={!Number.isFinite(forexConverted)}
                 className="px-4 py-2.5 rounded-xl bg-slate-200/70 hover:bg-slate-200 text-slate-800 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] dark:text-white text-xs font-semibold flex items-center gap-2 border border-slate-300 dark:border-white/[0.08] cursor-pointer shadow-xs active:scale-95"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-4 h-4 text-slate-500 dark:text-slate-400" />}
@@ -280,10 +260,11 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 <input
                   type="number"
                   min="0"
+                  max={CALCULATOR_LIMITS.cryptoQuantity}
                   step="any"
                   value={cryptoQty}
-                  onChange={(e) => setCryptoQty(e.target.value)}
-                  className="w-full bg-transparent text-3xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
+                  onChange={(e) => setCryptoQty(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.cryptoQuantity))}
+                  className="w-full min-w-0 bg-transparent text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                   placeholder="1.0"
                 />
               </div>
@@ -298,13 +279,10 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                   className="w-full bg-transparent text-slate-900 dark:text-white font-bold text-base focus:outline-none cursor-pointer"
                 >
                   {(cryptoList.length > 0 ? cryptoList : [
-                    { id: 'btc', name: 'Bitcoin', symbol: 'BTC', current_price: 96850 },
-                    { id: 'eth', name: 'Ethereum', symbol: 'ETH', current_price: 2780 },
-                    { id: 'sol', name: 'Solana', symbol: 'SOL', current_price: 194.20 },
-                    { id: 'bnb', name: 'BNB', symbol: 'BNB', current_price: 645.10 }
+                    { id: 'btc', name: 'Bitcoin', symbol: 'BTC', current_price: null }
                   ]).map(c => (
                     <option key={c.id} value={c.id} className="bg-white text-slate-900 dark:bg-[#0C1017] dark:text-white">
-                      {c.name} ({c.symbol.toUpperCase()}) - ${c.current_price?.toLocaleString()}
+                      {c.name} ({c.symbol.toUpperCase()}) - {Number.isFinite(c.current_price) && c.current_price > 0 ? `$${c.current_price.toLocaleString()}` : 'Live quote unavailable'}
                     </option>
                   ))}
                 </select>
@@ -327,21 +305,22 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
 
             {/* Crypto Result Display */}
             <div className="mt-6 p-6 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
-              <div>
+              <div className="min-w-0 flex-1">
                 <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <CurrencyFlag code={cryptoFiat} className="w-4 h-4" />
                   <span>Liquid Fiat Valuation</span>
                 </div>
-                <div className="text-3xl sm:text-5xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
-                  {fiatObj.symbol} {cryptoConvertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-slate-900 dark:text-white text-xl font-bold">{cryptoFiat}</span>
+                <div className="text-xl sm:text-3xl xl:text-4xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums [overflow-wrap:anywhere]">
+                  {Number.isFinite(cryptoConvertedFiat) ? `${fiatObj.symbol} ${cryptoConvertedFiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'} <span className="text-slate-900 dark:text-white text-xl font-bold">{cryptoFiat}</span>
                 </div>
-                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 tabular-nums">
-                  {numCryptoQty} {selectedCoin.symbol?.toUpperCase()} = ${cryptoTotalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 tabular-nums [overflow-wrap:anywhere]">
+                  {numCryptoQty} {selectedCoin.symbol?.toUpperCase()} = {Number.isFinite(cryptoTotalUsd) ? `$${cryptoTotalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A'} USD
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyResult(`${numCryptoQty} ${selectedCoin.symbol?.toUpperCase()} = ${fiatObj.symbol}${cryptoConvertedFiat.toFixed(2)} ${cryptoFiat}`)}
+                onClick={() => { if (Number.isFinite(cryptoConvertedFiat)) handleCopyResult(`${numCryptoQty} ${selectedCoin.symbol?.toUpperCase()} = ${fiatObj.symbol}${cryptoConvertedFiat.toFixed(2)} ${cryptoFiat}`); }}
+                disabled={!Number.isFinite(cryptoConvertedFiat)}
                 className="px-4 py-2.5 rounded-xl bg-slate-200/70 hover:bg-slate-200 text-slate-800 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] dark:text-white text-xs font-semibold flex items-center gap-2 border border-slate-300 dark:border-white/[0.08] cursor-pointer shadow-xs active:scale-95"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-4 h-4 text-slate-500 dark:text-slate-400" />}
@@ -360,13 +339,16 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1">
                   Account Balance (USD)
                 </label>
-                <div className="flex items-center">
+                <div className="flex items-center min-w-0">
                   <span className="text-xl font-bold text-slate-400 dark:text-slate-500 mr-1.5">$</span>
                   <input
                     type="number"
+                    min="0"
+                    max={CALCULATOR_LIMITS.accountBalance}
+                    step="any"
                     value={accountBalance}
-                    onChange={(e) => setAccountBalance(e.target.value)}
-                    className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
+                    onChange={(e) => setAccountBalance(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.accountBalance))}
+                    className="w-full min-w-0 bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                     placeholder="10000"
                   />
                 </div>
@@ -379,10 +361,12 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 <div className="flex items-center">
                   <input
                     type="number"
+                    min="0"
+                    max={CALCULATOR_LIMITS.riskPercent}
                     step="0.1"
                     value={riskPercent}
-                    onChange={(e) => setRiskPercent(e.target.value)}
-                    className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
+                    onChange={(e) => setRiskPercent(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.riskPercent))}
+                    className="w-full min-w-0 bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                     placeholder="1.0"
                   />
                   <span className="text-xl font-bold text-slate-400 dark:text-slate-500 ml-1.5">%</span>
@@ -395,9 +379,12 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
                 </label>
                 <input
                   type="number"
+                  min="0"
+                  max={CALCULATOR_LIMITS.stopLossPips}
+                  step="any"
                   value={stopLossPips}
-                  onChange={(e) => setStopLossPips(e.target.value)}
-                  className="w-full bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
+                  onChange={(e) => setStopLossPips(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.stopLossPips))}
+                  className="w-full min-w-0 bg-transparent text-2xl font-black text-slate-900 dark:text-white tabular-nums focus:outline-none"
                   placeholder="25"
                 />
               </div>
@@ -425,30 +412,30 @@ export default function ToolsSuite({ rates = DEFAULT_RATES, cryptoList = [] }) {
             {/* Risk Calculation Outputs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
               
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
+              <div className="min-w-0 p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Capital at Risk</div>
-                <div className="text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums mt-1">
-                  ${riskCalculations.moneyAtRisk.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <div className="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums mt-1 [overflow-wrap:anywhere]">
+                  {riskCalculations.moneyAtRisk === null ? 'N/A' : `$${riskCalculations.moneyAtRisk.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
-                  Exact max drawdown for this trade
+                  Planned risk before slippage and fees
                 </div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
+              <div className="min-w-0 p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Recommended Position Size</div>
-                <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums mt-1">
-                  {riskCalculations.lotSize} <span className="text-base text-slate-700 dark:text-slate-300 font-normal">Lots</span>
+                <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums mt-1 [overflow-wrap:anywhere]">
+                  {riskCalculations.lots === null ? 'N/A' : riskCalculations.lots.toLocaleString(undefined, { maximumFractionDigits: 4 })} <span className="text-base text-slate-700 dark:text-slate-300 font-normal">Lots</span>
                 </div>
-                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
-                  {riskCalculations.totalUnits} units of {tradingPair.split('/')[0]}
+                <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1 [overflow-wrap:anywhere]">
+                  {riskCalculations.units === null ? 'N/A' : Math.round(riskCalculations.units).toLocaleString()} units of {tradingPair.split('/')[0]}
                 </div>
               </div>
 
-              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
+              <div className="min-w-0 p-5 rounded-2xl bg-slate-50 dark:bg-[#07090E] border border-slate-200 dark:border-white/[0.08]">
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">Calculated Pip Value</div>
-                <div className="text-3xl font-black text-blue-600 dark:text-blue-400 tabular-nums mt-1">
-                  ${riskCalculations.pipValueForPosition} <span className="text-base text-slate-700 dark:text-slate-300 font-normal">/ pip</span>
+                <div className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400 tabular-nums mt-1 [overflow-wrap:anywhere]">
+                  {riskCalculations.pipValue === null ? 'N/A' : `$${riskCalculations.pipValue.toLocaleString(undefined, { maximumFractionDigits: 4 })}`} <span className="text-base text-slate-700 dark:text-slate-300 font-normal">/ pip</span>
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
                   Loss per adverse pip movement
