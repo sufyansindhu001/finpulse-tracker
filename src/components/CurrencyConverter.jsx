@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
 import { recordConversion } from '../utils/telemetry';
+import { CALCULATOR_LIMITS, boundedDecimalInput, readBoundedAmount } from '../utils/calculatorMath';
 import { 
   ArrowLeftRight, 
   Copy, 
@@ -34,7 +35,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
   const targetObj = useMemo(() => getCurrencyInfo(targetCurrency), [targetCurrency]);
 
   // Calculations strictly from rates
-  const numericAmount = parseFloat(amount) || 0;
+  const numericAmount = readBoundedAmount(amount, CALCULATOR_LIMITS.fiatAmount) ?? 0;
   
   const convertedValue = useMemo(() => {
     return convertCurrency(numericAmount, baseCurrency, targetCurrency, activeRates);
@@ -160,11 +161,12 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
               <input
                 type="number"
                 min="0"
+                max={CALCULATOR_LIMITS.fiatAmount}
                 step="any"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.fiatAmount))}
                 placeholder="0.00"
-                className="w-full bg-transparent border-0 p-0 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight focus:outline-none focus:ring-0"
+                className="w-full min-w-0 bg-transparent border-0 p-0 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight focus:outline-none focus:ring-0"
               />
             </div>
           </div>
@@ -240,15 +242,15 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                 <span>Converted Output Total</span>
                 <span className="text-emerald-400 font-semibold">({targetCurrency})</span>
               </div>
-              <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tabular-nums tracking-tight">
+              <div className="flex items-baseline gap-3 flex-wrap min-w-0">
+                <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tabular-nums tracking-tight [overflow-wrap:anywhere] min-w-0">
                   {Number.isFinite(convertedValue) ? `${targetObj.symbol} ${convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : 'N/A'}
                 </span>
                 <span className="text-lg sm:text-2xl font-bold text-emerald-400 tracking-wide">
                   {targetCurrency}
                 </span>
               </div>
-              <div className="text-xs text-slate-300 dark:text-slate-400 mt-2.5 tabular-nums font-medium">
+              <div className="text-xs text-slate-300 dark:text-slate-400 mt-2.5 tabular-nums font-medium [overflow-wrap:anywhere]">
                 {numericAmount.toLocaleString()} {baseCurrency} = {Number.isFinite(convertedValue) ? convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : 'N/A'} {targetCurrency}
               </div>
             </div>
@@ -308,7 +310,7 @@ export default function CurrencyConverter({ rates = DEFAULT_RATES, lastUpdated, 
                     <CurrencyFlag code={dest.code} className="w-5 h-5" />
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{dest.code}</span>
                   </div>
-                  <div className="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">
+                  <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums [overflow-wrap:anywhere]">
                     {Number.isFinite(dest.converted) ? `${dest.symbol} ${dest.converted.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : 'N/A'}
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 truncate tabular-nums font-medium">
