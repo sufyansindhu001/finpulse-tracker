@@ -1,12 +1,12 @@
-// src/utils/currencyFlags.js - Universal Currency-to-Flag Mapper Utility
-// Automated currency-to-ISO-country mapping for 160+ global fiat currencies using FlagCDN.
+// Currency and country flag mapping. Multiple independent CDNs protect against
+// transient network failures; one missing image must not blank all flags.
 
 // Custom overrides for non-standard 2-letter codes
 export const currencyCountryOverrides = {
   EUR: 'eu',
   USD: 'us',
   GBP: 'gb',
-  ANG: 'nl', // Sint Maarten / Curacao
+  ANG: 'cw', // Curaçao: representative territory for the historic shared ANG
   XAF: 'cm', // Central African CFA
   XOF: 'sn', // West African CFA
   XCD: 'ag', // East Caribbean
@@ -29,18 +29,33 @@ export const currencyCountryOverrides = {
   XPT: null, // Platinum
 };
 
-export function getCurrencyFlagUrl(currencyCode) {
-  if (!currencyCode) return null;
+/** Ordered, independent image sources for ISO 3166-1 flags and the EU flag. */
+export function getCountryFlagUrls(countryCode) {
+  if (!/^[a-z]{2}$/i.test(countryCode || '')) return [];
+  const iso = countryCode.toLowerCase();
+  return [
+    `https://flagcdn.com/w40/${iso}.png`,
+    `https://flagcdn.io/flags/4x3/${iso}.svg`,
+    `https://flagsapi.com/${iso.toUpperCase()}/flat/64.png`,
+  ];
+}
+
+export function getCurrencyFlagUrls(currencyCode) {
+  if (!/^[a-z]{3}$/i.test(currencyCode || '')) return [];
   const code = currencyCode.toUpperCase();
 
   // Check overrides first
   if (currencyCountryOverrides[code] !== undefined) {
-    return currencyCountryOverrides[code] 
-      ? `https://flagcdn.com/w40/${currencyCountryOverrides[code]}.png` 
-      : null;
+    return currencyCountryOverrides[code]
+      ? getCountryFlagUrls(currencyCountryOverrides[code])
+      : [];
   }
 
-  // Default standard: first two letters correspond to ISO 3166-1 alpha-2
-  const countryCode = code.slice(0, 2).toLowerCase();
-  return `https://flagcdn.com/w40/${countryCode}.png`;
+  // Standard ISO 4217 codes usually begin with their territory's ISO 3166 code.
+  return getCountryFlagUrls(code.slice(0, 2));
+}
+
+// Keep this single-URL helper for code outside the shared flag component.
+export function getCurrencyFlagUrl(currencyCode) {
+  return getCurrencyFlagUrls(currencyCode)[0] || null;
 }

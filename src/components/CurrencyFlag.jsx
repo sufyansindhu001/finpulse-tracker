@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { getCurrencyFlagUrl } from '../utils/currencyFlags';
+import React from 'react';
+import { getCurrencyFlagUrls } from '../utils/currencyFlags';
+import FlagImage from './FlagImage';
 
 /**
  * Universal Currency Flag Component
@@ -9,10 +10,10 @@ import { getCurrencyFlagUrl } from '../utils/currencyFlags';
 export default function CurrencyFlag({ 
   code, 
   className = "w-5 h-5", 
-  alt = "" 
+  alt = "",
+  shape = 'circle',
 }) {
-  const [hasError, setHasError] = useState(false);
-  const flagUrl = getCurrencyFlagUrl(code);
+  const flagUrls = getCurrencyFlagUrls(code);
 
   const codeUpper = (code || '').toUpperCase();
 
@@ -38,27 +39,13 @@ export default function CurrencyFlag({
     );
   }
 
-  if (!flagUrl || hasError) {
-    return (
-      <span 
-        className={`${className} rounded-full bg-slate-200 dark:bg-slate-800 text-[10px] font-bold flex items-center justify-center shrink-0 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 select-none shadow-xs`}
-        title={code}
-      >
-        {(code || '').slice(0, 2).toUpperCase()}
-      </span>
-    );
-  }
-
   return (
-    <img 
-      src={flagUrl} 
-      alt={alt || `${code} flag`} 
-      width="20"
-      height="20"
-      decoding="async"
-      className={`${className} rounded-full object-cover shrink-0 border border-slate-200 dark:border-white/10 shadow-xs`}
-      onError={() => setHasError(true)}
-      loading="lazy"
+    <FlagImage
+      urls={flagUrls}
+      alt={alt || `${code} currency flag`}
+      fallbackLabel={code || ''}
+      className={className}
+      roundedClassName={shape === 'rect' ? 'rounded-sm' : 'rounded-full'}
     />
   );
 }

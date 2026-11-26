@@ -17,7 +17,7 @@ import {
   HelpCircle,
   ShieldCheck
 } from 'lucide-react';
-import { getCurrencyFlagUrl } from '../utils/currencyFlags';
+import CurrencyFlag from '../components/CurrencyFlag';
 import { useSEO } from '../hooks/useSEO';
 import { fetchLiveMetals, calculateGoldLocalMetrics, DEFAULT_METALS } from '../services/metalsService';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
@@ -191,7 +191,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
           change: 'N/A',
           isPositive: null,
           lastUpdated: 'Public FX Reference',
-          flagUrl: getCurrencyFlagUrl(upper)
+          flagCode: upper
         };
       });
 
@@ -435,30 +435,12 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                     >
                       <td className="py-3.5 px-3.5 sm:px-6 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-6 h-4.5 rounded overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/10 shadow-xs relative">
-                            {c.flagUrl ? (
-                              <img 
-                                src={c.flagUrl} 
-                                alt={c.code} 
-                                width="24"
-                                height="18"
-                                decoding="async"
-                                loading="lazy"
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none';
-                                  const fallback = e.currentTarget.parentElement.querySelector('.flag-fallback');
-                                  if (fallback) fallback.style.display = 'flex';
-                                }}
-                              />
-                            ) : null}
-                            <span 
-                              className="flag-fallback w-full h-full text-[9px] font-black items-center justify-center text-slate-600 dark:text-slate-300 select-none uppercase bg-slate-200 dark:bg-slate-800"
-                              style={{ display: c.flagUrl ? 'none' : 'flex' }}
-                            >
-                              {c.code.slice(0, 2)}
-                            </span>
-                          </div>
+                          <CurrencyFlag
+                            code={c.flagCode}
+                            alt={`${c.name} currency flag`}
+                            className="w-6 h-4.5"
+                            shape="rect"
+                          />
                           <div>
                             <span className="font-extrabold text-slate-900 dark:text-white text-sm">{c.code}</span>
                             <span className="text-[11px] text-slate-500 dark:text-[#A8B3C2] block">{c.name}</span>
