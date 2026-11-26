@@ -92,7 +92,7 @@ export default function CryptoTickerBar({ cryptoList = [], rates = DEFAULT_RATES
       id: 'fx-usd-pkr',
       type: 'fx',
       symbol: 'USD/PKR',
-      badge: 'Interbank',
+      badge: 'FX Ref',
       basePrice: usdToPkr,
       formatPrice: (p) => `₨${p.toFixed(2)}`,
       baseChange: null,
