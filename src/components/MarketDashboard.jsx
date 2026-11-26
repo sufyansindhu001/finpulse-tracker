@@ -129,7 +129,7 @@ export default function MarketDashboard({ rates = {}, cryptoList = [], onSelectA
         id: 'usd-pkr',
         type: 'forex',
         flagCode: 'PKR',
-        name: 'USD / PKR (Interbank Mid-Market)',
+        name: 'USD / PKR (Reference Rate)',
         symbol: 'USD/PKR',
         category: 'Emerging FX',
         price: usdPkrRate,
