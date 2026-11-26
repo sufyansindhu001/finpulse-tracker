@@ -39,7 +39,7 @@ const ratesFaqs = [
   },
   {
     q: "How does the State Bank of Pakistan (SBP) determine daily closing exchange rates?",
-    a: "The SBP calculates weighted-average interbank exchange rates based on all end-of-day transactions completed across authorized dealer commercial banks. This official closing rate serves as the statutory benchmark for customs duties, debt servicing valuation, and government accounting."
+    a: "The State Bank of Pakistan publishes exchange-rate statistics based on its own methodology and data sources. FGC Spot uses separate public reference providers and does not present its estimates as official SBP closing rates. Refer directly to SBP publications for regulatory use."
   },
   {
     q: "What is an Electronic Proceeds Realisation Certificate (e-PRC)?",
@@ -47,7 +47,7 @@ const ratesFaqs = [
   },
   {
     q: "How are cross-currency rates (e.g., EUR/PKR, GBP/PKR) computed?",
-    a: "Cross rates are calculated via triangular arbitrage through the US Dollar. For example, EUR/PKR is derived by multiplying the international EUR/USD spot rate by the domestic USD/PKR interbank rate, ensuring exact mathematical parity with global markets."
+    a: "The converter derives cross rates from available currency values relative to USD. For example, EUR/PKR is calculated as the USD/PKR reference divided by USD/EUR. This keeps the tool's calculations internally consistent but does not guarantee executable global market parity."
   },
   {
     q: "Can corporate businesses hedge against currency devaluation in Pakistan?",
@@ -58,7 +58,7 @@ const ratesFaqs = [
 export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRefreshing }) {
   useSEO({
     title: 'Live Currency Exchange Rates & Forex Terminal | FGC Spot',
-    description: 'Real-time interbank currency exchange rates, live FX spreads, and 160+ world currency market pricing on FGC Spot.',
+    description: 'Indicative global currency exchange-rate references with cross-rate calculations, transparent limitations and educational forex analysis.',
     canonical: '/rates'
   });
 
@@ -725,26 +725,26 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
 
           <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-5 font-normal">
             <p>
-              The foreign exchange rates presented across FGC Spot represent verified, multi-provider market data synthesized to deliver complete transparency for personal remittances, corporate treasury monitoring, and foreign trade settlement. Our pricing matrix incorporates both electronic interbank wholesale clearing and over-the-counter retail exchange company benchmarks.
+              FGC Spot presents indicative foreign exchange reference data gathered from available public providers. These calculations may help compare currencies for research and planning, but they are not executable interbank prices, official SBP closing rates or confirmed retail exchange-company offers.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose my-4">
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Cross-Rate Formula</span>
                 <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Rate(Base/Quote) = (USD/Quote) / (USD/Base)</p>
-                <p className="text-[11px] text-slate-500 leading-normal">Triangular cross-parity computed via US Dollar anchor to prevent synthetic pricing arbitrage.</p>
+                <p className="text-[11px] text-slate-500 leading-normal">Reference cross-rate calculated using a common USD base; actual dealing prices may differ.</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Spread Percentage</span>
                 <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Spread (%) = ((Ask - Bid) / Mid) &times; 100</p>
-                <p className="text-[11px] text-slate-500 leading-normal">Measures dealer friction; wholesale interbank typically sits at 0.02%–0.08%, retail cash at 0.5%–2.0%.</p>
+                <p className="text-[11px] text-slate-500 leading-normal">A formula for comparing a dealer's quoted ask and bid, where both are available; this table does not supply live executable bid/ask quotes.</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#06111F] border border-slate-200 dark:border-white/10 space-y-1.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#00E676]">Open Market Premium</span>
                 <p className="font-mono text-xs text-slate-800 dark:text-white font-bold">Premium (%) = ((Open - Interbank) / Interbank) &times; 100</p>
-                <p className="text-[11px] text-slate-500 leading-normal">Reflects physical currency transport, insurance, customs, and retail overheads in Pakistan.</p>
+                <p className="text-[11px] text-slate-500 leading-normal">An illustrative comparison if independently sourced open-market and interbank quotes are available.</p>
               </div>
             </div>
 
@@ -755,10 +755,10 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   <span>Data Providers &amp; Refresh Frequency</span>
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  <strong>Interbank Wholesale Feeds:</strong> Sourced from Open Exchange Rates and FloatRates multi-bank liquidity APIs, refreshed automatically every 60 seconds during active global banking hours (Monday through Friday 09:00 to 17:00 PKT).
+                  <strong>Public Reference Feeds:</strong> Available currency data comes from open.er-api.com, FloatRates and public currency API mirrors. Refreshes depend on upstream providers. The site caches FX quotes for two minutes and may briefly show earlier data while refreshing.
                 </p>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  <strong>Official Central Bank Closing:</strong> The State Bank of Pakistan (SBP) weighted-average daily closing benchmark is published weekdays at 16:30 PKT and serves as the legal reference for customs valuation and sovereign balance sheets.
+                  <strong>Official Benchmarks:</strong> SBP publishes its own exchange-rate statistics separately. For regulatory, accounting or settlement purposes, consult the <a href="https://www.sbp.org.pk/ecodata/rates.asp" target="_blank" rel="noopener noreferrer" className="underline">SBP source</a> and the relevant institution; figures here are not represented as SBP-certified.
                 </p>
               </div>
 
@@ -768,7 +768,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   <span>Data Limitations &amp; Retail Banking Charges</span>
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  Displayed figures reflect indicative mid-market rates. Retail banking transactions—such as cross-border credit card swipes or international debit card payments—incur card network fees (1.5% to 3.5%) and advance withholding tax under Section 236Y of the Income Tax Ordinance (5% for Active Taxpayers, 10% for Non-Filers).
+                  These indicative rates exclude provider spreads, transfer charges and any applicable tax. Card payments and international transfers may have different terms; check your issuer and the <a href="https://www.fbr.gov.pk/" target="_blank" rel="noopener noreferrer" className="underline">FBR</a> for current Pakistan tax treatment.
                 </p>
                 <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
                   Physical currency exchange at exchange company counters carries a cash delivery margin to cover secure banknote logistics and vaulting insurance.
@@ -783,12 +783,12 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                 <span>Practical Example: $1,000 Inward Remittance Valuation</span>
               </h3>
               <p className="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                If an overseas family member remits <strong>$1,000 USD</strong> to an account in Pakistan when the interbank rate is <strong>277.10 PKR</strong>:
+                Hypothetical illustration only: if a <strong>$1,000 USD</strong> remittance were valued at an assumed reference rate of <strong>277.10 PKR per USD</strong> (not a current quote):
               </p>
               <ul className="text-xs text-slate-600 dark:text-[#A8B3C2] list-disc pl-5 space-y-1">
-                <li><strong>Gross Interbank Proceeds:</strong> $1,000 &times; 277.10 = <strong>₨ 277,100 PKR</strong>. Under the Pakistan Remittance Initiative (PRI), home remittances exceeding $100 are exempt from inward banking transfer fees.</li>
-                <li><strong>Electronic Proceeds Realisation Certificate (e-PRC):</strong> The receiving commercial bank issues an e-PRC, confirming legitimate foreign exchange repatriation and shielding the funds from income tax scrutiny under Section 111(4) of the Income Tax Ordinance.</li>
-                <li><strong>Open Market Physical Cash:</strong> Exchanging $1,000 paper banknotes at an exchange company counter at 279.10 PKR yields ₨ 279,100, but lacks digital e-PRC tax documentation.</li>
+                <li><strong>Illustrative Gross Calculation:</strong> $1,000 &times; 277.10 = <strong>₨ 277,100 PKR</strong> before the receiving bank's actual rate, charges or applicable taxes.</li>
+                <li><strong>Electronic Proceeds Realisation Certificate (e-PRC):</strong> For eligible inward remittances, a receiving bank may issue a record of funds received. An e-PRC does not automatically exempt the payment from income tax; ask your bank and tax adviser about your circumstances.</li>
+                <li><strong>Cash Conversion Comparison:</strong> Physical cash exchanges use separately quoted counter rates and fees, which must be checked with a licensed provider. No live cash price is assumed in this example.</li>
               </ul>
             </div>
 
@@ -859,7 +859,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
               </span>
             </div>
             <Link to="/blog" className="text-xs font-bold text-slate-500 hover:text-[#00E676] transition-colors flex items-center gap-1">
-              <span>View All 30+ Guides</span>
+              <span>View All Research Guides</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -881,7 +881,7 @@ export default function RatesPage({ rates = {}, cryptoList = [], onRefresh, isRe
                   Freelance Remittances &amp; Banking in Pakistan: FBR Tax Regimes, PSEB Registration, and Foreign Currency Exporter Retention Accounts
                 </h3>
                 <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
-                  Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC certificate issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.
+                  An educational guide to Pakistani exporter retention accounts, e-PRC records, conditional tax treatment and how to compare exchange charges.
                 </p>
               </div>
               <div className="flex items-center justify-between text-xs font-bold text-[#00E676] pt-3 border-t border-slate-100 dark:border-white/5">
