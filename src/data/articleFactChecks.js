@@ -20,6 +20,45 @@ function replaceSection(content, start, end, replacement) {
 }
 
 const corrections = {
+  'freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained': content => {
+    content = replaceExact(content,
+      'understanding how to legally minimize taxes and retain hard currency is essential for financial longevity.',
+      'understanding applicable taxes, required records and permitted foreign-currency retention is important for financial planning.');
+    content = replaceExact(content,
+      'This authoritative guide breaks down the banking mechanics, tax exemptions, and foreign currency accounts available to Pakistani digital exporters under current legislation.',
+      'This guide explains banking procedures, conditional tax concessions and foreign-currency retention options for Pakistani digital exporters. Requirements and service-provider fees may change.');
+    content = replaceExact(content,
+      'without paying outward remittance taxes or interbank card conversion premiums (which often exceed 5% to 7%).',
+      'subject to bank documentation, applicable taxes, provider charges and any required foreign-exchange conversion.');
+    content = replaceExact(content,
+      'Most major banks now issue digital e-PRCs within 24 to 48 hours of credit.',
+      'e-PRC issuance time and availability depend on the bank, receipt classification and applicable SBP process.');
+    content = replaceExact(content,
+      'Subject to the applicable legislation and every qualifying condition being met, certain export receipts may receive final-tax treatment under Section 154A. This does **not** eliminate recordkeeping obligations or prevent the tax authority from checking the facts and documents.',
+      'The [FBR Finance Act 2026 salient features](https://www.fbr.gov.pk/Budget2026-27/SalientFeatures/Salient-Feature.pdf) confirm that the **0.25% concession for IT and IT-enabled service exporters continues through Tax Year 2029**. This is a conditional concessional tax **rate, not a tax exemption**. The alternative 1% rate and whether tax is final depend on the actual export category and requirements under Section 154A. Confirm the current [FBR withholding rate card](https://www.fbr.gov.pk/withholding-taxes-rate-card/174298/174301), registration, filings and supporting receipts; tax officials may still review records.');
+    content = replaceExact(content,
+      'Freelancers often lose 2% to 4% of their gross earnings through hidden FX spreads when receiving international transfers. Here is how leading platforms compare:',
+      'Cross-border receipts can carry bank charges, intermediary deductions and exchange-rate spreads that differ by provider and transaction. Compare written quotes and applicable fees before choosing a route:');
+    content = replaceExact(content,
+      'SBP interbank rates applied on conversion date.',
+      'The receiving bank sets its applicable conversion quote and fees; compare these with public reference rates.');
+    content = replaceExact(content,
+      'Requires your IBAN and bank SWIFT BIC. Lowest percentage loss for sums above $2,500.',
+      'Requires account and SWIFT details. The total cost depends on the sender, intermediary banks and recipient bank.');
+    content = replaceExact(content,
+      'Transfers directly into Pakistani bank accounts in PKR within minutes. Watch out for the 1.5% to 2% withdrawal spread.',
+      'May offer transfers to eligible Pakistani accounts; check the current delivery estimate, FX quote and transaction fees before confirming.');
+    content = replaceExact(content,
+      'Inward remittances automatically generate SBP e-PRCs directly in the mobile app.',
+      'Confirm service availability, receipt categorization and whether the bank can issue the documentary evidence you require.');
+    content = replaceExact(content,
+      '| **e-PRC Document Protection** | **100% SBP Authenticated** | 100% SBP Authenticated | **Zero (Unexplained Cash Credit)** |',
+      '| **Receipt documentation** | Bank-issued e-PRC when applicable | Bank-issued e-PRC when applicable | A P2P receipt does not itself create a bank-issued e-PRC |');
+    content = replaceExact(content,
+      'By maintaining active registration with the Pakistan Software Export Board, the consultant saves **PKR 126,000 in immediate taxes** every single year compared to an unregistered filer, while shielding $30,000 in USD reserves against local rupee currency devaluation.',
+      'In this **hypothetical example** at PKR 280 per USD, a 0.25% versus 1% deduction on PKR 16.8 million of otherwise eligible receipts differs by **PKR 126,000**. This is not a guaranteed annual tax saving. Eligibility, bank processing, applicable rules and actual exchange rates determine the outcome. Foreign-currency balances remain subject to their own risks and restrictions.');
+    return content;
+  },
   'pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide': content => {
     content = replaceExact(content,
       'routinely trade at forward P/E multiples ranging between **20x and 28x**',
