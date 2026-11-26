@@ -191,23 +191,20 @@ function renderMarkdownContent(content) {
 // Common Top Ticker Bar HTML
 function renderTickerBar() {
   const items = [
-    { label: 'USD/PKR (Interbank)', value: 'Rs. 277.10', change: '+0.12%', up: true },
-    { label: 'USD/PKR (Open Mkt)', value: 'Rs. 279.40', change: '+0.07%', up: true },
-    { label: 'EUR/PKR', value: 'Rs. 302.50', change: '+0.08%', up: true },
-    { label: 'GBP/PKR', value: 'Rs. 358.20', change: '-0.05%', up: false },
-    { label: 'SAR/PKR', value: 'Rs. 73.90', change: '+0.02%', up: true },
-    { label: 'AED/PKR', value: 'Rs. 75.45', change: '+0.01%', up: true },
-    { label: 'Gold 24K (Tola)', value: 'Rs. 284,500', change: '+0.45%', up: true },
-    { label: 'Gold (Ounce)', value: '$2,650.40', change: '+0.32%', up: true },
-    { label: 'BTC/USD', value: '$96,420', change: '+2.84%', up: true },
-    { label: 'ETH/USD', value: '$2,745', change: '+1.92%', up: true }
+    { label: 'USD/PKR' },
+    { label: 'EUR/PKR' },
+    { label: 'GBP/PKR' },
+    { label: 'SAR/PKR' },
+    { label: 'AED/PKR' },
+    { label: 'Gold 24K (Tola)' },
+    { label: 'BTC/USD' },
+    { label: 'ETH/USD' }
   ];
 
   let itemsHtml = items.map(i => `
     <div class="inline-flex items-center gap-2 px-3 py-1 text-xs border-r border-slate-200 dark:border-white/10 shrink-0">
       <span class="font-semibold text-slate-700 dark:text-[#A8B3C2]">${i.label}:</span>
-      <span class="font-mono font-bold text-slate-900 dark:text-white">${i.value}</span>
-      <span class="font-mono text-[10px] font-bold ${i.up ? 'text-[#00E676]' : 'text-rose-500'}">${i.change}</span>
+      <span class="font-mono text-[10px] text-slate-500">Fetching reference quote</span>
     </div>
   `).join('');
 
@@ -215,7 +212,7 @@ function renderTickerBar() {
     <div class="relative z-20 bg-white/90 dark:bg-[#06111F]/90 border-b border-slate-200 dark:border-white/10 backdrop-blur-md overflow-hidden py-1">
       <div class="flex items-center whitespace-nowrap overflow-x-auto no-scrollbar max-w-7xl mx-auto px-4">
         <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full mr-3 shrink-0">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-pulse"></span> Live Feeds
+          <span class="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-pulse"></span> Market Data
         </span>
         <div class="flex items-center">${itemsHtml}</div>
       </div>
@@ -318,11 +315,11 @@ function renderFooter() {
               <span class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">FGC Spot</span>
             </a>
             <p class="text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-[#A8B3C2] max-w-sm">
-              Pakistan's dedicated institutional financial information portal. Providing real-time interbank currency exchange rates, Karachi Sarafa Association gold bullion benchmarks, Pakistan Stock Exchange (PSX) equity analytics, and empirical macroeconomic research.
+              Financial education and market-data tools covering public foreign-exchange references, bullion calculations, equities and original research. Prices depend on independent providers.
             </p>
             <div class="pt-2 flex items-center gap-3 text-xs text-slate-500 font-mono">
               <span class="w-2 h-2 rounded-full bg-[#00E676]"></span>
-              <span>Sub-40ms Interbank & Sarafa Sync Engine</span>
+              <span>Provider-Based Reference Data</span>
             </div>
           </div>
 
@@ -373,7 +370,7 @@ function renderFooter() {
         <div class="p-4 sm:p-6 rounded-2xl bg-slate-100 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-2 text-[11px] leading-relaxed text-slate-500 dark:text-[#A8B3C2]">
           <p class="font-bold text-slate-800 dark:text-white uppercase tracking-wider">Regulatory Compliance & Financial Disclaimer</p>
           <p>
-            FGC Spot is a financial research, analytical data aggregator, and educational publishing platform. The information provided across our foreign exchange rates, gold bullion valuations, stock screener, and digital asset trackers is compiled from institutional feeds, central bank closing bulletins, and exchange networks solely for informational and research purposes. FGC Spot is not an investment broker, foreign exchange dealer, or licensed investment advisory service under the Securities and Exchange Commission of Pakistan (SECP) or the State Bank of Pakistan (SBP). None of the materials or calculations constitute personal financial, tax, or investment advice.
+            FGC Spot publishes financial education, research and indicative data from available public providers. Quotes may be delayed or unavailable, and may differ from official central-bank, exchange or dealer prices. FGC Spot is not an investment broker, foreign exchange dealer or licensed investment advisory service. The content is not personal financial, legal, tax or investment advice.
           </p>
         </div>
 
@@ -453,24 +450,24 @@ function renderHomePage() {
           {/* Live Quick Market Cards */}
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
             <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs space-y-1">
-              <span class="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">USD to PKR (Interbank)</span>
-              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">Rs. 277.10</div>
-              <span class="text-[11px] font-semibold text-[#00E676]">SBP Closing: Rs. 277.05</span>
+              <span class="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">USD to PKR (Reference)</span>
+              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+              <span class="text-[11px] font-semibold text-[#00E676]">Fetching provider quote</span>
             </div>
             <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs space-y-1">
-              <span class="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">USD to PKR (Open Market)</span>
-              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">Rs. 279.40</div>
-              <span class="text-[11px] font-semibold text-amber-500">ECAP Cash Benchmark</span>
+              <span class="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">Open-Market Cash Rate</span>
+              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+              <span class="text-[11px] font-semibold text-amber-500">Ask licensed exchange providers</span>
             </div>
             <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs space-y-1">
               <span class="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">Gold 24K (Per Tola)</span>
-              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">Rs. 284,500</div>
-              <span class="text-[11px] font-semibold text-[#00E676]">Karachi Sarafa Benchmark</span>
+              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+              <span class="text-[11px] font-semibold text-[#00E676]">Fetching metals reference</span>
             </div>
             <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 shadow-xs space-y-1">
               <span class="text-xs font-semibold text-slate-500 dark:text-[#A8B3C2]">Bitcoin (BTC/USD)</span>
-              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">$96,420</div>
-              <span class="text-[11px] font-semibold text-[#00E676]">+2.84% 24h Vol $42.5B</span>
+              <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+              <span class="text-[11px] font-semibold text-[#00E676]">Fetching market quote</span>
             </div>
           </div>
 
@@ -487,12 +484,12 @@ function renderHomePage() {
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
               <h3 class="text-lg font-bold text-slate-900 dark:text-white">Interbank Foreign Exchange Terminal</h3>
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">Continuous tracking of 160+ fiat currencies against the Pakistani Rupee (PKR). Real-time bid, ask, and spread analysis between interbank settlement windows and open market exchange booths.</p>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">Reference-rate calculations across major fiat currencies, including the Pakistani Rupee (PKR). Bank bid/ask quotes and physical cash exchange prices may differ.</p>
               <a href="/rates" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#00E676] hover:underline">Launch Rates Terminal &rarr;</a>
             </div>
             <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
               <h3 class="text-lg font-bold text-slate-900 dark:text-white">Gold Bullion & Karat Calculator</h3>
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">Precision valuation for 24K, 22K, 21K, and 18K gold. Calculates tola (11.664g), 10-gram, and gram rates synchronized with Karachi Sarafa Association daily benchmark fixings.</p>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">Indicative valuation formulas for 24K, 22K, 21K and 18K gold using available spot and FX references. Local Sarafa shop prices can differ.</p>
               <a href="/gold" class="inline-flex items-center gap-1.5 text-xs font-bold text-[#00E676] hover:underline">Calculate Gold Rates &rarr;</a>
             </div>
             <div class="p-6 rounded-2xl bg-slate-50 dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
@@ -518,28 +515,28 @@ function renderHomePage() {
             <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
               <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">1. Foreign Exchange & Sovereign Currency Corridors</h3>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                Foreign exchange rates on FGC Spot are derived from tier-one institutional interbank liquidity feeds, tracking over 160 sovereign currencies continuously. Our pricing engine cross-checks live quotes against the US Dollar Index (DXY), European Central Bank (ECB) fixings, and central bank clearing networks—including the State Bank of Pakistan (SBP) interbank settlement windows.
+                FGC Spot uses available public foreign-exchange reference feeds. Cross-currency values are calculated from a common USD base. These references are not direct quotes from institutional dealing desks, the European Central Bank or the State Bank of Pakistan.
               </p>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                In emerging economies characterized by two-tier currency markets (such as Pakistan and frontier South Asia), FGC Spot monitors both the formal Interbank Clearing Rate and the Open Market / Exchange Companies Association of Pakistan (ECAP) cash rate. By calculating the interbank-open market spread in real-time, our terminal equips treasurers, freelance earners, and remittance senders with transparent data to prevent predatory banking exchange fees and hidden corridor markups.
+                In markets such as Pakistan, banks and licensed cash exchange businesses may quote different rates. FGC Spot's reference conversion alone cannot establish a dealer's actual cash premium or fee. Compare the amount a provider will deliver before committing a payment.
               </p>
             </div>
             <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
               <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">2. Precious Metals & Sarafa Bullion Benchmarks</h3>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                Gold and silver spot prices reflect international LBMA (London Bullion Market Association) spot quotes converted at live interbank dollar parities, then calibrated against domestic bullion market rates across Karachi, Lahore, and Rawalpindi Sarafa Bazaars.
+                Gold and silver calculations use available public spot references and USD/PKR reference data. They are not official LBMA fixings or independently verified Sarafa dealer quotes.
               </p>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                Our proprietary conversion algorithm dynamically translates troy ounces into South Asian metric standards, specifically Tola (11.664 grams) and 10-gram units across 24-Karat pure bullion, 22-Karat jewelry grade, 21-Karat, and 18-Karat industrial compositions. This guarantees that consumers and commercial bullion dealers calculate fair metal valuations before accounting for retail jeweler fabrication charges (making charges).
+                The conversion formula translates troy ounces into tola and gram units, then applies gold purity ratios. Results are indicative metal values; jewelers may charge fabrication premiums and local market prices can differ.
               </p>
             </div>
             <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
               <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">3. Decentralized Digital Assets & Multi-Exchange Aggregation</h3>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                Cryptocurrency valuation feeds are ingested via high-frequency multi-exchange WebSocket pipelines, synthesizing order book depth across premier global liquidity hubs. By computing volume-weighted average prices (VWAP), FGC Spot eliminates regional arbitrage anomalies and flash crashes.
+                Cryptocurrency values are sourced from available public market-data endpoints when they respond. The site does not operate a live multi-exchange order-book or WebSocket trading feed.
               </p>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                Every digital asset benchmark includes real-time Pakistani Rupee (PKR) counter-values calculated directly from live USD/PKR interbank settlements, allowing cross-border asset tracking while maintaining complete adherence to State Bank of Pakistan regulatory circulars regarding virtual assets.
+                PKR equivalents are calculated from available USD crypto prices and FX reference quotes. They are educational estimates, not guaranteed conversion, trading or custody offers.
               </p>
             </div>
             <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
@@ -597,7 +594,7 @@ function renderHomePage() {
                   </a>
                 </h3>
                 <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-                  Comprehensive roadmap for Pakistani software exporters and digital freelancers: opening 50% retention foreign currency accounts, e-PRC issuance, PSEB tax exemptions (0.25% final tax), and avoiding interbank conversion spreads.
+                  Educational guide to exporter retention accounts, e-PRC documentation, conditional tax treatment and comparing bank conversion costs.
                 </p>
               </div>
               <div class="pt-4 border-t border-slate-200 dark:border-white/10 text-[11px] text-slate-500 flex items-center justify-between">
@@ -633,18 +630,18 @@ function renderHomePage() {
 
 function renderRatesPage() {
   const currencyRows = [
-    { code: 'USD', name: 'US Dollar', interbankBuy: '277.05', interbankSell: '277.55', openBuy: '279.10', openSell: '280.20', change: '+0.12%' },
-    { code: 'EUR', name: 'Euro', interbankBuy: '302.10', interbankSell: '302.80', openBuy: '303.50', openSell: '305.00', change: '+0.08%' },
-    { code: 'GBP', name: 'British Pound', interbankBuy: '357.80', interbankSell: '358.50', openBuy: '359.50', openSell: '361.50', change: '-0.05%' },
-    { code: 'SAR', name: 'Saudi Riyal', interbankBuy: '73.80', interbankSell: '74.05', openBuy: '74.30', openSell: '74.90', change: '+0.02%' },
-    { code: 'AED', name: 'UAE Dirham', interbankBuy: '75.35', interbankSell: '75.60', openBuy: '75.90', openSell: '76.50', change: '+0.01%' },
-    { code: 'CAD', name: 'Canadian Dollar', interbankBuy: '202.40', interbankSell: '203.10', openBuy: '204.00', openSell: '206.00', change: '+0.15%' },
-    { code: 'AUD', name: 'Australian Dollar', interbankBuy: '181.50', interbankSell: '182.20', openBuy: '183.00', openSell: '185.00', change: '+0.22%' },
-    { code: 'JPY', name: 'Japanese Yen (100)', interbankBuy: '184.20', interbankSell: '185.00', openBuy: '185.50', openSell: '187.50', change: '-0.10%' },
-    { code: 'CNY', name: 'Chinese Yuan', interbankBuy: '38.20', interbankSell: '38.45', openBuy: '38.60', openSell: '39.20', change: '+0.04%' },
-    { code: 'QAR', name: 'Qatari Riyal', interbankBuy: '76.00', interbankSell: '76.25', openBuy: '76.50', openSell: '77.10', change: '+0.02%' },
-    { code: 'KWD', name: 'Kuwaiti Dinar', interbankBuy: '902.50', interbankSell: '905.00', openBuy: '908.00', openSell: '915.00', change: '+0.05%' },
-    { code: 'OMR', name: 'Omani Rial', interbankBuy: '719.20', interbankSell: '721.00', openBuy: '723.00', openSell: '728.00', change: '+0.02%' }
+    { code: 'USD', name: 'US Dollar' },
+    { code: 'EUR', name: 'Euro' },
+    { code: 'GBP', name: 'British Pound' },
+    { code: 'SAR', name: 'Saudi Riyal' },
+    { code: 'AED', name: 'UAE Dirham' },
+    { code: 'CAD', name: 'Canadian Dollar' },
+    { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'JPY', name: 'Japanese Yen' },
+    { code: 'CNY', name: 'Chinese Yuan' },
+    { code: 'QAR', name: 'Qatari Riyal' },
+    { code: 'KWD', name: 'Kuwaiti Dinar' },
+    { code: 'OMR', name: 'Omani Rial' }
   ];
 
   const rowsHtml = currencyRows.map(c => `
@@ -653,11 +650,11 @@ function renderRatesPage() {
         <span class="font-mono text-[#00E676]">${c.code}</span>
         <span class="text-xs text-slate-500 font-normal">(${c.name})</span>
       </td>
-      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">Rs. ${c.interbankBuy}</td>
-      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">Rs. ${c.interbankSell}</td>
-      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">Rs. ${c.openBuy}</td>
-      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">Rs. ${c.openSell}</td>
-      <td class="p-4 font-mono text-xs font-bold ${c.change.startsWith('+') ? 'text-[#00E676]' : 'text-rose-500'}">${c.change}</td>
+      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">N/A</td>
+      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">N/A</td>
+      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">N/A</td>
+      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">N/A</td>
+      <td class="p-4 font-mono text-xs text-slate-500">Awaiting feed</td>
       <td class="p-4 text-right">
         <a href="/converter?from=${c.code}&to=PKR" class="px-3 py-1 rounded-lg bg-[#00E676]/10 text-[#00E676] hover:bg-[#00E676] hover:text-[#06111F] text-xs font-bold transition-all">Convert</a>
       </td>
@@ -680,7 +677,7 @@ function renderRatesPage() {
           Live Currency Exchange Rates in Pakistan (Interbank & Open Market)
         </h1>
         <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] max-w-3xl leading-relaxed">
-          Official weighted interbank exchange rates published by authorized dealer commercial banks and cash rates from the Exchange Companies Association of Pakistan (ECAP).
+          Indicative public-reference FX data loads in the interactive app. Official bank or licensed-dealer bid, ask and cash quotes are not independently available in this pre-rendered view.
         </p>
       </div>
 
@@ -720,16 +717,16 @@ function renderRatesPage() {
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Bid-Ask & Open Market Premium</h2>
           <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Spread (%) = ((Ask - Bid) / Mid) &times; 100</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Wholesale interbank transactions operate at near-zero spreads (0.02%–0.08%), whereas retail cash transactions incur transport, vault insurance, and retail branch operating overheads.
+            The spread can be computed when independently verified buy and sell quotes are provided. Retail transactions may include additional charges.
           </p>
         </div>
 
         <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
           <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full">Remittance Protection</span>
-          <h2 class="text-base font-bold text-slate-900 dark:text-white">e-PRC Tax Certificate Issuance</h2>
-          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">FBR Section 111(4) &amp; Section 236Y</p>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">e-PRC Remittance Records</h2>
+          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Bank-issued transaction documentation</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Formal commercial bank channels issue an Electronic Proceeds Realisation Certificate (e-PRC), providing statutory proof of foreign remittances for FBR tax exemptions.
+            Receiving banks can issue e-PRCs for eligible inward payments. A certificate documents the receipt; it is not itself an automatic tax exemption.
           </p>
         </div>
       </div>
@@ -740,7 +737,7 @@ function renderRatesPage() {
           Practical Remittance Example: $1,000 Inward Transfer
         </h2>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-          At an interbank benchmark of 277.10 PKR, remitting $1,000 yields Rs. 277,100 gross with zero inward transfer charges under the Pakistan Remittance Initiative (PRI). Converting cash banknotes at an exchange company counter yields Rs. 279,100 (open market rate), but forfeits official e-PRC tax documentation. For complete compliance details, read our research: <a href="/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained" class="text-[#00E676] underline font-semibold">Freelance Remittance & Banking Tax Guide</a>.
+          Hypothetical arithmetic only: at an assumed rate of 277.10 PKR per USD, $1,000 would equal Rs. 277,100 before provider charges or taxes. This is not a live market quote. Actual bank and cash rates must be confirmed separately. For remittance documentation and current tax conditions, see our <a href="/blog/freelance-remittances-banking-in-pakistan-fbr-tax-regimes-pseb-registration-and-retention-accounts-explained" class="text-[#00E676] underline font-semibold">Remittance &amp; Banking Guide</a>.
         </p>
         <p class="text-[11px] text-slate-500 pt-2 border-t border-slate-100 dark:border-white/5">
           <strong>Regulatory Notice:</strong> FGC Spot is an independent financial technology aggregator. We are not an authorized foreign exchange dealer or bank under the Foreign Exchange Regulation Act, 1947. Rates are published for informational purposes.
@@ -753,20 +750,20 @@ function renderRatesPage() {
 
 function renderGoldPage() {
   const goldItems = [
-    { purity: '24K Gold (Pure Bullion 99.9%)', perTola: 'Rs. 284,500', per10g: 'Rs. 243,910', perGram: 'Rs. 24,391', perOunce: '$2,650.40' },
-    { purity: '22K Gold (Jewelry Standard 91.6%)', perTola: 'Rs. 260,790', per10g: 'Rs. 223,580', perGram: 'Rs. 22,358', perOunce: '$2,429.50' },
-    { purity: '21K Gold (87.5% Purity)', perTola: 'Rs. 248,930', per10g: 'Rs. 213,420', perGram: 'Rs. 21,342', perOunce: '$2,319.10' },
-    { purity: '18K Gold (75.0% Purity)', perTola: 'Rs. 213,375', per10g: 'Rs. 182,930', perGram: 'Rs. 18,293', perOunce: '$1,987.80' },
-    { purity: 'Silver Fine 999 (Per Tola)', perTola: 'Rs. 3,350', per10g: 'Rs. 2,872', perGram: 'Rs. 287', perOunce: '$31.40' }
+    { purity: '24K Gold (Pure Bullion 99.9%)' },
+    { purity: '22K Gold (Jewelry Standard 91.6%)' },
+    { purity: '21K Gold (87.5% Purity)' },
+    { purity: '18K Gold (75.0% Purity)' },
+    { purity: 'Silver Fine 999' }
   ];
 
   const goldRows = goldItems.map(g => `
     <tr class="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors border-b border-slate-100 dark:border-white/5">
       <td class="p-4 font-bold text-slate-900 dark:text-white">${g.purity}</td>
-      <td class="p-4 font-mono font-bold text-[#00E676]">${g.perTola}</td>
-      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">${g.per10g}</td>
-      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">${g.perGram}</td>
-      <td class="p-4 font-mono font-semibold text-slate-600 dark:text-[#A8B3C2]">${g.perOunce}</td>
+      <td class="p-4 font-mono font-bold text-[#00E676]">N/A</td>
+      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">N/A</td>
+      <td class="p-4 font-mono font-semibold text-slate-800 dark:text-slate-200">N/A</td>
+      <td class="p-4 font-mono font-semibold text-slate-600 dark:text-[#A8B3C2]">N/A</td>
     </tr>
   `).join('');
 
@@ -786,7 +783,7 @@ function renderGoldPage() {
           Gold Rates in Pakistan — 24K, 22K, 21K Tola & 10 Gram Bullion Calculator
         </h1>
         <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] max-w-3xl leading-relaxed">
-          Real-time bullion benchmark prices calibrated against Karachi Sarafa Association official fixings and international spot London Bullion Market Association (LBMA) feeds.
+          Indicative gold and silver conversions are calculated when source quotations are available. This page does not represent an official Karachi Sarafa or LBMA fixing.
         </p>
       </div>
 
@@ -813,9 +810,9 @@ function renderGoldPage() {
         <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
           <span class="text-[10px] font-bold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded-full">24K Tola Formula</span>
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Bullion Weight Conversion</h2>
-          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Rate/Tola = (Spot / 31.1035) &times; USD_PKR &times; 11.664 &times; 1.033</p>
+          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Rate/Tola = (Spot / 31.1035) &times; USD_PKR &times; 11.664</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            1 Tola is precisely 11.664 grams (180 troy grains). The 1.033 local factor reflects Karachi Sarafa Association assay, freight, and physical import tariff adjustments.
+            One tola is approximately 11.664 grams. The formula converts a USD-per-troy-ounce reference into a PKR-per-tola equivalent before any local jeweler premium.
           </p>
         </div>
 
@@ -833,7 +830,7 @@ function renderGoldPage() {
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Making Charges (Mazdoori)</h2>
           <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Total = (Weight &times; Gold Rate) + Mazdoori</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Jewelers charge Rs. 1,500 to Rs. 4,500 per tola for fabrication. Making charges are non-recoverable upon resale; investors seeking pure capital preservation should buy 24K cast bars.
+            Jeweler fabrication fees vary by product, seller and date. Always ask for the full purchase and potential resale charges before comparing jewelry with bullion.
           </p>
         </div>
       </div>
@@ -880,23 +877,23 @@ function renderStocksPage() {
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-1">
           <span class="text-xs font-semibold text-slate-500">PSX KSE-100 Index</span>
-          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">92,450.80</div>
-          <span class="text-xs font-bold text-[#00E676]">+1.24% (+1,130 pts)</span>
+          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+          <span class="text-xs text-slate-500">Awaiting verified quote</span>
         </div>
         <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-1">
           <span class="text-xs font-semibold text-slate-500">KSE-30 Index</span>
-          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">28,140.10</div>
-          <span class="text-xs font-bold text-[#00E676]">+1.05%</span>
+          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+          <span class="text-xs text-slate-500">Awaiting verified quote</span>
         </div>
         <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-1">
           <span class="text-xs font-semibold text-slate-500">S&P 500 (US)</span>
-          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">5,860.20</div>
-          <span class="text-xs font-bold text-[#00E676]">+0.42%</span>
+          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+          <span class="text-xs text-slate-500">Awaiting verified quote</span>
         </div>
         <div class="p-5 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-1">
           <span class="text-xs font-semibold text-slate-500">KSE-100 Avg Div Yield</span>
-          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">11.8%</div>
-          <span class="text-xs font-bold text-slate-500">Trailing Twelve Months</span>
+          <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white">N/A</div>
+          <span class="text-xs font-bold text-slate-500">Awaiting sourced data</span>
         </div>
       </div>
 
@@ -907,7 +904,7 @@ function renderStocksPage() {
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Price-to-Earnings (P/E)</h2>
           <p class="font-mono text-xs text-slate-700 dark:text-slate-300">P/E = Market Price per Share / EPS (TTM)</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Measures equity multiple compression. The PSX trades at an aggregate P/E of 4.5x–5.8x, reflecting frontier market risk discount relative to developed markets.
+            P/E compares a stock price with trailing earnings per share. Index-level valuation varies over time and should be checked against a dated exchange publication.
           </p>
         </div>
 
@@ -916,7 +913,7 @@ function renderStocksPage() {
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Dividend Yield &amp; Payout</h2>
           <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Yield (%) = (Annual DPS / Share Price) &times; 100</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            PSX blue-chips (commercial banks, fertilizers, energy) distribute generous cash returns, offering index dividend yields averaging 11.5%–14.0%.
+            Dividend yields vary by company and reporting period. No current index-wide yield estimate is asserted without a dated source.
           </p>
         </div>
 
@@ -934,7 +931,7 @@ function renderStocksPage() {
       <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-4">
         <h2 class="text-xl font-bold text-slate-900 dark:text-white">Key Sectors & Blue-Chip PSX Equities</h2>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-          The Pakistan Stock Exchange (PSX) hosts over 500 listed companies, with the benchmark KSE-100 heavily weighted across Commercial Banks (MBL, MCB, UBL, HBL), Exploration & Production (OGDC, PPL, MARI), Fertilizers (ENGRO, FFC), and Power/Cement producers (LUCK, HUBC). Quotes are delayed by 15 minutes during active market sessions (Monday through Friday 09:15 to 15:30 PKT).
+          The Pakistan Stock Exchange includes companies from banking, energy, fertilizers, cement, technology and other sectors. Quote availability and delay vary by provider. For current index composition, exchange hours and verified prices, check the <a href="https://www.psx.com.pk/" class="text-[#00E676] underline">Pakistan Stock Exchange</a> directly.
         </p>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
           For an in-depth analytical comparison with the S&P 500, read: <a href="/blog/pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide" class="text-[#00E676] underline font-semibold">PSX KSE-100 Valuation Multiples vs Global Equities</a>.
@@ -950,13 +947,13 @@ function renderStocksPage() {
 
 function renderCryptoPage() {
   const coins = [
-    { name: 'Bitcoin', symbol: 'BTC', priceUSD: '$96,420', pricePKR: 'Rs. 26,717,982', change: '+2.84%', mcap: '$1.89T', vol: '$42.5B' },
-    { name: 'Ethereum', symbol: 'ETH', priceUSD: '$2,745.50', pricePKR: 'Rs. 760,783', change: '+1.92%', mcap: '$330B', vol: '$21.4B' },
-    { name: 'Binance Coin', symbol: 'BNB', priceUSD: '$648.20', pricePKR: 'Rs. 179,616', change: '+1.10%', mcap: '$95B', vol: '$1.8B' },
-    { name: 'Solana', symbol: 'SOL', priceUSD: '$194.50', pricePKR: 'Rs. 53,895', change: '+5.12%', mcap: '$92B', vol: '$6.8B' },
-    { name: 'Ripple', symbol: 'XRP', priceUSD: '$2.34', pricePKR: 'Rs. 648', change: '-0.85%', mcap: '$132B', vol: '$8.5B' },
-    { name: 'Cardano', symbol: 'ADA', priceUSD: '$0.82', pricePKR: 'Rs. 227', change: '+3.40%', mcap: '$29B', vol: '$1.2B' },
-    { name: 'Dogecoin', symbol: 'DOGE', priceUSD: '$0.28', pricePKR: 'Rs. 77.5', change: '-1.25%', mcap: '$41B', vol: '$2.9B' }
+    { name: 'Bitcoin', symbol: 'BTC' },
+    { name: 'Ethereum', symbol: 'ETH' },
+    { name: 'Binance Coin', symbol: 'BNB' },
+    { name: 'Solana', symbol: 'SOL' },
+    { name: 'Ripple', symbol: 'XRP' },
+    { name: 'Cardano', symbol: 'ADA' },
+    { name: 'Dogecoin', symbol: 'DOGE' }
   ];
 
   const rows = coins.map(c => `
@@ -965,11 +962,11 @@ function renderCryptoPage() {
         <span class="font-mono text-[#00E676]">${c.symbol}</span>
         <span class="text-xs text-slate-500 font-normal">(${c.name})</span>
       </td>
-      <td class="p-4 font-mono font-bold text-slate-900 dark:text-white">${c.priceUSD}</td>
-      <td class="p-4 font-mono font-semibold text-[#00E676]">${c.pricePKR}</td>
-      <td class="p-4 font-mono text-xs font-bold ${c.change.startsWith('+') ? 'text-[#00E676]' : 'text-rose-500'}">${c.change}</td>
-      <td class="p-4 font-mono text-xs text-slate-600 dark:text-[#A8B3C2]">${c.mcap}</td>
-      <td class="p-4 font-mono text-xs text-slate-600 dark:text-[#A8B3C2]">${c.vol}</td>
+      <td class="p-4 font-mono font-bold text-slate-900 dark:text-white">N/A</td>
+      <td class="p-4 font-mono font-semibold text-[#00E676]">N/A</td>
+      <td class="p-4 font-mono text-xs text-slate-500">Awaiting feed</td>
+      <td class="p-4 font-mono text-xs text-slate-600 dark:text-[#A8B3C2]">N/A</td>
+      <td class="p-4 font-mono text-xs text-slate-600 dark:text-[#A8B3C2]">N/A</td>
     </tr>
   `).join('');
 
@@ -989,7 +986,7 @@ function renderCryptoPage() {
           Live Cryptocurrency Market Terminal — Top Digital Assets in USD & PKR
         </h1>
         <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] max-w-3xl leading-relaxed">
-          Real-time price quotes, 24-hour volume, and market capitalization across leading global digital assets with instant counter-values in Pakistani Rupees (PKR).
+          Public digital-asset price, volume and market-cap data is displayed when available from upstream providers. Initial HTML includes no fabricated quotes.
         </p>
       </div>
 
@@ -1019,16 +1016,16 @@ function renderCryptoPage() {
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Counter-Value Conversion</h2>
           <p class="font-mono text-xs text-slate-700 dark:text-slate-300">PKR Parity = Spot (USD) &times; Interbank (USD/PKR)</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Feeds are polled from CoinGecko VWAP markets every 60 seconds and converted via official interbank benchmarks.
+            Available CoinGecko USD reference quotes can be converted to PKR using the site's public FX reference feed; this is not an official interbank execution rate.
           </p>
         </div>
 
         <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
           <span class="text-[10px] font-bold uppercase tracking-wider text-rose-500 bg-rose-500/10 px-2.5 py-0.5 rounded-full">Regulatory Notice</span>
-          <h2 class="text-base font-bold text-slate-900 dark:text-white">SBP Circular BPRD/2018-03</h2>
-          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Virtual Currencies Unregulated</p>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">Regulatory Status Can Change</h2>
+          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Consult current regulator guidance</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            The State Bank of Pakistan does not recognize virtual currencies as legal tender. Commercial banking channels are prohibited from dealing in crypto. Data is displayed solely for research purposes.
+            Digital-asset legal treatment and payment restrictions differ by jurisdiction and can change. Consult current financial-regulator guidance before acting. Quotes here are for reference and education.
           </p>
         </div>
 
@@ -1063,7 +1060,7 @@ function renderConverterPage() {
           Live Currency Converter & Cross-Rate Calculation Engine
         </h1>
         <p class="text-sm sm:text-base text-slate-600 dark:text-[#A8B3C2] max-w-3xl leading-relaxed">
-          Convert between 160+ sovereign currencies with real-time interbank foreign exchange rates and zero hidden banking margins.
+          Convert using indicative public foreign-exchange reference rates when available. Your bank or remittance service may offer a different rate and charge fees.
         </p>
       </div>
 
@@ -1086,9 +1083,9 @@ function renderConverterPage() {
 
         <div class="p-6 rounded-2xl bg-[#00E676]/10 border border-[#00E676]/30 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span class="text-xs font-semibold text-slate-600 dark:text-[#A8B3C2]">Estimated Interbank Conversion Value</span>
-            <div class="text-2xl sm:text-3xl font-black font-mono text-[#00E676]">Rs. 277,100.00 PKR</div>
-            <span class="text-xs font-mono text-slate-500">1 USD = 277.10 PKR (Interbank Mid-Market)</span>
+            <span class="text-xs font-semibold text-slate-600 dark:text-[#A8B3C2]">Indicative Conversion Value</span>
+            <div class="text-2xl sm:text-3xl font-black font-mono text-[#00E676]">N/A</div>
+            <span class="text-xs font-mono text-slate-500">Awaiting verified FX reference feed</span>
           </div>
           <a href="/rates" class="px-6 py-2.5 rounded-xl bg-[#00E676] text-[#06111F] font-bold text-xs">
             View All Currency Rates
@@ -1103,25 +1100,25 @@ function renderConverterPage() {
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Triangular Cross-Parity</h2>
           <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Conversion = Amount &times; ((USD/To) / (USD/From))</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Eliminates synthetic spread distortions by calculating all world currency conversions through institutional US Dollar anchor rates.
+            Converts currencies through a common USD reference base without inserting an arbitrary bank spread; actual executable dealer rates may differ.
           </p>
         </div>
 
         <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
           <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full">Banking Friction</span>
           <h2 class="text-base font-bold text-slate-900 dark:text-white">Taxes &amp; Cross-Border Fees</h2>
-          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">FBR 236Y (5% / 10%) + 1.5%–3.5% Card Fee</p>
+          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Provider charge + applicable taxes</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Retail bank cards incur advance withholding tax and card network processing charges on international transactions.
+            Retail transactions may involve provider conversion spreads, processing charges and taxes according to current law and customer circumstances.
           </p>
         </div>
 
         <div class="p-6 rounded-2xl bg-white dark:bg-[#0A1726] border border-slate-200 dark:border-white/10 space-y-3">
           <span class="text-[10px] font-bold uppercase tracking-wider text-[#00E676] bg-[#00E676]/10 px-2.5 py-0.5 rounded-full">Practical Scenario</span>
           <h2 class="text-base font-bold text-slate-900 dark:text-white">$1,000 Inward Conversion</h2>
-          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Gross = Rs. 277,100 PKR + e-PRC</p>
+          <p class="font-mono text-xs text-slate-700 dark:text-slate-300">Gross = $1,000 &times; actual quoted rate</p>
           <p class="text-xs text-slate-600 dark:text-[#A8B3C2] leading-relaxed">
-            Inward remittances via Roshan Digital or commercial bank accounts qualify for PRI fee waivers and statutory e-PRC documentation.
+            Eligible inward remittances may receive bank-issued e-PRC documentation. Ask the receiving institution about charges, documentation and applicable tax rules.
           </p>
         </div>
       </div>
@@ -1707,7 +1704,7 @@ function renderDisclaimerPage() {
 
           <h2 class="text-base font-bold text-slate-900 dark:text-white">3. Volatility Risks &amp; Real-World Market Boundaries</h2>
           <p>
-            Foreign currency exchange rates, Pakistan Stock Exchange equities, physical gold bullion, and digital assets carry market volatility and capital loss risks. Indicative wholesale rates do not include retail bank card cross-border markups (1.5%–3.5%), advance withholding taxes under Section 236Y (5% for filers, 10% for non-filers), jeweler making charges (Mazdoori), or local dealer spreads.
+            Foreign exchange rates, equities, physical bullion and digital assets fluctuate and may involve capital risk. Indicative quotes exclude provider spreads, bank or card charges, applicable taxes, jeweler making charges and local dealer premiums. Check current regulations and final prices independently.
           </p>
 
           <h2 class="text-base font-bold text-slate-900 dark:text-white">4. Independent Due Diligence &amp; Data Verification</h2>
@@ -2122,7 +2119,7 @@ async function prerenderAll() {
     {
       route: '/converter',
       title: 'Live Currency Converter & Cross-Rate Matrix | FGC Spot',
-      description: 'Calculate real-time currency conversions using official interbank rates with zero hidden markups. Accurate PKR, USD, EUR, GBP, SAR cross-currency engine.',
+      description: 'Calculate indicative conversions using available public FX reference rates. Compare provider charges and actual quotes before transacting.',
       render: () => renderConverterPage()
     },
     {
@@ -2140,7 +2137,7 @@ async function prerenderAll() {
     {
       route: '/about',
       title: 'About Us — Institutional Market Analytics | FGC Spot',
-      description: 'Learn about FGC Spot, our mission to deliver real-time financial transparency, interbank currency rates, and market intelligence.',
+      description: 'Learn how FGC Spot provides financial education, public reference-rate tools, source disclosures and original research.',
       render: () => renderAboutPage()
     },
     {

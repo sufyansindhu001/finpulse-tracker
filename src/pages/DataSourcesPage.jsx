@@ -45,7 +45,7 @@ export default function DataSourcesPage() {
       dataType: 'Retail Over-the-Counter Cash Banknotes',
       frequency: 'Daily business session updates with intraday volatility adjustments',
       methodology: 'Cash market bid-ask spread reflecting retail dealer transport, insurance, security, and customs handling expenses: Spread (%) = ((Ask - Bid) / Mid) * 100.',
-      limitations: 'Physical cash notes carry a spread above wholesale electronic rates and do not generate digital e-PRC tax documentation for FBR income tax exemptions.'
+      limitations: 'Physical cash exchange uses separately quoted retail rates and charges. An e-PRC is a bank-issued record of qualifying inward remittances, not an automatic income-tax exemption.'
     },
     {
       tool: 'Gold & Silver Bullion Spot',

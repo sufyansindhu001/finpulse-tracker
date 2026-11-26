@@ -204,7 +204,7 @@ export default function App() {
           setRates(res.rates);
           setForexMeta({
             lastUpdated: res.lastUpdated || new Date().toLocaleTimeString(),
-            source: res.source || 'Live Interbank Feeds'
+            source: res.source || 'Public FX Reference Feeds'
           });
         }
         setForexError(null);
