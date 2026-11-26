@@ -59,7 +59,7 @@ export function saveRatesToCache(data) {
       rates: data.rates,
       base: data.base || 'USD',
       lastUpdated: data.lastUpdated || new Date().toISOString(),
-      source: data.source || 'Live Interbank Feeds',
+      source: data.source || 'Public FX Reference Feeds',
       timestamp: Date.now()
     };
     inMemoryRatesCache = record;
@@ -147,7 +147,7 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       });
     }
 
-    // Override with fresh, low-latency interbank mid-market quotes from floatrates
+    // Use provider reference rates for selected currencies when available.
     if (floatData && typeof floatData === 'object') {
       if (floatData.pkr?.rate) {
         const pkrVal = parseFloat(floatData.pkr.rate);
@@ -190,7 +190,7 @@ export async function fetchLiveExchangeRates(forceFresh = false) {
       rates: mergedRates,
       base: erData?.base_code || 'USD',
       lastUpdated: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      source: 'Live Interbank Mid-Market Feed'
+      source: 'Public FX Reference Feeds'
     };
 
     saveRatesToCache(result);
