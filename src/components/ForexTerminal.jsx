@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { CURRENCIES, getCurrencyInfo } from '../data/currencies';
 import { convertCurrency, getExchangeRate, DEFAULT_RATES } from '../services/forexService';
 import { recordConversion } from '../utils/telemetry';
+import { CALCULATOR_LIMITS, boundedDecimalInput, readBoundedAmount } from '../utils/calculatorMath';
 import { 
   ArrowLeftRight, 
   Copy, 
@@ -44,7 +45,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
     return (rates && Object.keys(rates).length > 0) ? rates : DEFAULT_RATES;
   }, [rates]);
 
-  const numericAmount = parseFloat(amount) || 0;
+  const numericAmount = readBoundedAmount(amount, CALCULATOR_LIMITS.fiatAmount) ?? 0;
 
   // Selected currency objects
   const baseObj = useMemo(() => getCurrencyInfo(baseCurrency), [baseCurrency]);
@@ -61,7 +62,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
       firstRender.current = false;
       return;
     }
-    if (numericAmount <= 0) return;
+    if (numericAmount <= 0 || !Number.isFinite(convertedValue)) return;
     const timer = setTimeout(() => {
       try {
         recordConversion(baseCurrency, targetCurrency, numericAmount, convertedValue);
@@ -87,7 +88,7 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
   };
 
   const handleCopy = () => {
-    if (convertedValue <= 0) return;
+    if (!Number.isFinite(convertedValue) || convertedValue <= 0) return;
     const text = `${numericAmount} ${baseCurrency} = ${convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} ${targetCurrency}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -196,11 +197,12 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                 <input
                   type="number"
                   min="0"
+                  max={CALCULATOR_LIMITS.fiatAmount}
                   step="any"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => setAmount(boundedDecimalInput(e.target.value, CALCULATOR_LIMITS.fiatAmount))}
                   placeholder="0.00"
-                  className="w-full bg-transparent border-0 p-0 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight focus:outline-none focus:ring-0"
+                  className="w-full min-w-0 bg-transparent border-0 p-0 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight focus:outline-none focus:ring-0"
                 />
               </div>
             </div>
@@ -271,16 +273,16 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                 <CurrencyFlag code={targetCurrency} className="w-4 h-4" />
                 <span>Simulated Output Total ({targetCurrency})</span>
               </div>
-              <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
-                  {targetObj.symbol} {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+              <div className="flex items-baseline gap-3 flex-wrap min-w-0">
+                <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight [overflow-wrap:anywhere] min-w-0">
+                  {Number.isFinite(convertedValue) ? `${targetObj.symbol} ${convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}` : 'N/A'}
                 </span>
                 <span className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">
                   {targetCurrency}
                 </span>
               </div>
-              <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 tabular-nums font-medium">
-                {numericAmount.toLocaleString()} {baseCurrency} = {convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {targetCurrency}
+              <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 tabular-nums font-medium [overflow-wrap:anywhere]">
+                {numericAmount.toLocaleString()} {baseCurrency} = {Number.isFinite(convertedValue) ? convertedValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : 'N/A'} {targetCurrency}
               </div>
             </div>
 
@@ -326,8 +328,8 @@ export default function ForexTerminal({ rates = DEFAULT_RATES, source, lastUpdat
                       <CurrencyFlag code={code} className="w-5 h-5" />
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{code}</span>
                     </div>
-                    <div className="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">
-                      {curr.symbol} {converted.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    <div className="text-sm font-bold text-slate-900 dark:text-white tabular-nums [overflow-wrap:anywhere]">
+                      {Number.isFinite(converted) ? `${curr.symbol} ${converted.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : 'N/A'}
                     </div>
                     <div className="text-xs text-slate-600 dark:text-slate-400 mt-1 truncate tabular-nums font-medium">
                       1 {baseCurrency} = {rate < 0.01 ? rate.toFixed(4) : rate.toFixed(2)}
