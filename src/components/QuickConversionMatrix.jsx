@@ -23,7 +23,7 @@ export default function QuickConversionMatrix({ rates = DEFAULT_RATES, onSelectP
           </div>
           <span className="text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full self-start sm:self-center flex items-center gap-2 font-semibold shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Live Interbank Feed</span>
+            <span>Public FX Reference Feed</span>
           </span>
         </div>
 
