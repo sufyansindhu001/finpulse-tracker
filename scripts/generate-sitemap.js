@@ -25,14 +25,13 @@ const STATIC_PAGES = [
   { url: `${BASE_URL}/author/sufyan-sindhu`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/editorial-policy`, changefreq: 'monthly', priority: '0.7', lastmod: TODAY },
   { url: `${BASE_URL}/data-sources`, changefreq: 'monthly', priority: '0.7', lastmod: TODAY },
-  // Tools, Stocks & News
+  // Indexable tools. The syndicated /news wire is intentionally noindex.
   { url: `${BASE_URL}/stocks`, changefreq: 'hourly', priority: '0.9', lastmod: TODAY },
   { url: `${BASE_URL}/converter`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/rates`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/crypto`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
   { url: `${BASE_URL}/gold`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY },
-  { url: `${BASE_URL}/charts`, changefreq: 'daily', priority: '0.8', lastmod: TODAY },
-  { url: `${BASE_URL}/news`, changefreq: 'hourly', priority: '0.8', lastmod: TODAY }
+  { url: `${BASE_URL}/charts`, changefreq: 'daily', priority: '0.8', lastmod: TODAY }
 ];
 
 async function fetchArticles() {
