@@ -67,7 +67,7 @@ export default function Footer() {
                 <Globe className="w-3.5 h-3.5 text-[#00E676]" /> 160+ Global Currencies
               </span>
               <span className="flex items-center gap-1.5 bg-white dark:bg-[#0D1B2A] border border-slate-200 dark:border-white/10 px-2.5 py-1 rounded-full text-slate-800 dark:text-white shadow-xs">
-                <Zap className="w-3.5 h-3.5 text-[#00E676]" /> Sub-Second Live Feeds
+                <Zap className="w-3.5 h-3.5 text-[#00E676]" /> Refreshed Market Data
               </span>
             </div>
 
