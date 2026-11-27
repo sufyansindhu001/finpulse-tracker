@@ -4,6 +4,7 @@
  * Integrates real client session fingerprinting, genuine user conversions,
  * actual contact inquiries, and centralized Serverless cross-device sync (/api/track).
  */
+import { hasAnalyticsConsent } from './consent.js';
 
 const STORAGE_KEYS = {
   EVENTS: 'fgc_spot_telemetry_events',
@@ -49,6 +50,7 @@ const CURRENT_TAB_ID = generateId();
 
 // Real tab heartbeat system
 function updateTabHeartbeat() {
+  if (!hasAnalyticsConsent()) return;
   try {
     const now = Date.now();
     const raw = localStorage.getItem(STORAGE_KEYS.ACTIVE_TABS);
@@ -100,6 +102,7 @@ export function getRealActiveSessionCount() {
 }
 
 export function getVisitorId() {
+  if (!hasAnalyticsConsent()) return 'optional_analytics_disabled';
   try {
     let vid = localStorage.getItem(STORAGE_KEYS.VISITOR_ID);
     if (!vid) {
@@ -308,6 +311,7 @@ function appendEvent(eventObj) {
 // -------------------------------------------------------------
 
 export function trackEvent(type, description, category = 'General') {
+  if (!hasAnalyticsConsent()) return null;
   const event = {
     id: generateId(),
     timestamp: new Date().toISOString(),
@@ -324,6 +328,7 @@ export function trackEvent(type, description, category = 'General') {
  * Dispatches to centralized serverless API and stores in local cache.
  */
 export function recordPageView(path) {
+  if (!hasAnalyticsConsent()) return;
   const todayKey = getTodayKey();
   const visitorId = getVisitorId();
   const daily = getStoredDaily();
@@ -392,6 +397,7 @@ export function recordPageView(path) {
  * Record a REAL conversion execution
  */
 export function recordConversion(fromCurrency, toCurrency, amount, convertedValue) {
+  if (!hasAnalyticsConsent()) return;
   if (!amount || amount <= 0) return;
 
   const todayKey = getTodayKey();
