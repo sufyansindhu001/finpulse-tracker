@@ -198,6 +198,9 @@ NPC profit rates depend on **currency, tenor, issue date and conventional versus
     content = replaceExact(content,
       'No. Under Section 152 of the Income Tax Ordinance 2001, withholding tax deducted on profit from Naya Pakistan Certificates is a full and final tax discharge. Overseas investors holding only RDA and NPC investments are completely exempt from filing an annual FBR return.',
       'According to the SBP RDA FAQ, eligible NPC profit is subject to a 10% full-and-final source deduction and does not itself require an income-tax return. Other Pakistan-source income or applicable filing obligations require a separate review.');
+    content = replaceExact(content,
+      '### Statutory Repatriation Guarantee: SBP FE Circular No. 04 of 2020\n\nThe defining structural feature of the Roshan Digital Account is its legal guarantee of **unrestricted capital repatriation**. Under State Bank of Pakistan Foreign Exchange Circular No. 04 of 2020:\n- Non-resident Pakistanis are legally entitled to transfer their original principal capital, capital gains, and accrued profit back to their overseas bank accounts at any time.\n- Commercial banks in Pakistan are strictly prohibited from demanding prior regulatory approvals or bureaucratic \'No Objection Certificates\' (NOC) before processing outward repatriation requests initiated through internet banking.',
+      '### RDA Repatriation: Eligible Funds and Bank Processing\n\nThe [SBP Roshan Digital Account guidance](https://www.sbp.org.pk/our-operations/roshan-digital-accounts) allows eligible account balances and investment proceeds to be remitted abroad without case-specific prior SBP or bank approval. This does not waive identity checks, bank authentication, product settlement timelines, account eligibility rules or applicable charges.\n- Eligible principal and returns from investments made through the RDA can generally be repatriated under the published framework.\n- The processing bank must authenticate and execute the request according to the applicable RDA procedures; verify actual timing and transfer charges with that bank.');
     return content;
   },
 
@@ -208,6 +211,24 @@ NPC profit rates depend on **currency, tenor, issue date and conventional versus
     content = replaceExact(content,
       'A limit order guarantees that you will either receive your requested price or a better one. It completely eliminates negative slippage on entry',
       'A filled limit order is intended to execute at its limit price or better under the venue rules. It may remain unfilled or fill partially');
+    content = replaceExact(content,
+      'Slippage Dollar Loss ($) = |Execution Price - Target Price| * Pip Value * Position Size (Lots)',
+      'Slippage Dollar Loss ($) = (|Execution Price - Target Price| / Pip Size) * Pip Value per Standard Lot * Position Size (Standard Lots)');
+    content = replaceExact(content,
+      'Calculated Position Size: $150 / (30 pips * $10) = **0.50 Mini Lots**.',
+      'Calculated Position Size: $150 / (30 pips * $10 per standard lot) = **0.50 standard lots (5 mini lots)**. The modeled pip value for this position is $5 per pip.');
+    content = replaceExact(content,
+      'Actual Risk Exposure = 30 pips * $5 = **$150 (Exactly 1.5% of equity)**.',
+      'Modeled loss at the planned stop = 30 pips * $5 = **$150 (1.5% of equity)**, assuming no gap, slippage or transaction costs.');
+    content = replaceExact(content,
+      'Actual Dollar Loss if Stopped Out = 48 pips * $5 = **$240 (2.4% of equity — a 60% unintended risk expansion!)**.',
+      'Modeled loss if the stop fills at 1.0820 = 48 pips * $5 = **$240 (2.4% of equity — 60% more than planned)**, before fees or additional slippage.');
+    content = replaceExact(content,
+      '> Regulatory Notice: Under Chapter 19 of the State Bank of Pakistan (SBP) Foreign Exchange Manual and SECP financial directives, domestic corporate hedgers and authorized dealers must adhere to rigorous execution standards to mitigate execution slippage.',
+      '> Execution note: Broker-specific order types, margin requirements and execution protections vary. Consult your broker\'s published order execution terms; this example is educational, not a guaranteed maximum loss.');
+    content = replaceExact(content,
+      'A conventional stop-loss order converts into an immediate market order once the stop trigger price is touched, guaranteeing that the trade will close regardless of price, though slippage can occur in gap conditions.',
+      'A conventional stop-loss order generally becomes a market order when its trigger is reached. The final price can differ sharply from the stop price, and execution can be delayed or rejected under market and broker conditions.');
     return replaceSection(content,
       '### Institutional Execution Comparison: Order Types Breakdown',
       '### Mathematical Calculation: Slippage Impact & Position Sizing',
@@ -320,6 +341,9 @@ The [official SPIVA U.S. Scorecard](https://www.spglobal.com/spdji/en/spiva/arti
     content = replaceExact(content,
       'ultrasonic velocity testing or physical assay drilling reveals the tungsten core instantly because sound travels far faster through tungsten (5,200 m/s) than gold (3,240 m/s)',
       'a properly calibrated ultrasound examination or a controlled destructive assay may detect internal inconsistencies; neither a quick surface test nor a single density measurement proves the core is genuine');
+    content = replaceExact(content,
+      '> Regulatory Notice: The All Pakistan Sarafa Gems and Jewellers Association (APSGJA) advises consumers to demand certified assay stamps and official purchase receipts containing the merchant\'s National Tax Number (NTN) to guarantee full FBR compliance.',
+      '> Buyer checklist: Ask for a dated invoice, seller identification, weight and purity details, and independently verifiable assay information where applicable. An NTN printed on a receipt does not by itself verify authenticity or guarantee tax compliance.');
     return replaceSection(content,
       '### Gold Assay & Counterfeit Detection Matrix',
       '### Step-by-Step Archimedes Specific Gravity Protocol',
