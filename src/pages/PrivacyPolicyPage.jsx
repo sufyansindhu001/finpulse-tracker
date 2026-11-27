@@ -37,7 +37,7 @@ export default function PrivacyPolicyPage() {
           </div>
           <div>
             <span className="text-xs font-bold text-[#00E676] uppercase tracking-wider">
-              Legal & AdSense Compliance
+              Website Privacy & Cookie Information
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Privacy Policy & Cookie Disclosure
@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
             2. Log Files & Anonymous Analytics
           </h2>
           <p>
-            {siteSettings?.websiteName || 'FGC Spot'} follows a standard procedure of using log files. These files log visitors when they navigate the application. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and the number of clicks. These are not linked to any information that is personally identifiable.
+            {siteSettings?.websiteName || 'FGC Spot'} uses hosting logs to operate and secure the service. Depending on the provider, log information can include IP addresses, browser information, visit times and referring pages. IP addresses and similar online identifiers can be personal data under applicable privacy laws; they are not necessarily anonymous.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-200 dark:border-white/10 pb-2">
@@ -85,14 +85,14 @@ export default function PrivacyPolicyPage() {
             4. Consent
           </h2>
           <p>
-            By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+            This policy describes our data practices; merely visiting the website does not mean you have consented to optional cookies. Use the Cookie Preferences control to manage available choices. If advertising is enabled later, we will provide any additional disclosures and consent choices required for that service.
           </p>
 
           <h2 className="text-xl font-bold text-slate-900 dark:text-white pt-2 border-b border-slate-200 dark:border-white/10 pb-2">
             5. Contact Information &amp; Privacy Requests
           </h2>
           <p>
-            If you have questions regarding this Privacy Policy, wish to exercise your GDPR or CCPA privacy rights, or request deletion of data, please direct all formal inquiries to our compliance team at <a href="mailto:fgcspot4@gmail.com" className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40">fgcspot4@gmail.com</a>. We respond to all verified privacy requests within 30 days.
+            If you have questions regarding this Privacy Policy, wish to exercise applicable privacy rights, or request deletion of data, please contact us at <a href="mailto:fgcspot4@gmail.com" className="text-[#00E676] hover:text-[#00FF88] font-bold font-mono underline underline-offset-4 decoration-[#00E676]/40">fgcspot4@gmail.com</a>. We review privacy requests and respond in accordance with applicable requirements.
           </p>
 
         </div>
