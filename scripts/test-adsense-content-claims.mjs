@@ -16,6 +16,8 @@ const disclosurePage = read('src/pages/DataSourcesPage.jsx');
 const homeMethodology = read('src/components/MarketIntelligenceMethodology.jsx');
 const editorialPolicy = read('src/pages/EditorialPolicyPage.jsx');
 const ticker = read('src/components/CryptoTickerBar.jsx');
+const consentBanner = read('src/components/CookieConsentBanner.jsx');
+const privacyPage = read('src/pages/PrivacyPolicyPage.jsx');
 
 assert.doesNotMatch(converter, /100% tax-free|100% tax-exempt|Automatic e-PRC tax shield|No official e-PRC tax exemption|authentic institutional mid-market rates without hidden bank markups/i);
 assert.doesNotMatch(converter, /SBP Benchmark Parity|pure mid-market interbank exchange rates|Updates every 45 to 60 seconds|Commercial banks add 1\.5% to 3\.5%/i);
@@ -71,6 +73,13 @@ for (const route of ['/about', '/contact', '/editorial-policy', '/data-sources',
   assert.match(read('src/App.jsx'), new RegExp(`path=["']${route}["']`), `Missing trust/support route ${route}`);
 }
 assert.match(read('public/ads.txt'), /google\.com, pub-1794342776311306, DIRECT/);
+assert.doesNotMatch(consentBanner, /Compliant with Google AdSense & Privacy Standards|serve compliant financial ads/i);
+assert.match(consentBanner, /const ADVERTISING_ACTIVE = false/);
+assert.match(consentBanner, /advertising: ADVERTISING_ACTIVE && updatedPrefs\.advertising === true/);
+assert.match(consentBanner, /window\.addEventListener\('fgc_open_cookie_preferences', handleOpenPreferences\)/);
+assert.doesNotMatch(consentBanner, /return \(\) => clearTimeout\(timer\)/);
+assert.match(privacyPage, /merely visiting the website does not mean you have consented to optional cookies/i);
+assert.doesNotMatch(staticHtml, /comply with Google AdSense standards/i);
 console.log('[PASS] Trust, disclosure, privacy and AdSense ownership paths are present.');
 
 console.log('All 4 AdSense content-claims regression groups passed.');
