@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Cookie, ShieldCheck, Check, Sliders, X, ChevronDown, ChevronUp, Lock } from 'lucide-react';
+import { CONSENT_STORAGE_KEY } from '../utils/consent';
 
-const STORAGE_KEY = 'fgc_cookie_consent';
 // Advertising placements are inactive while AdSense site approval is pending.
 // Additional certified consent handling may be required before activation.
 const ADVERTISING_ACTIVE = false;
@@ -20,7 +20,7 @@ export default function CookieConsentBanner() {
     // Check if consent has already been recorded
     let timer;
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(CONSENT_STORAGE_KEY);
       if (!saved) {
         // Small delay to ensure smooth initial page render
         timer = setTimeout(() => {
@@ -62,7 +62,9 @@ export default function CookieConsentBanner() {
         consentedAt: new Date().toISOString(),
         version: '1.0'
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(payload));
+      // Refresh optional analytics integrations without requiring a page reload.
+      window.dispatchEvent(new Event('fgc_cookie_consent_changed'));
     } catch (e) {
       console.warn('Could not persist cookie consent:', e);
     }
