@@ -2,103 +2,87 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.fgcspot.com/</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/about</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/contact</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/privacy-policy</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/terms</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/disclaimer</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/author/sufyan-sindhu</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/editorial-policy</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/data-sources</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/stocks</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/converter</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/rates</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/crypto</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/gold</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/charts</loc>
-    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -128,7 +112,7 @@
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog/hedging-against-inflation-cash-devaluation-purchasing-power-and-modern-wealth-preservation</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -158,7 +142,7 @@
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog/global-energy-markets-commodity-supercycles-how-crude-oil-brent-vs-wti-shapes-the-world-economy</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -170,7 +154,7 @@
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog/the-us-federal-reserve-global-markets-how-interest-rate-cycles-move-stocks-gold-and-emerging-currencies</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -188,13 +172,13 @@
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog/stock-market-vs-real-estate-in-pakistan-which-asset-truly-builds-wealth-over-10-years</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.fgcspot.com/blog/beating-inflation-why-keeping-cash-in-a-savings-account-is-losing-you-money-and-better-alternatives</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
