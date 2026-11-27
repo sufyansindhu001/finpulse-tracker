@@ -3,33 +3,36 @@ import { Link } from 'react-router-dom';
 import { Cookie, ShieldCheck, Check, Sliders, X, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 
 const STORAGE_KEY = 'fgc_cookie_consent';
+// Advertising placements are inactive while AdSense site approval is pending.
+// Additional certified consent handling may be required before activation.
+const ADVERTISING_ACTIVE = false;
 
 export default function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [preferences, setPreferences] = useState({
     necessary: true,
-    analytics: true,
-    advertising: true
+    analytics: false,
+    advertising: false
   });
 
   useEffect(() => {
     // Check if consent has already been recorded
+    let timer;
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (!saved) {
         // Small delay to ensure smooth initial page render
-        const timer = setTimeout(() => {
+        timer = setTimeout(() => {
           setIsVisible(true);
         }, 500);
-        return () => clearTimeout(timer);
       } else {
         const parsed = JSON.parse(saved);
         if (parsed && typeof parsed === 'object') {
           setPreferences({
             necessary: true,
-            analytics: parsed.analytics !== false,
-            advertising: parsed.advertising !== false
+            analytics: parsed.analytics === true,
+            advertising: ADVERTISING_ACTIVE && parsed.advertising === true
           });
         }
       }
@@ -45,6 +48,7 @@ export default function CookieConsentBanner() {
 
     window.addEventListener('fgc_open_cookie_preferences', handleOpenPreferences);
     return () => {
+      if (timer) clearTimeout(timer);
       window.removeEventListener('fgc_open_cookie_preferences', handleOpenPreferences);
     };
   }, []);
@@ -54,6 +58,7 @@ export default function CookieConsentBanner() {
       const payload = {
         ...updatedPrefs,
         necessary: true,
+        advertising: ADVERTISING_ACTIVE && updatedPrefs.advertising === true,
         consentedAt: new Date().toISOString(),
         version: '1.0'
       };
@@ -66,7 +71,7 @@ export default function CookieConsentBanner() {
   };
 
   const handleAcceptAll = () => {
-    const all = { necessary: true, analytics: true, advertising: true };
+    const all = { necessary: true, analytics: true, advertising: ADVERTISING_ACTIVE };
     setPreferences(all);
     saveConsent(all);
   };
@@ -102,7 +107,7 @@ export default function CookieConsentBanner() {
                 Cookie & Privacy Consent
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-[#A8B3C2]">
-                Compliant with Google AdSense & Privacy Standards
+                Choose your optional cookie preferences
               </p>
             </div>
           </div>
@@ -120,7 +125,7 @@ export default function CookieConsentBanner() {
 
         {/* Narrative Description */}
         <p className="text-slate-600 dark:text-[#A8B3C2] leading-relaxed mb-3.5">
-          We use cookies and telemetry feeds to deliver institutional market data, personalize exchange rates, and serve compliant financial ads via Google AdSense. Read our{' '}
+          We use essential storage for site functions and offer optional analytics preferences. Advertising placements are not currently active; we will update our notices and consent choices before enabling ads. Read our{' '}
           <Link 
             to="/privacy-policy" 
             className="text-[#00E676] hover:underline font-semibold"
@@ -177,12 +182,13 @@ export default function CookieConsentBanner() {
               <div className="flex items-center justify-between gap-2 mb-1">
                 <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white">
                   <Sliders className="w-3.5 h-3.5 text-amber-500" />
-                  <span>AdSense & Advertising</span>
+                  <span>Advertising (not active)</span>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={preferences.advertising}
+                    checked={ADVERTISING_ACTIVE && preferences.advertising}
+                    disabled={!ADVERTISING_ACTIVE}
                     onChange={(e) => setPreferences(prev => ({ ...prev, advertising: e.target.checked }))}
                     className="sr-only peer"
                   />
@@ -190,7 +196,7 @@ export default function CookieConsentBanner() {
                 </label>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-                Enables Google AdSense partner networks to serve relevant financial product offers.
+                No ad placements are enabled while site approval is pending. A fresh consent process will be required if advertising is activated later.
               </p>
             </div>
 

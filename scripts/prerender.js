@@ -399,11 +399,11 @@ function renderCookieBanner() {
     <div id="cookie-consent-banner" class="fixed bottom-0 inset-x-0 z-50 p-4 bg-slate-900/95 dark:bg-[#06111F]/95 text-slate-200 border-t border-slate-700 dark:border-white/10 backdrop-blur-md shadow-2xl transition-transform duration-300">
       <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="text-xs sm:text-sm text-slate-300">
-          FGC Spot uses cookies and analytics telemetry to optimize market rate calculations and comply with Google AdSense standards. Review our <a href="/privacy-policy" class="underline hover:text-[#00E676]">Privacy Policy</a>.
+          FGC Spot uses essential storage for site functions and may collect hosting analytics. Advertising placements are not currently active. See our <a href="/privacy-policy" class="underline hover:text-[#00E676]">Privacy Policy</a> for details.
         </p>
         <div class="flex items-center gap-3 shrink-0">
           <a href="/privacy-policy" class="px-3 py-1.5 rounded-xl border border-slate-600 hover:border-slate-400 text-xs font-semibold text-slate-300 transition-colors">Manage Preferences</a>
-          <button type="button" onclick="document.getElementById('cookie-consent-banner').style.display='none'; localStorage.setItem('fgc_cookie_consent','accepted');" class="px-4 py-1.5 rounded-xl bg-[#00E676] hover:bg-emerald-400 text-[#06111F] text-xs font-bold transition-all shadow-xs">Accept All</button>
+          <button type="button" onclick="document.getElementById('cookie-consent-banner').style.display='none'; localStorage.setItem('fgc_cookie_consent',JSON.stringify({necessary:true,analytics:true,advertising:false,consentedAt:new Date().toISOString(),version:'1.0'}));" class="px-4 py-1.5 rounded-xl bg-[#00E676] hover:bg-emerald-400 text-[#06111F] text-xs font-bold transition-all shadow-xs">Accept Available</button>
         </div>
       </div>
     </div>
