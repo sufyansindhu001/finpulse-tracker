@@ -1,4 +1,5 @@
 /** Dynamic companion sitemap: newly published Supabase articles appear without a build. */
+import { BLOG_POSTS } from '../src/data/blogPosts.js';
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || 'https://ydroyycgjnbjcoprrrwk.supabase.co';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_cfiOd9efKs6N71KzILP1KQ_lN8bCORq';
 const BASE_URL = 'https://www.fgcspot.com';
@@ -40,6 +41,10 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('[live-sitemap] Could not fetch public article list:', error?.message);
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(503).send('Article sitemap temporarily unavailable');
+    // A listed sitemap must remain valid XML even during a temporary upstream
+    // outage. The static, reviewed article URLs are safe fallback entries; new
+    // owner-published slugs resume appearing once Supabase is reachable again.
+    res.setHeader('X-Sitemap-Source', 'bundled-fallback');
+    return res.status(200).send(req.method === 'HEAD' ? '' : renderLiveSitemap(BLOG_POSTS));
   }
 }

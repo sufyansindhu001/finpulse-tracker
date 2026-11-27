@@ -167,6 +167,20 @@ await test('dynamic sitemap includes fresh articles and true modified dates', as
   } finally { globalThis.fetch = original; }
 });
 
+await test('dynamic sitemap remains valid XML when the article provider is offline', async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('offline'); };
+  try {
+    const res = mockRes();
+    await liveSitemap({ method: 'GET' }, res);
+    assert.equal(res.statusCode, 200);
+    assert.ok(res.body.startsWith('<?xml version="1.0"'));
+    assert.ok(res.body.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'));
+    assert.ok(res.body.includes('/blog/buying-gold-in-pakistan-tola-karat-making-charges-guide'));
+    assert.ok(!res.body.includes('Article sitemap temporarily unavailable'));
+  } finally { globalThis.fetch = original; }
+});
+
 await test('bad article slugs are excluded from the sitemap', () => {
   const xml = renderLiveSitemap([{ slug: '<evil>' }, { slug: '../foo' }, { slug: valid.slug }]);
   assert.ok(!xml.includes('<evil>'));
