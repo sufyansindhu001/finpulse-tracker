@@ -50,30 +50,25 @@ import { recordPageView } from './utils/telemetry';
 import { updateCanonical, updateSEO } from './utils/seo';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { hasAnalyticsConsent } from './utils/consent';
 import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 
 export default function App() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [analyticsConsent, setAnalyticsConsent] = useState(hasAnalyticsConsent);
+
+  useEffect(() => {
+    const refreshConsent = () => setAnalyticsConsent(hasAnalyticsConsent());
+    window.addEventListener('fgc_cookie_consent_changed', refreshConsent);
+    return () => window.removeEventListener('fgc_cookie_consent_changed', refreshConsent);
+  }, []);
 
   // Instant scroll to top, sync canonical URL, and non-blocking telemetry on route navigation
   useEffect(() => {
     // Instant zero-cost scroll without smooth-scroll layout locking
     window.scrollTo(0, 0);
-
-    // Non-blocking telemetry: queued during idle periods so route transitions happen in <0.05s
-    if (typeof window !== 'undefined') {
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(() => {
-          try { recordPageView(location.pathname); } catch {}
-        });
-      } else {
-        setTimeout(() => {
-          try { recordPageView(location.pathname); } catch {}
-        }, 80);
-      }
-    }
 
     try {
       updateCanonical(location.pathname);
@@ -89,6 +84,20 @@ export default function App() {
       console.warn('SEO synchronization warning:', e);
     }
   }, [location.pathname]);
+
+  // Optional visit analytics run only after the visitor explicitly opts in.
+  useEffect(() => {
+    if (!analyticsConsent) return;
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => {
+        try { recordPageView(location.pathname); } catch {}
+      });
+    } else {
+      setTimeout(() => {
+        try { recordPageView(location.pathname); } catch {}
+      }, 80);
+    }
+  }, [location.pathname, analyticsConsent]);
 
   // Idle route prefetching: pre-caches key page chunks for instant (<0.1s) transitions
   useEffect(() => {
@@ -561,12 +570,12 @@ export default function App() {
       {/* Footer with Unified FGC Spot Theme & Standalone Router Links */}
       <Footer onSelectPair={handleSelectPair} />
 
-      {/* Non-intrusive Cookie Consent Banner (Google AdSense & Privacy Compliant) */}
+      {/* Visitor cookie preferences */}
       <CookieConsentBanner />
 
-      {/* Official Vercel Real-Traffic Analytics & Web Vitals Speed Insights */}
-      <Analytics />
-      <SpeedInsights />
+      {/* Optional Vercel analytics scripts are injected only after opt-in. */}
+      {analyticsConsent && <Analytics />}
+      {analyticsConsent && <SpeedInsights />}
 
     </div>
   );
