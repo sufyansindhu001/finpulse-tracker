@@ -55,12 +55,19 @@ assert.doesNotMatch(forex.content, /Probability of Account Survival|0\.20 Mini L
 const rda = bySlug('understanding-roshan-digital-account-rda-naya-pakistan-certificates-repatriation-rules-tax-shields');
 assert.match(rda.content, /10% at source on NPC profit/);
 assert.doesNotMatch(rda.content, /\*\*15\.00%\*\*|\*\*7\.20%\*\*|completely exempt from filing/);
+assert.match(rda.content, /RDA Repatriation: Eligible Funds and Bank Processing/);
+assert.doesNotMatch(rda.content, /legal guarantee of \*\*unrestricted capital repatriation\*\*/);
 const equity = bySlug('pakistan-stock-exchange-psx-vs-global-equities-kse-100-valuation-dividend-yields-sp500-guide');
 assert.match(equity.content, /1,762,342/);
 assert.doesNotMatch(equity.content, /Commercial Banks \(30%\)|20\.0x - 26\.0x/);
 const assay = bySlug('spotting-fake-gold-hallmarking-standards-the-complete-investor-guide-to-bullion-bars-vs-jewelry');
 assert.match(assay.content, /Limited penetration cannot establish/);
 assert.doesNotMatch(assay.content, /Flawless for Bullion/);
+assert.doesNotMatch(assay.content, /guarantee full FBR compliance/);
+const orderTypes = bySlug('the-architecture-of-forex-order-types-how-limit-stop-and-trailing-orders-protect-capital');
+assert.match(orderTypes.content, /0\.50 standard lots \(5 mini lots\)/);
+assert.match(orderTypes.content, /\/ Pip Size\)/);
+assert.doesNotMatch(orderTypes.content, /0\.50 Mini Lots|guaranteeing that the trade will close/);
 const wire = bySlug('remittances-forex-spread-the-hidden-costs-of-sending-money-to-pakistan-and-how-to-get-real-rates');
 assert.match(wire.content, /an in-app receipt is not always an SBP e-PRC/);
 assert.doesNotMatch(wire.content, /\*\*0\.20% - 0\.50%\*\*/);
@@ -81,6 +88,7 @@ for (const path of [
 ]) {
   const page = readFileSync(new URL(path, import.meta.url), 'utf8');
   assert.doesNotMatch(page, /sub-5\.0x|sub-5\.0x P\/E|11\.8%.*dividend|10\.5% and 14\.5%/i, `${path}: stale market statistic`);
+  if (path.endsWith('/AuthorPage.jsx')) assert.doesNotMatch(page, /Comprehensive empirical analyses/);
 }
 console.log('PASS 4: homepage, stock terminal and author promotional copy avoids unsupported fixed market ratios.');
 
