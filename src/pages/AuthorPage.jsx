@@ -185,7 +185,7 @@ export default function AuthorPage() {
               <span>Published Research Guides ({articles.length})</span>
             </h2>
             <p className="text-xs text-slate-500 dark:text-[#A8B3C2] mt-0.5">
-              Comprehensive empirical analyses authored by Sufyan Sindhu on FGC Spot
+              Educational financial guides published and edited by Sufyan Sindhu on FGC Spot
             </p>
           </div>
           <Link 
