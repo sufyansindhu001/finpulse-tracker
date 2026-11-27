@@ -21,6 +21,12 @@ assert.match(blogHtml, /<meta name="robots" content="index, follow"\s*\/>/i);
 assert.doesNotMatch(sitemapScript, /url:\s*`\$\{BASE_URL\}\/news`/);
 assert.doesNotMatch(sitemap, /<loc>https:\/\/www\.fgcspot\.com\/news<\/loc>/);
 assert.match(sitemap, /<loc>https:\/\/www\.fgcspot\.com\/blog<\/loc>/);
+assert.doesNotMatch(sitemapScript, /const dateStr = TODAY|Guaranteed today's date for GSC freshness/);
+assert.match(sitemapScript, /validDate\(art\.updated_at \|\| art\.created_at\)/);
+// Static routes should not pretend they changed on every deployment.
+assert.doesNotMatch(sitemap, /<loc>https:\/\/www\.fgcspot\.com\/about<\/loc>\s*<lastmod>/);
+// A guide with an older, unchanged editorial timestamp should keep that date.
+assert.match(sitemap, /<loc>https:\/\/www\.fgcspot\.com\/blog\/buying-gold-in-pakistan-tola-karat-making-charges-guide<\/loc>\s*<lastmod>2026-11-22<\/lastmod>/);
 
 console.log('[PASS] Syndicated /news is noindex/follow in HTML and client SEO.');
 console.log('[PASS] Original /blog stays indexable and /news is omitted from sitemap.');
